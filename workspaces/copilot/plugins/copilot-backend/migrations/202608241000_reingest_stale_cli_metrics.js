@@ -52,7 +52,7 @@ exports.up = async function up(knex) {
         .orWhere('request_count', '>', 0)
         .orWhere('session_count', '>', 0),
     )
-    .select('day', 'metrics_type', 'entity_id');
+    .distinct('day', 'metrics_type', 'entity_id');
 
   for (const {
     day,

@@ -172,6 +172,19 @@ describe('aggregateTeamMetrics', () => {
     ]);
   });
 
+  it('preserves unavailable AI credits for a team', () => {
+    const result = aggregateTeamMetrics(
+      [makeUserMetric({ user_id: 1, ai_credits_used: undefined })],
+      [makeUserTeam({ user_id: 1, team_slug: 'platform' })],
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals[0].total_ai_credits_used).toBeUndefined();
+  });
+
   it('filters userTeams by day', () => {
     const userMetrics: V2UserMetricRow[] = [
       makeUserMetric({ user_id: 1, loc_added_sum: 20 }),

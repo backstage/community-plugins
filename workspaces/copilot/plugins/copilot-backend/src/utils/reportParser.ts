@@ -118,6 +118,12 @@ function toNumber(value: unknown): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : 0;
 }
 
+function toOptionalNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? value
+    : undefined;
+}
+
 function toStringValue(value: unknown): string | null {
   return typeof value === 'string' ? value : null;
 }
@@ -147,11 +153,12 @@ export function parseEnterpriseDocument(
   // Normalize: the GitHub report API (2026-03-10) downloads a single flat
   // V2EnterpriseDayTotal object per file — not a V2EnterpriseDocument with a
   // day_totals wrapper. Accept both shapes for robustness.
-  const rawDocs: unknown[] = Array.isArray(doc)
-    ? doc
-    : isRecord(doc)
-    ? [doc]
-    : [];
+  let rawDocs: unknown[] = [];
+  if (Array.isArray(doc)) {
+    rawDocs = doc;
+  } else if (isRecord(doc)) {
+    rawDocs = [doc];
+  }
 
   if (rawDocs.length === 0) {
     logWarn(
@@ -834,7 +841,7 @@ export function parseUserDocument(
       user_initiated_interaction_count: toNumber(
         metric.user_initiated_interaction_count,
       ),
-      ai_credits_used: toNumber(metric.ai_credits_used),
+      ai_credits_used: toOptionalNumber(metric.ai_credits_used),
     });
 
     const breakdown: UserBreakdownData = {

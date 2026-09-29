@@ -114,7 +114,7 @@ export function aggregateTeamMetrics(
     const activeUsers = new Set<number>();
     let agentUsers = 0;
     let chatUsers = 0;
-    let aiCreditsUsedSum = 0;
+    let aiCreditsUsedSum: number | undefined;
 
     // Aggregation maps for breakdown dimensions
     const featureMap = new Map<string, V2MetricsByFeatureRow>();
@@ -139,7 +139,9 @@ export function aggregateTeamMetrics(
       codeAcceptanceActivityCount += metric.code_acceptance_activity_count;
       codeGenerationActivityCount += metric.code_generation_activity_count;
       userInitiatedInteractionCount += metric.user_initiated_interaction_count;
-      aiCreditsUsedSum += metric.ai_credits_used ?? 0;
+      if (metric.ai_credits_used !== undefined) {
+        aiCreditsUsedSum = (aiCreditsUsedSum ?? 0) + metric.ai_credits_used;
+      }
 
       const bd = breakdownsByUserId.get(userId);
       if (!bd) continue;

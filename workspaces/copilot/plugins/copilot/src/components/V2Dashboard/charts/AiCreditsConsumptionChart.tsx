@@ -15,6 +15,7 @@
  */
 
 import { BarChart } from '@mui/x-charts/BarChart';
+import { XAxis } from '@mui/x-charts/models';
 import { V2DailyTotal } from '@backstage-community/plugin-copilot-common';
 import { aggregateDailyTotals } from './aggregateDailyTotals';
 import { compactNumber, formatDay, DATE_TICK_LABEL_STYLE } from './chartUtils';
@@ -36,24 +37,30 @@ const NO_DATA = (
  */
 export function AiCreditsConsumptionChart({ data }: Props) {
   const aggregated = aggregateDailyTotals(data);
-  if (aggregated.length === 0) return NO_DATA;
+  if (
+    aggregated.length === 0 ||
+    !aggregated.some(row => row.total_ai_credits_used !== undefined)
+  ) {
+    return NO_DATA;
+  }
 
   const days = aggregated.map(d => d.day);
+  const xAxis: XAxis<'band', string>[] = [
+    {
+      data: days,
+      scaleType: 'band',
+      valueFormatter: formatDay,
+      tickLabelStyle: DATE_TICK_LABEL_STYLE,
+      height: 50,
+    },
+  ];
 
   return (
     <BarChart
-      xAxis={[
-        {
-          data: days,
-          scaleType: 'band' as const,
-          valueFormatter: formatDay,
-          tickLabelStyle: DATE_TICK_LABEL_STYLE,
-          height: 50,
-        } as any,
-      ]}
+      xAxis={xAxis}
       series={[
         {
-          data: aggregated.map(d => d.total_ai_credits_used ?? 0),
+          data: aggregated.map(d => d.total_ai_credits_used ?? null),
           label: 'AI credits used',
           color: '#1E88E5',
         },

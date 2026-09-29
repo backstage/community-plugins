@@ -46,19 +46,23 @@ function StatCard({
 }
 
 export function ConsumptionSummary({ dailyTotals }: Readonly<Props>) {
-  const totalCredits = dailyTotals.reduce(
-    (sum, row) => sum + (row.total_ai_credits_used ?? 0),
-    0,
-  );
+  const creditValues = dailyTotals
+    .map(row => row.total_ai_credits_used)
+    .filter((value): value is number => value !== undefined);
+  const totalCredits = creditValues.length
+    ? creditValues.reduce((sum, value) => sum + value, 0)
+    : undefined;
 
   return (
     <Grid.Root columns="12" gap="4">
       <Grid.Item colSpan={{ initial: '12', md: '4' }}>
         <StatCard
           title="Total AI Credits Used"
-          value={totalCredits.toLocaleString(undefined, {
-            maximumFractionDigits: 2,
-          })}
+          value={
+            totalCredits?.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            }) ?? '—'
+          }
           subtitle="Selected timeframe"
         />
       </Grid.Item>
