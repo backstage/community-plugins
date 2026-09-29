@@ -19,6 +19,8 @@ import {
   DateRangePicker,
   Flex,
   Grid,
+  Header,
+  HeaderMetadataUsers,
   Tabs,
   TabList,
   Tab,
@@ -27,7 +29,12 @@ import {
   Container,
 } from '@backstage/ui';
 import { InfoCard, Progress } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/frontend-plugin-api';
+import {
+  configApiRef,
+  identityApiRef,
+  useApi,
+} from '@backstage/frontend-plugin-api';
+import { useAsync } from 'react-use';
 import type { RangeValue } from '@react-types/shared';
 import type { DateValue } from '@internationalized/date';
 import { parseDate } from '@internationalized/date';
@@ -87,6 +94,10 @@ function ChartCard({
  */
 export function MyMetricsContent() {
   const configApi = useApi(configApiRef);
+  const identityApi = useApi(identityApiRef);
+  const { value: profile } = useAsync(() => identityApi.getProfileInfo(), []);
+
+  const displayName = profile?.displayName ?? profile?.email ?? 'you';
   const enabled =
     configApi.getOptionalBoolean('copilot.showUserMetrics') ?? true;
 
@@ -191,174 +202,196 @@ export function MyMetricsContent() {
   const byLanguageModel = toLanguageModelRows(data.byLanguageModel);
 
   return (
-    <Container>
-      <Flex direction="column" style={{ gap: 'var(--bui-space-6, 24px)' }}>
-        <Flex direction="row" gap="4" style={{ flexWrap: 'wrap' }}>
-          <DateRangePicker
-            label="Date range"
-            size="medium"
-            value={{ start: parseDate(from), end: parseDate(to) }}
-            onChange={onDateRangeChange}
-          />
-        </Flex>
+    <>
+      <Header
+        title="My Copilot Metrics"
+        description="Your personal GitHub Copilot usage and consumption"
+        metadata={
+          profile
+            ? [
+                {
+                  label: 'Signed in as',
+                  value: (
+                    <HeaderMetadataUsers
+                      users={[
+                        { name: displayName, src: profile.picture ?? '' },
+                      ]}
+                    />
+                  ),
+                },
+              ]
+            : undefined
+        }
+      />
+      <Container>
+        <Flex direction="column" style={{ gap: 'var(--bui-space-6, 24px)' }}>
+          <Flex direction="row" gap="4" style={{ flexWrap: 'wrap' }}>
+            <DateRangePicker
+              label="Date range"
+              size="medium"
+              value={{ start: parseDate(from), end: parseDate(to) }}
+              onChange={onDateRangeChange}
+            />
+          </Flex>
 
-        {data.daily.length === 0 && (
-          <Alert
-            status="info"
-            title="No Copilot activity recorded for you in this date range."
-          />
-        )}
+          {data.daily.length === 0 && (
+            <Alert
+              status="info"
+              title="No Copilot activity recorded for you in this date range."
+            />
+          )}
 
-        <Tabs defaultSelectedKey="copilot-usage">
-          <TabList>
-            <Tab id="copilot-usage">Copilot Usage</Tab>
-            <Tab id="code-generation">Code Generation</Tab>
-            <Tab id="consumption">Consumption</Tab>
-          </TabList>
+          <Tabs defaultSelectedKey="copilot-usage">
+            <TabList>
+              <Tab id="copilot-usage">Copilot Usage</Tab>
+              <Tab id="code-generation">Code Generation</Tab>
+              <Tab id="consumption">Consumption</Tab>
+            </TabList>
 
-          <TabPanel id="copilot-usage">
-            <Flex
-              direction="column"
-              style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
-            >
-              <MyUsageSummary
-                daily={data.daily}
-                byModelFeature={data.byModelFeature}
-              />
+            <TabPanel id="copilot-usage">
+              <Flex
+                direction="column"
+                style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
+              >
+                <MyUsageSummary
+                  daily={data.daily}
+                  byModelFeature={data.byModelFeature}
+                />
 
-              <ChartCard title="Requests per Chat Mode">
-                <RequestsByChatModeChart data={byFeature} />
-              </ChartCard>
+                <ChartCard title="Requests per Chat Mode">
+                  <RequestsByChatModeChart data={byFeature} />
+                </ChartCard>
 
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Code Completions">
-                    <CodeCompletionsChart data={byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Code Completion Acceptance Rate">
-                    <CodeCompletionsAcceptanceChart data={byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
+                <Grid.Root columns="12" gap="4">
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Code Completions">
+                      <CodeCompletionsChart data={byFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Code Completion Acceptance Rate">
+                      <CodeCompletionsAcceptanceChart data={byFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                </Grid.Root>
 
-              <ChartCard title="Model Usage per Day">
-                <ModelUsagePerDayChart data={byModelFeature} />
-              </ChartCard>
+                <ChartCard title="Model Usage per Day">
+                  <ModelUsagePerDayChart data={byModelFeature} />
+                </ChartCard>
 
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Chat Model Usage">
-                    <ChatModelUsageDonut data={byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Model Usage per Chat Mode">
-                    <ModelUsagePerChatModeChart data={byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
+                <Grid.Root columns="12" gap="4">
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Chat Model Usage">
+                      <ChatModelUsageDonut data={byModelFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Model Usage per Chat Mode">
+                      <ModelUsagePerChatModeChart data={byModelFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                </Grid.Root>
 
-              <ChartCard title="Language Usage per Day">
-                <LanguageUsagePerDayChart data={byLanguage} />
-              </ChartCard>
+                <ChartCard title="Language Usage per Day">
+                  <LanguageUsagePerDayChart data={byLanguage} />
+                </ChartCard>
 
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Language Usage">
-                    <LanguageUsageDonut data={byLanguage} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Model Usage per Language">
-                    <ModelUsagePerLanguageChart data={byLanguageModel} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-            </Flex>
-          </TabPanel>
+                <Grid.Root columns="12" gap="4">
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Language Usage">
+                      <LanguageUsageDonut data={byLanguage} />
+                    </ChartCard>
+                  </Grid.Item>
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Model Usage per Language">
+                      <ModelUsagePerLanguageChart data={byLanguageModel} />
+                    </ChartCard>
+                  </Grid.Item>
+                </Grid.Root>
+              </Flex>
+            </TabPanel>
 
-          <TabPanel id="code-generation">
-            <Flex
-              direction="column"
-              style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
-            >
-              <CodeGenerationSummary
-                dailyTotals={dailyTotals}
-                byFeature={byFeature}
-              />
+            <TabPanel id="code-generation">
+              <Flex
+                direction="column"
+                style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
+              >
+                <CodeGenerationSummary
+                  dailyTotals={dailyTotals}
+                  byFeature={byFeature}
+                />
 
-              <ChartCard title="Daily Total Lines Added and Deleted">
-                <Text
-                  variant="body-small"
-                  color="secondary"
-                  style={{ marginBottom: 8 }}
-                >
-                  Total lines of code you added and deleted across all modes
+                <ChartCard title="Daily Total Lines Added and Deleted">
+                  <Text
+                    variant="body-small"
+                    color="secondary"
+                    style={{ marginBottom: 8 }}
+                  >
+                    Total lines of code you added and deleted across all modes
+                  </Text>
+                  <DailyLOCChart data={dailyTotals} />
+                </ChartCard>
+
+                <Grid.Root columns="12" gap="4">
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="User-initiated Code Changes">
+                      <UserLOCByFeatureChart data={byFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Agent-initiated Code Changes">
+                      <AgentLOCByFeatureChart data={byFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                </Grid.Root>
+
+                <Grid.Root columns="12" gap="4">
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="User-initiated Code Changes per Model">
+                      <UserLOCByModelChart data={byModelFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Agent-initiated Code Changes per Model">
+                      <AgentLOCByModelChart data={byModelFeature} />
+                    </ChartCard>
+                  </Grid.Item>
+                </Grid.Root>
+
+                <Grid.Root columns="12" gap="4">
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="User-initiated Code Changes per Language">
+                      <UserLOCByLanguageChart data={byLanguage} />
+                    </ChartCard>
+                  </Grid.Item>
+                  <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                    <ChartCard title="Agent-initiated Code Changes per Language">
+                      <AgentLOCByLanguageChart data={byLanguage} />
+                    </ChartCard>
+                  </Grid.Item>
+                </Grid.Root>
+              </Flex>
+            </TabPanel>
+
+            <TabPanel id="consumption">
+              <Flex
+                direction="column"
+                style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
+              >
+                <Text variant="body-small" color="secondary">
+                  AI credit consumption is derived from your per-day usage.
                 </Text>
-                <DailyLOCChart data={dailyTotals} />
-              </ChartCard>
 
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="User-initiated Code Changes">
-                    <UserLOCByFeatureChart data={byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Agent-initiated Code Changes">
-                    <AgentLOCByFeatureChart data={byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
+                <ConsumptionSummary dailyTotals={dailyTotals} />
 
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="User-initiated Code Changes per Model">
-                    <UserLOCByModelChart data={byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Agent-initiated Code Changes per Model">
-                    <AgentLOCByModelChart data={byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="User-initiated Code Changes per Language">
-                    <UserLOCByLanguageChart data={byLanguage} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Agent-initiated Code Changes per Language">
-                    <AgentLOCByLanguageChart data={byLanguage} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-            </Flex>
-          </TabPanel>
-
-          <TabPanel id="consumption">
-            <Flex
-              direction="column"
-              style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
-            >
-              <Text variant="body-small" color="secondary">
-                AI credit consumption is derived from your per-day usage.
-              </Text>
-
-              <ConsumptionSummary dailyTotals={dailyTotals} />
-
-              <ChartCard title="AI Credits Used per Day">
-                <AiCreditsConsumptionChart data={dailyTotals} />
-              </ChartCard>
-            </Flex>
-          </TabPanel>
-        </Tabs>
-      </Flex>
-    </Container>
+                <ChartCard title="AI Credits Used per Day">
+                  <AiCreditsConsumptionChart data={dailyTotals} />
+                </ChartCard>
+              </Flex>
+            </TabPanel>
+          </Tabs>
+        </Flex>
+      </Container>
+    </>
   );
 }
