@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
 import { Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
+import { useRouteRef as useOptionalRouteRef } from '@backstage/frontend-plugin-api';
 import {
   EntityDisplayName,
   entityRouteParams,
@@ -50,42 +55,62 @@ export function resolveMaturityRoute(
 }
 
 /**
- * Resolves the maturity route, or `undefined` when it cannot be resolved from
- * the current location.
- *
- * `useRouteRef` throws for a route ref that is not mounted, which is the case
+ * The maturity route, for resolving with the `@backstage/frontend-plugin-api`
+ * `useRouteRef`. Unlike the `@backstage/core-plugin-api` hook, which throws, it
+ * returns `undefined` for a route that is not mounted. That is the case
  * whenever an app installs `EntityMaturitySummaryCard` or
  * `EntityMaturityRankWidget` without also adding one of the maturity contents
- * to the entity page. Every hook `useRouteRef` uses runs before it throws, so
- * catching here leaves the hook order unchanged between renders.
+ * to the entity page.
  */
-function useOptionalMaturityRoute() {
-  try {
-    return useRouteRef(rootRouteRef);
-  } catch {
-    return undefined;
-  }
-}
+const maturityRouteRef = convertLegacyRouteRef(rootRouteRef);
+
+type RoutedLinkProps = PropsWithChildren<{
+  currentEntityPath: string;
+  targetEntityPath: string;
+}>;
+
+const RoutedMaturityLink = ({
+  currentEntityPath,
+  targetEntityPath,
+  children,
+}: RoutedLinkProps) => {
+  const maturityRoute = useOptionalRouteRef(maturityRouteRef);
+
+  const to = maturityRoute
+    ? resolveMaturityRoute(maturityRoute(), currentEntityPath, targetEntityPath)
+    : joinRoutePath(targetEntityPath, DEFAULT_MATURITY_PATH);
+
+  return <Link to={to}>{children}</Link>;
+};
 
 export const MaturityLink = ({
   entity,
   children,
 }: PropsWithChildren<Props>) => {
   const entityRoute = useRouteRef(entityRouteRef);
-  const maturityRoute = useOptionalMaturityRoute();
   const { namespace, kind, name } = useParams();
 
   const targetEntityPath = entityRoute(entityRouteParams(entity));
   const content = children ?? <EntityDisplayName entityRef={entity} />;
 
-  const to =
-    maturityRoute && namespace && kind && name
-      ? resolveMaturityRoute(
-          maturityRoute(),
-          entityRoute({ namespace, kind, name }),
-          targetEntityPath,
-        )
-      : joinRoutePath(targetEntityPath, DEFAULT_MATURITY_PATH);
+  // The maturity route is mounted beneath the entity route, so it can only be
+  // resolved from an entity page.
+  if (!namespace || !kind || !name) {
+    return (
+      <Link to={joinRoutePath(targetEntityPath, DEFAULT_MATURITY_PATH)}>
+        {content}
+      </Link>
+    );
+  }
 
-  return <Link to={to}>{content}</Link>;
+  // `compatWrapper` provides the route resolution API that the
+  // frontend-plugin-api hook relies on in apps on the legacy frontend system.
+  return compatWrapper(
+    <RoutedMaturityLink
+      currentEntityPath={entityRoute({ namespace, kind, name })}
+      targetEntityPath={targetEntityPath}
+    >
+      {content}
+    </RoutedMaturityLink>,
+  );
 };
