@@ -18483,9 +18483,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^7.2.3, undici@npm:^7.24.5":
-  version: 7.25.0
-  resolution: "undici@npm:7.25.0"
-  checksum: 10/038d3568c72bb976e3cc389284f7f1cc64cd70d578300e4676a449fbcb624a35fe99ac127b5f3729f18b8246d6c090444ab61b1b67736bb88f52a3e913d76bf8
+  version: 7.30.0
+  resolution: "undici@npm:7.30.0"
+  checksum: 10/eb9e4bb5f1b4c35cb934c0d04fe676b62c3be06fb3be4a256ff73699bd77abc3d41f262597a4debd41f334c95ca3ea6e763268c3768882c3fc88a5d33234b8f6
   languageName: node
   linkType: hard
 
