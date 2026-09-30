@@ -37,7 +37,7 @@ mcpActions:
       description: Query Tech Insights facts, checks, scorecards, and maturity.
       filter:
         include:
-          - id: tech-insights-*
+          - id: 'tech-insights:*'
 ```
 
 The server is available at `/api/mcp-actions/v1/tech-insights`.
