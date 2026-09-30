@@ -88,6 +88,31 @@ describe('<MaturityOverviewCard />', () => {
     const { getByText, getByAltText, getAllByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
+          <MaturitySummaryInfoCard />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    expect(getByText('Maturity')).toBeInTheDocument(); // card title
+    expect(getByText(/Bronze/)).toBeInTheDocument(); // icon logo for overall and Total area label
+    expect(getByText(/Ownership/)).toBeInTheDocument(); // Area
+    expect(getByAltText(/Silver/)).toBeInTheDocument(); // icon logo for ownership area
+    expect(getAllByTestId('progressbar').length).toBeGreaterThan(0); // progress bar
+  });
+
+  it('uses the title prop for the card title', async () => {
+    const api: Partial<MaturityApi> = {
+      getMaturitySummary: jest.fn().mockResolvedValue(result),
+    };
+
+    const { getByText, queryByText } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, api]]}>
+        <EntityProvider entity={entity}>
           <MaturitySummaryInfoCard title="Scorecards" />
         </EntityProvider>
       </TestApiProvider>,
@@ -99,9 +124,6 @@ describe('<MaturityOverviewCard />', () => {
     );
 
     expect(getByText('Scorecards')).toBeInTheDocument(); // card title
-    expect(getByText(/Bronze/)).toBeInTheDocument(); // icon logo for overall and Total area label
-    expect(getByText(/Ownership/)).toBeInTheDocument(); // Area
-    expect(getByAltText(/Silver/)).toBeInTheDocument(); // icon logo for ownership area
-    expect(getAllByTestId('progressbar').length).toBeGreaterThan(0); // progress bar
+    expect(queryByText('Maturity')).not.toBeInTheDocument();
   });
 });

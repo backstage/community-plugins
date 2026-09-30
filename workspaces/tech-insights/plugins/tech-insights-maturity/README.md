@@ -205,10 +205,6 @@ You can configure the maturity extensions in your `app-config.yaml`. For example
 ```yaml
 app:
   extensions:
-    - entity-content:tech-insights-maturity/maturity:
-        config:
-          path: /scorecards
-          title: Scorecards
     - entity-card:tech-insights-maturity/summary:
         config:
           filter: { kind: 'System' }
@@ -216,8 +212,24 @@ app:
         disabled: true
 ```
 
-Entity links use the scorecard extension's registered route, so they continue
-to work when its `path` is customized.
+### Changing the scorecard tab path
+
+The scorecard tab is mounted at `/maturity` by default. To mount it at a
+different path, or give the tab a different title, configure the
+`entity-content:tech-insights-maturity/maturity` extension:
+
+```yaml
+app:
+  extensions:
+    - entity-content:tech-insights-maturity/maturity:
+        config:
+          path: /scorecards
+          title: Scorecards
+```
+
+Links to an entity's scorecard, such as those in the summary card, rank chip,
+and summary table, follow the configured path. If the scorecard tab is not
+mounted at all, they fall back to `/maturity`.
 
 ## Compatibility
 
