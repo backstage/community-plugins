@@ -26,7 +26,7 @@ import {
   ToolExecutionResult,
   MessageValidationResult,
 } from './types';
-import { RootConfigService } from '@backstage/backend-plugin-api';
+import { AuthService, RootConfigService } from '@backstage/backend-plugin-api';
 
 /**
  * Default timeout in milliseconds for MCP tool call requests.
@@ -78,6 +78,66 @@ export function loadServerConfigs(
       disabledTools: serverConfig.getOptionalStringArray('disabledTools'),
     };
   });
+}
+
+/**
+ * Loads MCP server configurations from Backstage config.
+ * Reads from the `mcpActions.servers` configuration section.
+ *
+ * @param config - The Backstage root config service
+ * @param auth   - Backstage auth service
+ * @returns Array of server configurations including secrets
+ * @public
+ */
+export async function loadInternalMCPServerConfigs(
+  config: RootConfigService,
+  auth: AuthService,
+): Promise<MCPServerFullConfig[]> {
+  if (
+    !Boolean(config.getOptionalBoolean('mcpChat.includeBackstageMcpServers'))
+  ) {
+    return [];
+  }
+
+  const creds = await auth.getOwnServiceCredentials();
+  const { token } = await auth.getPluginRequestToken({
+    onBehalfOf: creds,
+    targetPluginId: 'mcp-actions',
+  });
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const baseUrl = `${config.getString('backend.baseUrl')}/api/mcp-actions/v1`;
+  const serverConfigs = config.getOptionalConfig('mcpActions.servers');
+
+  if (!serverConfigs) {
+    return [
+      {
+        id: 'backstage-server',
+        name: 'Backstage Server',
+        url: baseUrl,
+        isLocalServer: true,
+        type: MCPServerType.STREAMABLE_HTTP,
+        headers,
+      },
+    ];
+  }
+
+  return serverConfigs
+    .keys()
+    .filter(key => /^[a-z0-9][a-z0-9-]*$/.test(key))
+    .map(key => {
+      const serverConfig = serverConfigs.getConfig(key);
+      return {
+        name: serverConfig.getString('name'),
+        id: serverConfig.getString('id'),
+        url: `${baseUrl}/${key}`,
+        source: true,
+        type: MCPServerType.STREAMABLE_HTTP,
+        headers,
+      };
+    });
 }
 
 /**
