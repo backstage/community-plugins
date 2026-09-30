@@ -23,11 +23,12 @@ backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 The Tech Insights backend registers actions that can be exposed as [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) tools. After setting up the [MCP Actions Backend](https://backstage.io/docs/ai/mcp-actions/), add a dedicated Tech Insights MCP server to `app-config.yaml`:
 
 ```yaml title="app-config.yaml"
-actions:
-  pluginSources:
-    - catalog
-    - tech-insights
-    - auth
+backend:
+  actions:
+    pluginSources:
+      - catalog
+      - tech-insights
+      - auth
 
 mcpActions:
   servers:
