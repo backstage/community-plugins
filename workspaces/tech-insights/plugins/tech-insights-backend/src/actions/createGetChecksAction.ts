@@ -58,7 +58,11 @@ export const createGetChecksAction = ({
         techInsightsCheckReadPermission,
       );
 
-      return { output: { checks: await factChecker.getChecks() } };
+      return {
+        output: {
+          checks: (await factChecker.getChecks()).map(check => ({ ...check })),
+        },
+      };
     },
   });
 };

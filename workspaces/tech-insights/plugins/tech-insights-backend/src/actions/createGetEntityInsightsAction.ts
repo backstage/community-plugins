@@ -65,7 +65,14 @@ export const createGetEntityInsightsAction = ({
       );
 
       return {
-        output: { entity, checks: applicableChecks, results },
+        output: {
+          entity,
+          checks: applicableChecks.map(check => ({ ...check })),
+          results: results.map(checkResult => ({
+            ...checkResult,
+            check: { ...checkResult.check },
+          })),
+        },
       };
     },
   });

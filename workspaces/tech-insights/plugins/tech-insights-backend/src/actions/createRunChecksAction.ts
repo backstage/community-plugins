@@ -73,10 +73,12 @@ export const createRunChecksAction = ({
 
       return {
         output: {
-          results: await factChecker.runChecks(
-            toEntityRef(input.entity),
-            input.checks,
-          ),
+          results: (
+            await factChecker.runChecks(toEntityRef(input.entity), input.checks)
+          ).map(checkResult => ({
+            ...checkResult,
+            check: { ...checkResult.check },
+          })),
         },
       };
     },
