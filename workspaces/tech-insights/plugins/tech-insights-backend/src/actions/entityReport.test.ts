@@ -90,4 +90,20 @@ describe('getEntityReport', () => {
     );
     expect(deps.factChecker.runChecks).not.toHaveBeenCalled();
   });
+
+  it('defaults a blank namespace to "default"', async () => {
+    const deps = buildDeps();
+
+    const result = await getEntityReport(
+      deps,
+      { kind: 'Component', namespace: '  ', name: 'service' },
+      {} as any,
+    );
+
+    expect(result.entityRef).toBe('component:default/service');
+    expect(deps.catalog.getEntityByRef).toHaveBeenCalledWith(
+      'component:default/service',
+      expect.anything(),
+    );
+  });
 });

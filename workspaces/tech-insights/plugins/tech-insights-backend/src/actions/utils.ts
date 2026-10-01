@@ -36,7 +36,9 @@ export const authorize = async (
     credentials,
   });
 
-  if (decision.result === AuthorizeResult.DENY) {
+  // BasicPermission decisions must be ALLOW; CONDITIONAL is only valid for
+  // resource permissions evaluated against a resourceRef, which isn't done here.
+  if (decision.result !== AuthorizeResult.ALLOW) {
     throw new NotAllowedError('Unauthorized');
   }
 };

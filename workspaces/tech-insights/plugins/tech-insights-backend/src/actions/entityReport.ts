@@ -74,6 +74,8 @@ export const getEntityReport = async (
   if (!input.kind.trim() || !input.name.trim()) {
     throw new InputError('kind and name must be non-empty strings');
   }
+  // namespace is optional in callers' schemas, so a blank value defaults like the catalog does
+  const namespace = input.namespace.trim() || 'default';
 
   await authorize(permissions, credentials, techInsightsCheckReadPermission);
   await authorize(
@@ -84,7 +86,7 @@ export const getEntityReport = async (
   // runChecks executes checks, so it also requires the check-run permission
   await authorize(permissions, credentials, techInsightsCheckUpdatePermission);
 
-  const entityRef = stringifyEntityRef(input);
+  const entityRef = stringifyEntityRef({ ...input, namespace });
   const entity = await catalog.getEntityByRef(entityRef, { credentials });
   if (!entity) {
     throw new NotFoundError(`Entity '${entityRef}' not found`);
