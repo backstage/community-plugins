@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+import { NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { createGetEntityMaturityAction } from './createGetEntityMaturityAction';
 
 describe('createGetEntityMaturityAction', () => {
+  const authorize = jest
+    .fn()
+    .mockResolvedValue([{ result: AuthorizeResult.ALLOW }]);
+
   it('ignores unranked checks when calculating maturity', async () => {
     const register = jest.fn();
     createGetEntityMaturityAction({
@@ -53,9 +58,7 @@ describe('createGetEntityMaturityAction', () => {
         ]),
       } as any,
       permissions: {
-        authorize: jest
-          .fn()
-          .mockResolvedValue([{ result: AuthorizeResult.ALLOW }]),
+        authorize,
       } as any,
     });
 
@@ -72,5 +75,27 @@ describe('createGetEntityMaturityAction', () => {
         maxRank: 'Bronze',
       },
     });
+  });
+
+  it('denies execution without check-run permission', async () => {
+    const register = jest.fn();
+    authorize.mockResolvedValueOnce([{ result: AuthorizeResult.ALLOW }]);
+    authorize.mockResolvedValueOnce([{ result: AuthorizeResult.ALLOW }]);
+    authorize.mockResolvedValueOnce([{ result: AuthorizeResult.DENY }]);
+    const runChecks = jest.fn();
+    createGetEntityMaturityAction({
+      actionsRegistry: { register } as any,
+      catalog: { getEntityByRef: jest.fn() } as any,
+      factChecker: { getChecks: jest.fn(), runChecks } as any,
+      permissions: { authorize } as any,
+    });
+
+    await expect(
+      register.mock.calls[0][0].action({
+        input: { kind: 'Component', namespace: 'default', name: 'service' },
+        credentials: {},
+      }),
+    ).rejects.toThrow(NotAllowedError);
+    expect(runChecks).not.toHaveBeenCalled();
   });
 });

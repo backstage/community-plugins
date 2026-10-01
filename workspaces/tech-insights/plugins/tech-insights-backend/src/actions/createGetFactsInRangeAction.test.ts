@@ -55,6 +55,21 @@ describe('createGetFactsInRangeAction', () => {
     expect(getFactsBetweenTimestampsByIds).not.toHaveBeenCalled();
   });
 
+  it('rejects an invalid entity ref', async () => {
+    await expect(
+      getAction()({
+        input: {
+          entity: 'not an entity ref',
+          ids: ['firstId'],
+          startDateTime: '2022-11-11T11:11:11',
+          endDateTime: '2022-11-12T11:11:11',
+        },
+        credentials: {},
+      }),
+    ).rejects.toThrow(InputError);
+    expect(getFactsBetweenTimestampsByIds).not.toHaveBeenCalled();
+  });
+
   it('rejects a reversed date range', async () => {
     await expect(
       getAction()({
