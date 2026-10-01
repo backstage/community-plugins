@@ -20,7 +20,7 @@ import {
   Tool,
   ChatResponse,
   ProviderConfig,
-  OverrideablePaths,
+  OverridablePaths,
 } from '../types';
 import { constructURL } from '../utils';
 
@@ -38,7 +38,7 @@ export abstract class LLMProvider {
   protected logger?: LoggerService;
   protected maxTokens?: number;
   protected temperature?: number;
-  protected pathOverrides?: Partial<Record<OverrideablePaths, string>>;
+  protected pathOverrides?: Partial<Record<OverridablePaths, string>>;
 
   constructor(config: ProviderConfig) {
     this.apiKey = config.apiKey;

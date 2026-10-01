@@ -1068,5 +1068,12 @@ describe('Utils', () => {
       const result = constructURL(base, path);
       expect(result).toBe('http://example.com/');
     });
+
+    it('should handle n number of slashes in base and path', () => {
+      const base = 'http://example.com///';
+      const path = '///api/v1/resource';
+      const result = constructURL(base, path);
+      expect(result).toBe('http://example.com/api/v1/resource');
+    });
   });
 });

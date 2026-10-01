@@ -209,7 +209,7 @@ export abstract class LLMProvider {
   // (undocumented)
   protected abstract parseResponse(response: any): ChatResponse;
   // (undocumented)
-  protected pathOverrides?: Partial<Record<OverrideablePaths, string>>;
+  protected pathOverrides?: Partial<Record<OverridablePaths, string>>;
   // (undocumented)
   abstract sendMessage(
     messages: ChatMessage[],
@@ -402,7 +402,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
 }
 
 // @public
-export type OverrideablePaths = 'inference' | 'models';
+export type OverridablePaths = 'inference' | 'models';
 
 // @public
 export interface ProviderConfig {
@@ -412,7 +412,7 @@ export interface ProviderConfig {
   logger?: LoggerService;
   maxTokens?: number;
   model: string;
-  pathOverrides?: Partial<Record<OverrideablePaths, string>>;
+  pathOverrides?: Partial<Record<OverridablePaths, string>>;
   temperature?: number;
   type: string;
 }

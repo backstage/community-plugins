@@ -184,7 +184,7 @@ export interface MCPServerStatusData {
  * @public
  */
 
-export type OverrideablePaths = 'inference' | 'models';
+export type OverridablePaths = 'inference' | 'models';
 
 /**
  * Configuration for an LLM provider.
@@ -225,7 +225,7 @@ export interface ProviderConfig {
   /** Temperature for response randomness, between 0 and 1 (default: 0.7) */
   temperature?: number;
   /** Optional overrides for provider endpoints, useful for testing or custom deployments */
-  pathOverrides?: Partial<Record<OverrideablePaths, string>>;
+  pathOverrides?: Partial<Record<OverridablePaths, string>>;
 }
 
 /**

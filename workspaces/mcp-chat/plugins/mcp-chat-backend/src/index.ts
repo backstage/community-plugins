@@ -63,7 +63,7 @@ export type {
   ProviderInfo,
   ProviderConnectionStatus,
   LLMProviderType,
-  OverrideablePaths,
+  OverridablePaths,
 
   // MCP Server types
   MCPServerConfig,

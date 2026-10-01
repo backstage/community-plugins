@@ -70,7 +70,7 @@ export interface Config {
       temperature?: number;
       /**
        * Optional overrides for provider paths. Useful for testing or custom deployments.
-       * note: use overrideablePaths type in code
+       * note: use overridablePaths type in code
        * @visibility backend
        */
       pathOverrides?: {
