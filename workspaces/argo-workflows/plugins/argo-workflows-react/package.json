@@ -34,7 +34,7 @@
     "@backstage-community/plugin-argo-workflows-common": "workspace:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@remixicon/react": "^4.9.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "classnames": "^2.5.1"
   },
   "peerDependencies": {
