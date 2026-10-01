@@ -78,6 +78,7 @@ describe('Linguist backend API', () => {
   const store: jest.Mocked<LinguistBackendStore> = {
     insertEntityResults: jest.fn(),
     insertNewEntity: jest.fn(),
+    markEntityProcessed: jest.fn(),
     getEntityResults: jest.fn(),
     getProcessedEntities: jest.fn(),
     getUnprocessedEntities: jest.fn(),
@@ -356,6 +357,47 @@ describe('Linguist backend API', () => {
     expect(store.insertEntityResults).toHaveBeenCalled();
     expect(fs.remove).toHaveBeenCalled();
     spy.mockClear();
+    fsSpy.mockClear();
+  });
+
+  it('should clean up and mark an entity processed when it cannot be analysed', async () => {
+    const entityRef = 'component:default/fake-service';
+    const url = 'https://some.fake/service/';
+    const fsSpy = jest.spyOn(fs, 'remove');
+
+    // Linguist fails after the source tree was downloaded
+    const spy = jest
+      .spyOn(api, 'getLinguistResults')
+      .mockRejectedValue(new Error('linguist failed'));
+    urlReader.readTree.mockResolvedValue({
+      dir: async () => '/temp/my-code',
+    } as UrlReaderServiceReadTreeResponse);
+
+    await expect(api.generateEntityLanguages(entityRef, url)).rejects.toThrow(
+      'linguist failed',
+    );
+    expect(fsSpy).toHaveBeenCalledWith('/temp/my-code');
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      entityRef,
+      expect.any(Date),
+    );
+    expect(store.insertEntityResults).not.toHaveBeenCalled();
+
+    // Reading the source tree fails, so there is nothing to clean up
+    fsSpy.mockClear();
+    store.markEntityProcessed.mockClear();
+    urlReader.readTree.mockRejectedValue(new Error('read failed'));
+
+    await expect(api.generateEntityLanguages(entityRef, url)).rejects.toThrow(
+      'read failed',
+    );
+    expect(fsSpy).not.toHaveBeenCalled();
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      entityRef,
+      expect.any(Date),
+    );
+
+    spy.mockRestore();
     fsSpy.mockClear();
   });
 

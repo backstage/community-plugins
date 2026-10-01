@@ -138,9 +138,9 @@ export class LinguistBackendClient implements LinguistBackendApi {
 
     if (entitiesToAdd.length > 0) {
       this.logger?.info(`Adding ${entitiesToAdd.length} new entities`);
-      entitiesToAdd.forEach(entityRef => {
-        this.store.insertNewEntity(entityRef);
-      });
+      await Promise.all(
+        entitiesToAdd.map(entityRef => this.store.insertNewEntity(entityRef)),
+      );
     }
 
     if (entitiesToRemove.length > 0) {
@@ -234,48 +234,52 @@ export class LinguistBackendClient implements LinguistBackendApi {
       `Processing languages for entity ${entityRef} from ${url}`,
     );
 
-    const readTreeResponse = await this.urlReader.readTree(url);
-    const dir = await readTreeResponse.dir();
-
-    const results = await this.getLinguistResults(dir);
-
+    let results: Results;
     try {
-      const totalBytes = results.languages.bytes;
-      const langResults = results.languages.results;
-
-      const breakdown: Language[] = [];
-      for (const key in langResults) {
-        if (Object.prototype.hasOwnProperty.call(langResults, key)) {
-          const lang: Language = {
-            name: key,
-            percentage: +((langResults[key].bytes / totalBytes) * 100).toFixed(
-              2,
-            ),
-            bytes: langResults[key].bytes,
-            type: langResults[key].type,
-            color: langResults[key].color,
-          };
-          breakdown.push(lang);
-        }
+      const readTreeResponse = await this.urlReader.readTree(url);
+      const dir = await readTreeResponse.dir();
+      try {
+        results = await this.getLinguistResults(dir);
+      } finally {
+        this.logger?.info(`Cleaning up files from ${dir}`);
+        await fs.remove(dir);
       }
-
-      const languages: Languages = {
-        languageCount: results.languages.count,
-        totalBytes: totalBytes,
-        processedDate: new Date().toISOString(),
-        breakdown: breakdown,
-      };
-
-      const entityResults: EntityResults = {
-        entityRef: entityRef,
-        results: languages,
-      };
-
-      return await this.store.insertEntityResults(entityResults);
-    } finally {
-      this.logger?.info(`Cleaning up files from ${dir}`);
-      await fs.remove(dir);
+    } catch (error) {
+      // Mark the entity processed so it does not block the pending queue
+      await this.store.markEntityProcessed(entityRef, new Date());
+      throw error;
     }
+
+    const totalBytes = results.languages.bytes;
+    const langResults = results.languages.results;
+
+    const breakdown: Language[] = [];
+    for (const key in langResults) {
+      if (Object.prototype.hasOwnProperty.call(langResults, key)) {
+        const lang: Language = {
+          name: key,
+          percentage: +((langResults[key].bytes / totalBytes) * 100).toFixed(2),
+          bytes: langResults[key].bytes,
+          type: langResults[key].type,
+          color: langResults[key].color,
+        };
+        breakdown.push(lang);
+      }
+    }
+
+    const languages: Languages = {
+      languageCount: results.languages.count,
+      totalBytes: totalBytes,
+      processedDate: new Date().toISOString(),
+      breakdown: breakdown,
+    };
+
+    const entityResults: EntityResults = {
+      entityRef: entityRef,
+      results: languages,
+    };
+
+    return await this.store.insertEntityResults(entityResults);
   }
 
   /** @internal */
