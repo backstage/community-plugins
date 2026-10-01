@@ -147,7 +147,9 @@ async function apiDeletePoliciesForRole(
         deleteResponse.ok() ||
           deleteResponse.status() === 404 ||
           deleteResponse.status() === 403,
-        `DELETE policy ${JSON.stringify(policy)} failed (${deleteResponse.status()}): ${await deleteResponse.text()}`,
+        `DELETE policy ${JSON.stringify(
+          policy,
+        )} failed (${deleteResponse.status()}): ${await deleteResponse.text()}`,
       ).toBeTruthy();
     }
   }
@@ -192,7 +194,9 @@ async function apiDeleteConditionsForRole(
       deleteResponse.ok() ||
         deleteResponse.status() === 404 ||
         deleteResponse.status() === 403,
-      `DELETE condition ${condition.id} failed (${deleteResponse.status()}): ${await deleteResponse.text()}`,
+      `DELETE condition ${
+        condition.id
+      } failed (${deleteResponse.status()}): ${await deleteResponse.text()}`,
     ).toBeTruthy();
   }
 }
@@ -205,16 +209,8 @@ async function apiClearRole(
   knownPolicies?: SeedPolicy[],
 ) {
   await apiDeleteConditionsForRole(request, roleEntityRef, token);
-  // Prefer listing via GET while metadata exists; also try knownPolicies for orphans.
-  await apiDeletePoliciesForRole(request, roleEntityRef, token);
-  if (knownPolicies?.length) {
-    await apiDeletePoliciesForRole(
-      request,
-      roleEntityRef,
-      token,
-      knownPolicies,
-    );
-  }
+  // GET-based wipe + optional knownPolicies orphan cleanup in a single call.
+  await apiDeletePoliciesForRole(request, roleEntityRef, token, knownPolicies);
   await apiDeleteRole(request, roleEntityRef, token);
 }
 

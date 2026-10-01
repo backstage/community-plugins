@@ -21,12 +21,18 @@ export type SeedPolicy = {
   effect: string;
 };
 
+export type SeedPermissionMapping = {
+  name: string;
+  action: string;
+};
+
 export type SeedCondition = {
   result: string;
   roleEntityRef: string;
   pluginId: string;
   resourceType: string;
-  permissionMapping: string[];
+  /** REST API requires {name, action}; plain action strings are rejected. */
+  permissionMapping: SeedPermissionMapping[];
   conditions: Record<string, unknown>;
 };
 
@@ -131,7 +137,7 @@ export function getAdminConditions(adminRef: string): SeedCondition[] {
       roleEntityRef: adminRef,
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: ['read'],
+      permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
       conditions: {
         rule: 'HAS_ANNOTATION',
         resourceType: 'catalog-entity',
@@ -143,7 +149,7 @@ export function getAdminConditions(adminRef: string): SeedCondition[] {
       roleEntityRef: adminRef,
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: ['delete'],
+      permissionMapping: [{ name: 'catalog.entity.delete', action: 'delete' }],
       conditions: {
         allOf: [
           {
@@ -164,7 +170,7 @@ export function getAdminConditions(adminRef: string): SeedCondition[] {
       roleEntityRef: adminRef,
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: ['update'],
+      permissionMapping: [{ name: 'catalog.entity.update', action: 'update' }],
       conditions: {
         anyOf: [
           {

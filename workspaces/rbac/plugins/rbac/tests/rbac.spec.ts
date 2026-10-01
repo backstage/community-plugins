@@ -421,6 +421,7 @@ test.describe('RBAC plugin', () => {
     await page
       .getByText(translations.conditionalAccess.addNestedCondition)
       .click();
+    await page.getByText('Remove all').scrollIntoViewIfNeeded();
     await page.getByPlaceholder(translations.common.selectRule).last().click();
     await page.getByText('HAS_METADATA').click();
     await page.getByLabel('key').fill('status');
@@ -480,7 +481,10 @@ test.describe('RBAC plugin', () => {
       .getByRole('row', { name: /catalog\.entity\.delete/ })
       .getByLabel('remove')
       .click();
-    await page.getByTestId('remove-nested-condition').last().click();
+    await page
+      .getByRole('button', { name: translations.common.remove, exact: true })
+      .last()
+      .click();
     await page.getByTestId('save-conditions').click();
 
     await finishAndVerifyUpdate(
