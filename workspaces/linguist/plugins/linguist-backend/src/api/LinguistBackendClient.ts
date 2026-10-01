@@ -41,6 +41,9 @@ import { HumanDuration } from '@backstage/types';
 import { Results } from 'linguist-js/dist/types';
 import { type AuthService, LoggerService } from '@backstage/backend-plugin-api';
 
+const MAX_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 1000;
+
 /** @public */
 export interface LinguistBackendApi {
   getEntityLanguages(entityRef: string): Promise<Languages>;
@@ -236,14 +239,16 @@ export class LinguistBackendClient implements LinguistBackendApi {
 
     let results: Results;
     try {
-      const readTreeResponse = await this.urlReader.readTree(url);
-      const dir = await readTreeResponse.dir();
-      try {
-        results = await this.getLinguistResults(dir);
-      } finally {
-        this.logger?.info(`Cleaning up files from ${dir}`);
-        await fs.remove(dir);
-      }
+      results = await this.withRetry(entityRef, async () => {
+        const readTreeResponse = await this.urlReader.readTree(url);
+        const dir = await readTreeResponse.dir();
+        try {
+          return await this.getLinguistResults(dir);
+        } finally {
+          this.logger?.info(`Cleaning up files from ${dir}`);
+          await fs.remove(dir);
+        }
+      });
     } catch (error) {
       // Mark the entity processed so it does not block the pending queue
       await this.store.markEntityProcessed(entityRef, new Date());
@@ -280,6 +285,36 @@ export class LinguistBackendClient implements LinguistBackendApi {
     };
 
     return await this.store.insertEntityResults(entityResults);
+  }
+
+  /**
+   * Runs the operation, retrying transient failures with exponential backoff.
+   *
+   * @internal
+   */
+  async withRetry<T>(
+    entityRef: string,
+    operation: () => Promise<T>,
+  ): Promise<T> {
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        if (attempt >= MAX_ATTEMPTS) {
+          throw error;
+        }
+        const delayMs = RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
+        this.logger?.warn(
+          `Attempt ${attempt} of ${MAX_ATTEMPTS} to process "${entityRef}" failed, retrying in ${delayMs}ms: ${error}`,
+        );
+        await this.delay(delayMs);
+      }
+    }
+  }
+
+  /** @internal */
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /** @internal */
