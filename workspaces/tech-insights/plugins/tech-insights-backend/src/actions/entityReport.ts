@@ -24,6 +24,7 @@ import {
   Check,
   CheckResult,
   techInsightsCheckReadPermission,
+  techInsightsCheckUpdatePermission,
   techInsightsFactRetrieverReadPermission,
 } from '@backstage-community/plugin-tech-insights-common';
 import { FactChecker } from '@backstage-community/plugin-tech-insights-node';
@@ -80,6 +81,8 @@ export const getEntityReport = async (
     credentials,
     techInsightsFactRetrieverReadPermission,
   );
+  // runChecks executes checks, so it also requires the check-run permission
+  await authorize(permissions, credentials, techInsightsCheckUpdatePermission);
 
   const entityRef = stringifyEntityRef(input);
   const entity = await catalog.getEntityByRef(entityRef, { credentials });
