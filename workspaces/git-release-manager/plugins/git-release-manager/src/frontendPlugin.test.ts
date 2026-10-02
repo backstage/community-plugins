@@ -24,5 +24,15 @@ describe('git release manager frontend plugin', () => {
   it('registers the frontend feature without loading the page eagerly', () => {
     expect(gitReleaseManagerPlugin.pluginId).toBe('git-release-manager');
     expect(gitReleaseManagerPlugin.routes.root).toBeDefined();
+
+    // The extension list is the plugin's internal shape; nothing public
+    // reports which extensions a plugin carries.
+    const { extensions } = gitReleaseManagerPlugin as unknown as {
+      extensions: { id: string }[];
+    };
+    expect(extensions.map(extension => extension.id)).toEqual([
+      'api:git-release-manager/service',
+      'page:git-release-manager',
+    ]);
   });
 });
