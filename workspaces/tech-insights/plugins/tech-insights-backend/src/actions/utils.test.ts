@@ -18,7 +18,11 @@ import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { authorize, toEntityRef } from './utils';
 
 describe('authorize', () => {
-  const permission = { type: 'basic', name: 'test.permission' } as const;
+  const permission = {
+    type: 'basic',
+    name: 'test.permission',
+    attributes: {},
+  } as const;
 
   it('resolves without throwing when the decision is ALLOW', async () => {
     const permissions = {
