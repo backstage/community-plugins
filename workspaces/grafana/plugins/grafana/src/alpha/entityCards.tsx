@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { z } from 'zod';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import {
   isAlertSelectorAvailable,
@@ -21,28 +22,58 @@ import {
 } from '../constants';
 
 /**
- * @alpha
+ * The table options both cards accept, as the legacy `EntityGrafanaAlertsCard`
+ * and `EntityGrafanaDashboardsCard` components take them as props. Exposed as
+ * extension config so the New Frontend System can set them from
+ * `app-config.yaml`; without this the cards always rendered with the defaults.
  */
-export const entityGrafanaDashboardsCard = EntityCardBlueprint.make({
-  name: 'dashboards',
-  params: {
-    filter: entity => Boolean(isDashboardSelectorAvailable(entity)),
-    loader: () =>
-      import('../components/DashboardsCard').then(m => <m.DashboardsCard />),
-  },
-});
+const tableOptionsSchema = {
+  paged: z.boolean().optional(),
+  searchable: z.boolean().optional(),
+  pageSize: z.number().int().positive().optional(),
+  sortable: z.boolean().optional(),
+  title: z.string().optional(),
+};
 
 /**
  * @alpha
  */
-export const entityGrafanaAlertsCard = EntityCardBlueprint.make({
+export const entityGrafanaDashboardsCard =
+  EntityCardBlueprint.makeWithOverrides({
+    name: 'dashboards',
+    // `additionalDashboards` is a function and cannot come from config, so it
+    // stays a prop of the legacy component only.
+    configSchema: tableOptionsSchema,
+    factory(originalFactory, { config }) {
+      return originalFactory({
+        filter: entity => Boolean(isDashboardSelectorAvailable(entity)),
+        loader: async () =>
+          import('../components/DashboardsCard').then(m => (
+            <m.DashboardsCard {...config} />
+          )),
+      });
+    },
+  });
+
+/**
+ * @alpha
+ */
+export const entityGrafanaAlertsCard = EntityCardBlueprint.makeWithOverrides({
   name: 'alerts',
-  params: {
-    filter: entity =>
-      Boolean(isDashboardSelectorAvailable(entity)) ||
-      isAlertSelectorAvailable(entity),
-    loader: () =>
-      import('../components/AlertsCard').then(m => <m.AlertsCard />),
+  configSchema: {
+    ...tableOptionsSchema,
+    showState: z.boolean().optional(),
+  },
+  factory(originalFactory, { config }) {
+    return originalFactory({
+      filter: entity =>
+        Boolean(isDashboardSelectorAvailable(entity)) ||
+        isAlertSelectorAvailable(entity),
+      loader: async () =>
+        import('../components/AlertsCard').then(m => (
+          <m.AlertsCard {...config} />
+        )),
+    });
   },
 });
 
