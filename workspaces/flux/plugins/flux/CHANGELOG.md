@@ -1,5 +1,11 @@
 # @backstage-community/plugin-flux
 
+## 0.3.5
+
+### Patch Changes
+
+- 47b9188: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 0.3.4
 
 ### Patch Changes
