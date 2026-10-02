@@ -1,5 +1,11 @@
 # @backstage-community/plugin-flux
 
+## 0.3.6
+
+### Patch Changes
+
+- d5927ed: Updated dependency `@types/node` to `22.20.4`.
+
 ## 0.3.5
 
 ### Patch Changes
