@@ -75,7 +75,7 @@ export const graphiqlBrowseApi = ApiBlueprint.makeWithOverrides({
 /** @alpha */
 export const GraphiQLEndpointBlueprint = createExtensionBlueprint({
   kind: 'graphiql-endpoint',
-  attachTo: { id: 'api:graphiql/browse', input: 'endpoints' },
+  attachTo: { id: 'api:graphiql', input: 'endpoints' },
   output: [endpointDataRef],
   factory(params: { endpoint: GraphQLEndpoint }) {
     return [endpointDataRef(params.endpoint)];
