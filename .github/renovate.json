@@ -119,6 +119,11 @@
       }
     },
     {
+      "description": "Limit @remixicon/react to versions below 4.9.0 due to a license change in that release",
+      "matchPackageNames": ["@remixicon/react"],
+      "allowedVersions": "<4.9.0"
+    },
+    {
       "description": "Require manual approval on the Dependency Dashboard before creating major version update PRs",
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true
