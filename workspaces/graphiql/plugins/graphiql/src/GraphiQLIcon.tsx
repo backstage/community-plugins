@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { SVGProps } from 'react';
 
 /**
+ * GraphiQL logo icon used by the plugin navigation and GraphiQL plugins.
+ *
  * @public
  */
-export const GraphiQLIcon = (props: SvgIconProps) => (
-  <SvgIcon {...props}>
+export const GraphiQLIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" {...props}>
     <g>
       <path d="M 3.449219 18.160156 L 2.585938 17.660156 L 12.195312 1.019531 L 13.058594 1.515625 Z M 3.449219 18.160156" />
       <path d="M 2.386719 16.332031 L 21.605469 16.332031 L 21.605469 17.328125 L 2.386719 17.328125 Z M 2.386719 16.332031" />
@@ -38,5 +40,5 @@ export const GraphiQLIcon = (props: SvgIconProps) => (
       <path d="M 12 23.746094 C 10.84375 23.746094 9.90625 22.8125 9.90625 21.652344 C 9.90625 20.496094 10.84375 19.558594 12 19.558594 C 13.15625 19.558594 14.09375 20.496094 14.09375 21.652344 C 14.09375 22.804688 13.15625 23.746094 12 23.746094" />
       <path d="M 12 4.441406 C 10.84375 4.441406 9.90625 3.503906 9.90625 2.347656 C 9.90625 1.1875 10.84375 0.253906 12 0.253906 C 13.15625 0.253906 14.09375 1.1875 14.09375 2.347656 C 14.09375 3.503906 13.15625 4.441406 12 4.441406" />
     </g>
-  </SvgIcon>
+  </svg>
 );
