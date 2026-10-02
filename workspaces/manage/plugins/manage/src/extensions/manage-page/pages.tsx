@@ -87,6 +87,7 @@ export const managePage = PageBlueprint.makeWithOverrides({
   factory(originalFactory, { inputs, apis, node: pluginNode }) {
     return originalFactory({
       path: '/manage',
+      title: 'Manage',
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () => {
         const { ManagePageProviders, ManagePage } = await import(
