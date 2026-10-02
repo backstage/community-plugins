@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  ExtensionInput,
-  ResolvedExtensionInputs,
-} from '@backstage/frontend-plugin-api';
+import { ExtensionDataContainer } from '@backstage/frontend-plugin-api';
 
 import { manageConfigDataRef } from '../extensions';
 import { ManageDynamicConfig } from './types';
@@ -28,15 +25,7 @@ import { ManageDynamicConfig } from './types';
  * @public
  */
 export function parseDynamicConfig(
-  configs: ResolvedExtensionInputs<{
-    config: ExtensionInput<
-      typeof manageConfigDataRef,
-      {
-        optional: false;
-        singleton: boolean;
-      }
-    >;
-  }>['config'],
+  configs: Array<ExtensionDataContainer<typeof manageConfigDataRef>>,
 ) {
   return configs.reduce(
     (prev, cur) => {
