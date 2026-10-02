@@ -58,7 +58,9 @@ import {
   AgentLOCByModelChart,
   UserLOCByLanguageChart,
   AgentLOCByLanguageChart,
+  AiCreditsConsumptionChart,
 } from './charts';
+import { ConsumptionSummary } from './ConsumptionSummary';
 import { MetricsScope } from '@backstage-community/plugin-copilot-common';
 
 function ChartCard({
@@ -180,6 +182,7 @@ export const V2DashboardPage = () => {
               <TabList>
                 <Tab id="copilot-usage">Copilot Usage</Tab>
                 <Tab id="code-generation">Code Generation</Tab>
+                {selectedTeam && <Tab id="consumption">Consumption</Tab>}
               </TabList>
 
               <TabPanel id="copilot-usage">
@@ -402,6 +405,31 @@ export const V2DashboardPage = () => {
                   </Grid.Root>
                 </Flex>
               </TabPanel>
+
+              {selectedTeam && (
+                <TabPanel id="consumption">
+                  <Flex
+                    direction="column"
+                    style={{
+                      gap: 'var(--bui-space-6, 24px)',
+                      paddingTop: '16px',
+                    }}
+                  >
+                    <Text variant="body-small" color="secondary">
+                      AI credit consumption is derived from per-user data and is
+                      only available for team-level views.
+                    </Text>
+
+                    {/* Summary stat */}
+                    <ConsumptionSummary dailyTotals={data.daily} />
+
+                    {/* AI credits used per day */}
+                    <ChartCard title="AI Credits Used per Day">
+                      <AiCreditsConsumptionChart data={data.daily} />
+                    </ChartCard>
+                  </Flex>
+                </TabPanel>
+              )}
             </Tabs>
           </Flex>
         </Container>

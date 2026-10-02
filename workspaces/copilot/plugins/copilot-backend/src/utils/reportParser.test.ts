@@ -514,6 +514,7 @@ describe('reportParser', () => {
           loc_suggested_to_add_sum: 15,
           loc_suggested_to_delete_sum: 16,
           user_initiated_interaction_count: 17,
+          ai_credits_used: 78,
         },
       ];
 
@@ -536,12 +537,29 @@ describe('reportParser', () => {
           loc_suggested_to_add_sum: 15,
           loc_suggested_to_delete_sum: 16,
           user_initiated_interaction_count: 17,
+          ai_credits_used: 78,
         },
       ]);
       expect(result.userBreakdowns).toHaveLength(1);
       expect(result.userBreakdowns[0].user_id).toBe(1);
       expect(result.userBreakdowns[0].byFeature).toEqual([]);
       expect(result.userBreakdowns[0].byIde).toEqual([]);
+    });
+
+    it('preserves an unavailable AI credits metric', () => {
+      const result = parseUserDocument(
+        [
+          {
+            user_id: 1,
+            user_login: 'octocat',
+            day: '2025-10-01',
+          },
+        ],
+        'enterprise',
+        'ent-1',
+      );
+
+      expect(result.userMetrics[0].ai_credits_used).toBeUndefined();
     });
 
     it('parses breakdown sub-arrays from user metrics', () => {

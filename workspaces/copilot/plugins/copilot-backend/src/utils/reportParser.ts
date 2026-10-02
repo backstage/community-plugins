@@ -118,6 +118,12 @@ function toNumber(value: unknown): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : 0;
 }
 
+function toOptionalNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? value
+    : undefined;
+}
+
 function toStringValue(value: unknown): string | null {
   return typeof value === 'string' ? value : null;
 }
@@ -835,6 +841,7 @@ export function parseUserDocument(
       user_initiated_interaction_count: toNumber(
         metric.user_initiated_interaction_count,
       ),
+      ai_credits_used: toOptionalNumber(metric.ai_credits_used),
     });
 
     const breakdown: UserBreakdownData = {
