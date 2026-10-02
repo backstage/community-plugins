@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bitbucket-pull-requests
 
+## 4.0.0
+
+### Major Changes
+
+- d7c6fb5: Added Bitbucket cloud support
+
 ## 3.0.4
 
 ### Patch Changes
