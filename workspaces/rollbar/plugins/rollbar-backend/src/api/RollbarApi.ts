@@ -20,7 +20,6 @@ import {
   RollbarItemCount,
   RollbarItemsResponse,
   RollbarProject,
-  RollbarProjectAccessToken,
   RollbarTopActiveItem,
 } from './types';
 import fetch from 'node-fetch';
@@ -112,12 +111,6 @@ export class RollbarApi {
     );
   }
 
-  private async getProjectAccessTokens(projectId: number) {
-    return this.get<RollbarProjectAccessToken[]>(
-      `/project/${projectId}/access_tokens`,
-    );
-  }
-
   private async get<T extends {}>(
     url: string,
     accessToken?: string,
@@ -139,11 +132,15 @@ export class RollbarApi {
   private async getForProject<T extends {}>(
     url: string,
     projectName: string,
-    useProjectToken = true,
+    includeProjectId = true,
   ) {
     const project = await this.getProjectMetadata(projectName);
-    const resolvedUrl = url.replace(':projectId', project.id.toString());
-    return this.get<T>(resolvedUrl, useProjectToken ? project.accessToken : '');
+    let resolvedUrl = url.replace(':projectId', project.id.toString());
+    if (includeProjectId) {
+      const separator = resolvedUrl.includes('?') ? '&' : '?';
+      resolvedUrl = `${resolvedUrl}${separator}project_id=${project.id}`;
+    }
+    return this.get<T>(resolvedUrl);
   }
 
   private async getProjectMetadata(name: string) {
@@ -152,25 +149,6 @@ export class RollbarApi {
 
     if (!project) {
       throw Error(`Invalid project: '${name}'`);
-    }
-
-    if (!project.accessToken) {
-      const tokens = await this.getProjectAccessTokens(project.id);
-      const token = tokens.find(
-        t => t.scopes.includes('read') && t.status !== 'expired',
-      );
-      project.accessToken = token ? token.accessToken : undefined;
-
-      // recache to persist mutated item in project map
-      if (this.cache) {
-        this.cache.set(CACHE_KEY, projectMap, { ttl: 300 });
-      }
-    }
-
-    if (!project.accessToken) {
-      throw Error(
-        `Could not find an active project read access token for '${name}'`,
-      );
     }
 
     return project;
@@ -204,7 +182,6 @@ export function getRequestHeaders(token: string) {
 type ProjectMetadata = {
   name: string;
   id: number;
-  accessToken?: string | undefined;
 };
 
 interface ProjectMetadataMap {

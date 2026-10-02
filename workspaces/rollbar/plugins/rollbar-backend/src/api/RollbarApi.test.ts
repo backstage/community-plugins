@@ -21,7 +21,6 @@ import {
 } from '@backstage/backend-test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { RollbarProjectAccessToken } from './types';
 
 describe('RollbarApi', () => {
   const server = setupServer();
@@ -91,28 +90,6 @@ describe('RollbarApi', () => {
         rest.get(`${mockBaseUrl}/project/123`, (_, res, ctx) => {
           return res(ctx.json({ result: mockProject }));
         }),
-        rest.get(`${mockBaseUrl}/project/123/access_tokens`, (_, res, ctx) => {
-          return res(
-            ctx.json({
-              result: [
-                {
-                  projectId: 123,
-                  name: 'project-token-expired',
-                  scopes: ['read'],
-                  accessToken: 'xyzzy',
-                  status: 'expired',
-                },
-                {
-                  projectId: 123,
-                  name: 'project-token',
-                  scopes: ['read'],
-                  accessToken: 'plugh',
-                  status: 'enabled',
-                },
-              ] satisfies RollbarProjectAccessToken[],
-            }),
-          );
-        }),
       );
     };
 
@@ -120,7 +97,7 @@ describe('RollbarApi', () => {
       setupHandlers();
       const cache = mockServices.cache.mock();
       cache.get.mockResolvedValue({
-        [mockProject.name]: { ...mockProject, accessToken: 'bar' },
+        [mockProject.name]: { ...mockProject },
       });
       const api = new RollbarApi(
         'my-access-token',
@@ -145,11 +122,66 @@ describe('RollbarApi', () => {
       expect(cache.set).toHaveBeenCalledWith(
         'projectmap',
         {
-          abc: { id: 123, name: 'abc', accessToken: 'plugh' },
+          abc: { id: 123, name: 'abc' },
           xyz: { id: 456, name: 'xyz' },
         },
         { ttl: 300 },
       );
+    });
+  });
+
+  describe('getProjectItems', () => {
+    it('uses the account token with the project id', async () => {
+      server.use(
+        rest.get(`${mockBaseUrl}/projects`, (_, res, ctx) =>
+          res(ctx.json({ result: mockProjects })),
+        ),
+        rest.get(`${mockBaseUrl}/items`, (req, res, ctx) => {
+          expect(req.url.searchParams.get('project_id')).toBe('123');
+          expect(req.headers.get('X-Rollbar-Access-Token')).toBe(
+            'my-access-token',
+          );
+          return res(ctx.json({ result: { items: [], page: 1 } }));
+        }),
+      );
+      const api = new RollbarApi(
+        'my-access-token',
+        mockServices.rootLogger(),
+        mockServices.cache.mock(),
+      );
+
+      await expect(api.getProjectItems('abc')).resolves.toEqual({
+        items: [],
+        page: 1,
+      });
+    });
+
+    it('preserves report parameters when adding the project id', async () => {
+      server.use(
+        rest.get(`${mockBaseUrl}/projects`, (_, res, ctx) =>
+          res(ctx.json({ result: mockProjects })),
+        ),
+        rest.get(`${mockBaseUrl}/reports/top_active_items`, (req, res, ctx) => {
+          expect(Object.fromEntries(req.url.searchParams)).toEqual({
+            hours: '12',
+            environment: 'production',
+            project_id: '123',
+          });
+          return res(ctx.json({ result: [] }));
+        }),
+      );
+      const api = new RollbarApi(
+        'my-access-token',
+        mockServices.rootLogger(),
+        mockServices.cache.mock(),
+      );
+
+      await expect(
+        api.getTopActiveItems('abc', {
+          hours: 12,
+          environment: 'production',
+        }),
+      ).resolves.toEqual([]);
     });
   });
 });
