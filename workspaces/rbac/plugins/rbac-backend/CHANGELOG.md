@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.5
+
+### Patch Changes
+
+- 6175733: Updated dependency `supertest` to `7.3.0`.
+
 ## 8.1.4
 
 ### Patch Changes

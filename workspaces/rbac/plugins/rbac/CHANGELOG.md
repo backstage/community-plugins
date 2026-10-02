@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 2.3.5
+
+### Patch Changes
+
+- 9464b63: Fixed the Create Role plugins table "Rows per page" dropdown rendering options on a single line in RHDH.
+
 ## 2.3.4
 
 ### Patch Changes
