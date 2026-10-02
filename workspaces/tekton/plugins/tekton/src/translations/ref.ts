@@ -65,6 +65,7 @@ export const tektonMessages = {
       high: 'High',
       medium: 'Medium',
       low: 'Low',
+      unknown: 'Unknown',
     },
     tableHeaderTitle: {
       name: 'NAME',

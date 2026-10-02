@@ -55,7 +55,7 @@ describe('DefaultShortcutsApi', () => {
     await shortcutApi.add(shortcut);
     expect(spy).toHaveBeenCalledWith(
       'items',
-      expect.objectContaining([{ ...shortcut, id: expect.anything() }]),
+      expect.arrayContaining([{ ...shortcut, id: expect.anything() }]),
     );
   });
 
@@ -68,7 +68,7 @@ describe('DefaultShortcutsApi', () => {
     await shortcutApi.update(shortcut);
     expect(spy).toHaveBeenCalledWith(
       'items',
-      expect.objectContaining([shortcut]),
+      expect.arrayContaining([shortcut]),
     );
   });
 

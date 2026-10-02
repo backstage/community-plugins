@@ -282,7 +282,7 @@ npm:
 
 The `npm/registry: npmjs` annotation is required to use the npm backend.
 
-Alternativly you can setup a default registry (also for npmjs):
+Alternatively you can setup a default registry (also for npmjs):
 
 ```yaml
 # app-config.yaml

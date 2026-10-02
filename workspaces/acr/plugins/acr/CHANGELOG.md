@@ -1,5 +1,15 @@
 # @backstage-community/plugin-acr
 
+## 1.28.1
+
+### Patch Changes
+
+- 1b9042b: Assign the ACR images entity content to the development group.
+- 2d1cab2: Updated dependency `@playwright/test` to `1.63.0`.
+- 6b9f630: Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/react` to `16.3.3`.
+- bb86d61: Backstage version bump to v1.54.7
+
 ## 1.28.0
 
 ### Minor Changes
