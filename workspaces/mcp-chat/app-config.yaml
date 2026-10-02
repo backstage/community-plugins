@@ -27,6 +27,7 @@ integrations:
 # --------- MCP Chat Configuration ---------
 mcpChat:
   toolCallTimeout: 60000
+  maxToolIterations: 8
   providers:
     - id: openai
       baseUrl: 'https://any-openai-compatible-url/v1'
