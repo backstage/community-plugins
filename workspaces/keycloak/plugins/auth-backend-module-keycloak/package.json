@@ -38,19 +38,19 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.10.0",
-    "@backstage/plugin-auth-node": "^0.7.4",
+    "@backstage/backend-plugin-api": "^1.10.1",
+    "@backstage/plugin-auth-node": "^0.7.6",
     "jose": "^5.0.0",
     "openid-client": "^5.6.5",
     "zod": "^3.25.76 || ^4.0.0"
   },
   "devDependencies": {
     "@backstage-community/plugin-catalog-backend-module-keycloak": "workspace:^",
-    "@backstage/backend-defaults": "^0.17.7",
-    "@backstage/backend-test-utils": "^1.11.6",
-    "@backstage/catalog-model": "^1.10.0",
-    "@backstage/cli": "^0.36.5",
-    "@backstage/plugin-auth-backend": "^0.30.0",
+    "@backstage/backend-defaults": "^0.18.0",
+    "@backstage/backend-test-utils": "^1.11.7",
+    "@backstage/catalog-model": "^1.10.1",
+    "@backstage/cli": "^0.36.6",
+    "@backstage/plugin-auth-backend": "^0.30.1",
     "@types/express": "^5.0.6"
   },
   "files": [
