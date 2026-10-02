@@ -34,6 +34,11 @@ import { getNextRankColor, pluralize } from '../../helpers/utils';
 import { MaturityLink } from '../../helpers/MaturityLink';
 import { MaturityRankIcon } from '../MaturityRankIcon';
 import { MaturityRankChip } from '../MaturityRankChip';
+import { MaturityDisplayProps } from '../../types';
+import {
+  DEFAULT_TITLE,
+  useMaturityDisplayConfig,
+} from '../../helpers/maturityConfig';
 
 const OverallCell = ({
   areaSummary,
@@ -122,8 +127,10 @@ const ProgressCell = ({
 
 export function MaturitySummaryTable({
   entities,
-}: Readonly<{ entities: Entity[] }>) {
+  title: titleOverride,
+}: Readonly<{ entities: Entity[] } & MaturityDisplayProps>) {
   const theme = useTheme();
+  const { title } = useMaturityDisplayConfig({ title: titleOverride });
 
   const api = useApi(maturityApiRef);
   const { value } = useAsyncRetry(
@@ -171,7 +178,11 @@ export function MaturitySummaryTable({
     },
     {
       title: 'Overall',
-      tooltip: 'Progress toward achieving full maturity',
+      // Keep the original wording under the default title.
+      tooltip:
+        title === DEFAULT_TITLE
+          ? 'Progress toward achieving full maturity'
+          : `Overall ${title} progress`,
       field: 'summary.progress.percentage',
       width: '13%',
       ...style,
@@ -235,8 +246,8 @@ export function MaturitySummaryTable({
 
   return (
     <Table
-      title="Component Maturity"
-      subtitle="View this entity's children in order of lowest to highest Maturity."
+      title={`Component ${title}`}
+      subtitle={`View this entity's children in order of lowest to highest ${title}.`}
       columns={columns}
       data={value ?? []}
       options={{

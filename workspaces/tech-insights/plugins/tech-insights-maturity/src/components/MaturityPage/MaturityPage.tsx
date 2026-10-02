@@ -19,9 +19,12 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
 import useAsyncRetry from 'react-use/lib/useAsync';
 import { MaturityChartCard } from '../MaturityChartCard';
+import { MaturityDisplayProps } from '../../types';
+import { useMaturityDisplayConfig } from '../../helpers/maturityConfig';
 
-export const MaturityPage = () => {
+export const MaturityPage = (props: MaturityDisplayProps) => {
   const catalogApi = useApi(catalogApiRef);
+  const { title } = useMaturityDisplayConfig(props);
 
   const { value: entities } = useAsyncRetry(async () => {
     const entitiesList = await catalogApi.getEntities({
@@ -32,7 +35,7 @@ export const MaturityPage = () => {
 
   return (
     <Page themeId="home">
-      <Header title="Maturity" />
+      <Header title={title} />
       <Content>
         <Grid container>
           <Grid item md={4}>

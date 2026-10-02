@@ -14,20 +14,33 @@
  * limitations under the License.
  */
 import { compatWrapper } from '@backstage/core-compat-api';
+import { configApiRef } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { resolveMaturityDisplayConfig } from '../helpers/maturityConfig';
+import { rootRouteRef } from '../routes';
 
 /**
  * Entity content extension for maturity scorecards.
  *
  * @alpha
  */
-export const entityMaturityScorecardContent = EntityContentBlueprint.make({
-  name: 'maturity',
-  params: {
-    filter: { kind: 'Component' },
-    path: '/maturity',
-    title: 'Maturity',
-    loader: () =>
-      import('../ScoreRouter').then(m => compatWrapper(<m.ScoreRouter />)),
-  },
-});
+export const entityMaturityScorecardContent =
+  EntityContentBlueprint.makeWithOverrides({
+    name: 'maturity',
+    factory(originalFactory, { apis, config }) {
+      const { title } = resolveMaturityDisplayConfig(apis.get(configApiRef), {
+        title: config.title,
+      });
+
+      return originalFactory({
+        filter: { kind: 'Component' },
+        path: '/maturity',
+        title,
+        routeRef: rootRouteRef,
+        loader: () =>
+          import('../ScoreRouter').then(m =>
+            compatWrapper(<m.ScoreRouter title={title} />),
+          ),
+      });
+    },
+  });
