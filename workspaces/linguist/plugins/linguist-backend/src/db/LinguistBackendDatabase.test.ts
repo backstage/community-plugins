@@ -184,6 +184,45 @@ describe('Linguist database', () => {
     expect(before).toEqual(after);
   });
 
+  it('should mark entities processed without losing existing results', async () => {
+    const processedDate = new Date('2023-02-20T20:10:21.378Z');
+    const previousResults = await store.getEntityResults(
+      'template:default/pull-request',
+    );
+
+    await store.markEntityProcessed(
+      'template:default/create-react-app-template',
+      processedDate,
+    );
+    await store.markEntityProcessed(
+      'template:default/pull-request',
+      processedDate,
+    );
+
+    expect(await store.getUnprocessedEntities()).toEqual([
+      'template:default/docs-template',
+    ]);
+    expect(
+      await store.getEntityResults(
+        'template:default/create-react-app-template',
+      ),
+    ).toEqual({
+      languageCount: 0,
+      totalBytes: 0,
+      processedDate: processedDate.toISOString(),
+      breakdown: [],
+    });
+    expect(
+      await store.getEntityResults('template:default/pull-request'),
+    ).toEqual(previousResults);
+
+    const processedEntities = await store.getProcessedEntities();
+    expect(processedEntities).toContainEqual({
+      entityRef: 'template:default/create-react-app-template',
+      processedDate,
+    });
+  });
+
   it('should get all entities', async () => {
     const allEntities = await store.getAllEntities();
 
