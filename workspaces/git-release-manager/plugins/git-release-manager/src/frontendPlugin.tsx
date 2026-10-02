@@ -22,11 +22,12 @@ import {
   githubAuthApiRef,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
+import NewReleasesIcon from '@material-ui/icons/NewReleases';
 import { GitReleaseClient } from './api/GitReleaseClient';
 import { gitReleaseManagerApiRef } from './api/serviceApiRef';
 import { rootRouteRef } from './routes';
 
-const gitReleaseManagerApi = ApiBlueprint.make({
+export const gitReleaseManagerApi = ApiBlueprint.make({
   name: 'service',
   params: defineParams =>
     defineParams({
@@ -40,9 +41,12 @@ const gitReleaseManagerApi = ApiBlueprint.make({
     }),
 });
 
-const gitReleaseManagerPage = PageBlueprint.make({
+export const gitReleaseManagerPage = PageBlueprint.make({
   params: {
     path: '/git-release-manager',
+    title: 'Git Release Manager',
+    icon: <NewReleasesIcon />,
+    noHeader: true,
     routeRef: rootRouteRef,
     loader: () =>
       import('./GitReleaseManager').then(m => <m.GitReleaseManager />),
