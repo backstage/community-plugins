@@ -18,6 +18,7 @@ import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { JenkinsInfoProvider } from '../service/jenkinsInfoProvider';
 import { JenkinsApiImpl } from '../service/jenkinsApi';
+import { getJenkinsInstances } from '../service/getJenkinsInstances';
 
 /**
  * Registers the `jenkins:list-builds` action with the ActionsRegistryService.
@@ -89,6 +90,9 @@ For re-triggering a build use \`jenkins:trigger-build\`.
           builds: z
             .array(
               z.object({
+                instanceName: z
+                  .string()
+                  .describe('The configured Jenkins instance for this job.'),
                 name: z.string().describe('The full name of the Jenkins job.'),
                 displayName: z
                   .string()
@@ -146,33 +150,41 @@ For re-triggering a build use \`jenkins:trigger-build\`.
         `Listing Jenkins builds for entity ${stringifyEntityRef(entityRef)}`,
       );
 
-      const jenkinsInfo = await jenkinsInfoProvider.getInstance({
+      const jenkinsInstances = await getJenkinsInstances(jenkinsInfoProvider, {
         entityRef,
         credentials,
       });
 
       const branches = input.branch ? [input.branch] : undefined;
-      const projects = await jenkinsApi.getProjects(jenkinsInfo, branches);
+      const projectsByInstance = await Promise.all(
+        jenkinsInstances.map(async jenkinsInfo => ({
+          instanceName: jenkinsInfo.instanceName,
+          projects: await jenkinsApi.getProjects(jenkinsInfo, branches),
+        })),
+      );
 
       return {
         output: {
-          builds: projects.map(p => ({
-            name: p.fullName,
-            displayName: p.fullDisplayName,
-            status: p.status,
-            inQueue: p.inQueue,
-            lastBuild: p.lastBuild
-              ? {
-                  number: p.lastBuild.number,
-                  url: p.lastBuild.url,
-                  result: p.lastBuild.result ?? null,
-                  building: p.lastBuild.building,
-                  timestamp: p.lastBuild.timestamp,
-                  duration: p.lastBuild.duration,
-                  displayName: p.lastBuild.displayName,
-                }
-              : null,
-          })),
+          builds: projectsByInstance.flatMap(({ instanceName, projects }) =>
+            projects.map(p => ({
+              instanceName,
+              name: p.fullName,
+              displayName: p.fullDisplayName,
+              status: p.status,
+              inQueue: p.inQueue,
+              lastBuild: p.lastBuild
+                ? {
+                    number: p.lastBuild.number,
+                    url: p.lastBuild.url,
+                    result: p.lastBuild.result ?? null,
+                    building: p.lastBuild.building,
+                    timestamp: p.lastBuild.timestamp,
+                    duration: p.lastBuild.duration,
+                    displayName: p.lastBuild.displayName,
+                  }
+                : null,
+            })),
+          ),
         },
       };
     },

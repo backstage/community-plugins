@@ -4,8 +4,8 @@ Welcome to the Jenkins backend plugin! Website: [https://jenkins.io/](https://je
 
 This is the backend half of the 2 Jenkins plugins and is responsible for:
 
-- finding an appropriate instance of Jenkins for an entity
-- finding the appropriate job(s) on that instance for an entity
+- finding the appropriate Jenkins instance or instances for an entity
+- finding the appropriate job(s) on each instance for an entity
 - connecting to Jenkins and gathering data to present to the frontend
 
 ## Integrating into a backstage instance
@@ -145,11 +145,13 @@ sent in is not null, along with the regex string list, and then compares the url
 
 This use case is for Jenkins systems where there are a lot of Jenkins instances configured from a base instance, which share the same API keys. Therefore a user does not have to define all of the instances here, but in the catalog for ease of use.
 
-#### Example - Defining Multiple Jenkins Jobs for a Single instance
+The override annotation contains one URL. When an entity references jobs from multiple instances, that URL is evaluated against every referenced instance's `allowedBaseUrlOverrideRegex`. Only use the override together with multiple instances when all matching instances are intentionally served from that URL.
 
-You can configure multiple Jenkins jobs for a **single** component by specifying multiple project names in the `jenkins.io/job-full-name` annotation.
+#### Example - Defining Multiple Jenkins Jobs Across Instances
 
-This is useful when you want to track different types of jobs for the same component.
+You can configure multiple Jenkins jobs for a **single** component by specifying comma-separated project names in the `jenkins.io/job-full-name` annotation. Each job may belong to a different configured Jenkins instance.
+
+An unprefixed job belongs to the `default` instance. A prefixed job such as `departmentFoo:teamA/artistLookup-build` belongs only to the named instance. Jobs are identified by the pair `(instance name, job full name)`, so the same job full name may safely exist on more than one instance.
 
 Config
 
@@ -166,6 +168,11 @@ jenkins:
       username: backstage-bot
       projectCountLimit: 100
       apiKey: 123456789abcdef0123456789abcedf012
+    - name: departmentBar
+      baseUrl: https://jenkins-bar.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
 ```
 
 Catalog
@@ -176,15 +183,24 @@ kind: Component
 metadata:
   name: artist-lookup
   annotations:
-    'jenkins.io/job-full-name': departmentFoo:teamA/artistLookup-build,departmentFoo:teamA/artistLookup-test
+    'jenkins.io/job-full-name': teamA/artistLookup-test,departmentFoo:teamA/artistLookup-build,departmentBar:teamA/artistLookup-build
 ```
 
 This configuration will track jobs at:
 
+- `https://jenkins.example.com/job/teamA/job/artistLookup-test`
 - `https://jenkins-foo.example.com/job/teamA/job/artistLookup-build`
-- `https://jenkins-foo.example.com/job/teamA/job/artistLookup-test`
+- `https://jenkins-bar.example.com/job/teamA/job/artistLookup-build`
 
-**Limitation:** Currently you cannot associate jobs from different Jenkins instances with the same component. All jobs must belong to the same Jenkins instance.
+The two `artistLookup-build` jobs above do not collide because their instance names are different. The frontend and backend preserve the instance name when opening build details, viewing run history, reading console output, or retrying a build.
+
+If a request does not specify an instance, the provider uses the `default` instance. For backwards compatibility, an entity that references exactly one named instance also works without an explicit instance selector.
+
+All referenced instances are queried in parallel. The current API does not return partial results: if one instance is unavailable, misconfigured, or lacks credentials for its annotated job, the projects request fails for the entity. The error identifies the failing instance and its job names. `projectCountLimit` continues to apply independently to each instance.
+
+### Actions
+
+The `jenkins:list-builds` action returns `instanceName` for every build. Pass that value to the optional `instanceName` input of `jenkins:get-build`, `jenkins:get-build-logs`, and `jenkins:trigger-build`. This is required to disambiguate jobs whose full names are equal across instances. Omitting it selects the entity's default instance.
 
 ### Custom JenkinsInfoProvider
 
@@ -194,10 +210,7 @@ An example of a bespoke JenkinsInfoProvider which uses an organisation specific 
 class AcmeJenkinsInfoProvider implements JenkinsInfoProvider {
   constructor(private readonly catalog: CatalogClient) {}
 
-  async getInstance(opt: {
-    entityRef: EntityName;
-    jobFullName?: string;
-  }): Promise<JenkinsInfo> {
+  async getInstance(opt: JenkinsInfoProviderOptions): Promise<JenkinsInfo> {
     const PAAS_ANNOTATION = 'acme.example.com/paas-project-name';
 
     // lookup pass-project-name from entity annotation
@@ -228,11 +241,13 @@ class AcmeJenkinsInfoProvider implements JenkinsInfoProvider {
     const creds = btoa(`${username}:${apiKey}`);
 
     return {
+      instanceName: 'default',
       baseUrl,
       headers: {
         Authorization: `Basic ${creds}`,
       },
-      jobFullName,
+      fullJobNames: [jobFullName],
+      projectCountLimit,
     };
   }
 
@@ -250,6 +265,8 @@ class AcmeJenkinsInfoProvider implements JenkinsInfoProvider {
   }
 }
 ```
+
+A custom provider that supports multiple instances should also implement the optional `getInstances` method and return one `JenkinsInfo` per instance. Existing custom providers that only implement `getInstance` remain supported and are treated as single-instance providers.
 
 No config would be needed if using this JenkinsInfoProvider
 

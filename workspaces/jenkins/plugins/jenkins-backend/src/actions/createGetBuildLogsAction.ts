@@ -80,6 +80,13 @@ the relevant failure message rather than processing the entire output.
             .describe(
               'Full name of the Jenkins job, e.g. "my-folder/my-pipeline" or "my-folder/my-pipeline/main".',
             ),
+          instanceName: z
+            .string()
+            .min(1)
+            .optional()
+            .describe(
+              'Configured Jenkins instance that owns the job. Defaults to the entity default when omitted.',
+            ),
           buildNumber: z
             .number()
             .int()
@@ -108,6 +115,8 @@ the relevant failure message rather than processing the entire output.
 
       const jenkinsInfo = await jenkinsInfoProvider.getInstance({
         entityRef,
+        fullJobNames: [input.jobFullName],
+        instanceName: input.instanceName,
         credentials,
       });
 

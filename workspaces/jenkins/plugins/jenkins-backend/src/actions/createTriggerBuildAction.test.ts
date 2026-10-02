@@ -66,6 +66,7 @@ describe('createTriggerBuildAction', () => {
         kind: 'Component',
         namespace: 'default',
         jobFullName: 'my-folder/my-pipeline/main',
+        instanceName: 'prod',
         buildNumber: 42,
       },
       credentials,
@@ -79,6 +80,16 @@ describe('createTriggerBuildAction', () => {
       'component:default/my-service',
       { credentials },
     );
+    expect(mockJenkinsInfoProvider.getInstance).toHaveBeenCalledWith({
+      entityRef: {
+        kind: 'Component',
+        namespace: 'default',
+        name: 'my-service',
+      },
+      fullJobNames: ['my-folder/my-pipeline/main'],
+      instanceName: 'prod',
+      credentials,
+    });
     expect(result.output.status).toBe(201);
   });
 

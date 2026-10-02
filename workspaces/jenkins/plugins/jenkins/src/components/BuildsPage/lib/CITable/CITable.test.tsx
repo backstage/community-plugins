@@ -39,7 +39,14 @@ const entity = {
 const jenkinsApi: Partial<JenkinsApi> = {
   getProjects: () =>
     Promise.resolve([
-      { lastBuild: { timestamp: 0, status: 'success', url: 'foo' } },
+      {
+        instanceName: 'dev',
+        fullName: 'folder/shared-job',
+        fullDisplayName: 'folder » shared-job',
+        displayName: 'shared-job',
+        status: 'success',
+        lastBuild: { timestamp: 0, status: 'success', url: 'foo', number: 12 },
+      },
     ] as Project[]),
 };
 
@@ -86,5 +93,28 @@ describe('<CITable />', () => {
       );
       expect(getByText('My custom title!')).toBeVisible();
     });
+  });
+
+  it('keeps the Jenkins instance in build detail links', async () => {
+    const { findByRole } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [jenkinsApiRef, jenkinsApi],
+          [toastApiRef, {}],
+        ]}
+      >
+        <EntityProvider entity={entity}>
+          <CITable />
+        </EntityProvider>
+      </TestApiProvider>,
+      mountedRoutes,
+    );
+
+    expect(
+      await findByRole('link', { name: 'folder » shared-job' }),
+    ).toHaveAttribute(
+      'href',
+      '/builds/folder%2Fshared-job/12?instanceName=dev',
+    );
   });
 });
