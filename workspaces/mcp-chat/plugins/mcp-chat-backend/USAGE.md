@@ -82,6 +82,11 @@ const manualConfig: ProviderConfig = {
   apiKey: 'sk-...',
   baseUrl: 'https://api.openai.com/v1',
   model: 'gpt-4',
+// Optional for custom deployments
+  pathOverrides: {
+    inference: '/chat/completions',
+    models: '/custom/models'
+  }
 };
 const provider = ProviderFactory.createProvider(manualConfig);
 ```
@@ -485,6 +490,11 @@ mcpChat:
       model: gpt-4
       # Optional: baseUrl for custom endpoints
       # baseUrl: https://api.openai.com/v1
+
+      # Optional: pathOverrides for custom paths
+      # pathOverrides:
+      #   inference: '/custom/completions'
+      #   models: '/custom/models'
 
   # MCP Server Configuration
   mcpServers:

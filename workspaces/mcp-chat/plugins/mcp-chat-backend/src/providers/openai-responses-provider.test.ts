@@ -920,4 +920,98 @@ describe('OpenAIResponsesProvider', () => {
       });
     });
   });
+
+  describe('pathOverrides', () => {
+    it('should use pathOverrides for inference when present', async () => {
+      const customPathProvider = new OpenAIResponsesProvider({
+        ...config,
+        pathOverrides: {
+          inference: '/custom-responses',
+        },
+      });
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          id: 'resp_test_123',
+          object: 'response',
+          created_at: Date.now(),
+          model: 'gemini/models/gemini-2.5-flash',
+          status: 'completed',
+          output: [
+            {
+              id: 'msg_1',
+              type: 'message',
+              role: 'assistant',
+              status: 'completed',
+              content: [{ type: 'output_text', text: 'Hi there!' }],
+            },
+          ],
+        }),
+      } as Response);
+
+      await customPathProvider.sendMessage(messages);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api.com/v1/custom-responses',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true }),
+      } as Response);
+
+      await customPathProvider.testConnection();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api.com/v1/custom-responses',
+        expect.objectContaining({ method: 'POST' }),
+      );
+    });
+
+    it('should default to standard paths when pathOverrides is not provided', async () => {
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          id: 'resp_test_456',
+          object: 'response',
+          created_at: Date.now(),
+          model: 'gemini/models/gemini-2.5-flash',
+          status: 'completed',
+          output: [
+            {
+              id: 'msg_1',
+              type: 'message',
+              role: 'assistant',
+              status: 'completed',
+              content: [{ type: 'output_text', text: 'Hi there!' }],
+            },
+          ],
+        }),
+      } as Response);
+
+      await provider.sendMessage(messages);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api.com/v1/responses',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true }),
+      } as Response);
+
+      await provider.testConnection();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api.com/v1/responses',
+        expect.objectContaining({ method: 'POST' }),
+      );
+    });
+  });
 });
