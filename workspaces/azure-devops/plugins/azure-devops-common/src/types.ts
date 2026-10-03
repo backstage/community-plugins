@@ -221,6 +221,7 @@ export interface ReadmeConfig {
   host?: string;
   org?: string;
   path?: string;
+  version?: string;
 }
 
 /** @public */

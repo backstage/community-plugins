@@ -551,11 +551,12 @@ export class AzureDevOpsApi {
     project: string,
     repo: string,
     path: string,
+    version?: string,
   ): Promise<{
     url: string;
     content: string;
   }> {
-    const url = buildEncodedUrl(host, org, project, repo, path);
+    const url = buildEncodedUrl(host, org, project, repo, path, version);
     const response = await this.urlReader.readUrl(url);
     const buffer = await response.buffer();
     const content = await replaceReadme(
