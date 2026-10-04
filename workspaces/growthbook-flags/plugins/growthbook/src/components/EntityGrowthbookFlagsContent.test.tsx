@@ -75,11 +75,15 @@ describe('EntityGrowthbookFlagsContent', () => {
   const mockApi: jest.Mocked<GrowthbookFlagsApi> = {
     getFlags: jest.fn(),
     getProjects: jest.fn(),
+    getExperiments: jest.fn(),
+    getExperimentResults: jest.fn(),
+    getFlagDetail: jest.fn(),
   };
 
   beforeEach(() => {
     jest.resetAllMocks();
     mockApi.getProjects.mockResolvedValue(['Project A', 'Project B']);
+    mockApi.getExperiments.mockResolvedValue([]);
   });
 
   const renderComponent = (entity = mockEntity) =>

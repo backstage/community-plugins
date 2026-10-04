@@ -19,12 +19,21 @@ import {
   FetchApi,
 } from '@backstage/core-plugin-api';
 
-import type { FlagRow } from '@backstage-community/plugin-growthbook-common';
+import type {
+  ExperimentResultSummary,
+  ExperimentRow,
+  FlagDetail,
+  FlagRow,
+} from '@backstage-community/plugin-growthbook-common';
 
 /** @public */
 export interface GrowthbookFlagsApi {
   getFlags(env: string, project?: string): Promise<FlagRow[]>;
   getProjects(): Promise<string[]>;
+  /** Experiments for a GrowthBook project. Resolves to `[]` in SDK-only mode. */
+  getExperiments(project?: string): Promise<ExperimentRow[]>;
+  getExperimentResults(id: string): Promise<ExperimentResultSummary>;
+  getFlagDetail(key: string): Promise<FlagDetail>;
 }
 
 /** @public */
@@ -69,5 +78,41 @@ export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
     }
     const body = await response.json();
     return body.projects ?? [];
+  }
+
+  async getExperiments(project?: string): Promise<ExperimentRow[]> {
+    const query = project ? `?${new URLSearchParams({ project })}` : '';
+    const response = await this.get(`/experiments${query}`);
+    if (response.status === 501) return [];
+    return this.parse(response, 'experiments');
+  }
+
+  async getExperimentResults(id: string): Promise<ExperimentResultSummary> {
+    const response = await this.get(
+      `/experiments/${encodeURIComponent(id)}/results`,
+    );
+    return this.parse(response, 'experiment results');
+  }
+
+  async getFlagDetail(key: string): Promise<FlagDetail> {
+    const response = await this.get(`/flags/${encodeURIComponent(key)}`);
+    return this.parse(response, 'flag detail');
+  }
+
+  private async get(path: string): Promise<Response> {
+    const baseUrl = await this.discoveryApi.getBaseUrl(
+      'backstage-community-growthbook',
+    );
+    return this.fetchApi.fetch(`${baseUrl}${path}`);
+  }
+
+  private async parse<T>(response: Response, what: string): Promise<T> {
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(
+        `GrowthBook ${what} API error ${response.status}: ${body}`,
+      );
+    }
+    return response.json();
   }
 }
