@@ -25,6 +25,7 @@ import {
   normalizeExperiment,
   normalizeResults,
   normalizeFlagDetail,
+  resolveAppUrl,
 } from './helpers';
 
 const MGMT_FEATURES: MgmtFeature[] = [
@@ -384,5 +385,18 @@ describe('normalizeFlagDetail', () => {
     );
     expect(detail.staleReason).toBeUndefined();
     expect(detail.environments).toEqual([]);
+  });
+});
+
+describe('resolveAppUrl', () => {
+  it('uses the configured app URL without trailing slashes', () => {
+    expect(resolveAppUrl('https://app.growthbook.io//', 'https://api.gb')).toBe(
+      'https://app.growthbook.io',
+    );
+  });
+
+  it('falls back to the base URL when no app URL is configured', () => {
+    expect(resolveAppUrl(undefined, 'https://api.gb')).toBe('https://api.gb');
+    expect(resolveAppUrl('', 'https://api.gb')).toBe('https://api.gb');
   });
 });

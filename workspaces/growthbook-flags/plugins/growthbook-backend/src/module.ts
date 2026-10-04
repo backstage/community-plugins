@@ -19,6 +19,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { GrowthbookClient } from './client';
 import { createRouter } from './router';
+import { resolveAppUrl } from './helpers';
 import { createSdkFlagsSource } from './sdkSource';
 
 /** @public */
@@ -41,6 +42,10 @@ const growthbookFlagsPlugin = createBackendPlugin({
         }
 
         const baseUrl = gbConfig.getString('baseUrl').replace(/\/+$/, '');
+        const appUrl = resolveAppUrl(
+          gbConfig.getOptionalString('appUrl'),
+          baseUrl,
+        );
         const secretKey = gbConfig.getOptionalString('secretKey');
         const sdkKeysConfig = secretKey
           ? undefined
@@ -71,7 +76,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
             })
           : undefined;
 
-        http.use(createRouter({ logger, appUrl: baseUrl, mgmt, sdk }));
+        http.use(createRouter({ logger, appUrl, mgmt, sdk }));
         logger.info(
           `GrowthBook Flags plugin initialized at /api/backstage-community-growthbook (mode: ${
             secretKey ? 'management API' : 'SDK API'

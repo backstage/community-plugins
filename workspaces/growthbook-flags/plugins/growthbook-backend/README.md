@@ -32,6 +32,7 @@ Add to `app-config.yaml`:
 ```yaml
 growthbook:
   baseUrl: ${GROWTHBOOK_BASE_URL}
+  appUrl: ${GROWTHBOOK_APP_URL} # Optional: GrowthBook web app URL for experiment links (defaults to baseUrl)
   secretKey: ${GROWTHBOOK_SECRET_KEY} # Optional: for management API (enables project filtering)
   sdkKeys:
     prod: ${GROWTHBOOK_SDK_KEY_PROD}
@@ -73,7 +74,7 @@ The plugin exposes the following endpoints:
   - Returns flag details: owner, tags, last updated, per-environment state and rules, and stale status from GrowthBook (`/api/v2/stale-features`)
   - Requires `secretKey`; responds `501` in SDK mode
 
-Experiment links are built from `growthbook.baseUrl`. If your GrowthBook API and web app are served from different hosts, links point at `baseUrl`.
+Experiment links are built from `growthbook.appUrl`, falling back to `growthbook.baseUrl`. Set `appUrl` when your GrowthBook API and web app are on different hosts (for example `baseUrl: https://api.growthbook.io` and `appUrl: https://app.growthbook.io`).
 
 ## How It Works
 

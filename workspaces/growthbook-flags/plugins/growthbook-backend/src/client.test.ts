@@ -207,6 +207,64 @@ describe('GrowthbookClient', () => {
   });
 });
 
+describe('GrowthbookClient cache limits', () => {
+  const resultsBody = { experiment: {}, result: {} };
+  const responder = (url: string) =>
+    url.includes('/api/v1/projects')
+      ? { body: { projects: [{ id: 'p1', name: 'P' }] } }
+      : { body: resultsBody };
+
+  it('keeps projects cached after the cache fills with per-id lookups', async () => {
+    const { client, calls } = make(responder);
+    for (let i = 0; i < 200; i++) {
+      await client.getExperimentResults(`exp_${i}`);
+    }
+    await client.listProjects();
+    await client.listProjects();
+    expect(calls.filter(c => c.url.includes('/projects'))).toHaveLength(1);
+  });
+
+  it('evicts expired entries to make room when the cache is full', async () => {
+    let t = 0;
+    const { client, calls } = make(responder, () => t);
+    for (let i = 0; i < 200; i++) {
+      await client.getExperimentResults(`exp_${i}`);
+    }
+    t = 61_000;
+    await client.getExperimentResults('fresh');
+    await client.getExperimentResults('fresh');
+    expect(calls.filter(c => c.url.includes('/exp')).length).toBe(201);
+  });
+
+  it('does not cache misses', async () => {
+    let status = 404;
+    const { client, fetchFn } = make(() =>
+      status === 404 ? { status } : { body: { feature: { id: 'f' } } },
+    );
+    expect(await client.getFeature('f')).toBeUndefined();
+    status = 200;
+    expect(await client.getFeature('f')).toEqual({ id: 'f' });
+    expect(fetchFn).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('GrowthbookClient results without a snapshot', () => {
+  it.each([400, 404])(
+    'treats %s from the results endpoint as no results',
+    async status => {
+      const { client } = make(() => ({ status }));
+      expect(await client.getExperimentResults('draft_1')).toBeUndefined();
+    },
+  );
+
+  it('still throws on server errors', async () => {
+    const { client } = make(() => ({ status: 500 }));
+    await expect(client.getExperimentResults('x')).rejects.toMatchObject({
+      status: 500,
+    });
+  });
+});
+
 describe('createSdkFlagsSource', () => {
   it('returns undefined for an unknown environment without fetching', async () => {
     const { fetchFn } = fakeFetch(() => ({}));
