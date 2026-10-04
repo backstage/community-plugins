@@ -54,7 +54,7 @@ export class GrowthbookClient {
   private readonly now: () => number;
   private readonly cache = new Map<
     string,
-    { data: unknown; fetchedAt: number }
+    { data: unknown; expiresAt: number }
   >();
 
   constructor(options: GrowthbookClientOptions) {
@@ -65,13 +65,18 @@ export class GrowthbookClient {
   }
 
   async listProjects(): Promise<GbProject[]> {
-    return this.cached('projects', PROJECT_TTL_MS, async () => {
-      const body = await this.getJson<{ projects: GbProject[] }>(
-        `/api/v1/projects?limit=${PAGE_LIMIT}`,
-        'projects',
-      );
-      return body.projects;
-    });
+    return this.cached(
+      'projects',
+      PROJECT_TTL_MS,
+      async () => {
+        const body = await this.getJson<{ projects: GbProject[] }>(
+          `/api/v1/projects?limit=${PAGE_LIMIT}`,
+          'projects',
+        );
+        return body.projects;
+      },
+      { pinned: true },
+    );
   }
 
   async getFlags(env: string, projectId?: string): Promise<FlagRow[]> {
@@ -110,10 +115,16 @@ export class GrowthbookClient {
     id: string,
   ): Promise<{ experiment: MgmtExperiment; result: MgmtResults } | undefined> {
     return this.cached(`results:${id}`, SHORT_TTL_MS, () =>
+      // GrowthBook answers 400 or 404 when an experiment has no snapshot yet
+      // (for example a draft), which is "no results", not a failure.
       this.getJsonOrUndefined<{
         experiment: MgmtExperiment;
         result: MgmtResults;
-      }>(`/api/v1/experiments/${encodeURIComponent(id)}/results`, 'results'),
+      }>(
+        `/api/v1/experiments/${encodeURIComponent(id)}/results`,
+        'results',
+        [400, 404],
+      ),
     );
   }
 
@@ -136,29 +147,51 @@ export class GrowthbookClient {
   }
 
   private listFeatures(): Promise<MgmtFeature[]> {
-    return this.cached('features', SHORT_TTL_MS, () =>
-      this.paginate<MgmtFeature>(
-        '/api/v1/features',
-        new URLSearchParams(),
-        'features',
-        'features',
-      ),
+    return this.cached(
+      'features',
+      SHORT_TTL_MS,
+      () =>
+        this.paginate<MgmtFeature>(
+          '/api/v1/features',
+          new URLSearchParams(),
+          'features',
+          'features',
+        ),
+      { pinned: true },
     );
   }
 
+  /**
+   * `pinned` entries (shared lists every request needs) are always stored.
+   * Others only while there is room, after dropping expired entries, so
+   * per-id lookups can never switch off caching for the shared lists.
+   * Misses (`undefined`) are not cached.
+   */
   private async cached<T>(
     key: string,
     ttlMs: number,
     load: () => Promise<T>,
+    options: { pinned?: boolean } = {},
   ): Promise<T> {
     const now = this.now();
     const hit = this.cache.get(key);
-    if (hit && now - hit.fetchedAt < ttlMs) return hit.data as T;
+    if (hit && now < hit.expiresAt) return hit.data as T;
     const data = await load();
-    if (this.cache.has(key) || this.cache.size < CACHE_MAX_ENTRIES) {
-      this.cache.set(key, { data, fetchedAt: now });
+    if (
+      data !== undefined &&
+      (options.pinned || this.cache.has(key) || this.hasRoom(now))
+    ) {
+      this.cache.set(key, { data, expiresAt: now + ttlMs });
     }
     return data;
+  }
+
+  private hasRoom(now: number): boolean {
+    if (this.cache.size < CACHE_MAX_ENTRIES) return true;
+    for (const [key, entry] of this.cache) {
+      if (entry.expiresAt <= now) this.cache.delete(key);
+    }
+    return this.cache.size < CACHE_MAX_ENTRIES;
   }
 
   private async paginate<T>(
@@ -202,9 +235,10 @@ export class GrowthbookClient {
   private async getJsonOrUndefined<T>(
     path: string,
     label: string,
+    missingStatuses: number[] = [404],
   ): Promise<T | undefined> {
     const res = await this.request(path);
-    if (res.status === 404) return undefined;
+    if (missingStatuses.includes(res.status)) return undefined;
     if (!res.ok) {
       throw new GrowthbookApiError(
         res.status,
