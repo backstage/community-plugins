@@ -4,7 +4,8 @@ Backend plugin for GrowthBook feature flags integration.
 
 ## Features
 
-- Proxies GrowthBook management API (`/api/v1/features`, `/api/v1/projects`)
+- Proxies GrowthBook management API (`/api/v1/features`, `/api/v1/projects`, `/api/v1/experiments`)
+- Experiments, experiment results and per-flag details (including GrowthBook's stale-flag status)
 - Client-side project filtering (GrowthBook API doesn't support `?project=` param)
 - 60-second flag cache per environment
 - 5-minute project cache
@@ -54,7 +55,25 @@ The plugin exposes the following endpoints:
   - Optional `project` param to filter by GrowthBook project name
 
 - `GET /api/backstage-community-growthbook/projects`
+
   - Returns list of GrowthBook project names (requires `secretKey`)
+
+- `GET /api/backstage-community-growthbook/experiments?project=<project>`
+
+  - Returns the (non-archived) experiments of a GrowthBook project, with status, variations, phases, winner and a link to GrowthBook
+  - Requires `secretKey`; responds `501` in SDK mode
+
+- `GET /api/backstage-community-growthbook/experiments/<id>/results`
+
+  - Returns a per-variation results summary for the primary metric (users, change, interval, chance to beat control)
+  - Responds with `available: false` when GrowthBook has no results yet
+  - Requires `secretKey`; responds `501` in SDK mode
+
+- `GET /api/backstage-community-growthbook/flags/<key>`
+  - Returns flag details: owner, tags, last updated, per-environment state and rules, and stale status from GrowthBook (`/api/v2/stale-features`)
+  - Requires `secretKey`; responds `501` in SDK mode
+
+Experiment links are built from `growthbook.baseUrl`. If your GrowthBook API and web app are served from different hosts, links point at `baseUrl`.
 
 ## How It Works
 
@@ -75,6 +94,7 @@ The plugin exposes the following endpoints:
 - **Flag cache:** 60 seconds per SDK key/environment
 - **Project cache:** 5 minutes
 - **Raw features cache:** 60 seconds (shared across requests)
+- **Experiments, results, flag details and stale status:** 60 seconds
 
 ## License
 
