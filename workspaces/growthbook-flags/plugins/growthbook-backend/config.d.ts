@@ -37,7 +37,7 @@ export interface Config {
      * @example { prod: 'sdk-abc123', staging: 'sdk-def456', dev: 'sdk-ghi789' }
      * @visibility backend
      */
-    sdkKeys: {
+    sdkKeys?: {
       [key: string]: string;
     };
   };

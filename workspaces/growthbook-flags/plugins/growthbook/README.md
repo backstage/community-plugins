@@ -9,6 +9,8 @@ View and manage GrowthBook feature flags directly in Backstage catalog entities.
 - 📊 Alphabetical sorting
 - 🔐 Secure backend proxy with management API
 - 🎨 JSON detail dialog for complex flag values
+- 🧪 Experiments and results: a **Flags | Experiments** switch appears when the entity's `growthbook.io/project` has experiments
+- 🔎 Flag details with per-environment state, rules and GrowthBook stale status
 
 ## Installation
 
@@ -99,6 +101,13 @@ spec:
 | `growthbook.io/enabled` | Yes      | Set to `"true"` to enable the GrowthBook tab                                 |
 | `growthbook.io/env`     | No       | Environment (default: `prod`)                                                |
 | `growthbook.io/project` | No       | Scope flags to a specific project (management API only; ignored in SDK mode) |
+
+## Experiments and flag details
+
+Experiments, results and flag details need the Management API (`growthbook.secretKey` in the backend plugin).
+
+- The Flags | Experiments switch only appears when the entity has a `growthbook.io/project` annotation **and** that project has experiments. In every other case (no annotation, no experiments, SDK-only mode, or an error loading experiments) the tab shows the feature flags exactly as before.
+- Expand an experiment row to load its results. Expand a flag row (Details column) to see its environments, rules and whether GrowthBook considers it stale.
 
 ## Configuration
 
