@@ -24,3 +24,80 @@ export type FlagRow = {
   valuePreview: string;
   valuePretty?: string;
 };
+
+/** @public */
+export type ExperimentStatus = 'draft' | 'running' | 'stopped';
+
+/** @public */
+export type ExperimentVariation = {
+  id: string;
+  key: string;
+  name: string;
+};
+
+/** @public */
+export type ExperimentPhase = {
+  name: string;
+  dateStarted?: string;
+  dateEnded?: string;
+};
+
+/** @public */
+export type ExperimentRow = {
+  id: string;
+  name: string;
+  status: ExperimentStatus;
+  type?: string;
+  owner?: string;
+  tags: string[];
+  variations: ExperimentVariation[];
+  phases: ExperimentPhase[];
+  /** Id of the winning variation, when one was declared. */
+  winnerVariationId?: string;
+  /** Link to the experiment in the GrowthBook UI. */
+  url: string;
+};
+
+/** @public */
+export type ExperimentVariationResult = {
+  id: string;
+  name: string;
+  users?: number;
+  chanceToBeatControl?: number;
+  percentChange?: number;
+  ciLow?: number;
+  ciHigh?: number;
+};
+
+/** @public */
+export type ExperimentResultSummary = {
+  available: boolean;
+  metricName?: string;
+  variations: ExperimentVariationResult[];
+};
+
+/** @public */
+export type FlagRuleSummary = {
+  type: string;
+  description?: string;
+  enabled: boolean;
+};
+
+/** @public */
+export type FlagEnvironmentDetail = {
+  name: string;
+  enabled: boolean;
+  rules: FlagRuleSummary[];
+};
+
+/** @public */
+export type FlagDetail = {
+  key: string;
+  dateUpdated?: string;
+  archived: boolean;
+  owner?: string;
+  tags: string[];
+  isStale: boolean;
+  staleReason?: string;
+  environments: FlagEnvironmentDetail[];
+};
