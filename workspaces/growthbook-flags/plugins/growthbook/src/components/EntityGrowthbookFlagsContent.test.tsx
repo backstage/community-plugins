@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   EntityGrowthbookFlagsContent,
@@ -172,5 +173,92 @@ describe('EntityGrowthbookFlagsContent', () => {
     const { findByText } = await renderComponent();
 
     expect(await findByText('3 flags')).toBeInTheDocument();
+  });
+
+  const projectEntity = {
+    ...mockEntity,
+    metadata: {
+      ...mockEntity.metadata,
+      annotations: {
+        ...mockEntity.metadata.annotations,
+        'growthbook.io/project': 'Project A',
+      },
+    },
+  };
+
+  const experiment = {
+    id: 'exp_1',
+    name: 'Checkout button colour',
+    status: 'running' as const,
+    tags: [],
+    variations: [
+      { id: 'v0', key: '0', name: 'Control' },
+      { id: 'v1', key: '1', name: 'Green' },
+    ],
+    phases: [{ name: 'Main', dateStarted: '2026-09-01T00:00:00Z' }],
+    url: 'https://gb.example.com/experiment/exp_1',
+  };
+
+  it('does not request experiments without a project annotation', async () => {
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    const { findByText } = await renderComponent();
+    await findByText('alpha-feature');
+    expect(mockApi.getExperiments).not.toHaveBeenCalled();
+  });
+
+  it('shows flags only, with no tabs, when the project has no experiments', async () => {
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    mockApi.getExperiments.mockResolvedValue([]);
+    const { findByText, queryByRole } = await renderComponent(projectEntity);
+    expect(await findByText('alpha-feature')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(mockApi.getExperiments).toHaveBeenCalledWith('Project A'),
+    );
+    expect(queryByRole('tab')).not.toBeInTheDocument();
+  });
+
+  it('shows flags only when the experiments request fails', async () => {
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    mockApi.getExperiments.mockRejectedValue(new Error('experiments down'));
+    const { findByText, queryByRole, queryByText } = await renderComponent(
+      projectEntity,
+    );
+    expect(await findByText('alpha-feature')).toBeInTheDocument();
+    await waitFor(() => expect(mockApi.getExperiments).toHaveBeenCalled());
+    expect(queryByRole('tab')).not.toBeInTheDocument();
+    expect(queryByText(/experiments down/)).not.toBeInTheDocument();
+  });
+
+  it('shows Flags | Experiments tabs, Flags first, when experiments exist', async () => {
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    mockApi.getExperiments.mockResolvedValue([experiment]);
+    const { findByRole, findByText, queryByText } = await renderComponent(
+      projectEntity,
+    );
+
+    const flagsTab = await findByRole('tab', { name: 'Flags' });
+    expect(flagsTab).toHaveAttribute('aria-selected', 'true');
+    expect(await findByText('alpha-feature')).toBeInTheDocument();
+    expect(queryByText('Checkout button colour')).not.toBeInTheDocument();
+
+    fireEvent.click(await findByRole('tab', { name: /Experiments/ }));
+    expect(await findByText('Checkout button colour')).toBeInTheDocument();
+  });
+
+  it('does not refetch flags when switching tabs', async () => {
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    mockApi.getExperiments.mockResolvedValue([experiment]);
+    const { findByRole } = await renderComponent(projectEntity);
+    const experimentsTab = await findByRole('tab', { name: /Experiments/ });
+    // Flags are fetched again once the project list resolves (existing behavior).
+    await waitFor(() =>
+      expect(mockApi.getFlags).toHaveBeenCalledWith('prod', 'Project A'),
+    );
+    const callsBeforeSwitching = mockApi.getFlags.mock.calls.length;
+
+    fireEvent.click(experimentsTab);
+    fireEvent.click(await findByRole('tab', { name: 'Flags' }));
+
+    expect(mockApi.getFlags).toHaveBeenCalledTimes(callsBeforeSwitching);
   });
 });
