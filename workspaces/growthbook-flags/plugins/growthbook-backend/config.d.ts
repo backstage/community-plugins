@@ -23,6 +23,15 @@ export interface Config {
     baseUrl: string;
 
     /**
+     * URL of the GrowthBook web app, used for links to experiments.
+     * Only needed when it differs from baseUrl (for example baseUrl is
+     * https://api.growthbook.io and the app is https://app.growthbook.io).
+     * @example https://app.growthbook.io
+     * @visibility backend
+     */
+    appUrl?: string;
+
+    /**
      * GrowthBook Management API secret key (read-only).
      * When present, flags are fetched via the Management API with full project and environment metadata.
      * When absent, the SDK API fallback is used and sdkKeys must be provided.

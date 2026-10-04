@@ -271,3 +271,15 @@ export function normalizeFlagDetail(
     environments,
   };
 }
+
+/**
+ * Base URL used to link to the GrowthBook web app. `baseUrl` is the API host,
+ * which differs from the app host on GrowthBook Cloud and many self-hosted
+ * installs, so an explicit `appUrl` takes precedence.
+ */
+export function resolveAppUrl(
+  appUrl: string | undefined,
+  baseUrl: string,
+): string {
+  return appUrl ? appUrl.replace(/\/+$/, '') : baseUrl;
+}
