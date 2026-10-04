@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import useAsync from 'react-use/lib/useAsync';
@@ -38,7 +38,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { growthbookFlagsApiRef } from '../api';
+import { FlagDetailPanel } from './FlagDetailPanel';
 import type {
   FlagRow,
   FlagType,
@@ -158,6 +161,7 @@ export function FlagsView({
   const classes = useStyles();
   const api = useApi(growthbookFlagsApiRef);
   const [selectedFlag, setSelectedFlag] = useState<FlagRow | null>(null);
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
   const [selectedProject, setSelectedProject] = useState<string>(
     annotationProject ?? ALL_PROJECTS,
@@ -166,6 +170,9 @@ export function FlagsView({
   const { value: projects } = useAsync(() => api.getProjects(), []);
 
   const hasProjectSupport = projects && projects.length > 0;
+  // Flag details need the Management API, which is also what provides projects.
+  const detailsAvailable = Boolean(hasProjectSupport);
+  const columnCount = detailsAvailable ? 4 : 3;
 
   const projectFilter = hasProjectSupport
     ? annotationProject ??
@@ -237,12 +244,17 @@ export function FlagsView({
               <TableCell>
                 <strong>Default value</strong>
               </TableCell>
+              {detailsAvailable && (
+                <TableCell align="right">
+                  <strong>Details</strong>
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
             {sortedFlags.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className={classes.emptyRow}>
+                <TableCell colSpan={columnCount} className={classes.emptyRow}>
                   <Typography variant="body2" color="textSecondary">
                     No feature flags found
                     {selectedProject !== ALL_PROJECTS && (
@@ -257,36 +269,68 @@ export function FlagsView({
               </TableRow>
             ) : (
               sortedFlags.map(flag => (
-                <Tooltip
-                  key={flag.key}
-                  title={flag.type === 'json' ? 'Click to view full JSON' : ''}
-                  placement="left"
-                >
-                  <TableRow
-                    className={
-                      flag.type === 'json' || flag.valuePretty
-                        ? classes.clickableRow
-                        : undefined
+                <Fragment key={flag.key}>
+                  <Tooltip
+                    title={
+                      flag.type === 'json' ? 'Click to view full JSON' : ''
                     }
-                    onClick={() => {
-                      if (flag.type === 'json' || flag.valuePretty) {
-                        setSelectedFlag(flag);
-                      }
-                    }}
+                    placement="left"
                   >
-                    <TableCell className={classes.mono}>{flag.key}</TableCell>
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        label={flag.type}
-                        color={TYPE_COLOURS[flag.type]}
-                      />
-                    </TableCell>
-                    <TableCell className={classes.mono}>
-                      {flag.valuePreview}
-                    </TableCell>
-                  </TableRow>
-                </Tooltip>
+                    <TableRow
+                      className={
+                        flag.type === 'json' || flag.valuePretty
+                          ? classes.clickableRow
+                          : undefined
+                      }
+                      onClick={() => {
+                        if (flag.type === 'json' || flag.valuePretty) {
+                          setSelectedFlag(flag);
+                        }
+                      }}
+                    >
+                      <TableCell className={classes.mono}>{flag.key}</TableCell>
+                      <TableCell>
+                        <Chip
+                          size="small"
+                          label={flag.type}
+                          color={TYPE_COLOURS[flag.type]}
+                        />
+                      </TableCell>
+                      <TableCell className={classes.mono}>
+                        {flag.valuePreview}
+                      </TableCell>
+                      {detailsAvailable && (
+                        <TableCell align="right">
+                          <IconButton
+                            size="small"
+                            aria-label={`${
+                              expandedKey === flag.key ? 'Hide' : 'Show'
+                            } details for ${flag.key}`}
+                            onClick={e => {
+                              e.stopPropagation();
+                              setExpandedKey(k =>
+                                k === flag.key ? null : flag.key,
+                              );
+                            }}
+                          >
+                            {expandedKey === flag.key ? (
+                              <ExpandLessIcon />
+                            ) : (
+                              <ExpandMoreIcon />
+                            )}
+                          </IconButton>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  </Tooltip>
+                  {detailsAvailable && expandedKey === flag.key && (
+                    <TableRow>
+                      <TableCell colSpan={columnCount}>
+                        <FlagDetailPanel flagKey={flag.key} />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
               ))
             )}
           </TableBody>

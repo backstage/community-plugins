@@ -261,4 +261,29 @@ describe('EntityGrowthbookFlagsContent', () => {
 
     expect(mockApi.getFlags).toHaveBeenCalledTimes(callsBeforeSwitching);
   });
+
+  it('expands a flag row to show its details', async () => {
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    mockApi.getFlagDetail.mockResolvedValue({
+      key: 'alpha-feature',
+      archived: false,
+      tags: [],
+      isStale: false,
+      environments: [{ name: 'prod', enabled: true, rules: [] }],
+    });
+    const { findByLabelText, findByText } = await renderComponent();
+    fireEvent.click(await findByLabelText('Show details for alpha-feature'));
+    expect(mockApi.getFlagDetail).toHaveBeenCalledWith('alpha-feature');
+    expect(await findByText('0 rules')).toBeInTheDocument();
+  });
+
+  it('does not offer flag details when projects are unavailable (SDK mode)', async () => {
+    mockApi.getProjects.mockResolvedValue([]);
+    mockApi.getFlags.mockResolvedValue(mockFlags);
+    const { findByText, queryByLabelText } = await renderComponent();
+    await findByText('alpha-feature');
+    expect(
+      queryByLabelText('Show details for alpha-feature'),
+    ).not.toBeInTheDocument();
+  });
 });
