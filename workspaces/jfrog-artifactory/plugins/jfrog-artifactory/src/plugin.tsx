@@ -47,6 +47,7 @@ const jfrogArtifactoryEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/jfrog-artifactory',
     title: 'Jfrog Artifactory',
+    group: 'development',
     routeRef: rootRouteRef,
     filter: isJfrogArtifactoryAvailable,
     loader: () =>

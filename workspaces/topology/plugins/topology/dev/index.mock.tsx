@@ -37,7 +37,6 @@ import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 
 import topologyPlugin from '../src';
@@ -45,10 +44,14 @@ import topologyTranslationsModule from '../src/translations';
 import { devSidebarContent } from './shared';
 
 import {
+  createMockPermissionApi,
+  installMockKubernetesPermissionsPathSync,
   mockCatalogApi,
   mockKubernetesClient,
   mockKubernetesAuthProviderApi,
 } from './mocks';
+
+installMockKubernetesPermissionsPathSync();
 
 const signInPage = SignInPageBlueprint.make({
   params: {
@@ -110,13 +113,7 @@ const appDevModule = createFrontendModule({
         defineParams({
           api: permissionApiRef,
           deps: {},
-          factory: () => ({
-            authorize: async () => ({
-              result: window.location.pathname.includes('permission-denied')
-                ? AuthorizeResult.DENY
-                : AuthorizeResult.ALLOW,
-            }),
-          }),
+          factory: () => createMockPermissionApi(),
         }),
     }),
     ApiBlueprint.make({

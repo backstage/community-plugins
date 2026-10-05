@@ -1,5 +1,34 @@
 # @backstage-community/plugin-tekton
 
+## 4.0.5
+
+### Patch Changes
+
+- de3d66f: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 4.0.4
+
+### Patch Changes
+
+- 321c4d4: Align the PipelineRuns list with Backstage UI by using EntityInfoCard.
+
+## 4.0.3
+
+### Patch Changes
+
+- 5b03321: Assign the Tekton entity content to the deployment group.
+
+## 4.0.2
+
+### Patch Changes
+
+- 8ff1dd1: Added an extension `if` predicate so the Tekton entity tab is only shown when the user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`.
+- d0f4c91: Backstage version bump to v1.54.7
+- Updated dependencies [8ff1dd1]
+- Updated dependencies [d0f4c91]
+  - @backstage-community/plugin-tekton-common@1.24.1
+  - @backstage-community/plugin-tekton-react@0.9.1
+
 ## 4.0.1
 
 ### Patch Changes

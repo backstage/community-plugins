@@ -1,5 +1,40 @@
 # @backstage-community/plugin-rbac
 
+## 2.3.5
+
+### Patch Changes
+
+- 9464b63: Fixed the Create Role plugins table "Rows per page" dropdown rendering options on a single line in RHDH.
+
+## 2.3.4
+
+### Patch Changes
+
+- cefe093: Updated dependency `@types/node` to `22.20.4`.
+
+## 2.3.3
+
+### Patch Changes
+
+- e0c6404: Updated dependency `@types/node` to `22.20.3`.
+
+## 2.3.2
+
+### Patch Changes
+
+- a2a29d1: Align the new frontend system plugin with standard `plugin.tsx` and `routes.ts` file names.
+- 59d29aa: Move the legacy frontend plugin definition into the `legacy` export path.
+- 442f46e: Updated dependency `@types/node` to `22.20.2`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+
+## 2.3.1
+
+### Patch Changes
+
+- 2501a41: Backstage version bump to v1.54.7
+- Updated dependencies [2501a41]
+  - @backstage-community/plugin-rbac-common@2.1.1
+
 ## 2.3.0
 
 ### Minor Changes

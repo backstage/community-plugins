@@ -36,7 +36,7 @@ const argocdReadPermissionIfPredicate = {
   permissions: { $contains: 'argocd.view.read#read' },
 };
 
-const argoCDApi = ApiBlueprint.make({
+export const argoCDApi = ApiBlueprint.make({
   name: 'argocd',
   params: defineParams =>
     defineParams({
@@ -57,7 +57,7 @@ const argoCDApi = ApiBlueprint.make({
     }),
 });
 
-const argoCDInstanceApi = ApiBlueprint.make({
+export const argoCDInstanceApi = ApiBlueprint.make({
   name: 'argocd-instance',
   params: defineParams =>
     defineParams({
@@ -74,12 +74,13 @@ const argoCDInstanceApi = ApiBlueprint.make({
     }),
 });
 
-const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
+export const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
   name: 'deployment-lifecycle',
   if: argocdReadPermissionIfPredicate,
   params: {
     path: '/deployment-lifecycle',
     title: 'Deployment Lifecycle',
+    group: 'deployment',
     routeRef: rootRouteRef,
     filter: isArgocdConfigured,
     loader: async () =>
@@ -89,12 +90,13 @@ const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
   },
 });
 
-const deploymentSummaryEntityContent = EntityContentBlueprint.make({
+export const deploymentSummaryEntityContent = EntityContentBlueprint.make({
   name: 'deployment-summary',
   if: argocdReadPermissionIfPredicate,
   params: {
     path: '/deployment-summary',
     title: 'Deployment Summary',
+    group: 'deployment',
     filter: isArgocdConfigured,
     loader: async () =>
       import('./components/DeploymentSummary').then(m => (

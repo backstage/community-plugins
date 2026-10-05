@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tekton-common
 
+## 1.24.1
+
+### Patch Changes
+
+- 8ff1dd1: Added an extension `if` predicate so the Tekton entity tab is only shown when the user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`.
+- d0f4c91: Backstage version bump to v1.54.7
+
 ## 1.24.0
 
 ### Minor Changes

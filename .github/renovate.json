@@ -114,7 +114,6 @@
       "description": "Block react-router v7 — Backstage does not yet support it. Vulnerability alerts disabled since the security fix is available on the v6 line",
       "matchPackageNames": ["react-router", "react-router-dom"],
       "allowedVersions": "<7.0.0",
-      "ignoreCves": ["CVE-2026-53668"],
       "vulnerabilityAlerts": {
         "enabled": false
       }

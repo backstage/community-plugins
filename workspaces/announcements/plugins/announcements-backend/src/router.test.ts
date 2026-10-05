@@ -26,13 +26,26 @@ import {
   PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
+import { InputError, NotAllowedError, NotFoundError } from '@backstage/errors';
+import { EventsService } from '@backstage/plugin-events-node';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { SignalsService } from '@backstage/plugin-signals-node';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
 import {
+  announcementEntityPermissions,
   AUDITOR_ACTION_CREATE,
   AUDITOR_ACTION_DELETE,
+  AUDITOR_ACTION_UPDATE,
   AUDITOR_FETCH_EVENT_ID,
   AUDITOR_MUTATE_EVENT_ID,
+  EVENTS_ACTION_CREATE_ANNOUNCEMENT,
+  EVENTS_ACTION_CREATE_CATEGORY,
+  EVENTS_ACTION_DELETE_ANNOUNCEMENT,
+  EVENTS_ACTION_DELETE_CATEGORY,
+  EVENTS_ACTION_UPDATE_ANNOUNCEMENT,
+  EVENTS_TOPIC_ANNOUNCEMENTS,
+  MAX_TITLE_TAG_LENGTH,
+  SIGNALS_CHANNEL_ANNOUNCEMENTS,
 } from '@backstage-community/plugin-announcements-common';
 
 describe('createRouter', () => {
@@ -45,6 +58,10 @@ describe('createRouter', () => {
   const deleteAnnouncementByIDMock = jest.fn();
   const insertAnnouncementMock = jest.fn();
   const updateAnnouncementMock = jest.fn();
+  const categoriesMock = jest.fn();
+  const insertCategoryMock = jest.fn();
+  const deleteCategoryMock = jest.fn();
+  const tagsMock = jest.fn();
   const tagBySlugMock = jest.fn();
   const insertTagMock = jest.fn();
   const deleteTagMock = jest.fn();
@@ -57,12 +74,44 @@ describe('createRouter', () => {
       insertAnnouncement: insertAnnouncementMock,
       updateAnnouncement: updateAnnouncementMock,
     } as unknown as AnnouncementsDatabase,
-    categoriesStore: {} as unknown as CategoriesDatabase,
+    categoriesStore: {
+      categories: categoriesMock,
+      insert: insertCategoryMock,
+      delete: deleteCategoryMock,
+    } as unknown as CategoriesDatabase,
     tagsStore: {
+      tags: tagsMock,
       tagBySlug: tagBySlugMock,
       insert: insertTagMock,
       delete: deleteTagMock,
     } as unknown as TagsDatabase,
+  };
+
+  const mockEvents: EventsService = {
+    publish: jest.fn(),
+    subscribe: jest.fn(),
+  };
+
+  const mockSignals: SignalsService = {
+    publish: jest.fn(),
+  };
+
+  const mockCredentials = {
+    principal: { type: 'user', userEntityRef: 'user:default/name' },
+  };
+
+  const announcement = {
+    id: 'uuid',
+    title: 'title',
+    excerpt: 'excerpt',
+    body: 'body',
+    publisher: 'user:default/name',
+    active: true,
+    created_at: DateTime.fromISO('2025-01-01T00:00:00.000Z'),
+    start_at: DateTime.fromISO('2025-01-01T00:00:00.000Z'),
+    until_date: DateTime.fromISO('2025-02-01T00:00:00.000Z'),
+    updated_at: DateTime.fromISO('2025-01-01T00:00:00.000Z'),
+    tags: [],
   };
 
   const mockPermissions: PermissionsService = {
@@ -103,6 +152,8 @@ describe('createRouter', () => {
       httpAuth: mockHttpAuth,
       notifications: mockNotificationService,
       auditor: auditorMock,
+      events: mockEvents,
+      signals: mockSignals,
     };
 
     const router = await createRouter(announcementsContext);
@@ -121,6 +172,10 @@ describe('createRouter', () => {
       };
       return lastAuditorEvent;
     });
+    (mockHttpAuth.credentials as jest.Mock).mockResolvedValue(mockCredentials);
+    (mockPermissions.authorize as jest.Mock).mockResolvedValue([
+      { result: AuthorizeResult.ALLOW },
+    ]);
   });
 
   const expectAuditorSuccess = () => {
@@ -131,6 +186,16 @@ describe('createRouter', () => {
     }
     expect(lastAuditorEvent.success).toHaveBeenCalled();
     expect(lastAuditorEvent.fail).not.toHaveBeenCalled();
+  };
+
+  const expectAuditorFailure = (error: unknown = expect.anything()) => {
+    expect(auditorMock.createEvent).toHaveBeenCalled();
+    expect(lastAuditorEvent).toBeDefined();
+    if (!lastAuditorEvent) {
+      return;
+    }
+    expect(lastAuditorEvent.fail).toHaveBeenCalledWith({ error });
+    expect(lastAuditorEvent.success).not.toHaveBeenCalled();
   };
 
   describe('GET /announcements', () => {
@@ -363,14 +428,434 @@ describe('createRouter', () => {
     });
   });
 
-  describe('tags', () => {
-    beforeEach(() => {
-      (mockHttpAuth.credentials as jest.Mock).mockResolvedValue({
-        principal: { type: 'user', userEntityRef: 'user:default/name' },
+  describe('GET /announcements/:id', () => {
+    it('returns the announcement', async () => {
+      announcementByIDMock.mockResolvedValueOnce(announcement);
+
+      const response = await request(app).get('/announcements/uuid');
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toMatchObject({ id: 'uuid', title: 'title' });
+      expect(announcementByIDMock).toHaveBeenCalledWith('uuid');
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_FETCH_EVENT_ID,
+          severityLevel: 'low',
+          meta: { queryType: 'by-id', uid: 'uuid' },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('fails the audit event when the lookup throws', async () => {
+      const error = new Error('boom');
+      announcementByIDMock.mockRejectedValueOnce(error);
+
+      const response = await request(app).get('/announcements/uuid');
+
+      expect(response.status).toEqual(500);
+      expectAuditorFailure(error);
+    });
+  });
+
+  describe('DELETE /announcements/:id', () => {
+    it('deletes the announcement and publishes an event', async () => {
+      announcementByIDMock.mockResolvedValueOnce(announcement);
+
+      const response = await request(app).delete('/announcements/uuid');
+
+      expect(response.status).toEqual(204);
+      expect(deleteAnnouncementByIDMock).toHaveBeenCalledWith('uuid');
+      expect(mockEvents.publish).toHaveBeenCalledWith({
+        topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+        eventPayload: {
+          announcement: expect.objectContaining({ id: 'uuid' }),
+        },
+        metadata: { action: EVENTS_ACTION_DELETE_ANNOUNCEMENT },
       });
-      (mockPermissions.authorize as jest.Mock).mockResolvedValue([
-        { result: AuthorizeResult.ALLOW },
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: { actionType: AUDITOR_ACTION_DELETE, uid: 'uuid' },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('returns 404 when the announcement does not exist', async () => {
+      announcementByIDMock.mockResolvedValueOnce(undefined);
+
+      const response = await request(app).delete('/announcements/missing');
+
+      expect(response.status).toEqual(404);
+      expect(deleteAnnouncementByIDMock).not.toHaveBeenCalled();
+      expect(mockEvents.publish).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(NotFoundError));
+    });
+  });
+
+  describe('POST /announcements', () => {
+    const payload = {
+      title: 'title',
+      excerpt: 'excerpt',
+      body: 'body',
+      publisher: 'user:default/name',
+      active: true,
+      start_at: '2025-01-01T00:00:00.000Z',
+      until_date: '2025-02-01T00:00:00.000Z',
+      sendNotification: true,
+      tags: [' Foo Bar ', 'Baz'],
+    };
+
+    it('creates an active announcement, signals it and sends a notification', async () => {
+      insertAnnouncementMock.mockResolvedValueOnce(announcement);
+
+      const response = await request(app).post('/announcements').send(payload);
+
+      expect(response.status).toEqual(201);
+      expect(response.body).toMatchObject({ id: 'uuid', title: 'title' });
+      expect(insertAnnouncementMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: expect.any(String),
+          title: 'title',
+          start_at: expect.any(DateTime),
+          until_date: expect.any(DateTime),
+          tags: ['foo-bar', 'baz'],
+        }),
+      );
+      expect(mockEvents.publish).toHaveBeenCalledWith({
+        topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+        eventPayload: {
+          announcement: expect.objectContaining({ id: 'uuid' }),
+        },
+        metadata: { action: EVENTS_ACTION_CREATE_ANNOUNCEMENT },
+      });
+      expect(mockSignals.publish).toHaveBeenCalledWith(
+        expect.objectContaining({ channel: SIGNALS_CHANNEL_ANNOUNCEMENTS }),
+      );
+      expect(mockNotificationService.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            title: 'New Announcement "title"',
+            link: '/announcements/view/uuid',
+          }),
+        }),
+      );
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: { actionType: AUDITOR_ACTION_CREATE, withNotification: true },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('does not signal or notify for an inactive announcement', async () => {
+      insertAnnouncementMock.mockResolvedValueOnce({
+        ...announcement,
+        active: false,
+      });
+
+      const response = await request(app)
+        .post('/announcements')
+        .send({ ...payload, active: false });
+
+      expect(response.status).toEqual(201);
+      expect(mockEvents.publish).toHaveBeenCalledTimes(1);
+      expect(mockSignals.publish).not.toHaveBeenCalled();
+      expect(mockNotificationService.send).not.toHaveBeenCalled();
+      expectAuditorSuccess();
+    });
+
+    it('rejects an until_date before start_at', async () => {
+      const response = await request(app)
+        .post('/announcements')
+        .send({ ...payload, until_date: '2024-12-01T00:00:00.000Z' });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        error: 'until_date cannot be before start_at',
+      });
+      expect(insertAnnouncementMock).not.toHaveBeenCalled();
+    });
+
+    it('returns 500 and fails the audit event when saving fails', async () => {
+      const error = new Error('boom');
+      insertAnnouncementMock.mockRejectedValueOnce(error);
+
+      const response = await request(app).post('/announcements').send(payload);
+
+      expect(response.status).toEqual(500);
+      expect(response.body).toEqual({ error: 'Failed to create announcement' });
+      expect(mockEvents.publish).not.toHaveBeenCalled();
+      expectAuditorFailure(error);
+    });
+  });
+
+  describe('PUT /announcements/:id', () => {
+    const payload = {
+      title: 'updated title',
+      excerpt: 'excerpt',
+      body: 'body',
+      publisher: 'user:default/name',
+      active: true,
+      start_at: '2025-01-01T00:00:00.000Z',
+      until_date: '2025-02-01T00:00:00.000Z',
+      sendNotification: true,
+      tags: ['New Tag'],
+    };
+
+    it('updates the announcement and signals it when it becomes active', async () => {
+      announcementByIDMock.mockResolvedValueOnce({
+        ...announcement,
+        active: false,
+      });
+      updateAnnouncementMock.mockResolvedValueOnce({
+        ...announcement,
+        title: 'updated title',
+      });
+
+      const response = await request(app)
+        .put('/announcements/uuid')
+        .send(payload);
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toMatchObject({
+        id: 'uuid',
+        title: 'updated title',
+      });
+      expect(updateAnnouncementMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'uuid',
+          title: 'updated title',
+          active: true,
+          start_at: expect.any(DateTime),
+          until_date: expect.any(DateTime),
+          tags: ['new-tag'],
+        }),
+      );
+      expect(mockEvents.publish).toHaveBeenCalledWith({
+        topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+        eventPayload: {
+          announcement: expect.objectContaining({ id: 'uuid' }),
+        },
+        metadata: { action: EVENTS_ACTION_UPDATE_ANNOUNCEMENT },
+      });
+      expect(mockSignals.publish).toHaveBeenCalledTimes(1);
+      expect(mockNotificationService.send).toHaveBeenCalledTimes(1);
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: { actionType: AUDITOR_ACTION_UPDATE, uid: 'uuid' },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('does not signal or notify when the announcement was already active', async () => {
+      announcementByIDMock.mockResolvedValueOnce(announcement);
+      updateAnnouncementMock.mockResolvedValueOnce(announcement);
+
+      const response = await request(app)
+        .put('/announcements/uuid')
+        .send(payload);
+
+      expect(response.status).toEqual(200);
+      expect(mockEvents.publish).toHaveBeenCalledTimes(1);
+      expect(mockSignals.publish).not.toHaveBeenCalled();
+      expect(mockNotificationService.send).not.toHaveBeenCalled();
+      expectAuditorSuccess();
+    });
+
+    it('rejects an until_date before start_at', async () => {
+      const response = await request(app)
+        .put('/announcements/uuid')
+        .send({ ...payload, until_date: '2024-12-01T00:00:00.000Z' });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        error: 'until_date cannot be before start_at',
+      });
+      expect(announcementByIDMock).not.toHaveBeenCalled();
+      expect(updateAnnouncementMock).not.toHaveBeenCalled();
+    });
+
+    it('returns 404 when the announcement does not exist', async () => {
+      announcementByIDMock.mockResolvedValueOnce(undefined);
+
+      const response = await request(app)
+        .put('/announcements/missing')
+        .send(payload);
+
+      expect(response.status).toEqual(404);
+      expect(updateAnnouncementMock).not.toHaveBeenCalled();
+      expect(mockEvents.publish).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(NotFoundError));
+    });
+  });
+
+  describe('categories', () => {
+    it('lists categories', async () => {
+      categoriesMock.mockResolvedValueOnce([
+        { title: 'Category', slug: 'category' },
       ]);
+
+      const response = await request(app).get('/categories');
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual([{ title: 'Category', slug: 'category' }]);
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_FETCH_EVENT_ID,
+          severityLevel: 'low',
+          meta: { queryType: 'all' },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('fails the audit event when listing categories throws', async () => {
+      const error = new Error('boom');
+      categoriesMock.mockRejectedValueOnce(error);
+
+      const response = await request(app).get('/categories');
+
+      expect(response.status).toEqual(500);
+      expectAuditorFailure(error);
+    });
+
+    it('records a create action when a category is created', async () => {
+      const response = await request(app)
+        .post('/categories')
+        .send({ title: 'New Category' });
+
+      expect(response.status).toEqual(201);
+      expect(response.body).toEqual({
+        title: 'New Category',
+        slug: 'new-category',
+      });
+      expect(insertCategoryMock).toHaveBeenCalledWith({
+        title: 'New Category',
+        slug: 'new-category',
+      });
+      expect(mockEvents.publish).toHaveBeenCalledWith({
+        topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+        eventPayload: { category: 'new-category' },
+        metadata: { action: EVENTS_ACTION_CREATE_CATEGORY },
+      });
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: { actionType: AUDITOR_ACTION_CREATE },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('records a delete action when a category is deleted', async () => {
+      announcementsMock.mockResolvedValueOnce({ results: [], count: 0 });
+
+      const response = await request(app).delete('/categories/old-category');
+
+      expect(response.status).toEqual(204);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: 'old-category',
+      });
+      expect(deleteCategoryMock).toHaveBeenCalledWith('old-category');
+      expect(mockEvents.publish).toHaveBeenCalledWith({
+        topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+        eventPayload: { category: 'old-category' },
+        metadata: { action: EVENTS_ACTION_DELETE_CATEGORY },
+      });
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: { actionType: AUDITOR_ACTION_DELETE },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('refuses to delete a category used by announcements', async () => {
+      announcementsMock.mockResolvedValueOnce({
+        results: [announcement],
+        count: 1,
+      });
+
+      const response = await request(app).delete('/categories/used-category');
+
+      expect(response.status).toEqual(403);
+      expect(deleteCategoryMock).not.toHaveBeenCalled();
+      expect(mockEvents.publish).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(NotAllowedError));
+    });
+  });
+
+  describe('tags', () => {
+    it('lists tags', async () => {
+      tagsMock.mockResolvedValueOnce([{ title: 'Tag', slug: 'tag' }]);
+
+      const response = await request(app).get('/tags');
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual([{ title: 'Tag', slug: 'tag' }]);
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_FETCH_EVENT_ID,
+          severityLevel: 'low',
+          meta: { queryType: 'all' },
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('fails the audit event when listing tags throws', async () => {
+      const error = new Error('boom');
+      tagsMock.mockRejectedValueOnce(error);
+
+      const response = await request(app).get('/tags');
+
+      expect(response.status).toEqual(500);
+      expectAuditorFailure(error);
+    });
+
+    it.each([
+      ['a missing title', {}, 'Title is required'],
+      ['a blank title', { title: '   ' }, 'Title is required'],
+      [
+        'a title that is too long',
+        { title: 'a'.repeat(MAX_TITLE_TAG_LENGTH + 1) },
+        'Title exceeds maximum length',
+      ],
+    ])('rejects %s', async (_, body, message) => {
+      const response = await request(app).post('/tags').send(body);
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({ error: message });
+      expect(tagBySlugMock).not.toHaveBeenCalled();
+      expect(insertTagMock).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(InputError));
+    });
+
+    it('returns 409 when the tag already exists', async () => {
+      tagBySlugMock.mockResolvedValueOnce({
+        title: 'New Tag',
+        slug: 'new-tag',
+      });
+
+      const response = await request(app)
+        .post('/tags')
+        .send({ title: 'New Tag' });
+
+      expect(response.status).toEqual(409);
+      expect(response.body).toEqual({ error: 'Tag already exists' });
+      expect(insertTagMock).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(InputError));
     });
 
     it('records a create action when a tag is created', async () => {
@@ -422,5 +907,80 @@ describe('createRouter', () => {
       );
       expectAuditorSuccess();
     });
+
+    it('refuses to delete a tag used by announcements', async () => {
+      announcementsMock.mockResolvedValueOnce({
+        results: [announcement],
+        count: 1,
+      });
+
+      const response = await request(app).delete('/tags/used-tag');
+
+      expect(response.status).toEqual(403);
+      expect(announcementsMock).toHaveBeenCalledWith({ tags: ['used-tag'] });
+      expect(deleteTagMock).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(NotAllowedError));
+    });
+
+    it('returns 404 when deleting a tag that does not exist', async () => {
+      announcementsMock.mockResolvedValueOnce({ results: [], count: 0 });
+      tagBySlugMock.mockResolvedValueOnce(undefined);
+
+      const response = await request(app).delete('/tags/missing-tag');
+
+      expect(response.status).toEqual(404);
+      expect(response.body).toEqual({ error: 'Tag not found' });
+      expect(deleteTagMock).not.toHaveBeenCalled();
+      expectAuditorFailure(expect.any(NotFoundError));
+    });
+  });
+
+  describe('permissions', () => {
+    const {
+      announcementCreatePermission,
+      announcementDeletePermission,
+      announcementUpdatePermission,
+    } = announcementEntityPermissions;
+
+    it.each([
+      ['delete', '/announcements/uuid', announcementDeletePermission],
+      ['post', '/announcements', announcementCreatePermission],
+      ['put', '/announcements/uuid', announcementUpdatePermission],
+      ['post', '/categories', announcementCreatePermission],
+      ['delete', '/categories/slug', announcementDeletePermission],
+      ['post', '/tags', announcementCreatePermission],
+      ['delete', '/tags/slug', announcementDeletePermission],
+    ] as const)(
+      'rejects unauthorized %s %s',
+      async (method, path, permission) => {
+        (mockPermissions.authorize as jest.Mock).mockResolvedValueOnce([
+          { result: AuthorizeResult.DENY },
+        ]);
+
+        const response = await request(app)[method](path).send({
+          title: 'title',
+        });
+
+        expect(response.status).toEqual(403);
+        expect(mockPermissions.authorize).toHaveBeenCalledWith(
+          [{ permission }],
+          { credentials: mockCredentials },
+        );
+        [
+          announcementsMock,
+          announcementByIDMock,
+          deleteAnnouncementByIDMock,
+          insertAnnouncementMock,
+          updateAnnouncementMock,
+          insertCategoryMock,
+          deleteCategoryMock,
+          tagBySlugMock,
+          insertTagMock,
+          deleteTagMock,
+        ].forEach(storeMock => expect(storeMock).not.toHaveBeenCalled());
+        expect(mockEvents.publish).not.toHaveBeenCalled();
+        expectAuditorFailure(expect.any(NotAllowedError));
+      },
+    );
   });
 });

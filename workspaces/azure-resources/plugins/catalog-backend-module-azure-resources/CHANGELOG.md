@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-azure-resources
 
+## 0.12.0
+
+### Minor Changes
+
+- 1c0227b: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [1c0227b]
+  - @backstage-community/plugin-azure-resources-node@0.15.0
+
 ## 0.11.0
 
 ### Minor Changes

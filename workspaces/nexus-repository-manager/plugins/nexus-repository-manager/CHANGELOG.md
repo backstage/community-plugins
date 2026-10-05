@@ -1,5 +1,28 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.4
+
+### Patch Changes
+
+- 97d1969: Assign the Build Artifacts entity content to the development group.
+
+## 1.27.3
+
+### Patch Changes
+
+- 5833add: Updated dependency `@types/node` to `22.20.2`.
+- 31b965e: Updated dependency `@types/node` to `22.20.3`.
+
+## 1.27.2
+
+### Patch Changes
+
+- aa39b16: Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.6`.
+- f7eb124: Updated dependency `@playwright/test` to `1.63.0`.
+- 8735687: Updated dependency `@testing-library/user-event` to `14.6.7`.
+- c031c0a: Backstage version bump to v1.54.7
+
 ## 1.27.1
 
 ### Patch Changes
