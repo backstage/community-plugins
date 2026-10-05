@@ -16,6 +16,5 @@
 
 import { config } from './config';
 import { managePage } from './manage-page';
-import { navItem } from './nav';
 
-export default [config, managePage, navItem];
+export default [config, managePage];
