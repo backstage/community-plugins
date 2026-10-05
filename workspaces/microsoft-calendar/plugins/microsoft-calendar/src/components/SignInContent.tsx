@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { Button } from '@backstage/ui';
+import { Button, Box } from '@backstage/ui';
 import { CalendarEvent } from './CalendarEvent';
 import mockEvents from './eventMock.json';
 import { MicrosoftCalendarEvent } from '../api';
-import styles from './SignInContent.module.css';
 
 type Props = {
   handleAuthClick: (e: any) => void;
@@ -26,18 +25,41 @@ type Props = {
 
 export const SignInContent = ({ handleAuthClick }: Props) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.mockContent}>
+    <Box
+      style={{
+        position: 'relative',
+        height: '100%',
+        width: '100%',
+      }}
+    >
+      <Box
+        style={{
+          opacity: 0.3,
+          filter: 'blur(1.5px)',
+          padding: 'var(--bui-space-1)',
+        }}
+      >
         {(mockEvents as MicrosoftCalendarEvent[]).map(event => (
           <CalendarEvent key={event.id} event={event} />
         ))}
-      </div>
+      </Box>
 
-      <div className={styles.overlay}>
+      <Box
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          left: '0',
+          top: '0',
+        }}
+      >
         <Button variant="primary" onClick={handleAuthClick}>
           Sign in
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };

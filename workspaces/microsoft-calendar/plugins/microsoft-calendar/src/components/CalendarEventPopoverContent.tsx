@@ -18,13 +18,12 @@ import DOMPurify from 'dompurify';
 import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { Link } from '@backstage/core-components';
-import { ButtonIcon, Text } from '@backstage/ui';
+import { ButtonIcon, Text, Flex, Box } from '@backstage/ui';
 import { RiArrowRightSLine } from '@remixicon/react';
 
 import { AttendeeChip } from './AttendeeChip';
 import { MicrosoftCalendarEvent } from '../api';
 import { getTimePeriod, getOnlineMeetingLink } from './util';
-import styles from './CalendarEventPopoverContent.module.css';
 
 type CalendarEventPopoverProps = {
   event: MicrosoftCalendarEvent;
@@ -36,14 +35,29 @@ export const CalendarEventPopoverContent = ({
   const onlineMeetingLink = getOnlineMeetingLink(event);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.headerContent}>
+    <Box
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '400px',
+        padding: 'var(--bui-space-3)',
+        gap: 'var(--bui-space-2)',
+      }}
+    >
+      <Flex gap="2" align="start" justify="between">
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--bui-space-1)',
+            flex: 1,
+          }}
+        >
           <Text variant="title-small">{event.subject}</Text>
           <Text variant="body-small" color="secondary">
             {getTimePeriod(event)}
           </Text>
-        </div>
+        </Box>
         {event.webLink && (
           <TooltipTrigger>
             <Link
@@ -61,7 +75,7 @@ export const CalendarEventPopoverContent = ({
             <Tooltip>Open in Calendar</Tooltip>
           </TooltipTrigger>
         )}
-      </div>
+      </Flex>
       {onlineMeetingLink && (
         <Link to={onlineMeetingLink} onClick={_e => {}} noTrack>
           Join Online Meeting
@@ -70,9 +84,17 @@ export const CalendarEventPopoverContent = ({
 
       {event.bodyPreview && (
         <>
-          <div className={styles.divider} />
-          <div
-            className={styles.description}
+          <Box
+            style={{
+              height: '1px',
+              backgroundColor: 'var(--bui-border-neutral)',
+              margin: 'var(--bui-space-3) 0',
+            }}
+          />
+          <Box
+            style={{
+              wordBreak: 'break-word',
+            }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 (event.body && event.body.content) || '',
@@ -87,21 +109,27 @@ export const CalendarEventPopoverContent = ({
 
       {event.attendees && (
         <>
-          <div className={styles.divider} />
-          <div>
+          <Box
+            style={{
+              height: '1px',
+              backgroundColor: 'var(--bui-border-neutral)',
+              margin: 'var(--bui-space-3) 0',
+            }}
+          />
+          <Box>
             <Text variant="body-small" color="secondary">
               Attendees
             </Text>
-            <div className={styles.attendeeGap} />
+            <Box style={{ height: 'var(--bui-space-2)' }} />
             {sortBy(event.attendees || [], 'emailAddress').map(user => (
               <AttendeeChip
                 key={user.emailAddress?.address || ''}
                 user={user}
               />
             ))}
-          </div>
+          </Box>
         </>
       )}
-    </div>
+    </Box>
   );
 };

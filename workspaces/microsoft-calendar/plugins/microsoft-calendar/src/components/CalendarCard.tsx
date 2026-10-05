@@ -19,7 +19,7 @@ import { DateTime } from 'luxon';
 import { useState } from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
-import { ButtonIcon, Text } from '@backstage/ui';
+import { ButtonIcon, Text, Box, Flex } from '@backstage/ui';
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
 
 import { useCalendarsQuery, useEventsQuery, useSignIn } from '../hooks';
@@ -29,7 +29,6 @@ import { CalendarSelect } from './CalendarSelect';
 import { SignInContent } from './SignInContent';
 import { getStartDate } from './util';
 import useAsync from 'react-use/esm/useAsync';
-import styles from './CalendarCard.module.css';
 
 export const CalendarCard = () => {
   const [date, setDate] = useState(DateTime.now());
@@ -70,10 +69,18 @@ export const CalendarCard = () => {
     <InfoCard
       noPadding
       title={
-        <div className={styles.titleWrapper}>
-          <div className={styles.iconWrapper}>
-            <img src={calendarIcon} alt="Microsoft Calendar" />
-          </div>
+        <Flex gap="2" align="center">
+          <Flex
+            style={{ width: '32px', height: '32px' }}
+            align="center"
+            justify="center"
+          >
+            <img
+              src={calendarIcon}
+              alt="Microsoft Calendar"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+          </Flex>
           {isSignedIn ? (
             <>
               <ButtonIcon
@@ -88,7 +95,7 @@ export const CalendarCard = () => {
                 variant="secondary"
                 aria-label="Next day"
               />
-              <div className={styles.spacer} />
+              <div style={{ flex: 1 }} />
               <Text variant="body-medium">
                 {date.toLocaleString({
                   weekday: 'short',
@@ -96,8 +103,6 @@ export const CalendarCard = () => {
                   day: 'numeric',
                 })}
               </Text>
-
-              <div className={styles.flex} />
 
               <CalendarSelect
                 calendars={calendars}
@@ -111,35 +116,35 @@ export const CalendarCard = () => {
           ) : (
             <Text variant="body-medium">Agenda</Text>
           )}
-        </div>
+        </Flex>
       }
       deepLink={{
         link: 'https://outlook.office.com/calendar/',
         title: 'Go to Calendar',
       }}
     >
-      <div>
+      <Box>
         {showLoader && (
-          <div className={styles.loaderContainer}>
+          <Box p="3">
             <Progress variant="query" />
-          </div>
+          </Box>
         )}
         {!isSignedIn && isInitialized && (
           <SignInContent handleAuthClick={() => signIn(false)} />
         )}
         {!isEventLoading && !isCalendarLoading && isSignedIn && (
-          <div className={styles.eventsContainer}>
+          <Box p="1" pb="0" style={{ maxHeight: '602px', overflowY: 'auto' }}>
             {events?.length === 0 && (
-              <div className={styles.emptyState}>
+              <Box pt="3" pb="3" style={{ textAlign: 'center' }}>
                 <Text color="secondary">No events</Text>
-              </div>
+              </Box>
             )}
             {sortBy(events, [getStartDate]).map(event => (
               <CalendarEvent key={`${event.id}`} event={event} />
             ))}
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
     </InfoCard>
   );
 };

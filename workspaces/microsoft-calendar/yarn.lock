@@ -1669,7 +1669,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.18.0":
+"@backstage/ui@backstage:^::backstage=1.55.1&npm=0.18.0, @backstage/ui@npm:^0.18.0":
   version: 0.18.0
   resolution: "@backstage/ui@npm:0.18.0"
   dependencies:

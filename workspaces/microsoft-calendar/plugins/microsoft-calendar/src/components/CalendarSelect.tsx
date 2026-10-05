@@ -15,7 +15,6 @@
  */
 import { sortBy } from 'lodash';
 import { MicrosoftCalendar } from '../api';
-import styles from './CalendarSelect.module.css';
 
 type CalendarSelectProps = {
   disabled: boolean;
@@ -32,7 +31,19 @@ export const CalendarSelect = ({
 }: CalendarSelectProps) => {
   return (
     <select
-      className={styles.select}
+      style={{
+        width: '120px',
+        padding: 'var(--bui-space-2)',
+        border: '1px solid var(--bui-border-neutral)',
+        borderRadius: 'var(--bui-radius-1)',
+        backgroundColor: 'var(--bui-bg-surface-1)',
+        color: 'var(--bui-fg-primary)',
+        fontSize: 'var(--bui-font-size-3)',
+        fontFamily: 'inherit',
+        cursor: 'pointer',
+        transition:
+          'border-color 150ms ease-in-out, background-color 150ms ease-in-out',
+      }}
       disabled={disabled || calendars.length === 0}
       value={selectedCalendarId || ''}
       onChange={e => setSelectedCalendarId(e.target.value)}

@@ -16,7 +16,7 @@
 
 import { RiCloseLine, RiCheckLine } from '@remixicon/react';
 import { Attendee, ResponseStatusMap } from '../api';
-import styles from './AttendeeChip.module.css';
+import { Box } from '@backstage/ui';
 
 const ResponseIcon = ({ responseStatus }: { responseStatus: string }) => {
   if (responseStatus === ResponseStatusMap.accepted) {
@@ -24,7 +24,7 @@ const ResponseIcon = ({ responseStatus }: { responseStatus: string }) => {
       <RiCheckLine
         size={16}
         data-testid="accepted-icon"
-        className={styles.acceptedIcon}
+        style={{ color: 'var(--bui-fg-success, #10b981)' }}
       />
     );
   }
@@ -33,7 +33,7 @@ const ResponseIcon = ({ responseStatus }: { responseStatus: string }) => {
       <RiCloseLine
         size={16}
         data-testid="declined-icon"
-        className={styles.declinedIcon}
+        style={{ color: 'var(--bui-fg-danger, #ef4444)' }}
       />
     );
   }
@@ -49,13 +49,43 @@ export const AttendeeChip = ({ user }: AttendeeChipProps) => {
   const responseStatus = user.status?.response || '';
 
   return (
-    <div className={styles.badge}>
-      <div className={styles.chip}>{user.emailAddress?.address}</div>
+    <Box style={{ position: 'relative', display: 'inline-block' }}>
+      <div
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          padding: '4px var(--bui-space-2)',
+          border: '1px solid var(--bui-border-primary)',
+          borderRadius: '16px',
+          backgroundColor: 'transparent',
+          color: 'var(--bui-fg-primary)',
+          fontSize: '12px',
+          fontWeight: 500,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          maxWidth: '200px',
+        }}
+      >
+        {user.emailAddress?.address}
+      </div>
       {responseStatus && (
-        <div className={styles.badgeContent}>
+        <Box
+          style={{
+            position: 'absolute',
+            right: '10px',
+            top: '5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '16px',
+            height: '16px',
+            backgroundColor: 'var(--bui-bg-surface-1)',
+          }}
+        >
           <ResponseIcon responseStatus={responseStatus} />
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
