@@ -17,7 +17,7 @@ import { useRef, useState } from 'react';
 import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { Link } from '@backstage/core-components';
-import { Text, Box, Flex } from '@backstage/ui';
+import { Text, Box } from '@backstage/ui';
 
 import webcamIcon from '../icons/webcam.svg';
 import { CalendarEventPopoverContent } from './CalendarEventPopoverContent';

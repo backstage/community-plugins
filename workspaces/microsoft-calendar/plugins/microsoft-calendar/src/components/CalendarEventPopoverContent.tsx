@@ -84,14 +84,14 @@ export const CalendarEventPopoverContent = ({
 
       {event.bodyPreview && (
         <>
-          <Box
+          <div
             style={{
               height: '1px',
               backgroundColor: 'var(--bui-border-neutral)',
               margin: 'var(--bui-space-3) 0',
             }}
           />
-          <Box
+          <div
             style={{
               wordBreak: 'break-word',
             }}
@@ -109,7 +109,7 @@ export const CalendarEventPopoverContent = ({
 
       {event.attendees && (
         <>
-          <Box
+          <div
             style={{
               height: '1px',
               backgroundColor: 'var(--bui-border-neutral)',
@@ -120,7 +120,7 @@ export const CalendarEventPopoverContent = ({
             <Text variant="body-small" color="secondary">
               Attendees
             </Text>
-            <Box style={{ height: 'var(--bui-space-2)' }} />
+            <div style={{ height: 'var(--bui-space-2)' }} />
             {sortBy(event.attendees || [], 'emailAddress').map(user => (
               <AttendeeChip
                 key={user.emailAddress?.address || ''}
