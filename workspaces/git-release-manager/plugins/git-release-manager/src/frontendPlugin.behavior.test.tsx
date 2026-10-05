@@ -30,14 +30,7 @@ import { GitReleaseClient } from './api/GitReleaseClient';
 import { gitReleaseManagerApiRef } from './api/serviceApiRef';
 import { gitReleaseManagerApi, gitReleaseManagerPage } from './frontendPlugin';
 import { rootRouteRef } from './routes';
-
-jest.mock('./GitReleaseManager', () => ({
-  GitReleaseManager: () => (
-    <section aria-label="Git Release Manager content">
-      <h1>Git Release Manager</h1>
-    </section>
-  ),
-}));
+import { mockApiClient } from './test-helpers/mock-api-client';
 
 describe('git release manager frontend plugin behavior', () => {
   it('creates the API client from the app APIs', () => {
@@ -57,7 +50,7 @@ describe('git release manager frontend plugin behavior', () => {
     ).toBeInstanceOf(GitReleaseClient);
   });
 
-  it('registers a navigable page without adding a second page header', async () => {
+  it('renders the page with APIs provided by the new frontend system', async () => {
     const tester = createExtensionTester(gitReleaseManagerPage);
 
     expect(tester.get(coreExtensionData.routePath)).toBe(
@@ -68,16 +61,13 @@ describe('git release manager frontend plugin behavior', () => {
     expect(tester.get(coreExtensionData.icon)).toBeDefined();
 
     renderTestApp({
+      apis: [[gitReleaseManagerApiRef, mockApiClient]],
       extensions: [gitReleaseManagerPage],
       initialRouteEntries: ['/git-release-manager'],
     });
-    await screen.findByRole('region', {
-      name: 'Git Release Manager content',
-    });
     expect(
-      screen.getAllByRole('heading', {
+      await screen.findAllByRole('heading', {
         name: 'Git Release Manager',
-        level: 1,
       }),
     ).toHaveLength(1);
   });
