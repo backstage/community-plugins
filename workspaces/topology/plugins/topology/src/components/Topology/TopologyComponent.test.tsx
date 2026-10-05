@@ -72,8 +72,9 @@ describe('TopologyComponent', () => {
 
   it('should render TopologyComponent', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
-    const { getByText } = render(<TopologyComponent />);
+    const { getByText, container } = render(<TopologyComponent />);
     expect(getByText(/topologyworkloadview/i)).not.toBeNull();
+    expect(container.querySelector('.pf-ri__topology')).not.toBeNull();
   });
 
   it('should render PermissionMissing page when permissions are missing', () => {

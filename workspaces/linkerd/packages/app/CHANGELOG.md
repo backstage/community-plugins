@@ -1,5 +1,12 @@
 # app
 
+## 0.0.31
+
+### Patch Changes
+
+- Updated dependencies [183f74f]
+  - @backstage-community/plugin-linkerd@0.24.0
+
 ## 0.0.30
 
 ### Patch Changes

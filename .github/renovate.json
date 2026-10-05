@@ -21,10 +21,12 @@
   },
   "packageRules": [
     {
+      "description": "Group all GitHub Actions updates into a single PR",
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions"
     },
     {
+      "description": "Disable @backstage/* updates — these are managed by the Backstage version bump process",
       "matchManagers": ["npm"],
       "enabled": false,
       "vulnerabilityAlerts": {
@@ -33,35 +35,19 @@
       "matchPackageNames": ["/^@backstage//"]
     },
     {
+      "description": "Disable @material-ui replacement PRs — MUI-to-BUI migration is handled separately",
       "enabled": false,
       "matchUpdateTypes": ["replacement"],
       "matchPackageNames": ["/^@material-ui//"]
     },
     {
-      "matchPackageNames": ["node-fetch"],
-      "allowedVersions": "<3.0.0"
-    },
-    {
-      "matchPackageNames": ["typescript"],
-      "allowedVersions": "~5.3.0"
-    },
-    {
-      "matchPackageNames": ["yn"],
-      "allowedVersions": "<5.0.0"
-    },
-    {
-      "matchPackageNames": ["react-router", "react-router-dom"],
-      "allowedVersions": "<7.0.0",
-      "vulnerabilityAlerts": {
-        "enabled": false
-      }
-    },
-    {
+      "description": "Group dependency updates per workspace so each workspace gets its own PR",
       "matchFileNames": ["workspaces/**"],
       "groupName": "workspace/{{lookup (split packageFileDir '/') 1}} dependencies",
       "additionalBranchPrefix": "workspace-{{lookup (split packageFileDir '/') 1}}/"
     },
     {
+      "description": "Override per-workspace grouping for maintainer-owned workspaces — batch into a single combined PR",
       "matchFileNames": [
         "workspaces/airbrake/**",
         "workspaces/allure/**",
@@ -108,6 +94,39 @@
       ],
       "groupName": "maintainer-owned workspace dependencies",
       "additionalBranchPrefix": "workspace-maintainer-owned/"
+    },
+    {
+      "description": "Pin node-fetch to v2 — v3 is ESM-only and not compatible with the current build setup",
+      "matchPackageNames": ["node-fetch"],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "description": "Pin TypeScript to ~5.3 to match the version used by the Backstage framework",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "~5.3.0"
+    },
+    {
+      "description": "Pin yn to v4 — v5 is ESM-only and not compatible with the current build setup",
+      "matchPackageNames": ["yn"],
+      "allowedVersions": "<5.0.0"
+    },
+    {
+      "description": "Block react-router v7 — Backstage does not yet support it. Vulnerability alerts disabled since the security fix is available on the v6 line",
+      "matchPackageNames": ["react-router", "react-router-dom"],
+      "allowedVersions": "<7.0.0",
+      "vulnerabilityAlerts": {
+        "enabled": false
+      }
+    },
+    {
+      "description": "Require manual approval on the Dependency Dashboard before creating major version update PRs",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Disable lock file maintenance PRs — each workspace has its own yarn.lock and bulk lock file updates can cause issues",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "enabled": false
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"],

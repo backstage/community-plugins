@@ -17,7 +17,7 @@
 import { screen } from '@testing-library/react';
 import {
   renderInTestApp,
-  setupRequestMockHandlers,
+  registerMswTestHooks,
   TestApiRegistry,
 } from '@backstage/test-utils';
 import AuditListTable from './AuditListTable';
@@ -39,7 +39,7 @@ describe('AuditListTable', () => {
   let apis: TestApiRegistry;
 
   const server = setupServer();
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   beforeEach(() => {
     apis = TestApiRegistry.from([

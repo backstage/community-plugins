@@ -1,5 +1,17 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.15.0
+
+### Minor Changes
+
+- 2183521: Allow the Octopus Deploy plugin to resolve projects by either project ID or project slug, including space-prefixed values.
+
+## 0.14.0
+
+### Minor Changes
+
+- d44fafd: Backstage version bump to v1.55.1
+
 ## 0.13.0
 
 ### Minor Changes

@@ -26,16 +26,15 @@ export const EntityPageOctopusDeploy = (props: { defaultLimit?: number }) => {
   const projectReference = getProjectReferenceAnnotationFromEntity(entity);
 
   const { environments, releases, loading, error } = useReleases(
-    projectReference.projectId,
+    projectReference,
     props.defaultLimit ?? 3,
-    projectReference.spaceId,
   );
 
   const {
     project,
     loading: projectLoading,
     error: projectError,
-  } = useProject(projectReference.projectId, projectReference.spaceId);
+  } = useProject(projectReference);
 
   const { config, loading: configLoading, error: configError } = useConfig();
 
