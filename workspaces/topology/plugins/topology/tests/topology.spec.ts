@@ -225,4 +225,44 @@ test.describe('Topology plugin', () => {
       await expect(page.getByTestId('details-tab')).toContainText(podCount!);
     });
   });
+
+  test.describe('Global styles', () => {
+    const otherPagePath = isNfsAppMode()
+      ? '/catalog/default/component/backstage'
+      : '/missing-permissions';
+
+    const readHostStyles = () =>
+      page.evaluate(() => {
+        const body = window.getComputedStyle(document.body);
+        const heading = document.querySelector('h1');
+        return {
+          bodyFontFamily: body.fontFamily,
+          bodyLineHeight: body.lineHeight,
+          bodyColor: body.color,
+          headingFontSize: heading
+            ? window.getComputedStyle(heading).fontSize
+            : '',
+          headingFontWeight: heading
+            ? window.getComputedStyle(heading).fontWeight
+            : '',
+        };
+      });
+
+    test('does not leak PatternFly global styles into other pages', async () => {
+      await page.goto(otherPagePath);
+      await page.waitForLoadState('networkidle');
+      const before = await readHostStyles();
+      expect(before.bodyFontFamily).not.toContain('Red Hat Text');
+
+      await common.navigateToTopologyView();
+      await expect(page.locator('.pf-ri__topology')).toBeVisible();
+
+      // Client-side navigation keeps whatever stylesheets Topology injected.
+      await page.locator(`a[href="${otherPagePath}"]`).first().click();
+      await page.waitForURL(url => url.pathname === otherPagePath);
+      await expect(page.locator('h1').first()).toBeVisible();
+
+      expect(await readHostStyles()).toEqual(before);
+    });
+  });
 });
