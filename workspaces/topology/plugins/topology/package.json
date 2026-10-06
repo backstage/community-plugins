@@ -121,17 +121,8 @@
     "react-router-dom": "^6.26.2"
   },
   "files": [
-    "dist",
-    "app-config.backstage-community.yaml"
+    "dist"
   ],
-  "scalprum": {
-    "name": "backstage-community.plugin-topology",
-    "exposedModules": {
-      "PluginRoot": "./src/index.ts",
-      "Legacy": "./src/legacy.ts",
-      "Alpha": "./src/alpha.ts"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
