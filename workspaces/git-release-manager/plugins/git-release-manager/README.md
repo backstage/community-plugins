@@ -48,7 +48,14 @@ Looking at the flow above, a common release lifecycle could be:
 
 ### Importing
 
-The plugin exports a single full-page extension `GitReleaseManagerPage`, which one can add to an app like a usual top-level tool on a dedicated route.
+When using the [new frontend system](https://backstage.io/docs/frontend-system/),
+installing the package is enough to make its default frontend feature available
+to the app. It registers the Git Release Manager API and a page at
+`/git-release-manager`.
+
+For the legacy frontend system, the plugin exports a single full-page extension
+`GitReleaseManagerPage`, which can be added to an app like a usual top-level
+tool on a dedicated route.
 
 ### Configuration
 

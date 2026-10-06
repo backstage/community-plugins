@@ -5,6 +5,7 @@
 ```ts
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PropsWithChildren } from 'react';
 import type { ReactElement } from 'react';
@@ -244,6 +245,10 @@ function getTagParts(options: { project: Project; tag: string }):
 //
 // @public (undocumented)
 export const gitReleaseManagerApiRef: ApiRef<GitReleaseApi>;
+
+// @public (undocumented)
+const gitReleaseManagerFrontendPlugin: FrontendPlugin;
+export default gitReleaseManagerFrontendPlugin;
 
 // Warning: (ae-forgotten-export) The symbol "GitReleaseManager" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "GitReleaseManagerPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
