@@ -14,7 +14,7 @@ Renovate evaluates `packageRules` in order. When multiple rules match the same p
 
 1. **General rules** — broad disabling or grouping rules (e.g., disable `@backstage/*`, disable `@material-ui/*` replacements)
 2. **Workspace grouping rules** — group updates per workspace, then override grouping for maintainer-owned workspaces
-3. **Version pin rules** — restrict specific packages to allowed version ranges (e.g., `node-fetch <3`, `typescript ~5.3`, `react-router <7`)
+3. **Version pin rules** — restrict specific packages to allowed version ranges (e.g., `node-fetch <3`, `typescript ~5.3`, `react-router <7`, `@remixicon/react <4.9`)
 4. **Update type rules** — control behavior for categories of updates (e.g., require dashboard approval for major updates)
 
 Version pin rules come after workspace grouping rules so that version constraints take precedence over grouping behavior. This is especially important for packages like `react-router` where the `vulnerabilityAlerts.enabled: false` setting must not be overridden by a later grouping rule.
@@ -45,6 +45,7 @@ Several packages are pinned to specific version ranges because newer major versi
 | `typescript`                       | `~5.3.0`         | Must match Backstage framework version         |
 | `yn`                               | `<5.0.0`         | v5 is ESM-only                                 |
 | `react-router`, `react-router-dom` | `<7.0.0`         | Backstage does not yet support React Router v7 |
+| `@remixicon/react`                 | `<4.9.0`         | License change in 4.9.0                        |
 
 ### Major Version Updates
 
