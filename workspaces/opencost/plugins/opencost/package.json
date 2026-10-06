@@ -39,7 +39,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@remixicon/react": "^4.7.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "date-fns": "^3.0.0",
     "lodash": "^4.17.21",
