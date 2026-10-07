@@ -68,6 +68,32 @@ lifecycle: { timeToLive: { weeks: 2 } }; # Human readable value
 
 The Tech Insights plugin utilizes `SchedulerService` to schedule and coordinate task invocation across instances. See [the SchedulerService documentation](https://backstage.io/docs/reference/backend-plugin-api.schedulerservice/) for more information.
 
+#### Refreshing the facts of a single entity
+
+Fact retrievers run on their schedule. To refresh the facts of one entity right away, for example after fixing what a check complains about, call:
+
+```http
+POST /api/tech-insights/facts/refresh/<namespace>/<kind>/<name>
+Content-Type: application/json
+
+{ "factRetrieverIds": ["entityOwnershipFactRetriever"] }
+```
+
+The body is optional. Without `factRetrieverIds`, every registered fact retriever runs. Each fact retriever runs with its entity filter narrowed to the given entity, and its facts are stored like those of a scheduled run. Fact retrievers whose entity filter cannot match the entity are skipped.
+
+The response lists the number of stored facts per fact retriever, and an `error` for each one that failed:
+
+```json
+{
+  "entity": "component:default/my-service",
+  "results": [{ "factRetrieverId": "entityOwnershipFactRetriever", "facts": 1 }]
+}
+```
+
+The request runs synchronously and needs the `tech-insights.check.run` permission. Restrict expensive fact retrievers by passing `factRetrieverIds` from the caller.
+
+A fact retriever supports this if it reads its entities through `entityFilter` from its handler context, as the built-in fact retrievers do.
+
 ### Included FactChecker
 
 **NOTE**: You need a Fact Checker configured to get access to the backend routes that will allow the facts to be checked. If you don't have one configured, you will see 404s and potentially other errors.
