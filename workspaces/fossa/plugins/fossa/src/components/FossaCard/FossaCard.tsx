@@ -20,7 +20,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { DateTime } from 'luxon';
 import { PropsWithChildren } from 'react';
@@ -41,38 +41,40 @@ import {
 
 import { useApi } from '@backstage/core-plugin-api';
 
-const useStyles = makeStyles(theme => ({
-  numberError: {
-    fontSize: '5rem',
-    textAlign: 'center',
-    fontWeight: theme.typography.fontWeightMedium,
-    margin: theme.spacing(2, 0),
-    color: theme.palette.error.main,
-  },
-  numberSuccess: {
-    fontSize: '5rem',
-    textAlign: 'center',
-    fontWeight: theme.typography.fontWeightMedium,
-    margin: theme.spacing(2, 0),
-    color: theme.palette.success.main,
-  },
-  description: {
-    fontSize: '1rem',
-    textAlign: 'center',
-    fontWeight: theme.typography.fontWeightMedium,
-    color: theme.palette.text.secondary,
-  },
-  disabled: {
-    backgroundColor: theme.palette.background.default,
-  },
-  lastAnalyzed: {
-    color: theme.palette.text.secondary,
-    textAlign: 'center',
-  },
-  branch: {
-    textDecoration: 'underline dotted',
-  },
-}));
+const useStyles = makeStyles(theme =>
+  createStyles({
+    numberError: {
+      fontSize: '5rem',
+      textAlign: 'center',
+      fontWeight: theme.typography.fontWeightMedium as number | undefined,
+      margin: theme.spacing(2, 0),
+      color: theme.palette.error.main,
+    },
+    numberSuccess: {
+      fontSize: '5rem',
+      textAlign: 'center',
+      fontWeight: theme.typography.fontWeightMedium as number | undefined,
+      margin: theme.spacing(2, 0),
+      color: theme.palette.success.main,
+    },
+    description: {
+      fontSize: '1rem',
+      textAlign: 'center',
+      fontWeight: theme.typography.fontWeightMedium as number | undefined,
+      color: theme.palette.text.secondary,
+    },
+    disabled: {
+      backgroundColor: theme.palette.background.default,
+    },
+    lastAnalyzed: {
+      color: theme.palette.text.secondary,
+      textAlign: 'center',
+    },
+    branch: {
+      textDecoration: 'underline dotted',
+    },
+  }),
+);
 
 const Card = ({
   children,
