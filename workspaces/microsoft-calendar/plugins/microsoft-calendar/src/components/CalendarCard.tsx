@@ -19,12 +19,8 @@ import { DateTime } from 'luxon';
 import { useState } from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
-
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import PrevIcon from '@material-ui/icons/NavigateBefore';
-import NextIcon from '@material-ui/icons/NavigateNext';
+import { ButtonIcon, Text, Box, Flex } from '@backstage/ui';
+import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
 
 import { useCalendarsQuery, useEventsQuery, useSignIn } from '../hooks';
 import calendarIcon from '../icons/calendar.svg';
@@ -73,28 +69,40 @@ export const CalendarCard = () => {
     <InfoCard
       noPadding
       title={
-        <Box display="flex" alignItems="center">
-          <Box height={32} width={32} mr={1}>
-            <img src={calendarIcon} alt="Microsoft Calendar" />
-          </Box>
+        <Flex gap="2" align="center">
+          <Flex
+            style={{ width: '32px', height: '32px' }}
+            align="center"
+            justify="center"
+          >
+            <img
+              src={calendarIcon}
+              alt="Microsoft Calendar"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+          </Flex>
           {isSignedIn ? (
             <>
-              <IconButton onClick={() => changeDay(-1)} size="small">
-                <PrevIcon />
-              </IconButton>
-              <IconButton onClick={() => changeDay(1)} size="small">
-                <NextIcon />
-              </IconButton>
-              <Box mr={0.5} />
-              <Typography variant="h6">
+              <ButtonIcon
+                onClick={() => changeDay(-1)}
+                icon={<RiArrowLeftSLine size={16} />}
+                variant="secondary"
+                aria-label="Previous day"
+              />
+              <ButtonIcon
+                onClick={() => changeDay(1)}
+                icon={<RiArrowRightSLine size={16} />}
+                variant="secondary"
+                aria-label="Next day"
+              />
+              <div style={{ flex: 1 }} />
+              <Text variant="body-medium">
                 {date.toLocaleString({
                   weekday: 'short',
                   month: 'short',
                   day: 'numeric',
                 })}
-              </Typography>
-
-              <Box flex={1} />
+              </Text>
 
               <CalendarSelect
                 calendars={calendars}
@@ -106,9 +114,9 @@ export const CalendarCard = () => {
               />
             </>
           ) : (
-            <Typography variant="h6">Agenda</Typography>
+            <Text variant="body-medium">Agenda</Text>
           )}
-        </Box>
+        </Flex>
       }
       deepLink={{
         link: 'https://outlook.office.com/calendar/',
@@ -117,7 +125,7 @@ export const CalendarCard = () => {
     >
       <Box>
         {showLoader && (
-          <Box py={2}>
+          <Box p="3">
             <Progress variant="query" />
           </Box>
         )}
@@ -125,12 +133,10 @@ export const CalendarCard = () => {
           <SignInContent handleAuthClick={() => signIn(false)} />
         )}
         {!isEventLoading && !isCalendarLoading && isSignedIn && (
-          <Box p={1} pb={0} maxHeight={602} overflow="auto">
+          <Box p="1" pb="0" style={{ maxHeight: '602px', overflowY: 'auto' }}>
             {events?.length === 0 && (
-              <Box pt={2} pb={2}>
-                <Typography align="center" variant="h6">
-                  No events
-                </Typography>
+              <Box pt="3" pb="3" style={{ textAlign: 'center' }}>
+                <Text color="secondary">No events</Text>
               </Box>
             )}
             {sortBy(events, [getStartDate]).map(event => (
