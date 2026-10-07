@@ -19,7 +19,7 @@ import { DefaultShortcutsApi, shortcutsApiRef } from './api';
 import {
   renderInTestApp,
   TestApiProvider,
-  MockStorageApi,
+  mockApis,
 } from '@backstage/test-utils';
 
 describe('ShortcutForm', () => {
@@ -31,9 +31,7 @@ describe('ShortcutForm', () => {
   it('displays validation messages', async () => {
     await renderInTestApp(
       <TestApiProvider
-        apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-        ]}
+        apis={[[shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())]]}
       >
         <ShortcutForm {...props} />
       </TestApiProvider>,
@@ -56,7 +54,7 @@ describe('ShortcutForm', () => {
   });
 
   it('displays duplicate validation messages for title and URL', async () => {
-    const mockShortcutApi = new DefaultShortcutsApi(MockStorageApi.create());
+    const mockShortcutApi = new DefaultShortcutsApi(mockApis.storage());
     mockShortcutApi.add({ title: 'Existing Title', url: '/existing-url' });
 
     await renderInTestApp(
@@ -89,9 +87,7 @@ describe('ShortcutForm', () => {
   it('allows external links', async () => {
     await renderInTestApp(
       <TestApiProvider
-        apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-        ]}
+        apis={[[shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())]]}
       >
         <ShortcutForm allowExternalLinks {...props} />
       </TestApiProvider>,
@@ -119,9 +115,7 @@ describe('ShortcutForm', () => {
   it('allows relative links when external links are enabled', async () => {
     await renderInTestApp(
       <TestApiProvider
-        apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-        ]}
+        apis={[[shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())]]}
       >
         <ShortcutForm allowExternalLinks {...props} />
       </TestApiProvider>,
@@ -149,9 +143,7 @@ describe('ShortcutForm', () => {
   it('calls the save handler', async () => {
     await renderInTestApp(
       <TestApiProvider
-        apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-        ]}
+        apis={[[shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())]]}
       >
         <ShortcutForm
           {...props}
@@ -173,9 +165,7 @@ describe('ShortcutForm', () => {
   it('calls the close handler', async () => {
     await renderInTestApp(
       <TestApiProvider
-        apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-        ]}
+        apis={[[shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())]]}
       >
         <ShortcutForm {...props} />
       </TestApiProvider>,
