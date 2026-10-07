@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   EntityGrowthbookFlagsContent,
@@ -211,9 +211,7 @@ describe('EntityGrowthbookFlagsContent', () => {
     mockApi.getExperiments.mockResolvedValue([]);
     const { findByText, queryByRole } = await renderComponent(projectEntity);
     expect(await findByText('alpha-feature')).toBeInTheDocument();
-    await waitFor(() =>
-      expect(mockApi.getExperiments).toHaveBeenCalledWith('Project A'),
-    );
+    expect(mockApi.getExperiments).toHaveBeenCalledWith('Project A');
     expect(queryByRole('tab')).not.toBeInTheDocument();
   });
 
@@ -224,7 +222,7 @@ describe('EntityGrowthbookFlagsContent', () => {
       projectEntity,
     );
     expect(await findByText('alpha-feature')).toBeInTheDocument();
-    await waitFor(() => expect(mockApi.getExperiments).toHaveBeenCalled());
+    expect(mockApi.getExperiments).toHaveBeenCalled();
     expect(queryByRole('tab')).not.toBeInTheDocument();
     expect(queryByText(/experiments down/)).not.toBeInTheDocument();
   });
@@ -248,12 +246,12 @@ describe('EntityGrowthbookFlagsContent', () => {
   it('does not refetch flags when switching tabs', async () => {
     mockApi.getFlags.mockResolvedValue(mockFlags);
     mockApi.getExperiments.mockResolvedValue([experiment]);
-    const { findByRole } = await renderComponent(projectEntity);
+    const { findByRole, findByText } = await renderComponent(projectEntity);
     const experimentsTab = await findByRole('tab', { name: /Experiments/ });
-    // Flags are fetched again once the project list resolves (existing behavior).
-    await waitFor(() =>
-      expect(mockApi.getFlags).toHaveBeenCalledWith('prod', 'Project A'),
-    );
+    // The project label only renders once the project list has resolved and
+    // flags were refetched with the project filter (existing behavior).
+    await findByText('Project A');
+    expect(mockApi.getFlags).toHaveBeenLastCalledWith('prod', 'Project A');
     const callsBeforeSwitching = mockApi.getFlags.mock.calls.length;
 
     fireEvent.click(experimentsTab);
