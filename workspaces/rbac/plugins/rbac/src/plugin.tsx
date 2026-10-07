@@ -34,7 +34,8 @@ export const rbacPage = PageBlueprint.make({
     title: 'RBAC',
     icon: <RbacIcon />,
     routeRef: rootRouteRef,
-    loader: async () => import('./components/Router').then(m => <m.Router />),
+    loader: async () =>
+      import('./components/Router').then(m => <m.NfsRouter />),
   },
 });
 

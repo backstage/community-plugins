@@ -98,7 +98,6 @@
     "@backstage/frontend-test-utils": "^0.6.3",
     "@backstage/plugin-user-settings": "^0.9.6",
     "@backstage/test-utils": "^1.7.21",
-    "@backstage/ui": "^0.17.1",
     "@playwright/test": "1.65.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",

@@ -41,7 +41,7 @@ import { rootRouteRef } from './routes';
 // the loader imports and the export it names. Router's own behaviour is covered by
 // components/Router.test.tsx, which imports it directly.
 jest.mock('./components/Router', () => ({
-  Router: () => <div>rbac router</div>,
+  NfsRouter: () => <div>rbac router</div>,
 }));
 
 describe('RBAC plugin', () => {
