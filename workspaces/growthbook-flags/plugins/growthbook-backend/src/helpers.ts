@@ -130,6 +130,7 @@ export type MgmtExperiment = {
   variations: { variationId: string; key: string; name: string }[];
   phases?: { name: string; dateStarted?: string; dateEnded?: string }[];
   resultSummary?: { winner?: string };
+  settings?: { goals?: { metricId: string }[] };
 };
 
 type MgmtAnalysis = {
@@ -193,7 +194,7 @@ export function normalizeExperiment(
     type: e.type,
     owner: e.owner,
     tags: e.tags ?? [],
-    variations: e.variations.map(v => ({
+    variations: (e.variations ?? []).map(v => ({
       id: v.variationId,
       key: v.key,
       name: v.name,
@@ -212,7 +213,10 @@ export function normalizeResults(
   experiment: MgmtExperiment,
   result: MgmtResults,
 ): ExperimentResultSummary {
-  const metric = result.results?.[0]?.metrics?.[0];
+  const metrics = result.results?.[0]?.metrics;
+  const goalId = experiment.settings?.goals?.[0]?.metricId;
+  // Prefer the experiment's first goal; the API does not order goals first.
+  const metric = metrics?.find(m => m.metricId === goalId) ?? metrics?.[0];
   if (!metric) return { available: false, variations: [] };
 
   const variations = metric.variations.map((v): ExperimentVariationResult => {
@@ -220,7 +224,7 @@ export function normalizeResults(
       v.analyses?.find(a => a.engine === 'bayesian') ?? v.analyses?.[0];
     const name =
       v.variationName ??
-      experiment.variations.find(ev => ev.variationId === v.variationId)
+      (experiment.variations ?? []).find(ev => ev.variationId === v.variationId)
         ?.name ??
       v.variationId;
     return {
