@@ -1,0 +1,12 @@
+@layer components {
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .link {
+    display: block;
+    padding: var(--bui-space-2) var(--bui-space-3);
+  }
+}

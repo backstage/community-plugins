@@ -20,13 +20,14 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
 } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Link, Popover } from '@backstage/ui';
 import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import styles from './ResultLinksMenu.module.css';
 
 /**
  * ResultLinksMenu setMenu receiver.
@@ -74,7 +75,8 @@ export const ResultLinksMenu = (
     entity ? stringifyEntityRef(entity) : 'unknown'
   }`;
 
-  const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined);
+  const anchorRef = useRef<Element | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (links.length === 0) {
@@ -83,39 +85,45 @@ export const ResultLinksMenu = (
     }
     setMenu({
       open: (elem: Element) => {
-        setAnchorEl(elem);
+        anchorRef.current = elem;
+        setIsOpen(true);
       },
     });
   }, [setMenu, links]);
 
   const handleClose = useCallback(() => {
-    setAnchorEl(undefined);
-  }, [setAnchorEl]);
+    setIsOpen(false);
+  }, [setIsOpen]);
 
   if (links.length === 0) {
     return null;
   }
 
   return (
-    <Menu
-      id={menuId}
-      anchorEl={anchorEl ?? null}
-      keepMounted
-      open={Boolean(anchorEl)}
-      onClose={handleClose}
+    <Popover
+      triggerRef={anchorRef}
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      placement="bottom end"
+      hideArrow
     >
-      {links.map((link, i) => (
-        <MenuItem
-          key={`${i}-${link.url}`}
-          button
-          component="a"
-          href={link.url}
-          target={link.url.startsWith('/') ? undefined : '_blank'}
-          onClick={handleClose}
-        >
-          {link.title}
-        </MenuItem>
-      ))}
-    </Menu>
+      {/*
+       * Close on link activation (mouse or Enter both emit click). Capture
+       * phase, because react-aria links stop the click from bubbling.
+       */}
+      <ul id={menuId} className={styles.list} onClickCapture={handleClose}>
+        {links.map((link, i) => (
+          <li key={`${i}-${link.url}`}>
+            <Link
+              href={link.url}
+              target={link.url.startsWith('/') ? undefined : '_blank'}
+              className={styles.link}
+            >
+              {link.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Popover>
   );
 };
