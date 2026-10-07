@@ -216,7 +216,15 @@ export class GrowthbookClient {
         Boolean(body.hasMore) &&
         body.nextOffset !== null &&
         body.nextOffset !== undefined;
-      if (hasMore) offset = body.nextOffset as number;
+      if (hasMore) {
+        const next = body.nextOffset as number;
+        if (next <= offset) {
+          throw new Error(
+            `GrowthBook ${label} pagination did not advance (offset ${offset})`,
+          );
+        }
+        offset = next;
+      }
     }
     return items;
   }

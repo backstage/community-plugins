@@ -26,7 +26,7 @@ import {
 
 export type RouterOptions = {
   logger: LoggerService;
-  /** Base URL of the GrowthBook instance, used to build links. */
+  /** URL of the GrowthBook web app, used to build links to experiments. */
   appUrl: string;
   /** Present when `growthbook.secretKey` is configured (Management API mode). */
   mgmt?: GrowthbookClient;
