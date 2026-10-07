@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 2.3.6
+
+### Patch Changes
+
+- e52795d: Updated dependency `@types/node` to `22.20.5`.
+
 ## 2.3.5
 
 ### Patch Changes
