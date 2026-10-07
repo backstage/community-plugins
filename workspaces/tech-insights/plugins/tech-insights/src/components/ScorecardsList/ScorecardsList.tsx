@@ -15,8 +15,7 @@
  */
 
 import { useApi } from '@backstage/core-plugin-api';
-import { Text, Tooltip, TooltipTrigger } from '@backstage/ui';
-import { Focusable } from 'react-aria-components';
+import { Focusable, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { MarkdownContent } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';

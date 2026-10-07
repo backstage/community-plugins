@@ -100,18 +100,28 @@ describe('ResultCheckIcon', () => {
   });
 
   it('opens the popup from a custom wrapping component and closes it on link click', async () => {
+    const wrapperClick = jest.fn();
     const Wrapper = ({
       children,
       onClick,
     }: PropsWithChildren<ResultCheckIconBaseComponentProps>) => (
       // Stands in for an adopter's wrapper; the inner button stays focusable
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-      <div onClick={onClick}>{children}</div>
+      <div
+        onClick={e => {
+          wrapperClick();
+          onClick?.(e);
+        }}
+      >
+        {children}
+      </div>
     );
     await renderIcon(createApi(), { component: Wrapper });
 
     await userEvent.click(screen.getByRole('button', { name: 'icon' }));
 
+    // The inner button must let the click bubble to the wrapper
+    expect(wrapperClick).toHaveBeenCalledTimes(1);
     const link = await screen.findByRole('link', { name: 'Docs' });
     expect(link).toBeVisible();
 

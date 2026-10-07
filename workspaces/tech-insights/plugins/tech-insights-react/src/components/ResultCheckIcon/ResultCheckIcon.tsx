@@ -25,11 +25,16 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity } from '@backstage/catalog-model';
-import { Alert } from '@backstage/ui';
+import { Alert, ButtonIcon } from '@backstage/ui';
 import { techInsightsApiRef } from '../../api';
 import { ResultLinksMenu, ResultLinksMenuInfo } from '../ResultLinksMenu';
 import { CheckResultRenderer } from '../CheckResultRenderer';
-import styles from './ResultCheckIcon.module.css';
+
+// react-aria stops click propagation by default, which would hide the click
+// from a wrapping `component` that owns the onClick. Let it bubble, as the
+// original MUI IconButton did.
+const continuePropagation = (e: { continuePropagation: () => void }) =>
+  e.continuePropagation();
 
 /** @public */
 export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
@@ -130,27 +135,29 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
       return inner;
     }
 
+    const button = (
+      <ButtonIcon
+        aria-label="icon"
+        variant="tertiary"
+        size="small"
+        icon={inner}
+        onClick={component ? undefined : onClick}
+        onPressStart={continuePropagation}
+        onPressUp={continuePropagation}
+        onPressEnd={continuePropagation}
+      />
+    );
+
     if (component) {
       const Component =
         component as ElementType<ResultCheckIconBaseComponentProps>;
       return (
         <Component {...componentProps} onClick={onClick}>
-          <button type="button" aria-label="icon" className={styles.button}>
-            {inner}
-          </button>
+          {button}
         </Component>
       );
     }
-    return (
-      <button
-        type="button"
-        aria-label="icon"
-        className={styles.button}
-        onClick={onClick}
-      >
-        {inner}
-      </button>
-    );
+    return button;
   };
 
   return (

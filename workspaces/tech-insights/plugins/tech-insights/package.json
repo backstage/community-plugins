@@ -70,7 +70,6 @@
     "@material-table/exporters": "^1.2.19",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-aria-components": "~1.17.0",
     "react-use": "^17.2.4",
     "zod": "^4.0.0"
   },

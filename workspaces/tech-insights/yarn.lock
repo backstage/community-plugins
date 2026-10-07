@@ -2086,7 +2086,6 @@ __metadata:
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-aria-components: "npm:~1.17.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
     react-use: "npm:^17.2.4"
