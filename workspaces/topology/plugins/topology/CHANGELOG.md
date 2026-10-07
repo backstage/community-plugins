@@ -1,5 +1,12 @@
 # @backstage-community/plugin-topology
 
+## 3.0.7
+
+### Patch Changes
+
+- 7065129: Removed product-specific Scalprum metadata and the dynamic plugin app-config from the published package.
+- 179f48a: Stop applying PatternFly's global reset styles to the whole app. Opening the Topology tab no longer changes fonts, headings and links on other pages until the next reload.
+
 ## 3.0.6
 
 ### Patch Changes
