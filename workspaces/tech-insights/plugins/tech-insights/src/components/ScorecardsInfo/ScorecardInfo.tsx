@@ -15,109 +15,47 @@
  */
 
 import { ReactElement, ReactNode } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  Accordion,
+  AccordionPanel,
+  AccordionTrigger,
+  Alert,
+  Flex,
+  Text,
+} from '@backstage/ui';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import Alert from '@material-ui/lab/Alert';
 import { ScorecardsList } from '../ScorecardsList';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
 import { useApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { MarkdownContent } from '@backstage/core-components';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
-
-const useStyles = makeStyles(theme => ({
-  subheader: {
-    paddingLeft: theme.spacing(0.5),
-  },
-  accordionHeader: {
-    borderBottom: `1px solid ${theme.palette.border}`,
-  },
-  accordionHeaderContent: {
-    margin: `${theme.spacing(2)}px 0 !important`,
-  },
-  accordionDetails: {
-    margin: 0,
-    paddingBottom: 0,
-  },
-}));
-
-const infoAccordion = (
-  title: ReactNode,
-  children: ReactNode,
-  classes: ReturnType<typeof useStyles>,
-  expanded: boolean,
-  summary?: string,
-) => (
-  <Accordion defaultExpanded={expanded}>
-    <AccordionSummary
-      expandIcon={<ExpandMoreIcon />}
-      className={classes.accordionHeader}
-      classes={{
-        content: classes.accordionHeaderContent,
-      }}
-    >
-      <Grid container justifyContent="space-between" alignItems="center">
-        <Grid item>
-          <Typography variant="h5">{title}</Typography>
-        </Grid>
-        <Grid item>
-          <Typography>{summary}</Typography>
-        </Grid>
-      </Grid>
-    </AccordionSummary>
-    <AccordionDetails classes={{ root: classes.accordionDetails }}>
-      {children}
-    </AccordionDetails>
-  </Accordion>
-);
-
-const infoDetails = (
-  description: string | undefined,
-  classes: ReturnType<typeof useStyles>,
-  element: ReactElement,
-) => {
-  return (
-    <Grid container>
-      {description && (
-        <Grid item xs={12}>
-          <Typography
-            className={classes.subheader}
-            variant="body1"
-            gutterBottom
-          >
-            <MarkdownContent content={description} />
-          </Typography>
-        </Grid>
-      )}
-      <Grid item xs={12}>
-        {element}
-      </Grid>
-    </Grid>
-  );
-};
+import styles from './ScorecardInfo.module.css';
 
 const infoCard = (
   title: ReactNode,
   description: string | undefined,
-  classes: ReturnType<typeof useStyles>,
   element: ReactElement,
   expanded: boolean,
   summary?: string,
 ) => (
-  <Grid item xs={12}>
-    {infoAccordion(
-      title,
-      infoDetails(description, classes, element),
-      classes,
-      expanded,
-      summary,
-    )}
-  </Grid>
+  <Accordion defaultExpanded={expanded}>
+    <AccordionTrigger className={styles.trigger}>
+      <Flex justify="between" align="center" className={styles.triggerContent}>
+        <Text as="span" variant="title-small">
+          {title}
+        </Text>
+        {summary && <Text as="span">{summary}</Text>}
+      </Flex>
+    </AccordionTrigger>
+    <AccordionPanel>
+      {description && (
+        <Text as="div" className={styles.description}>
+          <MarkdownContent content={description} />
+        </Text>
+      )}
+      {element}
+    </AccordionPanel>
+  </Accordion>
 );
 
 export const ScorecardInfo = (props: {
@@ -140,7 +78,6 @@ export const ScorecardInfo = (props: {
     dense,
     hideDescription = dense,
   } = props;
-  const classes = useStyles();
   const api = useApi(techInsightsApiRef);
 
   if (!checkResults.length) {
@@ -148,18 +85,17 @@ export const ScorecardInfo = (props: {
       return infoCard(
         title,
         description,
-        classes,
-        <Alert severity="info">
-          All checks passed, or no checks have been performed yet
-        </Alert>,
+        <Alert
+          status="info"
+          title="All checks passed, or no checks have been performed yet"
+        />,
         expanded,
       );
     }
     return infoCard(
       title,
       description,
-      classes,
-      <Alert severity="warning">No checks have any data yet.</Alert>,
+      <Alert status="warning" title="No checks have any data yet." />,
       expanded,
     );
   }
@@ -167,7 +103,6 @@ export const ScorecardInfo = (props: {
   return infoCard(
     title,
     description,
-    classes,
     <ScorecardsList
       checkResults={checkResults}
       entity={entity}

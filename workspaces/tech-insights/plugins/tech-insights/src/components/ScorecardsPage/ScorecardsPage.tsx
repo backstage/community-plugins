@@ -33,7 +33,7 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ScorecardsList } from '../ScorecardsList';
-import Grid from '@material-ui/core/Grid';
+import { Box, Flex } from '@backstage/ui';
 import { Filters } from './Filters';
 import { ExportCsv as exportCsv } from '@material-table/exporters';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
@@ -164,8 +164,8 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
         <HeaderLabel label="Checks" value={value?.checks.length ?? 0} />
       </Header>
       <Content>
-        <Grid container>
-          <Grid item style={{ width: '300px' }}>
+        <Flex gap="4" align="start">
+          <Box width="300px" style={{ flexShrink: 0 }}>
             <Filters
               checksChanged={checks => setFilterSelectedChecks(checks)}
               withResultsChanged={withResults =>
@@ -175,16 +175,16 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
                 setFilterFailedChecks(hasFailedChecks)
               }
             />
-          </Grid>
-          <Grid item xs>
+          </Box>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <Table
               columns={tableColumns}
               data={value?.result ?? []}
               isLoading={loading}
               options={tableOptions}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Flex>
       </Content>
     </Page>
   );

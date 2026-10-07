@@ -1,0 +1,27 @@
+@layer components {
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    padding: var(--bui-space-2) 0;
+  }
+
+  .list[data-dense] .item {
+    padding: var(--bui-space-1) 0;
+  }
+
+  .text {
+    flex: 1;
+    min-width: 0;
+    padding-right: var(--bui-space-1);
+  }
+
+  .tooltipTarget {
+    cursor: default;
+  }
+}

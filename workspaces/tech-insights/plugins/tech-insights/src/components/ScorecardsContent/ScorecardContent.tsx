@@ -18,7 +18,7 @@ import useAsync from 'react-use/esm/useAsync';
 import { Content, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ScorecardInfo } from '../ScorecardsInfo';
-import Alert from '@material-ui/lab/Alert';
+import { Alert } from '@backstage/ui';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
@@ -45,7 +45,7 @@ export const ScorecardsContent = (props: {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   }
 
   return (

@@ -1,0 +1,15 @@
+@layer components {
+  .trigger {
+    border-bottom: 1px solid var(--bui-border-1);
+  }
+
+  .triggerContent {
+    flex: 1;
+    margin-right: var(--bui-space-2);
+  }
+
+  .description {
+    padding-left: var(--bui-space-1);
+    margin-bottom: var(--bui-space-2);
+  }
+}

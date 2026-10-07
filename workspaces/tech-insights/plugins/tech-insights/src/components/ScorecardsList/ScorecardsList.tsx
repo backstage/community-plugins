@@ -15,10 +15,8 @@
  */
 
 import { useApi } from '@backstage/core-plugin-api';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text, Tooltip, TooltipTrigger } from '@backstage/ui';
+import { Focusable } from 'react-aria-components';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { MarkdownContent } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
@@ -26,18 +24,7 @@ import {
   ResultCheckIcon,
   techInsightsApiRef,
 } from '@backstage-community/plugin-tech-insights-react';
-import Tooltip from '@material-ui/core/Tooltip';
-
-const useStyles = makeStyles(theme => ({
-  listItemText: {
-    paddingRight: theme.spacing(0.5),
-  },
-}));
-const itemTooltip = (
-  children: React.ReactElement,
-  title: string | NonNullable<React.ReactNode>,
-  enabled?: boolean,
-) => (enabled ? <Tooltip title={title}>{children}</Tooltip> : children);
+import styles from './ScorecardsList.module.css';
 
 export const ScorecardsList = (props: {
   checkResults: CheckResult[];
@@ -47,15 +34,14 @@ export const ScorecardsList = (props: {
 }) => {
   const { checkResults, entity, dense, hideDescription } = props;
 
-  const classes = useStyles();
   const api = useApi(techInsightsApiRef);
 
   const types = [...new Set(checkResults.map(({ check }) => check.type))];
   const checkResultRenderers = api.getCheckResultRenderers(types);
 
   return (
-    <List dense={dense} disablePadding>
-      {checkResults.map((result, index) => {
+    <ul className={styles.list} data-dense={dense || undefined}>
+      {checkResults.map(result => {
         const checkResultRenderer = checkResultRenderers.find(
           renderer => renderer.type === result.check.type,
         );
@@ -66,28 +52,39 @@ export const ScorecardsList = (props: {
           <MarkdownContent content={result.check.description} />
         );
 
-        return itemTooltip(
-          <ListItem key={result.check.id} disableGutters>
-            <ListItemText
-              key={index}
-              primary={result.check.name}
-              {...(!props.hideDescription
-                ? {
-                    secondary: description,
-                  }
-                : {})}
-              className={classes.listItemText}
-            />
+        const name = <Text as="span">{result.check.name}</Text>;
+
+        return (
+          <li key={result.check.id} className={styles.item}>
+            <div className={styles.text}>
+              {hideDescription ? (
+                <TooltipTrigger>
+                  <Focusable>
+                    {/* Focusable so keyboard users can reach the tooltip */}
+                    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+                    <span className={styles.tooltipTarget} tabIndex={0}>
+                      {name}
+                    </span>
+                  </Focusable>
+                  <Tooltip>{description}</Tooltip>
+                </TooltipTrigger>
+              ) : (
+                <>
+                  {name}
+                  <Text as="div" variant="body-small" color="secondary">
+                    {description}
+                  </Text>
+                </>
+              )}
+            </div>
             <ResultCheckIcon
               result={result}
               entity={entity}
               checkResultRenderer={checkResultRenderer}
             />
-          </ListItem>,
-          description,
-          hideDescription,
+          </li>
         );
       })}
-    </List>
+    </ul>
   );
 };

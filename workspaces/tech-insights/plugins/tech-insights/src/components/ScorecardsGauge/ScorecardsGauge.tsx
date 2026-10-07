@@ -20,8 +20,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import { Gauge, InfoCard } from '@backstage/core-components';
 import { ScorecardInfo } from '../ScorecardsInfo';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import { Box, Flex } from '@backstage/ui';
 
 export const ScorecardsGauge = (props: {
   checkResults: CheckResult[];
@@ -62,13 +61,13 @@ export const ScorecardsGauge = (props: {
 
   return (
     <InfoCard title={title} subheader={description}>
-      <Grid container justifyContent="center">
-        <Grid item style={{ width: '160px', marginBottom: '1em' }}>
+      <Flex justify="center">
+        <Box width="160px" mb="4">
           <Gauge value={progress} size="small" />
-        </Grid>
-      </Grid>
+        </Box>
+      </Flex>
       <ScorecardInfo
-        title={<Typography variant="h6">Checks</Typography>}
+        title="Checks"
         checkResults={checkResults}
         entity={entity}
         noWarning={noWarning}
