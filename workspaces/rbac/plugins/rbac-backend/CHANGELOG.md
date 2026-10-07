@@ -1,5 +1,12 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.6
+
+### Patch Changes
+
+- 9c491cd: Updated dependency `supertest` to `7.3.1`.
+- e52795d: Updated dependency `@types/node` to `22.20.5`.
+
 ## 8.1.5
 
 ### Patch Changes
