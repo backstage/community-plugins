@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import { Header, Page, Content } from '@backstage/core-components';
 import { OpenCostReport } from '../OpenCostReport';
 import logo from '../../images/pig.png';
@@ -29,11 +29,11 @@ export const OpenCostPage = () => (
       </a>
     </Header>
     <Content>
-      <Grid container spacing={3} direction="column">
-        <Grid item>
+      <Grid.Root columns={{ sm: '12' }} gap="6">
+        <Grid.Item colSpan={{ sm: '12' }}>
           <OpenCostReport />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </Content>
   </Page>
 );

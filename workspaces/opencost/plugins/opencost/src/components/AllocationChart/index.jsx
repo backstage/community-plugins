@@ -15,8 +15,7 @@
  */
 import { memo } from 'react';
 import { isArray, filter, map, reduce, reverse, sortBy } from 'lodash';
-
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 
 import RangeChart from './RangeChart';
 import SummaryChart from './SummaryChart';
@@ -85,7 +84,7 @@ function top(n, by) {
 
 const AllocationChart = ({ allocationRange, currency, n, height }) => {
   if (allocationRange.length === 0) {
-    return <Typography variant="body2">No data</Typography>;
+    return <Text variant="body-small">No data</Text>;
   }
 
   if (allocationRange.length === 1) {
