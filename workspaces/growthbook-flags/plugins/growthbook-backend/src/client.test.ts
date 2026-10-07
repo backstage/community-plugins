@@ -265,6 +265,27 @@ describe('GrowthbookClient results without a snapshot', () => {
   });
 });
 
+describe('GrowthbookClient pagination safety', () => {
+  it('fails instead of looping when nextOffset does not advance', async () => {
+    let calls = 0;
+    const { client } = make(() => {
+      calls += 1;
+      // Cap the fake server so unfixed code fails the assertion, not the runner.
+      return calls > 50
+        ? { body: { experiments: [], hasMore: false } }
+        : {
+            body: {
+              experiments: [{ id: 'e' }],
+              hasMore: true,
+              nextOffset: 0,
+            },
+          };
+    });
+    await expect(client.listExperiments()).rejects.toThrow(/did not advance/);
+    expect(calls).toBe(1);
+  });
+});
+
 describe('createSdkFlagsSource', () => {
   it('returns undefined for an unknown environment without fetching', async () => {
     const { fetchFn } = fakeFetch(() => ({}));

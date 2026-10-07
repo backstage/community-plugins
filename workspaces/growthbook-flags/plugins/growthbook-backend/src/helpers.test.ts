@@ -400,3 +400,45 @@ describe('resolveAppUrl', () => {
     expect(resolveAppUrl('', 'https://api.gb')).toBe('https://api.gb');
   });
 });
+
+describe('normalizeResults primary metric', () => {
+  const metrics = [
+    {
+      metricId: 'guard',
+      metricName: 'Latency',
+      variations: [{ variationId: 'v0', users: 1 }],
+    },
+    {
+      metricId: 'm2',
+      metricName: 'Purchase rate',
+      variations: [{ variationId: 'v0', users: 2 }],
+    },
+  ];
+  const result: MgmtResults = { results: [{ metrics }] };
+
+  it('uses the experiment goal metric rather than the first listed metric', () => {
+    const experiment = {
+      ...EXPERIMENT,
+      settings: { goals: [{ metricId: 'm2' }] },
+    };
+    const summary = normalizeResults(experiment, result);
+    expect(summary.metricName).toBe('Purchase rate');
+    expect(summary.variations[0].users).toBe(2);
+  });
+
+  it('falls back to the first metric when no goal matches', () => {
+    const experiment = {
+      ...EXPERIMENT,
+      settings: { goals: [{ metricId: 'zzz' }] },
+    };
+    expect(normalizeResults(experiment, result).metricName).toBe('Latency');
+    expect(normalizeResults(EXPERIMENT, result).metricName).toBe('Latency');
+  });
+});
+
+describe('normalizeExperiment with sparse data', () => {
+  it('tolerates an experiment without variations', () => {
+    const sparse = { id: 'e', name: 'n', status: 'running' } as MgmtExperiment;
+    expect(normalizeExperiment(sparse, 'https://gb').variations).toEqual([]);
+  });
+});
