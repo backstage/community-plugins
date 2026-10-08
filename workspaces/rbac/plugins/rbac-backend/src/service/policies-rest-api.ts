@@ -237,15 +237,11 @@ export class PoliciesServer {
           policies = matchedRoleName.includes(entityRef)
             ? await this.enforcer.getFilteredPolicy(0, ...filter)
             : [];
-        } else {
-          for (const role of roleMetadata) {
-            policies.push(
-              ...(await this.enforcer.getFilteredPolicy(
-                0,
-                ...[role.roleEntityRef],
-              )),
-            );
-          }
+        } else if (roleMetadata.length > 0) {
+          policies = await this.enforcer.getFilteredPolicy(
+            0,
+            ...roleMetadata.map(role => [role.roleEntityRef]),
+          );
         }
 
         const body = await this.transformPolicyArray(...policies);
