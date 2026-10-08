@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 1.5.1
+
+### Patch Changes
+
+- cb2c31b: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 1.5.0
 
 ### Minor Changes
