@@ -35,15 +35,25 @@ const _default: OverridableFrontendPlugin<
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
     'entity-card:grafana/alerts': OverridableExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'alerts';
       config: {
+        showState: boolean | undefined;
+        paged: boolean | undefined;
+        searchable: boolean | undefined;
+        pageSize: number | undefined;
+        sortable: boolean | undefined;
+        title: string | undefined;
         filter: FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
+        showState?: boolean | undefined;
+        paged?: boolean | undefined;
+        searchable?: boolean | undefined;
+        pageSize?: number | undefined;
+        sortable?: boolean | undefined;
+        title?: string | undefined;
         filter?: FilterPredicate | undefined;
-        type?: 'content' | 'info' | undefined;
+        type?: 'content' | 'info' | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -69,6 +79,8 @@ const _default: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'entity-card';
+      name: 'alerts';
       params: {
         loader: () => Promise<JSX.Element>;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);
@@ -76,15 +88,23 @@ const _default: OverridableFrontendPlugin<
       };
     }>;
     'entity-card:grafana/dashboards': OverridableExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'dashboards';
       config: {
+        paged: boolean | undefined;
+        searchable: boolean | undefined;
+        pageSize: number | undefined;
+        sortable: boolean | undefined;
+        title: string | undefined;
         filter: FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
+        paged?: boolean | undefined;
+        searchable?: boolean | undefined;
+        pageSize?: number | undefined;
+        sortable?: boolean | undefined;
+        title?: string | undefined;
         filter?: FilterPredicate | undefined;
-        type?: 'content' | 'info' | undefined;
+        type?: 'content' | 'info' | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -110,6 +130,8 @@ const _default: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'entity-card';
+      name: 'dashboards';
       params: {
         loader: () => Promise<JSX.Element>;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);

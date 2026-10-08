@@ -88,4 +88,55 @@ describe('Entity card extensions', () => {
       { timeout: 1000 },
     );
   });
+
+  it('should pass extension config through to the Alerts card', async () => {
+    // Without config the card renders with the component defaults: no State
+    // column and the title "Alerts". The config is the only way the New
+    // Frontend System has to change either.
+    const alert = {
+      name: 'CPU high',
+      state: 'alerting',
+      matchingSelector: 'service=foo',
+      url: 'https://grafana.example.com/alerting/1',
+    };
+    renderInTestApp(
+      <TestApiProvider
+        apis={
+          [
+            [
+              grafanaApiRef,
+              { ...mockGrafanaApi, alertsForSelector: async () => [alert] },
+            ],
+          ] as const
+        }
+      >
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(cards.entityGrafanaAlertsCard, {
+            config: { title: 'Grafana alerts', showState: true },
+          }).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+    await waitFor(
+      () => expect(screen.getByText('Grafana alerts')).toBeInTheDocument(),
+      { timeout: 1000 },
+    );
+    expect(screen.getByText('State')).toBeInTheDocument();
+  });
+
+  it('should pass extension config through to the Dashboards card', async () => {
+    renderInTestApp(
+      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]] as const}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(cards.entityGrafanaDashboardsCard, {
+            config: { title: 'Grafana dashboards' },
+          }).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+    await waitFor(
+      () => expect(screen.getByText('Grafana dashboards')).toBeInTheDocument(),
+      { timeout: 1000 },
+    );
+  });
 });
