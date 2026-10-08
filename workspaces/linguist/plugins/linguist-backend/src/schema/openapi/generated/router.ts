@@ -38,11 +38,6 @@ export const spec = {
       url: '/',
     },
   ],
-  security: [
-    {
-      BearerAuth: [],
-    },
-  ],
   paths: {
     '/health': {
       get: {
@@ -69,6 +64,11 @@ export const spec = {
     },
     '/entity-languages': {
       get: {
+        security: [
+          {
+            JWT: [],
+          },
+        ],
         description:
           'Returns the language breakdown of the passed in entityRef.',
         parameters: [
@@ -108,7 +108,7 @@ export const spec = {
     parameters: {},
     requestBodies: {},
     securitySchemes: {
-      BearerAuth: {
+      JWT: {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
