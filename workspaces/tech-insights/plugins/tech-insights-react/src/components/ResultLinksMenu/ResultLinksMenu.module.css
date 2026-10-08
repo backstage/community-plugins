@@ -1,12 +1,8 @@
 @layer components {
-  .list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .link {
-    display: block;
-    padding: var(--bui-space-2) var(--bui-space-3);
+  /* Mirrors the inner content styles of the BUI Menu, which cannot be used here */
+  .menu {
+    min-width: 150px;
+    outline: none;
+    padding-block: var(--bui-space-1);
   }
 }

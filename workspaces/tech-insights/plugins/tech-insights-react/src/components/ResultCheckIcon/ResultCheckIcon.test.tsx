@@ -66,7 +66,7 @@ const renderIcon = (
   );
 
 describe('ResultCheckIcon', () => {
-  it('opens a popup with the check links and closes it on Escape', async () => {
+  it('opens a keyboard-navigable menu with the check links and closes it on Escape', async () => {
     const api = createApi();
     await renderIcon(api);
 
@@ -74,20 +74,24 @@ describe('ResultCheckIcon', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'icon' }));
 
-    const external = await screen.findByRole('link', { name: 'Docs' });
+    expect(await screen.findByRole('menu')).toBeVisible();
+    const external = screen.getByRole('menuitem', { name: 'Docs' });
     expect(external).toHaveAttribute('href', 'https://example.com/docs');
     expect(external).toHaveAttribute('target', '_blank');
-    const internal = screen.getByRole('link', { name: 'Internal guide' });
+    const internal = screen.getByRole('menuitem', { name: 'Internal guide' });
     expect(internal).toHaveAttribute('href', '/docs/default/component/guide');
     expect(internal).not.toHaveAttribute('target');
     expect(api.getLinksForEntity).toHaveBeenCalledWith(result, entity, {
       includeStaticLinks: true,
     });
 
+    // Opening focuses the first item; arrow keys move between items
+    expect(external).toHaveFocus();
+    await userEvent.keyboard('{ArrowDown}');
+    expect(internal).toHaveFocus();
+
     await userEvent.keyboard('{Escape}');
-    expect(
-      screen.queryByRole('link', { name: 'Docs' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 
   it('renders only the icon when there are no links or the menu is disabled', async () => {
@@ -122,12 +126,10 @@ describe('ResultCheckIcon', () => {
 
     // The inner button must let the click bubble to the wrapper
     expect(wrapperClick).toHaveBeenCalledTimes(1);
-    const link = await screen.findByRole('link', { name: 'Docs' });
+    const link = await screen.findByRole('menuitem', { name: 'Docs' });
     expect(link).toBeVisible();
 
     await userEvent.click(link);
-    expect(
-      screen.queryByRole('link', { name: 'Docs' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 });

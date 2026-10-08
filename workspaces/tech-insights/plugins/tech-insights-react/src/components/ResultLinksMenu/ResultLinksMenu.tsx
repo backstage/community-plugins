@@ -23,7 +23,8 @@ import {
   useRef,
 } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
-import { Link, Popover } from '@backstage/ui';
+import { MenuItem, Popover } from '@backstage/ui';
+import { Menu } from 'react-aria-components';
 import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
@@ -99,6 +100,11 @@ export const ResultLinksMenu = (
     return null;
   }
 
+  /*
+   * The anchor is only known when `open(element)` is called, so the menu
+   * cannot be a child of a BUI `MenuTrigger`. BUI's `Menu` only opens inside
+   * one, hence the react-aria `Menu` directly within a controlled `Popover`.
+   */
   return (
     <Popover
       triggerRef={anchorRef}
@@ -107,23 +113,21 @@ export const ResultLinksMenu = (
       placement="bottom end"
       hideArrow
     >
-      {/*
-       * Close on link activation (mouse or Enter both emit click). Capture
-       * phase, because react-aria links stop the click from bubbling.
-       */}
-      <ul id={menuId} className={styles.list} onClickCapture={handleClose}>
+      <Menu
+        id={menuId}
+        aria-label={`Links for ${result.check.name}`}
+        className={styles.menu}
+        // react-aria focus strategy, not the DOM attribute: menus move focus to the first item on open
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus="first"
+        onClose={handleClose}
+      >
         {links.map((link, i) => (
-          <li key={`${i}-${link.url}`}>
-            <Link
-              href={link.url}
-              target={link.url.startsWith('/') ? undefined : '_blank'}
-              className={styles.link}
-            >
-              {link.title}
-            </Link>
-          </li>
+          <MenuItem key={`${i}-${link.url}`} href={link.url}>
+            {link.title}
+          </MenuItem>
         ))}
-      </ul>
+      </Menu>
     </Popover>
   );
 };
