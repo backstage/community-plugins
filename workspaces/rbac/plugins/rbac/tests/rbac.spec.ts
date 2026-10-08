@@ -379,6 +379,7 @@ test.describe('RBAC plugin', () => {
       .last()
       .click();
     await page.getByText('scaffolder').click();
+    await page.keyboard.press('Escape');
     await page.getByTestId('expand-row-scaffolder').click();
     await page
       .getByRole('cell', { name: 'scaffolder.action.use' })
