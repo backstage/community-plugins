@@ -15,7 +15,14 @@
  */
 
 import { useApi } from '@backstage/core-plugin-api';
-import { Focusable, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
+import {
+  Box,
+  Flex,
+  Focusable,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { MarkdownContent } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
@@ -23,7 +30,6 @@ import {
   ResultCheckIcon,
   techInsightsApiRef,
 } from '@backstage-community/plugin-tech-insights-react';
-import styles from './ScorecardsList.module.css';
 
 export const ScorecardsList = (props: {
   checkResults: CheckResult[];
@@ -39,7 +45,7 @@ export const ScorecardsList = (props: {
   const checkResultRenderers = api.getCheckResultRenderers(types);
 
   return (
-    <ul className={styles.list} data-dense={dense || undefined}>
+    <Flex direction="column" gap="0" role="list">
       {checkResults.map(result => {
         const checkResultRenderer = checkResultRenderers.find(
           renderer => renderer.type === result.check.type,
@@ -54,16 +60,22 @@ export const ScorecardsList = (props: {
         const name = <Text as="span">{result.check.name}</Text>;
 
         return (
-          <li key={result.check.id} className={styles.item}>
-            <div className={styles.text}>
+          <Flex
+            key={result.check.id}
+            role="listitem"
+            align="center"
+            gap="1"
+            py={dense ? '1' : '2'}
+          >
+            <Box grow shrink minWidth="0">
               {hideDescription ? (
                 <TooltipTrigger>
                   <Focusable>
                     {/* Focusable so keyboard users can reach the tooltip */}
                     {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
-                    <span className={styles.tooltipTarget} tabIndex={0}>
-                      {name}
-                    </span>
+                    <Text as="span" tabIndex={0}>
+                      {result.check.name}
+                    </Text>
                   </Focusable>
                   <Tooltip>{description}</Tooltip>
                 </TooltipTrigger>
@@ -75,15 +87,15 @@ export const ScorecardsList = (props: {
                   </Text>
                 </>
               )}
-            </div>
+            </Box>
             <ResultCheckIcon
               result={result}
               entity={entity}
               checkResultRenderer={checkResultRenderer}
             />
-          </li>
+          </Flex>
         );
       })}
-    </ul>
+    </Flex>
   );
 };
