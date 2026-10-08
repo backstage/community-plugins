@@ -17,7 +17,6 @@
 import { useMemo, useState } from 'react';
 import {
   Content,
-  ErrorPanel,
   Header,
   HeaderLabel,
   Page,
@@ -33,7 +32,7 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ScorecardsList } from '../ScorecardsList';
-import { Box, Flex } from '@backstage/ui';
+import { Alert, Box, Flex } from '@backstage/ui';
 import { Filters } from './Filters';
 import { ExportCsv as exportCsv } from '@material-table/exporters';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
@@ -154,7 +153,7 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
   }, [props, value, filterSelectedChecks]);
 
   if (error) {
-    return <ErrorPanel error={error} />;
+    return <Alert status="danger" title={error.message} />;
   }
 
   return (

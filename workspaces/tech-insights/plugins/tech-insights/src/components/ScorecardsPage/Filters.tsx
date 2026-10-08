@@ -16,10 +16,9 @@
 
 import type { Key } from 'react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
-import { Flex, Select } from '@backstage/ui';
+import { Alert, Flex, Select } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { ErrorPanel } from '@backstage/core-components';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 
 const yesNoOptions = [
@@ -43,7 +42,7 @@ export const Filters = (props: FiltersProps) => {
   }, [api]);
 
   if (error) {
-    return <ErrorPanel error={error} />;
+    return <Alert status="danger" title={error.message} />;
   }
 
   const checks = value ?? [];

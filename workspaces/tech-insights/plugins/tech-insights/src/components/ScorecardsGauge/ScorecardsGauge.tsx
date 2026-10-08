@@ -18,9 +18,9 @@ import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
-import { Gauge, InfoCard } from '@backstage/core-components';
+import { Gauge } from '@backstage/core-components';
 import { ScorecardInfo } from '../ScorecardsInfo';
-import { Box, Flex } from '@backstage/ui';
+import { Box, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
 
 export const ScorecardsGauge = (props: {
   checkResults: CheckResult[];
@@ -60,21 +60,33 @@ export const ScorecardsGauge = (props: {
   const progress = succeeded / checkResults.length;
 
   return (
-    <InfoCard title={title} subheader={description}>
-      <Flex justify="center">
-        <Box width="160px" mb="4">
-          <Gauge value={progress} size="small" />
-        </Box>
-      </Flex>
-      <ScorecardInfo
-        title="Checks"
-        checkResults={checkResults}
-        entity={entity}
-        noWarning={noWarning}
-        expanded={expanded}
-        dense={dense}
-        hideDescription={hideDescription}
-      />
-    </InfoCard>
+    <Card>
+      <CardHeader>
+        <Text as="h2" variant="title-small">
+          {title}
+        </Text>
+        {description && (
+          <Text as="p" variant="body-small" color="secondary">
+            {description}
+          </Text>
+        )}
+      </CardHeader>
+      <CardBody>
+        <Flex justify="center">
+          <Box width="160px" mb="4">
+            <Gauge value={progress} size="small" />
+          </Box>
+        </Flex>
+        <ScorecardInfo
+          title="Checks"
+          checkResults={checkResults}
+          entity={entity}
+          noWarning={noWarning}
+          expanded={expanded}
+          dense={dense}
+          hideDescription={hideDescription}
+        />
+      </CardBody>
+    </Card>
   );
 };
