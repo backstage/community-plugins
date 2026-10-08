@@ -16,12 +16,21 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-import { Tooltip, Tag, TagGroup, TooltipTrigger } from '@backstage/ui';
+import {
+  Badge,
+  Flex,
+  Focusable,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
+import { RiCheckboxCircleLine, RiErrorWarningLine } from '@remixicon/react';
 
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
-
-import { ScorecardsList } from '../ScorecardsList';
+import {
+  ResultCheckIcon,
+  techInsightsApiRef,
+} from '@backstage-community/plugin-tech-insights-react';
 
 export const ScorecardsBadge = (props: {
   checkResults: CheckResult[];
@@ -48,30 +57,52 @@ export const ScorecardsBadge = (props: {
 
   return (
     <TooltipTrigger>
-      <TagGroup>
-        <Tag
+      <Focusable>
+        {/* Focusable so keyboard users can reach the tooltip */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+        <Badge
           size="medium"
-          style={{
-            borderRadius: 16,
-            paddingTop: 8,
-            paddingBottom: 8,
-            paddingLeft: 16,
-            paddingRight: 16,
-            backgroundColor: isAllPassing ? 'mediumseagreen' : 'orangered',
-          }}
+          tabIndex={0}
+          aria-label={`${succeeded} of ${checkResults.length} checks passed`}
+          icon={
+            isAllPassing ? (
+              <RiCheckboxCircleLine
+                color="var(--bui-fg-positive)"
+                aria-label="All checks passed"
+              />
+            ) : (
+              <RiErrorWarningLine
+                color="var(--bui-fg-negative)"
+                aria-label="Some checks failed"
+              />
+            )
+          }
         >
           {`${succeeded}/${checkResults.length}`}
-        </Tag>
-
-        <Tooltip>
-          <ScorecardsList
-            checkResults={checkResults}
-            entity={entity}
-            dense
-            hideDescription
-          />
-        </Tooltip>
-      </TagGroup>
+        </Badge>
+      </Focusable>
+      <Tooltip>
+        {/* A plain list: nested tooltip triggers would steal this tooltip's anchor */}
+        <Flex direction="column" gap="1" role="list">
+          {checkResultsWithRenderer.map(({ result, renderer }) => (
+            <Flex
+              key={result.check.id}
+              role="listitem"
+              align="center"
+              justify="between"
+              gap="2"
+            >
+              <Text as="span">{result.check.name}</Text>
+              <ResultCheckIcon
+                result={result}
+                entity={entity}
+                checkResultRenderer={renderer}
+                disableLinksMenu
+              />
+            </Flex>
+          ))}
+        </Flex>
+      </Tooltip>
     </TooltipTrigger>
   );
 };
