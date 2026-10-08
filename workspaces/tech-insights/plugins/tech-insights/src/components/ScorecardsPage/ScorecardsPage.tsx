@@ -164,7 +164,7 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
       </Header>
       <Content>
         <Flex gap="4" align="start">
-          <Box width="300px" style={{ flexShrink: 0 }}>
+          <Flex direction="column" basis="300px" shrink={false}>
             <Filters
               checksChanged={checks => setFilterSelectedChecks(checks)}
               withResultsChanged={withResults =>
@@ -174,8 +174,8 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
                 setFilterFailedChecks(hasFailedChecks)
               }
             />
-          </Box>
-          <Box style={{ flex: 1, minWidth: 0 }}>
+          </Flex>
+          <Box grow minWidth="0">
             <Table
               columns={tableColumns}
               data={value?.result ?? []}

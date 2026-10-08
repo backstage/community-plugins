@@ -20,6 +20,7 @@ import {
   AccordionPanel,
   AccordionTrigger,
   Alert,
+  Box,
   Flex,
   Text,
 } from '@backstage/ui';
@@ -40,7 +41,7 @@ const infoCard = (
 ) => (
   <Accordion defaultExpanded={expanded}>
     <AccordionTrigger className={styles.trigger}>
-      <Flex justify="between" align="center" className={styles.triggerContent}>
+      <Flex justify="between" align="center" grow mr="2">
         <Text as="span" variant="title-small">
           {title}
         </Text>
@@ -49,9 +50,9 @@ const infoCard = (
     </AccordionTrigger>
     <AccordionPanel>
       {description && (
-        <Text as="div" className={styles.description}>
+        <Box pl="1" mb="2">
           <MarkdownContent content={description} />
-        </Text>
+        </Box>
       )}
       {element}
     </AccordionPanel>
