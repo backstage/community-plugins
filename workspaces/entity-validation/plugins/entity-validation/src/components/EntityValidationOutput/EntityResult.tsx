@@ -14,37 +14,16 @@
  * limitations under the License.
  */
 import { useState } from 'react';
+import type { ComponentType } from 'react';
 import { ValidateEntityResponse } from '@backstage/catalog-client';
 import { useApp } from '@backstage/core-plugin-api';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, ButtonIcon, Flex, ListRow } from '@backstage/ui';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
 import { safeEntityKind } from './safeEntityDisplayName';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
 import { MarkdownContent } from '@backstage/core-components';
 import { ValidationOutputOk } from '../../types';
-import SvgIcon from '@material-ui/core/SvgIcon';
-
-const useStyles = makeStyles(theme => ({
-  validationOk: {
-    color: theme.palette.success.main,
-  },
-  validationNotOk: {
-    color: theme.palette.error.main,
-  },
-  errorContainer: {
-    color: theme.palette.error.main,
-    background: theme.palette.background.paper,
-    padding: theme.spacing(2),
-  },
-}));
+import styles from './EntityResult.module.css';
 
 type EntityResultProps = {
   isFirstError?: boolean;
@@ -55,13 +34,12 @@ export const EntityResult = ({
   isFirstError = false,
   item,
 }: EntityResultProps) => {
-  const classes = useStyles();
   const app = useApp();
   const [expanded, setExpanded] = useState(isFirstError);
 
-  const Icon = app.getSystemIcon(
-    `kind:${safeEntityKind(item.entity)}`,
-  ) as typeof SvgIcon;
+  const Icon = app.getSystemIcon(`kind:${safeEntityKind(item.entity)}`) as
+    | ComponentType<{ className?: string }>
+    | undefined;
 
   const fetchErrorMessages = (response: ValidateEntityResponse) => {
     if (!response.valid) {
@@ -70,39 +48,47 @@ export const EntityResult = ({
     return '';
   };
 
+  const entityId = `${item.entity.kind}:${
+    item.entity.metadata.namespace ?? 'default'
+  }/${item.entity.metadata.name}`;
+
   return (
-    <>
-      <ListItem>
-        <ListItemIcon>
-          {Icon && (
-            <Icon
-              className={
-                item.response.valid
-                  ? classes.validationOk
-                  : classes.validationNotOk
-              }
-            />
-          )}
-        </ListItemIcon>
-        <ListItemText
-          primary={<EntityDisplayName entityRef={item.entity} />}
-          onClick={() => setExpanded(!expanded)}
-        />
-        {!item.response.valid && (
-          <ListItemSecondaryAction>
-            <IconButton edge="end" onClick={() => setExpanded(!expanded)}>
-              {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </IconButton>
-          </ListItemSecondaryAction>
-        )}
-      </ListItem>
-      {!item.response.valid && (
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Paper className={classes.errorContainer}>
+    <ListRow
+      id={entityId}
+      icon={
+        Icon ? (
+          <Icon
+            className={
+              item.response.valid ? styles.validationOk : styles.validationNotOk
+            }
+          />
+        ) : undefined
+      }
+      customActions={
+        !item.response.valid ? (
+          <ButtonIcon
+            aria-label={expanded ? 'collapse' : 'expand'}
+            onPress={() => setExpanded(!expanded)}
+            icon={
+              expanded ? (
+                <RiArrowUpSLine size={20} />
+              ) : (
+                <RiArrowDownSLine size={20} />
+              )
+            }
+            variant="secondary"
+          />
+        ) : undefined
+      }
+    >
+      <Flex direction="column">
+        <EntityDisplayName entityRef={item.entity} />
+        {!item.response.valid && expanded && (
+          <Box className={styles.errorContainer}>
             <MarkdownContent content={fetchErrorMessages(item.response)} />
-          </Paper>
-        </Collapse>
-      )}
-    </>
+          </Box>
+        )}
+      </Flex>
+    </ListRow>
   );
 };
