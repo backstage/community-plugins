@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ocm
 
+## 5.22.1
+
+### Patch Changes
+
+- @backstage-community/plugin-ocm-common@5.22.1
+
 ## 5.22.0
 
 ### Minor Changes

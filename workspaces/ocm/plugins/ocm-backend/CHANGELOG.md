@@ -1,5 +1,13 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.22.1
+
+### Patch Changes
+
+- c01b0ab: Updated dependency `supertest` to `7.3.0`.
+- 566fa6e: Updated dependency `supertest` to `7.3.1`.
+  - @backstage-community/plugin-ocm-common@5.22.1
+
 ## 5.22.0
 
 ### Minor Changes
