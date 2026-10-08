@@ -60,7 +60,7 @@
     "@backstage/frontend-plugin-api": "^0.18.1",
     "@backstage/plugin-catalog-react": "^3.2.3",
     "@backstage/ui": "^0.18.0",
-    "@remixicon/react": "^4.6.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^18.0.0",
     "react-use": "^17.2.4",
     "zod": "^4.0.0"
