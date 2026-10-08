@@ -1,5 +1,11 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.14.1
+
+### Patch Changes
+
+- e243fab: Fix the default frontend plugin's TypeScript type so consumers can customize it using the standard plugin override API.
+
 ## 0.14.0
 
 ### Minor Changes
