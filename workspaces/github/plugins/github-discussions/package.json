@@ -55,7 +55,7 @@
     "@backstage/plugin-search-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@remixicon/react": "^4.2.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-use": "^17.2.4",
     "zod": "^4.0.0"
