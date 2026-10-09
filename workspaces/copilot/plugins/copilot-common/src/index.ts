@@ -807,6 +807,11 @@ export interface V2UserMetric {
   loc_suggested_to_add_sum: number;
   loc_suggested_to_delete_sum: number;
   user_initiated_interaction_count: number;
+  /**
+   * Total AI credits consumed by the user for the day.
+   * Added by GitHub on 2026-06-19. Only present in the user-level report.
+   */
+  ai_credits_used?: number;
   totals_by_feature?: V2MetricsByFeature[];
   totals_by_ide?: V2MetricsByIde[];
   totals_by_language_feature?: V2MetricsByLanguageFeature[];
@@ -874,6 +879,12 @@ export interface V2DailyTotal {
   loc_suggested_to_add_sum: number;
   loc_suggested_to_delete_sum: number;
   user_initiated_interaction_count: number;
+  /**
+   * Total AI credits consumed across all users in the aggregate, summed from
+   * per-user data. Added by GitHub on 2026-06-19. Only populated for
+   * team-level rows (org/enterprise reports do not expose AI credits).
+   */
+  total_ai_credits_used?: number;
 }
 
 /** @public */
@@ -1020,6 +1031,11 @@ export interface V2UserMetricRow {
   loc_suggested_to_add_sum: number;
   loc_suggested_to_delete_sum: number;
   user_initiated_interaction_count: number;
+  /**
+   * Total AI credits consumed by the user for the day.
+   * Added by GitHub on 2026-06-19. Only present in the user-level report.
+   */
+  ai_credits_used?: number;
 }
 
 /** @public */

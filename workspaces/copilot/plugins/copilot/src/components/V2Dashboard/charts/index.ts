@@ -32,3 +32,4 @@ export { UserLOCByModelChart } from './UserLOCByModelChart';
 export { AgentLOCByModelChart } from './AgentLOCByModelChart';
 export { UserLOCByLanguageChart } from './UserLOCByLanguageChart';
 export { AgentLOCByLanguageChart } from './AgentLOCByLanguageChart';
+export { AiCreditsConsumptionChart } from './AiCreditsConsumptionChart';
