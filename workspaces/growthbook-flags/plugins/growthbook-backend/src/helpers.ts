@@ -15,8 +15,15 @@
  */
 
 import type {
-  FlagType,
+  ExperimentResultSummary,
+  ExperimentRow,
+  ExperimentStatus,
+  ExperimentVariationResult,
+  FlagDetail,
+  FlagEnvironmentDetail,
   FlagRow,
+  FlagRuleSummary,
+  FlagType,
 } from '@backstage-community/plugin-growthbook-common';
 
 export type MgmtFeature = {
@@ -111,4 +118,172 @@ export function normalizeSdkFlags(
       return { key, type, valuePreview, valuePretty };
     })
     .sort((a, b) => a.key.localeCompare(b.key));
+}
+
+export type MgmtExperiment = {
+  id: string;
+  name: string;
+  status: string;
+  type?: string;
+  owner?: string;
+  tags?: string[];
+  variations: { variationId: string; key: string; name: string }[];
+  phases?: { name: string; dateStarted?: string; dateEnded?: string }[];
+  resultSummary?: { winner?: string };
+  settings?: { goals?: { metricId: string }[] };
+};
+
+type MgmtAnalysis = {
+  engine: string;
+  percentChange?: number;
+  ciLow?: number;
+  ciHigh?: number;
+  chanceToBeatControl?: number;
+};
+
+export type MgmtResults = {
+  results?: {
+    totalUsers?: number;
+    metrics?: {
+      metricId: string;
+      metricName?: string;
+      variations: {
+        variationId: string;
+        variationName?: string;
+        users?: number;
+        analyses?: MgmtAnalysis[];
+      }[];
+    }[];
+  }[];
+};
+
+export type MgmtFeatureDetail = {
+  id: string;
+  dateUpdated?: string;
+  archived?: boolean;
+  owner?: string;
+  tags?: string[];
+  environments: Record<
+    string,
+    | {
+        enabled: boolean;
+        rules?: {
+          id?: string;
+          type?: string;
+          description?: string;
+          enabled?: boolean;
+        }[];
+      }
+    | undefined
+  >;
+};
+
+export type MgmtStale = { isStale: boolean; staleReason?: string | null };
+
+const EXPERIMENT_STATUSES: ExperimentStatus[] = ['draft', 'running', 'stopped'];
+
+export function normalizeExperiment(
+  e: MgmtExperiment,
+  appUrl: string,
+): ExperimentRow {
+  const status = EXPERIMENT_STATUSES.find(s => s === e.status) ?? 'draft';
+  return {
+    id: e.id,
+    name: e.name,
+    status,
+    type: e.type,
+    owner: e.owner,
+    tags: e.tags ?? [],
+    variations: (e.variations ?? []).map(v => ({
+      id: v.variationId,
+      key: v.key,
+      name: v.name,
+    })),
+    phases: (e.phases ?? []).map(p => ({
+      name: p.name,
+      dateStarted: p.dateStarted,
+      dateEnded: p.dateEnded,
+    })),
+    winnerVariationId: e.resultSummary?.winner || undefined,
+    url: `${appUrl}/experiment/${encodeURIComponent(e.id)}`,
+  };
+}
+
+export function normalizeResults(
+  experiment: MgmtExperiment,
+  result: MgmtResults,
+): ExperimentResultSummary {
+  const metrics = result.results?.[0]?.metrics;
+  const goalId = experiment.settings?.goals?.[0]?.metricId;
+  // Prefer the experiment's first goal; the API does not order goals first.
+  const metric = metrics?.find(m => m.metricId === goalId) ?? metrics?.[0];
+  if (!metric) return { available: false, variations: [] };
+
+  const variations = metric.variations.map((v): ExperimentVariationResult => {
+    const analysis =
+      v.analyses?.find(a => a.engine === 'bayesian') ?? v.analyses?.[0];
+    const name =
+      v.variationName ??
+      (experiment.variations ?? []).find(ev => ev.variationId === v.variationId)
+        ?.name ??
+      v.variationId;
+    return {
+      id: v.variationId,
+      name,
+      users: v.users,
+      percentChange: analysis?.percentChange,
+      ciLow: analysis?.ciLow,
+      ciHigh: analysis?.ciHigh,
+      chanceToBeatControl: analysis?.chanceToBeatControl,
+    };
+  });
+  return { available: true, metricName: metric.metricName, variations };
+}
+
+export function normalizeFlagDetail(
+  feature: MgmtFeatureDetail,
+  stale: MgmtStale | undefined,
+): FlagDetail {
+  const environments = Object.entries(feature.environments)
+    .flatMap(([name, env]): FlagEnvironmentDetail[] =>
+      env
+        ? [
+            {
+              name,
+              enabled: env.enabled,
+              rules: (env.rules ?? []).map(
+                (r): FlagRuleSummary => ({
+                  type: r.type ?? 'unknown',
+                  description: r.description,
+                  enabled: r.enabled ?? true,
+                }),
+              ),
+            },
+          ]
+        : [],
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  return {
+    key: feature.id,
+    dateUpdated: feature.dateUpdated,
+    archived: feature.archived ?? false,
+    owner: feature.owner,
+    tags: feature.tags ?? [],
+    isStale: stale?.isStale ?? false,
+    staleReason: stale?.staleReason ?? undefined,
+    environments,
+  };
+}
+
+/**
+ * Base URL used to link to the GrowthBook web app. `baseUrl` is the API host,
+ * which differs from the app host on GrowthBook Cloud and many self-hosted
+ * installs, so an explicit `appUrl` takes precedence.
+ */
+export function resolveAppUrl(
+  appUrl: string | undefined,
+  baseUrl: string,
+): string {
+  return appUrl ? appUrl.replace(/\/+$/, '') : baseUrl;
 }
