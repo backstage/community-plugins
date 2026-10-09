@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 import { compatWrapper } from '@backstage/core-compat-api';
-import { PageBlueprint } from '@backstage/frontend-plugin-api';
+import { configApiRef, PageBlueprint } from '@backstage/frontend-plugin-api';
+import { resolveMaturityDisplayConfig } from '../helpers/maturityConfig';
 
 /**
  * Page extension for the maturity overview page.
  *
  * @alpha
  */
-export const maturityPage = PageBlueprint.make({
-  params: {
-    path: '/maturity',
-    loader: () =>
-      import('../components/MaturityPage').then(m =>
-        compatWrapper(<m.MaturityPage />),
-      ),
+export const maturityPage = PageBlueprint.makeWithOverrides({
+  factory(originalFactory, { apis, config }) {
+    const { title } = resolveMaturityDisplayConfig(apis.get(configApiRef), {
+      title: config.title,
+    });
+
+    return originalFactory({
+      path: '/maturity',
+      title,
+      loader: () =>
+        import('../components/MaturityPage').then(m =>
+          compatWrapper(<m.MaturityPage title={title} />),
+        ),
+    });
   },
 });
