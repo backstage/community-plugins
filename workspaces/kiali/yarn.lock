@@ -2113,12 +2113,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-openapi-utils@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@backstage/backend-openapi-utils@npm:0.7.0"
+"@backstage/backend-openapi-utils@npm:^0.7.0, @backstage/backend-openapi-utils@npm:^0.7.2":
+  version: 0.7.2
+  resolution: "@backstage/backend-openapi-utils@npm:0.7.2"
   dependencies:
     "@apidevtools/swagger-parser": "npm:^10.1.0"
-    "@backstage/backend-plugin-api": "npm:^1.9.3"
+    "@backstage/backend-plugin-api": "npm:^1.10.1"
     "@backstage/errors": "npm:^1.3.1"
     "@backstage/types": "npm:^1.2.2"
     "@types/express": "npm:^4.17.6"
@@ -2132,8 +2132,9 @@ __metadata:
     lodash: "npm:^4.17.21"
     mockttp: "npm:^3.13.0"
     openapi-merge: "npm:^1.3.2"
+    openapi-types: "npm:^12.0.0"
     openapi3-ts: "npm:^3.1.2"
-  checksum: 10/4adc8b3b0d068d7d624d7dd5b1e2a38a850d410dfdeb105a3fdc62811ade22cf4d8a6759c13ae552e05ab8315d9767d98e7b806910c9ae62194db4d94e744ebf
+  checksum: 10/72f2914d935e3d05006158fc7ec1d5cfc457d35098be9f84e89128e1b10d631fac0b6ba1e2c5430916815c6b143f4e30018108fd0398ea453e37dd2422107256
   languageName: node
   linkType: hard
 
@@ -4058,42 +4059,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-backend-node@npm:^1.4.5, @backstage/plugin-search-backend-node@npm:^1.4.6":
-  version: 1.4.6
-  resolution: "@backstage/plugin-search-backend-node@npm:1.4.6"
+"@backstage/plugin-search-backend-node@npm:^1.4.5, @backstage/plugin-search-backend-node@npm:^1.4.6, @backstage/plugin-search-backend-node@npm:^1.4.8":
+  version: 1.4.8
+  resolution: "@backstage/plugin-search-backend-node@npm:1.4.8"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.9.3"
-    "@backstage/config": "npm:^1.3.8"
+    "@backstage/backend-plugin-api": "npm:^1.10.1"
+    "@backstage/config": "npm:^1.3.9"
     "@backstage/errors": "npm:^1.3.1"
-    "@backstage/plugin-permission-common": "npm:^0.9.9"
-    "@backstage/plugin-search-common": "npm:^1.2.24"
+    "@backstage/plugin-permission-common": "npm:^0.9.11"
+    "@backstage/plugin-search-common": "npm:^1.2.25"
     "@types/lunr": "npm:^2.3.3"
     lodash: "npm:^4.17.21"
     lunr: "npm:^2.3.9"
     ndjson: "npm:^2.0.0"
-  checksum: 10/6f28d92706215a9fd02069c0ec8640387e4e670187825f3ea1bf7c9ea2c2758cf9f55c39b01ef19b9b39c58cc806f90b93b8c92ad493f6d7af6c7fba34dc7b16
+  checksum: 10/2de1cd2aaf7a2d3b3997c93f84575cb4e607065a845cedff2f9e4702b0171b210f2b55e7fbc960605aa1a8df844faa9aa62c40d6ee816ebfc524f631cf700eef
   languageName: node
   linkType: hard
 
 "@backstage/plugin-search-backend@npm:^2.1.3":
-  version: 2.1.4
-  resolution: "@backstage/plugin-search-backend@npm:2.1.4"
+  version: 2.1.7
+  resolution: "@backstage/plugin-search-backend@npm:2.1.7"
   dependencies:
-    "@backstage/backend-openapi-utils": "npm:^0.7.0"
-    "@backstage/backend-plugin-api": "npm:^1.9.3"
-    "@backstage/config": "npm:^1.3.8"
+    "@backstage/backend-openapi-utils": "npm:^0.7.2"
+    "@backstage/backend-plugin-api": "npm:^1.10.1"
+    "@backstage/config": "npm:^1.3.9"
     "@backstage/errors": "npm:^1.3.1"
-    "@backstage/plugin-permission-common": "npm:^0.9.9"
-    "@backstage/plugin-permission-node": "npm:^0.11.2"
-    "@backstage/plugin-search-backend-node": "npm:^1.4.6"
-    "@backstage/plugin-search-common": "npm:^1.2.24"
+    "@backstage/plugin-permission-common": "npm:^0.9.11"
+    "@backstage/plugin-permission-node": "npm:^0.11.4"
+    "@backstage/plugin-search-backend-node": "npm:^1.4.8"
+    "@backstage/plugin-search-common": "npm:^1.2.25"
     "@backstage/types": "npm:^1.2.2"
     dataloader: "npm:^2.0.0"
     express: "npm:^4.22.0"
     lodash: "npm:^4.17.21"
     qs: "npm:^6.15.2"
     zod: "npm:^3.25.76 || ^4.0.0"
-  checksum: 10/d31a5def4b23d634a0ccae81198aed19fcc4a3a9596d4f9025663bee0f93faa4fd62364ddb220bf69b2fe6c28a61c95335e13cb91f55cd458de7603f141cc00e
+  checksum: 10/d0e06847adb280105571fba0fb56ccfa28f2f1b97ba949849e7462e560a8a118173c4c5b565bdfc78ec82af97599799f60bd2c7679c54884720534392129a808
   languageName: node
   linkType: hard
 
@@ -25435,7 +25436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-types@npm:^12.0.2":
+"openapi-types@npm:^12.0.0, openapi-types@npm:^12.0.2":
   version: 12.1.3
   resolution: "openapi-types@npm:12.1.3"
   checksum: 10/9d1d7ed848622b63d0a4c3f881689161b99427133054e46b8e3241e137f1c78bb0031c5d80b420ee79ac2e91d2e727ffd6fc13c553d1b0488ddc8ad389dcbef8
