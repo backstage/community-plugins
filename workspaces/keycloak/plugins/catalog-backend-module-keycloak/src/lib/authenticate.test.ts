@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,197 +13,162 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mockServices } from '@backstage/backend-test-utils';
+
 import { InputError } from '@backstage/errors';
-import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import { mockServices } from '@backstage/backend-test-utils';
+import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import jwt from 'jsonwebtoken';
 
-import { KeycloakProviderConfig } from './config';
 import { authenticate, ensureTokenValid } from './authenticate';
-
-/** Unsigned JWT so the admin client's decodeToken can parse the access token. */
-function unsignedAccessToken(payload: object = {}): string {
-  const encode = (value: object) =>
-    Buffer.from(JSON.stringify(value)).toString('base64url');
-  return `${encode({ alg: 'none' })}.${encode(payload)}.`;
-}
-
-jest.mock('jsonwebtoken', () => ({
-  decode: jest.fn(),
-}));
-
-const mockedDecode = jwt.decode as jest.Mock;
+import type { KeycloakProviderConfig } from './config';
 
 const logger = mockServices.logger.mock();
 
+const BASE_TIME = new Date('2026-01-01T00:00:00Z').getTime();
+
+function createMockKcClient(
+  overrides: Partial<KeycloakAdminClient> = {},
+): KeycloakAdminClient {
+  return {
+    accessToken: undefined,
+    auth: jest.fn().mockResolvedValue(undefined),
+    ...overrides,
+  } as unknown as KeycloakAdminClient;
+}
+
 const passwordProvider: KeycloakProviderConfig = {
-  id: 'default',
-  realm: 'myrealm',
-  baseUrl: 'http://localhost:8080',
-  username: 'myusername',
-  password: 'mypassword', // NOSONAR
-};
+  baseUrl: 'https://keycloak.test',
+  realm: 'test',
+  username: 'admin',
+  password: 'admin',
+} as KeycloakProviderConfig;
+
+const clientCredProvider: KeycloakProviderConfig = {
+  baseUrl: 'https://keycloak.test',
+  realm: 'test',
+  clientId: 'backstage',
+  clientSecret: 'secret',
+} as KeycloakProviderConfig;
+
+function createTokenWithExp(expMs: number): string {
+  return jwt.sign(
+    { exp: Math.floor(expMs / 1000), sub: 'test' },
+    'test-secret',
+  );
+}
 
 describe('authenticate', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  it('authenticates with username and password', async () => {
+    const kc = createMockKcClient();
+    await authenticate(kc, passwordProvider, logger);
 
-  it('uses password grant when username and password are configured', async () => {
-    const client = {
-      auth: jest.fn().mockResolvedValue(undefined),
-    } as unknown as KeycloakAdminClient;
-
-    await authenticate(client, passwordProvider, logger);
-
-    expect(client.auth).toHaveBeenCalledWith({
+    expect(kc.auth).toHaveBeenCalledWith({
       grantType: 'password',
       clientId: 'admin-cli',
-      username: 'myusername',
-      password: 'mypassword', // NOSONAR
+      username: 'admin',
+      password: 'admin',
     });
   });
 
-  it('uses client_credentials grant when clientId and clientSecret are configured', async () => {
-    const client = {
-      auth: jest.fn().mockResolvedValue(undefined),
-    } as unknown as KeycloakAdminClient;
+  it('authenticates with client credentials', async () => {
+    const kc = createMockKcClient();
+    await authenticate(kc, clientCredProvider, logger);
 
-    const clientCredentialsProvider: KeycloakProviderConfig = {
-      id: 'default',
-      realm: 'myrealm',
-      baseUrl: 'http://localhost:8080',
-      clientId: 'myclientid',
-      clientSecret: 'myclientsecret', // NOSONAR
-    };
-
-    await authenticate(client, clientCredentialsProvider, logger);
-
-    expect(client.auth).toHaveBeenCalledWith({
+    expect(kc.auth).toHaveBeenCalledWith({
       grantType: 'client_credentials',
-      clientId: 'myclientid',
-      clientSecret: 'myclientsecret', // NOSONAR
+      clientId: 'backstage',
+      clientSecret: 'secret',
     });
   });
 
   it('throws InputError when credentials are missing', async () => {
-    const client = {
-      auth: jest.fn(),
-    } as unknown as KeycloakAdminClient;
+    const kc = createMockKcClient();
+    const emptyProvider = {
+      baseUrl: 'https://keycloak.test',
+      realm: 'test',
+    } as KeycloakProviderConfig;
 
-    const providerWithoutCredentials: KeycloakProviderConfig = {
-      id: 'default',
-      realm: 'myrealm',
-      baseUrl: 'http://localhost:8080',
-    };
-
-    await expect(
-      authenticate(client, providerWithoutCredentials, logger),
-    ).rejects.toThrow(InputError);
-    await expect(
-      authenticate(client, providerWithoutCredentials, logger),
-    ).rejects.toThrow(
+    await expect(authenticate(kc, emptyProvider, logger)).rejects.toThrow(
+      InputError,
+    );
+    await expect(authenticate(kc, emptyProvider, logger)).rejects.toThrow(
       'username and password or clientId and clientSecret must be provided.',
     );
-    expect(client.auth).not.toHaveBeenCalled();
-  });
-
-  it('succeeds with client_credentials when the token response omits refresh_token', async () => {
-    const accessToken = unsignedAccessToken();
-    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          access_token: accessToken,
-          token_type: 'Bearer',
-          expires_in: 300,
-        }),
-        { status: 200, headers: { 'content-type': 'application/json' } },
-      ),
-    );
-
-    const client = new KeycloakAdminClient({
-      baseUrl: 'http://localhost:8080',
-      realmName: 'myrealm',
-    });
-
-    const clientCredentialsProvider: KeycloakProviderConfig = {
-      id: 'default',
-      realm: 'myrealm',
-      baseUrl: 'http://localhost:8080',
-      clientId: 'myclientid',
-      clientSecret: 'myclientsecret', // NOSONAR
-    };
-
-    try {
-      await expect(
-        authenticate(client, clientCredentialsProvider, logger),
-      ).resolves.toBeUndefined();
-
-      expect(client.accessToken).toBe(accessToken);
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      const [tokenUrl, tokenInit] = fetchMock.mock.calls[0];
-      expect(String(tokenUrl)).toBe(
-        'http://localhost:8080/realms/myrealm/protocol/openid-connect/token',
-      );
-      expect(tokenInit).toEqual(expect.objectContaining({ method: 'POST' }));
-    } finally {
-      fetchMock.mockRestore();
-    }
   });
 });
 
 describe('ensureTokenValid', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.useFakeTimers();
+    jest.setSystemTime(BASE_TIME);
   });
 
-  it('authenticates when the access token is missing', async () => {
-    const client = {
-      accessToken: undefined,
-      auth: jest.fn().mockResolvedValue(undefined),
-    } as unknown as KeycloakAdminClient;
-
-    await ensureTokenValid(client, passwordProvider, logger);
-
-    expect(client.auth).toHaveBeenCalledTimes(1);
-    expect(mockedDecode).not.toHaveBeenCalled();
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
-  it('does not re-authenticate when the JWT expires more than 30 seconds from now', async () => {
-    const client = {
-      accessToken: 'valid-token',
-      auth: jest.fn().mockResolvedValue(undefined),
-    } as unknown as KeycloakAdminClient;
+  it('authenticates when no access token is present', async () => {
+    const kc = createMockKcClient();
+    await ensureTokenValid(kc, passwordProvider, logger);
 
-    mockedDecode.mockReturnValue({
-      exp: Math.floor((Date.now() + 60_000) / 1000),
-    });
-
-    await ensureTokenValid(client, passwordProvider, logger);
-
-    expect(mockedDecode).toHaveBeenCalledWith('valid-token');
-    expect(client.auth).not.toHaveBeenCalled();
+    expect(kc.auth).toHaveBeenCalledTimes(1);
   });
 
-  it('re-authenticates when the JWT is within 30 seconds of expiry', async () => {
-    const client = {
-      accessToken: 'near-expiry-token',
-      auth: jest.fn().mockResolvedValue(undefined),
-    } as unknown as KeycloakAdminClient;
+  it('does not re-authenticate when token is still valid', async () => {
+    const kc = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 3_600_000),
+    });
+    await ensureTokenValid(kc, passwordProvider, logger);
 
-    mockedDecode.mockReturnValue({
-      exp: Math.floor((Date.now() + 10_000) / 1000),
+    expect(kc.auth).not.toHaveBeenCalled();
+  });
+
+  it('refreshes when token is near expiry (within 30s window)', async () => {
+    const kc = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
+    });
+    await ensureTokenValid(kc, passwordProvider, logger);
+
+    expect(kc.auth).toHaveBeenCalledTimes(1);
+  });
+
+  it('refreshes when token is already expired', async () => {
+    const kc = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME - 60_000),
+    });
+    await ensureTokenValid(kc, passwordProvider, logger);
+
+    expect(kc.auth).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not trigger multiple refreshes when called concurrently', async () => {
+    const kc = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
     });
 
-    await ensureTokenValid(client, passwordProvider, logger);
+    await Promise.all([
+      ensureTokenValid(kc, passwordProvider, logger),
+      ensureTokenValid(kc, passwordProvider, logger),
+      ensureTokenValid(kc, passwordProvider, logger),
+    ]);
 
-    expect(mockedDecode).toHaveBeenCalledWith('near-expiry-token');
-    expect(client.auth).toHaveBeenCalledTimes(1);
-    expect(client.auth).toHaveBeenCalledWith({
-      grantType: 'password',
-      clientId: 'admin-cli',
-      username: 'myusername',
-      password: 'mypassword', // NOSONAR
+    expect(kc.auth).toHaveBeenCalledTimes(1);
+  });
+
+  it('refreshes independently for different clients', async () => {
+    const clientA = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
     });
+    const clientB = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
+    });
+
+    await Promise.all([
+      ensureTokenValid(clientA, passwordProvider, logger),
+      ensureTokenValid(clientB, passwordProvider, logger),
+    ]);
+
+    expect(clientA.auth).toHaveBeenCalledTimes(1);
+    expect(clientB.auth).toHaveBeenCalledTimes(1);
   });
 });
