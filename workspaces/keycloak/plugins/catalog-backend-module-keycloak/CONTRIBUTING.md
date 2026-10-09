@@ -97,7 +97,7 @@ CI does **not** replace reading [Backstage release notes](https://github.com/bac
 
 ## Sign-in alignment with the auth module
 
-When Keycloak users sign in via [`@backstage-community/plugin-auth-backend-module-keycloak-provider`](../auth-backend-module-keycloak/CONTRIBUTING.md), the auth `preferredUsernameMatchingUserEntityName` resolver must resolve the same catalog `User.metadata.name` that this module ingests from Keycloak usernames.
+When Keycloak users sign in via [`@backstage-community/plugin-auth-backend-module-keycloak-provider`](../auth-backend-module-keycloak-provider/CONTRIBUTING.md), the auth `preferredUsernameMatchingUserEntityName` resolver must resolve the same catalog `User.metadata.name` that this module ingests from Keycloak usernames.
 
 Both packages duplicate the same sanitization regex until a shared `keycloak-common` package exists. Automated contract tests in both packages assert identical output for representative inputs (for example `jane.doe_x-y/Admin@Example` → `jane.doe_x-y-Admin-Example`). **Do not change one side without updating the other and the contract tests.**
 
@@ -133,4 +133,4 @@ Use when you change catalog integration code or are reviewing a Backstage versio
 
 ## Related packages
 
-- [Keycloak auth module](../auth-backend-module-keycloak/CONTRIBUTING.md) — OIDC sign-in and resolver smoke (separate `dev/` harness; pair with this module in production)
+- [Keycloak auth module](../auth-backend-module-keycloak-provider/CONTRIBUTING.md) — OIDC sign-in and resolver smoke (separate `dev/` harness; pair with this module in production)

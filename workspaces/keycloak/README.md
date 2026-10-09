@@ -3,7 +3,7 @@
 Publishable plugins in this workspace:
 
 - [@backstage-community/plugin-catalog-backend-module-keycloak](./plugins/catalog-backend-module-keycloak/) — operator docs: [README](./plugins/catalog-backend-module-keycloak/README.md); contributors: [CONTRIBUTING](./plugins/catalog-backend-module-keycloak/CONTRIBUTING.md)
-- [@backstage-community/plugin-auth-backend-module-keycloak-provider](./plugins/auth-backend-module-keycloak/) — operator docs: [README](./plugins/auth-backend-module-keycloak/README.md); contributors: [CONTRIBUTING](./plugins/auth-backend-module-keycloak/CONTRIBUTING.md)
+- [@backstage-community/plugin-auth-backend-module-keycloak-provider](./plugins/auth-backend-module-keycloak-provider/) — operator docs: [README](./plugins/auth-backend-module-keycloak-provider/README.md); contributors: [CONTRIBUTING](./plugins/auth-backend-module-keycloak-provider/CONTRIBUTING.md)
 
 Day-to-day plugin work uses each package's `dev/` harness and package-level [`app-config.yaml`](./plugins/catalog-backend-module-keycloak/app-config.yaml) — see the contributor guides above.
 

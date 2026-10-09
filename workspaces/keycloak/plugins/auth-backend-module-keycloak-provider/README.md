@@ -1,6 +1,6 @@
 # Keycloak auth backend module for Backstage
 
-The `auth-backend-module-keycloak` enables [Keycloak](https://www.keycloak.org/) authentication for Backstage, allowing users to sign in with their Keycloak credentials.
+The `@backstage-community/plugin-auth-backend-module-keycloak-provider` enables [Keycloak](https://www.keycloak.org/) authentication for Backstage, allowing users to sign in with their Keycloak credentials.
 
 For an enhanced experience, we recommend using this module alongside the @backstage-community/plugin-catalog-backend-module-keycloak plugin. This setup allows for the synchronization of Keycloak users and groups, ensuring sign-in resolvers can locate the corresponding User entities.
 
