@@ -75,9 +75,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const excerptLength = props.cardOptions?.excerptLength;
 
   const markSeen = () => {
-    announcementsApi.markLastSeenDate(
-      DateTime.fromISO(announcement.created_at),
-    );
+    announcementsApi.dismissAnnouncement(announcement.id);
     setBannerOpen(false);
   };
 
@@ -225,11 +223,22 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
   }
 
   const unseenAnnouncements = announcements.results.filter(announcement => {
-    return lastSeen < DateTime.fromISO(announcement.created_at);
+    // Per-announcement dismiss tracking (primary mechanism)
+    if (announcementsApi.isAnnouncementDismissed(announcement.id)) {
+      return false;
+    }
+    // lastSeenDate as backward-compatible fallback for announcements dismissed
+    // before per-ID tracking was introduced, or when the ID set overflows (>50)
+    if (lastSeen >= DateTime.fromISO(announcement.created_at)) {
+      return false;
+    }
+    return true;
   });
 
   if (signaledAnnouncement) {
-    unseenAnnouncements.push(signaledAnnouncement);
+    if (!announcementsApi.isAnnouncementDismissed(signaledAnnouncement.id)) {
+      unseenAnnouncements.push(signaledAnnouncement);
+    }
   }
 
   if (unseenAnnouncements?.length === 0) {
