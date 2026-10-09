@@ -19,7 +19,7 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { render, screen } from '@testing-library/react';
 
-import { Router } from './Router';
+import { NfsRouter, Router } from './Router';
 
 const configMock = {
   getOptionalBoolean: jest.fn(() => true),
@@ -31,19 +31,27 @@ jest.mock('@backstage/core-plugin-api', () => ({
 }));
 
 jest.mock('./RbacPage', () => ({
-  RbacPage: () => <div>RBAC</div>,
+  RbacPage: ({ useHeader }: { useHeader?: boolean }) => (
+    <div data-use-header={String(useHeader)}>RBAC</div>
+  ),
 }));
 
 jest.mock('./RoleOverview/RoleOverviewPage', () => ({
-  RoleOverviewPage: () => <div>Role</div>,
+  RoleOverviewPage: ({ headerVariant }: { headerVariant?: string }) => (
+    <div data-header-variant={headerVariant}>Role</div>
+  ),
 }));
 
 jest.mock('./CreateRole/CreateRolePage', () => ({
-  CreateRolePage: () => <div>CreateRole</div>,
+  CreateRolePage: ({ headerVariant }: { headerVariant?: string }) => (
+    <div data-header-variant={headerVariant}>CreateRole</div>
+  ),
 }));
 
 jest.mock('./CreateRole/EditRolePage', () => ({
-  EditRolePage: () => <div>EditRole</div>,
+  EditRolePage: ({ headerVariant }: { headerVariant?: string }) => (
+    <div data-header-variant={headerVariant}>EditRole</div>
+  ),
 }));
 
 jest.mock('@backstage/core-components', () => ({
@@ -162,5 +170,55 @@ describe('Router component', () => {
     );
 
     expect(screen.queryByText('EditRole')).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ['/roles/user/testns/testname', 'Role'],
+    ['/role/new', 'CreateRole'],
+    ['/role/user/testns/testname', 'EditRole'],
+  ])(
+    'renders %s with the header for the frontend system in use',
+    (path, page) => {
+      const { unmount } = render(
+        <MemoryRouter initialEntries={[path]}>
+          <Router />
+        </MemoryRouter>,
+      );
+      expect(screen.getByText(page)).toHaveAttribute(
+        'data-header-variant',
+        'legacy',
+      );
+      unmount();
+
+      render(
+        <MemoryRouter initialEntries={[path]}>
+          <NfsRouter />
+        </MemoryRouter>,
+      );
+      expect(screen.getByText(page)).toHaveAttribute(
+        'data-header-variant',
+        'bui',
+      );
+    },
+  );
+
+  it('leaves the header of the roles list to the app in the new frontend system', () => {
+    const { unmount } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <Router />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('RBAC')).toHaveAttribute('data-use-header', 'true');
+    unmount();
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <NfsRouter />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('RBAC')).toHaveAttribute(
+      'data-use-header',
+      'false',
+    );
   });
 });
