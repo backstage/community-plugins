@@ -15,7 +15,7 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { Router, RequestHandler } from 'express';
+import { Router, RequestHandler, Response } from 'express';
 import type { GrowthbookClient } from './client';
 import type { SdkFlagsSource } from './sdkSource';
 import {
@@ -64,12 +64,25 @@ export function createRouter(options: RouterOptions): Router {
       return handler(mgmt)(req, res, next);
     };
 
-  async function resolveProjectId(
+  /**
+   * Resolves an optional `?project=` name to a project id. Responds with 400
+   * itself and returns `undefined` when the project is unknown.
+   */
+  async function resolveProjectOrReject(
     client: GrowthbookClient,
-    name: string,
-  ): Promise<string | undefined> {
+    name: string | undefined,
+    res: Response,
+  ): Promise<{ id?: string } | undefined> {
+    if (!name) return {};
     const projects = await client.listProjects();
-    return projects.find(p => p.name.toLowerCase() === name.toLowerCase())?.id;
+    const id = projects.find(
+      p => p.name.toLowerCase() === name.toLowerCase(),
+    )?.id;
+    if (!id) {
+      res.status(400).json({ error: 'Unknown project' });
+      return undefined;
+    }
+    return { id };
   }
 
   router.use((req, res, next) => {
@@ -99,15 +112,9 @@ export function createRouter(options: RouterOptions): Router {
       const projectName = req.query.project as string | undefined;
 
       if (mgmt) {
-        let projectId: string | undefined;
-        if (projectName) {
-          projectId = await resolveProjectId(mgmt, projectName);
-          if (!projectId) {
-            res.status(400).json({ error: 'Unknown project' });
-            return;
-          }
-        }
-        res.json(await mgmt.getFlags(env, projectId));
+        const project = await resolveProjectOrReject(mgmt, projectName, res);
+        if (!project) return;
+        res.json(await mgmt.getFlags(env, project.id));
         return;
       }
 
@@ -155,16 +162,13 @@ export function createRouter(options: RouterOptions): Router {
     '/experiments',
     requireMgmt(client =>
       guarded('experiments', async (req, res) => {
-        const projectName = req.query.project as string | undefined;
-        let projectId: string | undefined;
-        if (projectName) {
-          projectId = await resolveProjectId(client, projectName);
-          if (!projectId) {
-            res.status(400).json({ error: 'Unknown project' });
-            return;
-          }
-        }
-        const experiments = await client.listExperiments(projectId);
+        const project = await resolveProjectOrReject(
+          client,
+          req.query.project as string | undefined,
+          res,
+        );
+        if (!project) return;
+        const experiments = await client.listExperiments(project.id);
         res.json(experiments.map(e => normalizeExperiment(e, appUrl)));
       }),
     ),
