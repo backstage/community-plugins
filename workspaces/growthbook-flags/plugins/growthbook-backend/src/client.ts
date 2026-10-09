@@ -105,7 +105,6 @@ export class GrowthbookClient {
           '/api/v1/experiments',
           params,
           'experiments',
-          'experiments',
         );
       },
     );
@@ -155,7 +154,6 @@ export class GrowthbookClient {
           '/api/v1/features',
           new URLSearchParams(),
           'features',
-          'features',
         ),
       { pinned: true },
     );
@@ -198,7 +196,6 @@ export class GrowthbookClient {
     path: string,
     params: URLSearchParams,
     listKey: string,
-    label: string,
   ): Promise<T[]> {
     const items: T[] = [];
     let offset = 0;
@@ -209,7 +206,7 @@ export class GrowthbookClient {
       page.set('offset', String(offset));
       const body = await this.getJson<Page & Record<string, unknown>>(
         `${path}?${page}`,
-        label,
+        listKey,
       );
       items.push(...((body[listKey] as T[] | undefined) ?? []));
       hasMore =
@@ -220,7 +217,7 @@ export class GrowthbookClient {
         const next = body.nextOffset as number;
         if (next <= offset) {
           throw new Error(
-            `GrowthBook ${label} pagination did not advance (offset ${offset})`,
+            `GrowthBook ${listKey} pagination did not advance (offset ${offset})`,
           );
         }
         offset = next;
@@ -230,14 +227,7 @@ export class GrowthbookClient {
   }
 
   private async getJson<T>(path: string, label: string): Promise<T> {
-    const res = await this.request(path);
-    if (!res.ok) {
-      throw new GrowthbookApiError(
-        res.status,
-        `GrowthBook ${label} API returned ${res.status}`,
-      );
-    }
-    return (await res.json()) as T;
+    return (await this.getJsonOrUndefined<T>(path, label, [])) as T;
   }
 
   private async getJsonOrUndefined<T>(
