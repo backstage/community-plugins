@@ -14,81 +14,16 @@
  * limitations under the License.
  */
 
+import type { Key } from 'react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
-import Typography from '@material-ui/core/Typography';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import Checkbox from '@material-ui/core/Checkbox';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Alert, Flex, Select } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { ErrorPanel } from '@backstage/core-components';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 
-const useStyles = makeStyles({
-  fullWidth: { width: '100%' },
-  boxLabel: {
-    width: '100%',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-});
-
-const FixedWidthFormControlLabel = withStyles(_theme => ({
-  label: {
-    width: '100%',
-  },
-  root: {
-    width: '90%',
-  },
-}))(FormControlLabel);
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
-
-function RenderOptionLabel(props: { check: Check; isSelected: boolean }) {
-  const classes = useStyles();
-  const { check, isSelected } = props;
-  return (
-    <Box className={classes.fullWidth}>
-      <FixedWidthFormControlLabel
-        className={classes.fullWidth}
-        control={
-          <Checkbox
-            icon={icon}
-            checkedIcon={checkedIcon}
-            checked={isSelected}
-          />
-        }
-        onClick={event => event.preventDefault()}
-        label={
-          <Tooltip title={check.id}>
-            <Box display="flex" alignItems="center">
-              <Box className={classes.boxLabel}>
-                <Typography noWrap>{check.name}</Typography>
-              </Box>
-            </Box>
-          </Tooltip>
-        }
-      />
-    </Box>
-  );
-}
-
-const withResultsOptions = [
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
-];
-
-const failedOnlyOptions = [
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
+const yesNoOptions = [
+  { id: 'yes', label: 'Yes' },
+  { id: 'no', label: 'No' },
 ];
 
 /** public **/
@@ -107,71 +42,42 @@ export const Filters = (props: FiltersProps) => {
   }, [api]);
 
   if (error) {
-    return <ErrorPanel error={error} />;
+    return <Alert status="danger" title={error.message} />;
   }
 
+  const checks = value ?? [];
+
+  const handleChecksChange = (keys: Key[] | Key | null) => {
+    const selected = new Set(Array.isArray(keys) ? keys : []);
+    checksChanged(checks.filter(check => selected.has(check.id)));
+  };
+
   return (
-    <>
-      <Box pb={1} pt={1}>
-        <Typography variant="button" component="label">
-          Checks
-          <Autocomplete
-            multiple
-            disableCloseOnSelect
-            options={value ?? []}
-            loading={loading}
-            getOptionLabel={o => o.name}
-            onChange={(_: object, changedChecks) => {
-              checksChanged(changedChecks);
-            }}
-            filterOptions={x => x}
-            renderOption={(check, { selected }) => {
-              return <RenderOptionLabel check={check} isSelected={selected} />;
-            }}
-            size="small"
-            popupIcon={<ExpandMoreIcon />}
-            renderInput={params => <TextField {...params} variant="outlined" />}
-          />
-        </Typography>
-      </Box>
-      <Box pb={1} pt={1}>
-        <Typography variant="button" component="label">
-          Only with results
-          <Autocomplete
-            defaultValue={withResultsOptions[0]}
-            options={withResultsOptions}
-            getOptionLabel={o => o.label}
-            onChange={(_: object, selectedItem) => {
-              if (selectedItem) {
-                withResultsChanged(selectedItem.value);
-              }
-            }}
-            disableClearable
-            size="small"
-            popupIcon={<ExpandMoreIcon />}
-            renderInput={params => <TextField {...params} variant="outlined" />}
-          />
-        </Typography>
-      </Box>
-      <Box pb={1} pt={1}>
-        <Typography variant="button" component="label">
-          Has failed checks
-          <Autocomplete
-            defaultValue={failedOnlyOptions[1]}
-            options={failedOnlyOptions}
-            getOptionLabel={o => o.label}
-            onChange={(_: object, selectedItem) => {
-              if (selectedItem) {
-                hasFailedChecksChanged(selectedItem.value);
-              }
-            }}
-            disableClearable
-            size="small"
-            popupIcon={<ExpandMoreIcon />}
-            renderInput={params => <TextField {...params} variant="outlined" />}
-          />
-        </Typography>
-      </Box>
-    </>
+    <Flex direction="column" gap="4" py="2">
+      <Select
+        label="Checks"
+        selectionMode="multiple"
+        searchable
+        isDisabled={loading}
+        options={checks.map(check => ({
+          id: check.id,
+          label: check.name,
+          description: check.id,
+        }))}
+        onChange={handleChecksChange}
+      />
+      <Select
+        label="Only with results"
+        options={yesNoOptions}
+        defaultValue="yes"
+        onChange={key => key && withResultsChanged(key === 'yes')}
+      />
+      <Select
+        label="Has failed checks"
+        options={yesNoOptions}
+        defaultValue="no"
+        onChange={key => key && hasFailedChecksChanged(key === 'yes')}
+      />
+    </Flex>
   );
 };

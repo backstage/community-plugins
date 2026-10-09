@@ -15,10 +15,14 @@
  */
 
 import { useApi } from '@backstage/core-plugin-api';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  Box,
+  Flex,
+  Focusable,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { MarkdownContent } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
@@ -26,18 +30,6 @@ import {
   ResultCheckIcon,
   techInsightsApiRef,
 } from '@backstage-community/plugin-tech-insights-react';
-import Tooltip from '@material-ui/core/Tooltip';
-
-const useStyles = makeStyles(theme => ({
-  listItemText: {
-    paddingRight: theme.spacing(0.5),
-  },
-}));
-const itemTooltip = (
-  children: React.ReactElement,
-  title: string | NonNullable<React.ReactNode>,
-  enabled?: boolean,
-) => (enabled ? <Tooltip title={title}>{children}</Tooltip> : children);
 
 export const ScorecardsList = (props: {
   checkResults: CheckResult[];
@@ -47,15 +39,14 @@ export const ScorecardsList = (props: {
 }) => {
   const { checkResults, entity, dense, hideDescription } = props;
 
-  const classes = useStyles();
   const api = useApi(techInsightsApiRef);
 
   const types = [...new Set(checkResults.map(({ check }) => check.type))];
   const checkResultRenderers = api.getCheckResultRenderers(types);
 
   return (
-    <List dense={dense} disablePadding>
-      {checkResults.map((result, index) => {
+    <Flex direction="column" gap="0" role="list">
+      {checkResults.map(result => {
         const checkResultRenderer = checkResultRenderers.find(
           renderer => renderer.type === result.check.type,
         );
@@ -66,28 +57,45 @@ export const ScorecardsList = (props: {
           <MarkdownContent content={result.check.description} />
         );
 
-        return itemTooltip(
-          <ListItem key={result.check.id} disableGutters>
-            <ListItemText
-              key={index}
-              primary={result.check.name}
-              {...(!props.hideDescription
-                ? {
-                    secondary: description,
-                  }
-                : {})}
-              className={classes.listItemText}
-            />
+        const name = <Text as="span">{result.check.name}</Text>;
+
+        return (
+          <Flex
+            key={result.check.id}
+            role="listitem"
+            align="center"
+            gap="1"
+            py={dense ? '1' : '2'}
+          >
+            <Box grow shrink minWidth="0">
+              {hideDescription ? (
+                <TooltipTrigger>
+                  <Focusable>
+                    {/* Focusable so keyboard users can reach the tooltip */}
+                    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+                    <Text as="span" tabIndex={0}>
+                      {result.check.name}
+                    </Text>
+                  </Focusable>
+                  <Tooltip>{description}</Tooltip>
+                </TooltipTrigger>
+              ) : (
+                <>
+                  {name}
+                  <Text as="div" variant="body-small" color="secondary">
+                    {description}
+                  </Text>
+                </>
+              )}
+            </Box>
             <ResultCheckIcon
               result={result}
               entity={entity}
               checkResultRenderer={checkResultRenderer}
             />
-          </ListItem>,
-          description,
-          hideDescription,
+          </Flex>
         );
       })}
-    </List>
+    </Flex>
   );
 };

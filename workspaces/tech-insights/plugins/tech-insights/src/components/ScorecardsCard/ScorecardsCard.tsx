@@ -16,7 +16,8 @@
 
 import { useMemo } from 'react';
 import useAsync from 'react-use/esm/useAsync';
-import { ErrorPanel, Progress } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { Alert } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import { ScorecardInfo } from '../ScorecardsInfo';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
@@ -68,7 +69,7 @@ export const ScorecardsCard = (props: {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <ErrorPanel error={error} />;
+    return <Alert status="danger" title={error.message} />;
   }
 
   const filteredValue = !onlyFailed

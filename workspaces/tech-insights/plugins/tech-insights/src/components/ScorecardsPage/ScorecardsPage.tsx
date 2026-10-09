@@ -17,7 +17,6 @@
 import { useMemo, useState } from 'react';
 import {
   Content,
-  ErrorPanel,
   Header,
   HeaderLabel,
   Page,
@@ -33,7 +32,7 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ScorecardsList } from '../ScorecardsList';
-import Grid from '@material-ui/core/Grid';
+import { Alert, Box, Flex } from '@backstage/ui';
 import { Filters } from './Filters';
 import { ExportCsv as exportCsv } from '@material-table/exporters';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
@@ -154,7 +153,7 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
   }, [props, value, filterSelectedChecks]);
 
   if (error) {
-    return <ErrorPanel error={error} />;
+    return <Alert status="danger" title={error.message} />;
   }
 
   return (
@@ -164,8 +163,8 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
         <HeaderLabel label="Checks" value={value?.checks.length ?? 0} />
       </Header>
       <Content>
-        <Grid container>
-          <Grid item style={{ width: '300px' }}>
+        <Flex gap="4" align="start">
+          <Flex direction="column" basis="300px" shrink={false}>
             <Filters
               checksChanged={checks => setFilterSelectedChecks(checks)}
               withResultsChanged={withResults =>
@@ -175,16 +174,16 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
                 setFilterFailedChecks(hasFailedChecks)
               }
             />
-          </Grid>
-          <Grid item xs>
+          </Flex>
+          <Box grow minWidth="0">
             <Table
               columns={tableColumns}
               data={value?.result ?? []}
               isLoading={loading}
               options={tableOptions}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Flex>
       </Content>
     </Page>
   );

@@ -25,11 +25,16 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity } from '@backstage/catalog-model';
-import IconButton from '@material-ui/core/IconButton';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, ButtonIcon } from '@backstage/ui';
 import { techInsightsApiRef } from '../../api';
 import { ResultLinksMenu, ResultLinksMenuInfo } from '../ResultLinksMenu';
 import { CheckResultRenderer } from '../CheckResultRenderer';
+
+// react-aria stops click propagation by default, which would hide the click
+// from a wrapping `component` that owns the onClick. Let it bubble, as the
+// original MUI IconButton did.
+const continuePropagation = (e: { continuePropagation: () => void }) =>
+  e.continuePropagation();
 
 /** @public */
 export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
@@ -67,10 +72,10 @@ export interface ResultCheckIconProps<
    */
   disableLinksMenu?: boolean;
   /**
-   * The icon is rendered with an `IconButton` which handles the onClick.
-   * To wrap this in another component, handling the onClick, pass a component,
-   * such as `ListItemSecondaryAction` which handles the `onClick` to open the
-   * popup menu.
+   * The icon is rendered within a button which handles the onClick.
+   * To wrap this in another component, handling the onClick, pass a component
+   * which handles the `onClick` to open the popup menu. The popup menu is then
+   * anchored to that component.
    *
    * The {@link ResultCheckIconProps.componentProps} prop can be specified to
    * add props to the wrapping component.
@@ -103,7 +108,7 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
     disableLinksMenu,
     component,
     componentProps,
-    missingRendererComponent = <Alert severity="error">Unknown type.</Alert>,
+    missingRendererComponent = <Alert status="danger" title="Unknown type." />,
   } = props;
 
   const api = useApi(techInsightsApiRef);
@@ -130,22 +135,29 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
       return inner;
     }
 
+    const button = (
+      <ButtonIcon
+        aria-label="icon"
+        variant="tertiary"
+        size="small"
+        icon={inner}
+        onClick={component ? undefined : onClick}
+        onPressStart={continuePropagation}
+        onPressUp={continuePropagation}
+        onPressEnd={continuePropagation}
+      />
+    );
+
     if (component) {
       const Component =
         component as ElementType<ResultCheckIconBaseComponentProps>;
       return (
         <Component {...componentProps} onClick={onClick}>
-          <IconButton edge="end" aria-label="icon">
-            {inner}
-          </IconButton>
+          {button}
         </Component>
       );
     }
-    return (
-      <IconButton edge="end" aria-label="icon" onClick={onClick}>
-        {inner}
-      </IconButton>
-    );
+    return button;
   };
 
   return (
