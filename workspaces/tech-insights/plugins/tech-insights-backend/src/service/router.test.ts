@@ -28,10 +28,12 @@ import { DateTime } from 'luxon';
 import { mockServices } from '@backstage/backend-test-utils';
 import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { FactRetrieverEngine } from './fact/FactRetrieverEngine';
 
 const setupRouter = async (
   mockPersistenceContext: PersistenceContext,
   allow: boolean,
+  factRetrieverEngine?: FactRetrieverEngine,
 ) => {
   const database = mockServices.database.mock({
     migrations: { skip: true },
@@ -65,6 +67,7 @@ const setupRouter = async (
     logger,
     config: ConfigReader.fromConfigs([]),
     ...techInsightsContext,
+    ...(factRetrieverEngine && { factRetrieverEngine }),
     persistenceContext: mockPersistenceContext,
     permissions: mockServices.permissions.mock({
       authorize: async () => [
@@ -220,6 +223,80 @@ describe('Tech Insights router tests', () => {
       app = express().use(router);
 
       await request(app).get('/facts/range').expect(403);
+    });
+  });
+
+  describe('/facts/refresh', () => {
+    const refreshEntityFacts = jest.fn();
+    const engine = { refreshEntityFacts } as unknown as FactRetrieverEngine;
+
+    it('should refresh the facts of the entity', async () => {
+      const result = {
+        entity: 'component:default/svc',
+        results: [{ factRetrieverId: 'first', facts: 1 }],
+      };
+      refreshEntityFacts.mockResolvedValue(result);
+      app = express().use(
+        await setupRouter(mockPersistenceContext, true, engine),
+      );
+
+      await request(app)
+        .post('/facts/refresh/default/Component/svc')
+        .send({ factRetrieverIds: ['first'] })
+        .expect(200, result);
+      expect(refreshEntityFacts).toHaveBeenCalledWith({
+        entityRef: { namespace: 'default', kind: 'Component', name: 'svc' },
+        factRetrieverIds: ['first'],
+      });
+
+      await request(app)
+        .post('/facts/refresh/default/Component/svc')
+        .expect(200);
+      expect(refreshEntityFacts).toHaveBeenLastCalledWith({
+        entityRef: { namespace: 'default', kind: 'Component', name: 'svc' },
+        factRetrieverIds: undefined,
+      });
+    });
+
+    it('should reject invalid fact retriever ids', async () => {
+      app = express().use(
+        await setupRouter(mockPersistenceContext, true, engine),
+      );
+
+      await request(app)
+        .post('/facts/refresh/default/Component/svc')
+        .send({ factRetrieverIds: 'first' })
+        .expect(400);
+      await request(app)
+        .post('/facts/refresh/default/Component/svc')
+        .send({ factRetrieverIds: [1] })
+        .expect(400);
+      expect(refreshEntityFacts).not.toHaveBeenCalled();
+    });
+
+    it('should respond with 501 when the engine cannot refresh facts', async () => {
+      app = express().use(
+        await setupRouter(
+          mockPersistenceContext,
+          true,
+          {} as unknown as FactRetrieverEngine,
+        ),
+      );
+
+      await request(app)
+        .post('/facts/refresh/default/Component/svc')
+        .expect(501);
+    });
+
+    it('should not allow access when not authorized', async () => {
+      app = express().use(
+        await setupRouter(mockPersistenceContext, false, engine),
+      );
+
+      await request(app)
+        .post('/facts/refresh/default/Component/svc')
+        .expect(403);
+      expect(refreshEntityFacts).not.toHaveBeenCalled();
     });
   });
 });
