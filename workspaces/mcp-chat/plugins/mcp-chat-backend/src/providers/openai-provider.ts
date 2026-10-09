@@ -15,6 +15,7 @@
  */
 import { LLMProvider } from './base-provider';
 import { ChatMessage, Tool, ChatResponse } from '../types';
+import { constructURL } from '../utils';
 
 /**
  * OpenAI Chat Completions API provider.
@@ -31,7 +32,10 @@ export class OpenAIProvider extends LLMProvider {
     tools?: Tool[],
   ): Promise<ChatResponse> {
     const requestBody = this.formatRequest(messages, tools);
-    const response = await this.makeRequest('/chat/completions', requestBody);
+    const response = await this.makeRequest(
+      this.pathOverrides?.inference ?? '/chat/completions',
+      requestBody,
+    );
     return this.parseResponse(response);
   }
 
@@ -41,10 +45,13 @@ export class OpenAIProvider extends LLMProvider {
     error?: string;
   }> {
     try {
-      const response = await fetch(`${this.baseUrl}/models`, {
-        method: 'GET',
-        headers: this.getHeaders(),
-      });
+      const response = await fetch(
+        constructURL(this.baseUrl, this.pathOverrides?.models ?? '/models'),
+        {
+          method: 'GET',
+          headers: this.getHeaders(),
+        },
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
