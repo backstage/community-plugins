@@ -15,6 +15,7 @@ If you have questions or feedback regarding Community Plugins, you can visit the
     - [Forking the Repository](#forking-the-repository)
     - [Developing Plugins in Workspaces](#developing-plugins-in-workspaces)
   - [Coding Guidelines](#coding-guidelines)
+    - [yarn fix](#yarn-fix)
   - [AI Use Policy and Guidelines](#ai-use-policy-and-guidelines)
   - [Versioning](#versioning)
   - [Creating Changesets](#creating-changesets)
@@ -90,6 +91,29 @@ To keep the codebase consistent and maintainable, we have some cross workspace t
 
 - `yarn`: is the package manager used for all workspaces. We will regularly update the yarn version to keep up with the latest features and bug fixes. This version is managed in the root `package.json` and `.yarnrc.yml` files and should not be locked to a different version in any workspace. Updating the yarn version could imply changes on all the `yarn.lock` files.
 - `prettier`: All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
+
+### yarn fix
+
+From a workspace root (`workspaces/<name>`), run `yarn fix` before you consider the work done. Do not run it from the repository root; each workspace has its own install and its own `yarn fix`.
+
+The command runs `community-cli workspace fix`, which delegates to `backstage-cli repo fix` and then runs additional fixers when they are available. Execution order is defined in `workspaces/repo-tools/packages/cli/src/lib/workspaceFix/steps.ts`:
+
+1. `backstage-cli repo fix` (pass `--publish` with `workspaceFix.publish` or `--publish`)
+2. `sort-package-json` (skipped unless the workspace depends on it)
+3. `backstage-cli repo lint --fix`
+4. `markdownlint --fix` (skipped unless the workspace depends on it)
+5. `prettier --write .` (always last among formatters)
+6. `knip --fix` (opt-in only: `workspaceFix.knip` or `--knip`)
+
+`yarn fix` exits 0 when every run fixer succeeds, even if files changed. It exits non-zero if a fixer fails. Missing optional fixers are skipped, not treated as failures.
+
+`yarn fix --check` runs only `backstage-cli repo fix --check` (and `--publish` when configured). CI uses this mode; lint, prettier, and publish validation run as separate workflow steps.
+
+Pass `--plugin <name>` to limit lint, prettier, and markdownlint to one plugin or package under the workspace (for example `yarn fix --plugin segment` in `workspaces/analytics`). Short names match a unique `plugins/<name>` or `plugins/*-<name>` directory. `backstage-cli repo fix` still runs for the full workspace.
+
+Memory-heavy fixers run with `NODE_OPTIONS=--max-old-space-size=8192`, matching CI. Workspaces that build dynamic plugin bundles should list `dist-dynamic` and `dist-scalprum` in `.eslintignore` and `.prettierignore` so `repo lint --fix` and `prettier --write` do not traverse generated output. If a workspace still runs out of memory during `repo lint --fix`, set a higher value in `workspaceFix.nodeOptions` in that workspace's `package.json`.
+
+To add a new fixer, update `workspaces/repo-tools/packages/cli/src/lib/workspaceFix/`. Workspace `package.json` files invoke the CLI via `community-cli workspace fix`. The `noop` workspace is the exception and stays a no-op.
 
 ## AI Use Policy and Guidelines
 
