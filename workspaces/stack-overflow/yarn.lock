@@ -7346,15 +7346,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remixicon/react@npm:^4.6.0":
-  version: 4.9.0
-  resolution: "@remixicon/react@npm:4.9.0"
-  peerDependencies:
-    react: ">=18.2.0"
-  checksum: 10/3d8f1d86b2bb20ab5e44d15f18811e928b0886f7710eb7a1516afb9913ba72e46facec5dfee382825139d800bcbb6704c15d0c760d0f977c12257d4af8db3295
-  languageName: node
-  linkType: hard
-
 "@rjsf/utils@npm:5.24.13":
   version: 5.24.13
   resolution: "@rjsf/utils@npm:5.24.13"
