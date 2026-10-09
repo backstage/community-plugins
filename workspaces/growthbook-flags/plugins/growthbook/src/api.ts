@@ -52,31 +52,18 @@ export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   }
 
   async getFlags(env: string, project?: string): Promise<FlagRow[]> {
-    const baseUrl = await this.discoveryApi.getBaseUrl(
-      'backstage-community-growthbook',
-    );
     const params = new URLSearchParams({ env });
     if (project) params.set('project', project);
-    const response = await this.fetchApi.fetch(`${baseUrl}/flags?${params}`);
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`GrowthBook flags API error ${response.status}: ${body}`);
-    }
-    return response.json();
+    const response = await this.get(`/flags?${params}`);
+    return this.parse(response, 'flags');
   }
 
   async getProjects(): Promise<string[]> {
-    const baseUrl = await this.discoveryApi.getBaseUrl(
-      'backstage-community-growthbook',
+    const response = await this.get('/projects');
+    const body = await this.parse<{ projects?: string[] }>(
+      response,
+      'projects',
     );
-    const response = await this.fetchApi.fetch(`${baseUrl}/projects`);
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(
-        `GrowthBook projects API error ${response.status}: ${body}`,
-      );
-    }
-    const body = await response.json();
     return body.projects ?? [];
   }
 
