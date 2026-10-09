@@ -6,9 +6,9 @@ metadata:
   title: Regex scaffolder actions
   description: The regex custom actions
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     github.com/team-slug: backstage-community/maintainers-plugins
     sonarqube.org/project-key: backstage-community_plugins
@@ -16,7 +16,7 @@ metadata:
     - scaffolder
     - actions
   links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex
       title: GitHub Source
       icon: source
       type: source
@@ -35,9 +35,9 @@ metadata:
   title: '@backstage-community/plugin-scaffolder-backend-module-regex'
   description: The regex custom actions
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     github.com/team-slug: backstage-community/maintainers-plugins
     sonarqube.org/project-key: backstage-community_plugins
@@ -45,7 +45,7 @@ metadata:
     - scaffolder
     - actions
   links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/scaffolder-backend-module-regex
       title: GitHub Source
       icon: source
       type: source
