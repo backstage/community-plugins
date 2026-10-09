@@ -9,8 +9,6 @@ info:
   contact: {}
 servers:
   - url: /
-security:
-  - BearerAuth: []
 paths:
   /health:
     get:
@@ -28,6 +26,8 @@ paths:
                     type: string
   /entity-languages:
     get:
+      security:
+        - JWT: []
       description: Returns the language breakdown of the passed in entityRef.
       parameters:
         - in: query
@@ -52,7 +52,7 @@ components:
   parameters: {}
   requestBodies: {}
   securitySchemes:
-    BearerAuth:
+    JWT:
       type: http
       scheme: bearer
       bearerFormat: JWT
