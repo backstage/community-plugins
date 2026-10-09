@@ -1151,9 +1151,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-auth-backend-module-keycloak-provider@workspace:plugins/auth-backend-module-keycloak":
+"@backstage-community/plugin-auth-backend-module-keycloak-provider@workspace:plugins/auth-backend-module-keycloak-provider":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-auth-backend-module-keycloak-provider@workspace:plugins/auth-backend-module-keycloak"
+  resolution: "@backstage-community/plugin-auth-backend-module-keycloak-provider@workspace:plugins/auth-backend-module-keycloak-provider"
   dependencies:
     "@backstage-community/plugin-catalog-backend-module-keycloak": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.17.7"
