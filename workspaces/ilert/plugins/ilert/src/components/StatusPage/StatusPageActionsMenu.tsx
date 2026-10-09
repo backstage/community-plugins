@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Typography from '@material-ui/core/Typography';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import type { MouseEvent } from 'react';
-import { useState } from 'react';
+import { MenuTrigger, Menu, MenuItem, ButtonIcon } from '@backstage/ui';
+import { RiMore2Line } from '@remixicon/react';
 import { ilertApiRef } from '../../api';
 import { StatusPage } from '../../types';
 
@@ -32,52 +27,22 @@ export const StatusPageActionsMenu = ({
   statusPage: StatusPage;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
 
   return (
-    <>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-        size="small"
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id={`statusPage-actions-menu-${statusPage.id}`}
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-        PaperProps={{
-          style: { maxHeight: 48 * 5.5 },
-        }}
-      >
-        <MenuItem key="details" onClick={handleCloseMenu}>
-          <Typography variant="inherit" noWrap>
-            <Link to={ilertApi.getStatusPageDetailsURL(statusPage)}>
-              View in ilert
-            </Link>
-          </Typography>
+    <MenuTrigger>
+      <ButtonIcon icon={<RiMore2Line size={16} />} variant="secondary" />
+      <Menu>
+        <MenuItem key="details">
+          <Link to={ilertApi.getStatusPageDetailsURL(statusPage)}>
+            View in ilert
+          </Link>
         </MenuItem>
         <MenuItem>
-          <Typography variant="inherit" noWrap>
-            <Link to={`https://${ilertApi.getStatusPageURL(statusPage)}`}>
-              View status page
-            </Link>
-          </Typography>
+          <Link to={`https://${ilertApi.getStatusPageURL(statusPage)}`}>
+            View status page
+          </Link>
         </MenuItem>
       </Menu>
-    </>
+    </MenuTrigger>
   );
 };

@@ -19,8 +19,8 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
+import { Button } from '@backstage/ui';
+import { RiAddLine } from '@remixicon/react';
 import { useState } from 'react';
 import { useAlerts } from '../../hooks/useAlerts';
 import { AlertNewModal } from '../Alert/AlertNewModal';
@@ -66,13 +66,11 @@ export const AlertsPage = () => {
     <Content>
       <ContentHeader title="Alerts">
         <Button
-          variant="contained"
-          color="primary"
+          variant="primary"
           size="small"
-          startIcon={<AddIcon />}
-          onClick={handleCreateNewAlertClick}
+          onPress={handleCreateNewAlertClick}
         >
-          Create Alert
+          <RiAddLine size={16} /> Create Alert
         </Button>
         <AlertNewModal
           isModalOpened={isModalOpened}

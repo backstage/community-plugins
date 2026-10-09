@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import { CodeSnippet } from '@backstage/core-components';
+import { Card, CardHeader, Button, Text } from '@backstage/ui';
+import styles from './ILertCardEmptyState.module.css';
 
 const ENTITY_YAML = `apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -35,32 +30,16 @@ spec:
   lifecycle: production
   owner: guest`;
 
-const useStyles = makeStyles(theme => ({
-  code: {
-    borderRadius: 6,
-    margin: theme.spacing(2, 0),
-    background:
-      theme.palette.type === 'dark' ? '#444' : theme.palette.common.white,
-  },
-  header: {
-    display: 'inline-block',
-    padding: theme.spacing(2, 2, 2, 2.5),
-  },
-}));
-
 export const ILertCardEmptyState = () => {
-  const classes = useStyles();
-
   return (
     <Card data-testid="ilert-empty-card">
-      <CardHeader title="ilert" className={classes.header} />
-      <Divider />
-      <CardContent>
-        <Typography variant="body1">
+      <CardHeader title="ilert" />
+      <div className={styles.content}>
+        <Text>
           No integration key defined for this entity. You can add integration
           key to your entity YAML as shown in the highlighted example below:
-        </Typography>
-        <div className={classes.code}>
+        </Text>
+        <div className={styles.code}>
           <CodeSnippet
             text={ENTITY_YAML}
             language="yaml"
@@ -70,14 +49,17 @@ export const ILertCardEmptyState = () => {
           />
         </div>
         <Button
-          variant="contained"
-          color="primary"
-          target="_blank"
-          href="https://github.com/backstage/backstage/blob/master/plugins/ilert/README.md"
+          variant="primary"
+          onPress={() =>
+            window.open(
+              'https://github.com/backstage/backstage/blob/master/plugins/ilert/README.md',
+              '_blank',
+            )
+          }
         >
           Read more
         </Button>
-      </CardContent>
+      </div>
     </Card>
   );
 };

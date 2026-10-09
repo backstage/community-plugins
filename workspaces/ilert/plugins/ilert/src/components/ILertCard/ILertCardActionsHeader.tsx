@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Typography from '@material-ui/core/Typography';
-import AlarmAddIcon from '@material-ui/icons/AlarmAdd';
-import BuildIcon from '@material-ui/icons/Build';
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import WebIcon from '@material-ui/icons/Web';
-import Alert from '@material-ui/lab/Alert';
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+  Text,
+} from '@backstage/ui';
+import {
+  RiGlobalLine,
+  RiAlarmAddLine,
+  RiWrenchLine,
+  RiPauseLine,
+  RiPlayLine,
+} from '@remixicon/react';
 import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { AlertSource } from '../../types';
@@ -103,13 +107,13 @@ export const ILertCardActionsHeader = ({
   const alertSourceLink: IconLinkVerticalProps = {
     label: 'Alert Source',
     href: ilertApi.getAlertSourceDetailsURL(alertSource),
-    icon: <WebIcon />,
+    icon: <RiGlobalLine />,
   };
 
   const createAlertLink: IconLinkVerticalProps = {
     label: 'Create Alert',
     onClick: handleCreateNewAlert,
-    icon: <AlarmAddIcon />,
+    icon: <RiAlarmAddLine />,
     color: 'secondary',
     disabled:
       !alertSource ||
@@ -120,21 +124,21 @@ export const ILertCardActionsHeader = ({
   const enableAlertSourceLink: IconLinkVerticalProps = {
     label: 'Enable',
     onClick: handleEnableAlertSource,
-    icon: <PlayArrowIcon />,
+    icon: <RiPlayLine />,
     disabled: !alertSource || isLoading,
   };
 
   const disableAlertSourceLink: IconLinkVerticalProps = {
     label: 'Disable',
     onClick: handleDisableAlertSourceWarningOpen,
-    icon: <PauseIcon />,
+    icon: <RiPauseLine />,
     disabled: !alertSource || isLoading,
   };
 
   const maintenanceAlertSourceLink: IconLinkVerticalProps = {
     label: 'Immediate maintenance',
     onClick: handleMaintenanceAlertSource,
-    icon: <BuildIcon />,
+    icon: <RiWrenchLine />,
     disabled: !alertSource || isLoading,
   };
 
@@ -153,38 +157,41 @@ export const ILertCardActionsHeader = ({
   return (
     <>
       <HeaderIconLinkRow links={links} />
-      <Dialog
-        open={isDisableModalOpened}
-        onClose={handleDisableAlertSourceWarningClose}
-        aria-labelledby="alert-source-disable-form-title"
+      <DialogTrigger
+        isOpen={isDisableModalOpened}
+        onOpenChange={setIsDisableModalOpened}
       >
-        <DialogTitle id="alert-source-disable-form-title">
-          Disable alert source
-        </DialogTitle>
-        <DialogContent>
-          <Alert severity="info">
-            <Typography variant="body1" align="justify">
-              Do you really want to disable this alert source? A disabled alert
-              source cannot create new alerts.
-            </Typography>
-          </Alert>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleDisableAlertSource}
-            color="secondary"
-            variant="contained"
-          >
-            Disable
-          </Button>
-          <Button
-            onClick={handleDisableAlertSourceWarningClose}
-            color="primary"
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Dialog>
+          <DialogHeader>Disable alert source</DialogHeader>
+          <DialogBody>
+            <div
+              style={{
+                backgroundColor: 'var(--bui-bg-surface-secondary)',
+                padding: '16px',
+                borderRadius: '4px',
+                marginBottom: '16px',
+              }}
+            >
+              <Text>
+                Do you really want to disable this alert source? A disabled
+                alert source cannot create new alerts.
+              </Text>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button onPress={handleDisableAlertSource} variant="primary">
+              Disable
+            </Button>
+            <Button
+              onPress={handleDisableAlertSourceWarningClose}
+              variant="secondary"
+              slot="close"
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      </DialogTrigger>
     </>
   );
 };

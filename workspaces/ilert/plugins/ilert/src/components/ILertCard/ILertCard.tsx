@@ -15,12 +15,8 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { Card, CardHeader, CardBody } from '@backstage/ui';
 import { AuthenticationError } from '@backstage/errors';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Divider from '@material-ui/core/Divider';
-import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
 import { ILERT_INTEGRATION_KEY_ANNOTATION } from '../../constants';
 import { useILertEntity } from '../../hooks';
@@ -34,26 +30,14 @@ import { ILertCardEmptyState } from './ILertCardEmptyState';
 import { ILertCardHeaderStatus } from './ILertCardHeaderStatus';
 import { ILertCardMaintenanceModal } from './ILertCardMaintenanceModal';
 import { ILertCardOnCall } from './ILertCardOnCall';
+import styles from './ILertCard.module.css';
 
 /** @public */
 export const isPluginApplicableToEntity = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[ILERT_INTEGRATION_KEY_ANNOTATION]);
 
-const useStyles = makeStyles({
-  content: {
-    paddingLeft: '0 !important',
-    paddingRight: '0 !important',
-    paddingBottom: '0 !important',
-    paddingTop: '0 !important',
-    '& div div': {
-      boxShadow: 'none !important',
-    },
-  },
-});
-
 /** @public */
 export const ILertCard = () => {
-  const classes = useStyles();
   const { integrationKey, name } = useILertEntity();
   const [{ alertSource }, { setAlertSource, refetchAlertSource }] =
     useAlertSource(integrationKey);
@@ -88,20 +72,36 @@ export const ILertCard = () => {
   return (
     <>
       <Card data-testid="ilert-card">
-        <CardHeader
-          title="ilert"
-          subheader={
-            <ILertCardActionsHeader
-              alertSource={alertSource}
-              setAlertSource={setAlertSource}
-              setIsNewAlertModalOpened={setIsNewAlertModalOpened}
-              setIsMaintenanceModalOpened={setIsMaintenanceModalOpened}
-            />
-          }
-          action={<ILertCardHeaderStatus alertSource={alertSource} />}
-        />
-        <Divider />
-        <CardContent className={classes.content}>
+        <CardHeader>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  margin: '0 0 8px 0',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                }}
+              >
+                ilert
+              </h2>
+              <ILertCardActionsHeader
+                alertSource={alertSource}
+                setAlertSource={setAlertSource}
+                setIsNewAlertModalOpened={setIsNewAlertModalOpened}
+                setIsMaintenanceModalOpened={setIsMaintenanceModalOpened}
+              />
+            </div>
+            <ILertCardHeaderStatus alertSource={alertSource} />
+          </div>
+        </CardHeader>
+        <CardBody className={styles.content}>
           <ILertCardOnCall alertSource={alertSource} />
           <AlertsTable
             alerts={alerts}
@@ -116,7 +116,7 @@ export const ILertCard = () => {
             setIsLoading={setIsLoading}
             compact
           />
-        </CardContent>
+        </CardBody>
       </Card>
       <AlertNewModal
         isModalOpened={isNewAlertModalOpened}

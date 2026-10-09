@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import { TableState } from '../../api';
 import { StatusPage } from '../../types';
 import { VisibilityChip } from './VisibilityChip';
@@ -24,14 +23,6 @@ import { StatusPageActionsMenu } from '../StatusPage/StatusPageActionsMenu';
 import { StatusPageLink } from '../StatusPage/StatusPageLink';
 import { StatusPageURL } from '../StatusPage/StatusPageURL';
 import { StatusChip } from './StatusChip';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 export const StatusPagesTable = ({
   statusPages,
@@ -49,8 +40,6 @@ export const StatusPagesTable = ({
   onChangeRowsPerPage: (pageSize: number) => void;
   compact?: boolean;
 }) => {
-  const classes = useStyles();
-
   const smColumnStyle = {
     width: '10%',
     maxWidth: '10%',
@@ -73,7 +62,7 @@ export const StatusPagesTable = ({
     field: 'name',
     cellStyle: !compact ? xlColumnStyle : undefined,
     headerStyle: !compact ? xlColumnStyle : undefined,
-    render: rowData => <Typography>{rowData.name}</Typography>,
+    render: rowData => <Text>{rowData.name}</Text>,
   };
   const urlColumn: TableColumn<StatusPage> = {
     title: 'URL',
@@ -130,16 +119,8 @@ export const StatusPagesTable = ({
         showTitle: true,
         toolbar: true,
       }}
-      emptyContent={
-        <Typography color="textSecondary" className={classes.empty}>
-          No status pages
-        </Typography>
-      }
-      title={
-        <Typography variant="button" color="textSecondary">
-          STATUS PAGES
-        </Typography>
-      }
+      emptyContent={<Text>No status pages</Text>}
+      title={<Text>STATUS PAGES</Text>}
       page={tableState.page}
       onPageChange={onChangePage}
       onRowsPerPageChange={onChangeRowsPerPage}
