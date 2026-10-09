@@ -44,7 +44,7 @@
     "@microsoft/api-extractor-model": "^7.31.2",
     "@microsoft/tsdoc": "^0.17.0",
     "@microsoft/tsdoc-config": "^0.18.0",
-    "@types/node": "24.13.6",
+    "@types/node": "24.19.1",
     "@useoptic/optic": "^1.0.9",
     "knip": "^6.0.0",
     "node-gyp": "^13.0.0",
