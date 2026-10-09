@@ -81,7 +81,7 @@ CI does **not** replace reading [Backstage release notes](https://github.com/bac
 
 ## Workspace evaluation (full app)
 
-This workspace is **plugin-only** (`plugins/kubernetes-actions`). Do **not** add `packages/app` or `packages/backend` here. Day-to-day contributor and CI work uses:
+This workspace is **plugin-only** (`plugins/scaffolder-backend-module-kubernetes`). Do **not** add `packages/app` or `packages/backend` here. Day-to-day contributor and CI work uses:
 
 1. Package unit / module tests (merge gate)
 2. Optional `dev/` harness above
