@@ -17,7 +17,7 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { MaturityDisplayProps } from '../types';
 
-export const DEFAULT_TITLE = 'Maturity';
+const DEFAULT_TITLE = 'Maturity';
 const DEFAULT_HELP_URL =
   'https://github.com/backstage/community-plugins/blob/main/workspaces/tech-insights/plugins/tech-insights-maturity/README.md';
 

@@ -35,10 +35,7 @@ import { MaturityLink } from '../../helpers/MaturityLink';
 import { MaturityRankIcon } from '../MaturityRankIcon';
 import { MaturityRankChip } from '../MaturityRankChip';
 import { MaturityDisplayProps } from '../../types';
-import {
-  DEFAULT_TITLE,
-  useMaturityDisplayConfig,
-} from '../../helpers/maturityConfig';
+import { useMaturityDisplayConfig } from '../../helpers/maturityConfig';
 
 const OverallCell = ({
   areaSummary,
@@ -178,11 +175,7 @@ export function MaturitySummaryTable({
     },
     {
       title: 'Overall',
-      // Keep the original wording under the default title.
-      tooltip:
-        title === DEFAULT_TITLE
-          ? 'Progress toward achieving full maturity'
-          : `Overall ${title} progress`,
+      tooltip: `Overall ${title} progress`,
       field: 'summary.progress.percentage',
       width: '13%',
       ...style,
