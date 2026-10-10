@@ -132,4 +132,34 @@ describe('ResultCheckIcon', () => {
     await userEvent.click(link);
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
+
+  it.each(['{Enter}', ' '])(
+    'opens the popup from a wrapping component on %j',
+    async key => {
+      const wrapperClick = jest.fn();
+      const Wrapper = ({
+        children,
+        onClick,
+      }: PropsWithChildren<ResultCheckIconBaseComponentProps>) => (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <div
+          onClick={e => {
+            wrapperClick();
+            onClick?.(e);
+          }}
+        >
+          {children}
+        </div>
+      );
+      await renderIcon(createApi(), { component: Wrapper });
+
+      await userEvent.tab();
+      expect(screen.getByRole('button', { name: 'icon' })).toHaveFocus();
+      await userEvent.keyboard(key);
+
+      expect(await screen.findByRole('menu')).toBeVisible();
+      // One synthetic click per key press, as a native button would give
+      expect(wrapperClick).toHaveBeenCalledTimes(1);
+    },
+  );
 });

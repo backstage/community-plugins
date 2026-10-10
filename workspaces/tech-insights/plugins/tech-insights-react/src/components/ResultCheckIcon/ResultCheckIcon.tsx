@@ -126,16 +126,7 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
   };
 
   const wrapActions = (inner: ReactElement): ReactNode => {
-    if (!menu) {
-      if (component) {
-        const Component =
-          component as ElementType<ResultCheckIconBaseComponentProps>;
-        return <Component {...componentProps}>{inner}</Component>;
-      }
-      return inner;
-    }
-
-    const button = (
+    const content = menu ? (
       <ButtonIcon
         aria-label="icon"
         variant="tertiary"
@@ -145,19 +136,28 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
         onPressStart={continuePropagation}
         onPressUp={continuePropagation}
         onPressEnd={continuePropagation}
+        // Enter and Space produce no native click, so a wrapping component
+        // that owns the onClick would never see them. Hand it one.
+        onPress={e => {
+          if (component && e.pointerType === 'keyboard') {
+            (e.target as HTMLElement).click();
+          }
+        }}
       />
+    ) : (
+      inner
     );
 
-    if (component) {
-      const Component =
-        component as ElementType<ResultCheckIconBaseComponentProps>;
-      return (
-        <Component {...componentProps} onClick={onClick}>
-          {button}
-        </Component>
-      );
+    if (!component) {
+      return content;
     }
-    return button;
+    const Component =
+      component as ElementType<ResultCheckIconBaseComponentProps>;
+    return (
+      <Component {...componentProps} {...(menu ? { onClick } : {})}>
+        {content}
+      </Component>
+    );
   };
 
   return (
