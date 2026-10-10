@@ -54,8 +54,9 @@ describe('ScorecardsBadge', () => {
       result('readme', 'Has README', true),
       result('owner', 'Has owner', false),
     ]);
-    const badge = screen.getByLabelText('1 of 2 checks passed');
-    expect(badge).toHaveTextContent('1/2');
+    // The visible fraction is hidden from assistive tech; the sentence is read instead
+    expect(screen.getByText('1/2')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByText('1 of 2 checks passed')).toBeInTheDocument();
     expect(screen.getByLabelText('Some checks failed')).toBeInTheDocument();
 
     await userEvent.tab();
@@ -65,9 +66,8 @@ describe('ScorecardsBadge', () => {
     unmount();
 
     await renderBadge([result('readme', 'Has README', true)]);
-    expect(screen.getByLabelText('1 of 1 checks passed')).toHaveTextContent(
-      '1/1',
-    );
+    expect(screen.getByText('1/1')).toBeInTheDocument();
+    expect(screen.getByText('1 of 1 checks passed')).toBeInTheDocument();
     expect(screen.getByLabelText('All checks passed')).toBeInTheDocument();
   });
 });

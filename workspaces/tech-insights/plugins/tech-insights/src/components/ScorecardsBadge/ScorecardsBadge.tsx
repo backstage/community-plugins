@@ -23,6 +23,7 @@ import {
   Text,
   Tooltip,
   TooltipTrigger,
+  VisuallyHidden,
 } from '@backstage/ui';
 import { RiCheckboxCircleLine, RiErrorWarningLine } from '@remixicon/react';
 
@@ -63,7 +64,6 @@ export const ScorecardsBadge = (props: {
         <Badge
           size="medium"
           tabIndex={0}
-          aria-label={`${succeeded} of ${checkResults.length} checks passed`}
           icon={
             isAllPassing ? (
               <RiCheckboxCircleLine
@@ -78,7 +78,11 @@ export const ScorecardsBadge = (props: {
             )
           }
         >
-          {`${succeeded}/${checkResults.length}`}
+          {/* Badge is a plain span, which ARIA forbids naming with aria-label */}
+          <span aria-hidden>{`${succeeded}/${checkResults.length}`}</span>
+          <VisuallyHidden>
+            {`${succeeded} of ${checkResults.length} checks passed`}
+          </VisuallyHidden>
         </Badge>
       </Focusable>
       <Tooltip>
