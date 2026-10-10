@@ -69,7 +69,9 @@ export const ScorecardsCard = (props: {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert status="danger" title={error.message} />;
+    return (
+      <Alert status="danger" title={error.name} description={error.message} />
+    );
   }
 
   const filteredValue = !onlyFailed

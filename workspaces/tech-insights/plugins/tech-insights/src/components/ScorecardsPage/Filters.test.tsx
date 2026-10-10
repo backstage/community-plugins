@@ -82,4 +82,26 @@ describe('Filters', () => {
     await userEvent.click(await screen.findByRole('option', { name: 'Yes' }));
     expect(hasFailedChecksChanged).toHaveBeenCalledWith(true);
   });
+
+  it('shows the error name and message when loading checks fails', async () => {
+    const api = {
+      getAllChecks: jest.fn(async () => {
+        throw new TypeError('Failed to fetch');
+      }),
+    } as unknown as TechInsightsApi;
+
+    await renderInTestApp(
+      <TestApiProvider apis={[[techInsightsApiRef, api]]}>
+        <Filters
+          checksChanged={jest.fn()}
+          withResultsChanged={jest.fn()}
+          hasFailedChecksChanged={jest.fn()}
+        />
+      </TestApiProvider>,
+    );
+
+    expect(await screen.findByText('TypeError')).toBeInTheDocument();
+    expect(screen.getByText('Failed to fetch')).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
 });

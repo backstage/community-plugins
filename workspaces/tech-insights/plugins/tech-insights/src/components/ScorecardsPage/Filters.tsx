@@ -42,7 +42,9 @@ export const Filters = (props: FiltersProps) => {
   }, [api]);
 
   if (error) {
-    return <Alert status="danger" title={error.message} />;
+    return (
+      <Alert status="danger" title={error.name} description={error.message} />
+    );
   }
 
   const checks = value ?? [];
