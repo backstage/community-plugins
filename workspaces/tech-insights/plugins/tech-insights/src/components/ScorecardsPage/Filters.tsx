@@ -59,7 +59,7 @@ export const Filters = (props: FiltersProps) => {
       <Select
         label="Checks"
         selectionMode="multiple"
-        searchable
+        search
         isDisabled={loading}
         options={checks.map(check => ({
           id: check.id,
