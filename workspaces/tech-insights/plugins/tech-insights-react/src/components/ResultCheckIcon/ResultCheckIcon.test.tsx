@@ -162,4 +162,16 @@ describe('ResultCheckIcon', () => {
       expect(wrapperClick).toHaveBeenCalledTimes(1);
     },
   );
+
+  it('falls back to an error alert for a check type without a renderer', async () => {
+    const api = {
+      getCheckResultRenderers: () => [],
+      getLinksForEntity: () => [],
+    } as unknown as TechInsightsApi;
+    await renderIcon(api, {
+      result: { ...result, check: { ...result.check, type: 'unknown-type' } },
+    });
+
+    expect(screen.getByText('Unknown type.')).toBeInTheDocument();
+  });
 });
