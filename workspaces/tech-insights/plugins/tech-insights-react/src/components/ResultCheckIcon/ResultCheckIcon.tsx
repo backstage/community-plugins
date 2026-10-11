@@ -137,7 +137,8 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
         onPressUp={continuePropagation}
         onPressEnd={continuePropagation}
         // Enter and Space produce no native click, so a wrapping component
-        // that owns the onClick would never see them. Hand it one.
+        // that owns the onClick would never see them. Hand it one. React Aria
+        // ignores clicks while onPress runs, so this one bubbles to the wrapper.
         onPress={e => {
           if (component && e.pointerType === 'keyboard') {
             (e.target as HTMLElement).click();
