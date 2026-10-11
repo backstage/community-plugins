@@ -492,7 +492,7 @@ FROM node:20-alpine
 
 GitHub Actions:
 \`\`\`yaml
-- uses: actions/setup-node@v4
+- uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
   with:
     node-version: '20'
 \`\`\`
