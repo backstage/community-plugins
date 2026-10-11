@@ -214,7 +214,7 @@ jobs:
           git push origin "$BRANCH_NAME"
       - name: 'Create or update Pull Request'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
-        uses: actions/github-script@230ce922b08968d0a4f6f70f295601daff09ef1d # v9.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
           script: |
