@@ -72,8 +72,7 @@ export const ScorecardsList = (props: {
                 <TooltipTrigger>
                   <Focusable>
                     {/* Focusable so keyboard users can reach the tooltip */}
-                    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
-                    <Text as="span" tabIndex={0}>
+                    <Text as="span" role="button" tabIndex={0}>
                       {result.check.name}
                     </Text>
                   </Focusable>

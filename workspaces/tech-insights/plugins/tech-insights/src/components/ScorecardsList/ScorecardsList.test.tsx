@@ -64,6 +64,7 @@ describe('ScorecardsList', () => {
     await renderList(true);
     expect(screen.queryByText('README')).not.toBeInTheDocument();
     await userEvent.tab();
+    expect(screen.getByRole('button', { name: 'Has README' })).toHaveFocus();
     expect(await screen.findByRole('tooltip')).toHaveTextContent(
       'Repository has a README',
     );
