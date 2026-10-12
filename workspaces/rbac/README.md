@@ -18,22 +18,13 @@ yarn start:legacy   # legacy frontend + rbac-backend
 
 The backend grants the guest user super-user access for local/e2e setup. Roles used by Playwright are created via the REST API in the test `beforeAll` (editable). Catalog entities for the member picker live in `plugins/rbac/tests/fixtures/catalog-org.yaml`.
 
-### Frontend-only with mocks (manual UI)
-
-From `workspaces/rbac/plugins/rbac`:
-
-```sh
-yarn start:mock          # NFS UI with in-browser mockRBACApi
-yarn start:legacy:mock   # legacy UI with mocks
-```
-
 > **Note:** `yarn start` inside `plugins/rbac` starts **only** the frontend. Use the workspace root for full-stack.
 
 See [plugins/rbac-backend/CONTRIBUTING.md](./plugins/rbac-backend/CONTRIBUTING.md) and [plugins/rbac/CONTRIBUTING.md](./plugins/rbac/CONTRIBUTING.md).
 
 ## E2e tests
 
-Playwright runs **`rbac.spec.ts` against the real frontend + backend** (no mock API). Locale projects (`en`/`fr`/`it`/`ja`/`de`/`es`) share one in-memory backend; seeded and created roles use a `-${locale}` suffix so projects do not collide. Japanese still skips “View details of role” ([RHDHBUGS-2598](https://issues.redhat.com/browse/RHDHBUGS-2598)).
+Playwright runs **`rbac.spec.ts` against the real frontend + backend**. Locale projects (`en`/`fr`/`it`/`ja`/`de`/`es`) share one in-memory backend; seeded and created roles use a `-${locale}` suffix so projects do not collide. Japanese still skips “View details of role” ([RHDHBUGS-2598](https://issues.redhat.com/browse/RHDHBUGS-2598)).
 
 | Command                                     | What it runs                                          |
 | ------------------------------------------- | ----------------------------------------------------- |
