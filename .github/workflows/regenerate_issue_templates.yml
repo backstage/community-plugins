@@ -14,10 +14,10 @@ jobs:
     name: Update Issue Templates
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
@@ -35,7 +35,7 @@ jobs:
         run: node scripts/update-issue-labeler-config.js
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8.1.1 # Not SHA-pinned, as it uses immutable releases
         with:
           commit-message: 'chore: update issue templates with latest workspaces'
           title: 'chore: update issue templates with latest workspaces'
