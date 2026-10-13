@@ -195,10 +195,6 @@ export async function createRouter(
 
   const apiRouter = await createOpenApiRouter();
 
-  apiRouter.get('/health', (_, response) => {
-    response.send({ status: 'ok' });
-  });
-
   /**
    * /entity-languages?entityRef=component:default/my-component
    */
