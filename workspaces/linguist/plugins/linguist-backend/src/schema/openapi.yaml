@@ -12,20 +12,6 @@ servers:
 security:
   - BearerAuth: []
 paths:
-  /health:
-    get:
-      security: []
-      description: Checks if the linguist backend is hooked up properly
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
   /entity-languages:
     get:
       description: Returns the language breakdown of the passed in entityRef.
