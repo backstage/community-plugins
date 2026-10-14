@@ -2029,8 +2029,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-auth-node@npm:^0.7.4":
-  version: 0.7.4
-  resolution: "@backstage/plugin-auth-node@npm:0.7.4"
+  version: 0.7.5
+  resolution: "@backstage/plugin-auth-node@npm:0.7.5"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.10.0"
     "@backstage/catalog-client": "npm:^1.16.1"
@@ -2047,7 +2047,7 @@ __metadata:
     zod: "npm:^3.25.76 || ^4.0.0"
     zod-to-json-schema: "npm:^3.25.1"
     zod-validation-error: "npm:^5.0.0"
-  checksum: 10/5f973a8df9178f11bb765102a9c14cd6141d1f133533e5951fb2482d11631d47e75c34afc48f4fbbc40f8820e00e89036ba4346108208acbb738cf8f10308acb
+  checksum: 10/1a73c849d9f094d946b83da4ef76fa53009591fbd087a47539edbc074b09575516c938127f48291bbd8596b3306edb2df7510211cc7d3cd3bd3ce8fc68fcaf1e
   languageName: node
   linkType: hard
 

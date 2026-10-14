@@ -106,7 +106,7 @@
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@playwright/test": "1.63.0",
+    "@playwright/test": "1.64.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
