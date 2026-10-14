@@ -31,6 +31,7 @@ export const createGetLatestFactsAction = ({
   actionsRegistry.register({
     name: 'get-latest-facts',
     title: 'Get Latest Tech Insights Facts',
+    visibilityPermission: techInsightsFactRetrieverReadPermission,
     attributes: {
       destructive: false,
       readOnly: true,

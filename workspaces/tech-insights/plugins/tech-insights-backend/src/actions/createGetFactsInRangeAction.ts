@@ -33,6 +33,7 @@ export const createGetFactsInRangeAction = ({
   actionsRegistry.register({
     name: 'get-facts-in-range',
     title: 'Get Tech Insights Facts In Range',
+    visibilityPermission: techInsightsFactRetrieverReadPermission,
     attributes: {
       destructive: false,
       readOnly: true,
@@ -86,7 +87,6 @@ export const createGetFactsInRangeAction = ({
           'startDateTime must not be later than endDateTime',
         );
       }
-
       return {
         output: {
           facts: await techInsightsStore.getFactsBetweenTimestampsByIds(

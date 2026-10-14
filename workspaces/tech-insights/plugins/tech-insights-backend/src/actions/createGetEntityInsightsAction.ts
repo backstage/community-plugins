@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
+import { techInsightsCheckUpdatePermission } from '@backstage-community/plugin-tech-insights-common';
 import { TechInsightsStore } from '@backstage-community/plugin-tech-insights-node';
 import { checkResultSchema, checkSchema } from './schemas';
 import { EntityReportDeps, getEntityReport } from './entityReport';
@@ -28,6 +29,7 @@ export const createGetEntityInsightsAction = ({
   actionsRegistry.register({
     name: 'get-entity-insights',
     title: 'Get Entity Tech Insights Report',
+    visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {
       destructive: false,
       readOnly: true,

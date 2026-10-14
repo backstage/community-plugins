@@ -36,6 +36,7 @@ export const createGetChecksAction = ({
   actionsRegistry.register({
     name: 'get-checks',
     title: 'Get Tech Insights Checks',
+    visibilityPermission: techInsightsCheckReadPermission,
     attributes: {
       destructive: false,
       readOnly: true,

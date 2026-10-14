@@ -31,6 +31,7 @@ export const createGetFactSchemasAction = ({
   actionsRegistry.register({
     name: 'get-fact-schemas',
     title: 'Get Tech Insights Fact Schemas',
+    visibilityPermission: techInsightsFactRetrieverReadPermission,
     attributes: {
       destructive: false,
       readOnly: true,

@@ -36,6 +36,7 @@ export const createRunChecksAction = ({
   actionsRegistry.register({
     name: 'run-checks',
     title: 'Run Tech Insights Checks',
+    visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {
       destructive: false,
       readOnly: true,

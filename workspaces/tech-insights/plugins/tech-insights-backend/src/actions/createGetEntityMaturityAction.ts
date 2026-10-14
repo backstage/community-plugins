@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
-import { Check } from '@backstage-community/plugin-tech-insights-common';
+import {
+  Check,
+  techInsightsCheckUpdatePermission,
+} from '@backstage-community/plugin-tech-insights-common';
 import { EntityReportDeps, getEntityReport } from './entityReport';
 
 const MATURITY_LABELS = ['Stone', 'Bronze', 'Silver', 'Gold'];
@@ -35,6 +38,7 @@ export const createGetEntityMaturityAction = ({
   actionsRegistry.register({
     name: 'get-entity-maturity',
     title: 'Get Entity Maturity',
+    visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {
       destructive: false,
       readOnly: true,

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
+import { techInsightsCheckUpdatePermission } from '@backstage-community/plugin-tech-insights-common';
 import {
   EntityReportDeps,
   formatResult,
@@ -29,6 +30,7 @@ export const createGetEntityScorecardAction = ({
   actionsRegistry.register({
     name: 'get-entity-scorecard',
     title: 'Get Entity Scorecard',
+    visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {
       destructive: false,
       readOnly: true,
