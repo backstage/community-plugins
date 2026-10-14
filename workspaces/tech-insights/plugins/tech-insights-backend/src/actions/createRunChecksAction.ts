@@ -18,7 +18,9 @@ import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import {
   Check,
   CheckResult,
+  techInsightsCheckReadPermission,
   techInsightsCheckUpdatePermission,
+  techInsightsFactRetrieverReadPermission,
 } from '@backstage-community/plugin-tech-insights-common';
 import { FactChecker } from '@backstage-community/plugin-tech-insights-node';
 import { checkResultSchema } from './schemas';
@@ -70,6 +72,16 @@ export const createRunChecksAction = ({
         permissions,
         credentials,
         techInsightsCheckUpdatePermission,
+      );
+      await authorize(
+        permissions,
+        credentials,
+        techInsightsCheckReadPermission,
+      );
+      await authorize(
+        permissions,
+        credentials,
+        techInsightsFactRetrieverReadPermission,
       );
 
       return {
