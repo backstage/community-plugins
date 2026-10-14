@@ -23,7 +23,6 @@ jobs:
           fetch-depth: 2
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
-          allow-unsafe-pr-checkout: true
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
