@@ -1,5 +1,11 @@
 # @backstage-community/plugin-flux
 
+## 0.3.7
+
+### Patch Changes
+
+- e8cafd5: Updated dependency `@remixicon/react` to `<4.10.0`.
+
 ## 0.3.6
 
 ### Patch Changes
