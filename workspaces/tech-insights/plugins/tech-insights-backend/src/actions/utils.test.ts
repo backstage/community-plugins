@@ -36,7 +36,7 @@ describe('authorize', () => {
     ).resolves.toBeUndefined();
   });
 
-  it('throws NotAllowedError when the decision is DENY', async () => {
+  it('identifies the denied permission when the decision is DENY', async () => {
     const permissions = {
       authorize: jest
         .fn()
@@ -45,10 +45,12 @@ describe('authorize', () => {
 
     await expect(
       authorize(permissions as any, {} as any, permission),
-    ).rejects.toThrow(NotAllowedError);
+    ).rejects.toThrow(
+      new NotAllowedError("Not allowed: missing permission 'test.permission'"),
+    );
   });
 
-  it('throws NotAllowedError when the decision is CONDITIONAL', async () => {
+  it('identifies the denied permission when the decision is CONDITIONAL', async () => {
     const permissions = {
       authorize: jest.fn().mockResolvedValue([
         {
@@ -60,7 +62,9 @@ describe('authorize', () => {
 
     await expect(
       authorize(permissions as any, {} as any, permission),
-    ).rejects.toThrow(NotAllowedError);
+    ).rejects.toThrow(
+      new NotAllowedError("Not allowed: missing permission 'test.permission'"),
+    );
   });
 });
 
