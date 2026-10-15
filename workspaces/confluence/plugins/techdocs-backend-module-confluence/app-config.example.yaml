@@ -39,6 +39,9 @@ confluence:
   #   # Maximum depth to traverse when fetching child pages (default: 0 = unlimited)
   #   # Useful for limiting very deep page hierarchies
   #   maxDepth: 0
+  #
+  #   # Preserve embedded data images such as PlantUML/Gliffy SVGs (default: false)
+  #   keepDataImages: true
 # =============================================================================
 # Option 2: Multiple Confluence Instances
 # =============================================================================

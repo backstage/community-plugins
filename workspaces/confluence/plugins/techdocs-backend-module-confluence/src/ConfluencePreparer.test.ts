@@ -186,6 +186,41 @@ describe('ConfluencePreparer', () => {
       expect(preparer).toBeInstanceOf(ConfluencePreparer);
     });
 
+    it('should default keepDataImages to false', () => {
+      const config = new ConfigReader({
+        confluence: {
+          baseUrl: 'https://company.atlassian.net/wiki',
+          auth: {
+            type: 'bearer',
+            token: 'test-token',
+          },
+        },
+      });
+      const logger = mockLogger;
+
+      const preparer = ConfluencePreparer.fromConfig({ logger, config });
+
+      expect(preparer.getInstances()[0].keepDataImages).toBe(false);
+    });
+
+    it('should read keepDataImages config', () => {
+      const config = new ConfigReader({
+        confluence: {
+          baseUrl: 'https://company.atlassian.net/wiki',
+          auth: {
+            type: 'bearer',
+            token: 'test-token',
+          },
+          keepDataImages: true,
+        },
+      });
+      const logger = mockLogger;
+
+      const preparer = ConfluencePreparer.fromConfig({ logger, config });
+
+      expect(preparer.getInstances()[0].keepDataImages).toBe(true);
+    });
+
     it('should read custom pageTree config', () => {
       const config = new ConfigReader({
         confluence: {
