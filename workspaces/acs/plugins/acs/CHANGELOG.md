@@ -1,5 +1,13 @@
 # @backstage-community/plugin-acs
 
+## 0.3.1
+
+### Patch Changes
+
+- 88a2799: Removed dependencies that the plugin declared but never used, including `@mui/material`, `@mui/x-data-grid`, `@apollo/client`, `date-fns`, and several PatternFly packages. There is no change in behavior. If your app relied on any of these being installed through this plugin, add them to your own `package.json`.
+- c2c27bd: Updated dependency `@patternfly/react-core` to `6.6.1`.
+  Updated dependency `@patternfly/react-topology` to `6.6.0`.
+
 ## 0.3.0
 
 ### Minor Changes
