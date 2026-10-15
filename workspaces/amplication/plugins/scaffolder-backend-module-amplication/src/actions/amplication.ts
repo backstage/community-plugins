@@ -15,6 +15,7 @@
  */
 import { Config } from '@backstage/config';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+import { examples } from './amplication.examples';
 /**
  * Creates an action that creates an application in MTA.
  */
@@ -28,6 +29,7 @@ export function scaffoldResourceFromAmplicationTemplate({
   return createTemplateAction({
     id: 'amplication:scaffold-service',
     description: 'Scaffold a new service from a template (using Amplication)',
+    examples,
     schema: {
       input: {
         name: z => z.string({ description: 'The name of the service' }),
