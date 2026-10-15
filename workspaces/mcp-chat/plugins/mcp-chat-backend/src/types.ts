@@ -103,6 +103,7 @@ export interface MCPServerConfig {
   url?: string;
   /** List of tools to be excluded for the MCP Server */
   disabledTools?: string[];
+  isLocalServer?: boolean;
 }
 
 /**
