@@ -123,6 +123,9 @@ export interface ConversationRecord {
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
+export const DEFAULT_MCP_MAX_TOOL_ITERATIONS = 8;
+
+// @public
 export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
 
 // @public
