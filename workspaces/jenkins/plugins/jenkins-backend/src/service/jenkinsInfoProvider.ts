@@ -30,24 +30,43 @@ import {
 import { Config } from '@backstage/config';
 
 /** @public */
-export interface JenkinsInfoProvider {
-  getInstance(options: {
-    /**
-     * The entity to get the info about.
-     */
-    entityRef: CompoundEntityRef;
-    /**
-     * Specific job(s) to get. This is only passed in when we know the job name(s) we are interested in.
-     */
-    fullJobNames?: string[];
+export interface JenkinsInfoProviderOptions {
+  /**
+   * The entity to get the info about.
+   */
+  entityRef: CompoundEntityRef;
+  /**
+   * Specific job(s) to get. This is only passed in when we know the job name(s) we are interested in.
+   */
+  fullJobNames?: string[];
+  /**
+   * The configured Jenkins instance that owns the requested job.
+   */
+  instanceName?: string;
 
-    credentials?: BackstageCredentials;
-    logger?: LoggerService;
-  }): Promise<JenkinsInfo>;
+  credentials?: BackstageCredentials;
+  logger?: LoggerService;
+}
+
+/** @public */
+export interface JenkinsInfoProvider {
+  getInstance(options: JenkinsInfoProviderOptions): Promise<JenkinsInfo>;
+
+  /**
+   * Gets all Jenkins instances referenced by an entity.
+   *
+   * This method is optional to preserve compatibility with custom providers
+   * that only support a single instance.
+   */
+  getInstances?(
+    options: JenkinsInfoProviderOptions,
+  ): Promise<Array<JenkinsInfo & { instanceName: string }>>;
 }
 
 /** @public */
 export interface JenkinsInfo {
+  /** The configured name of the Jenkins instance. */
+  instanceName?: string;
   baseUrl: string;
   headers?: Record<string, string | string[]>;
   fullJobNames: string[];
@@ -224,13 +243,45 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     );
   }
 
-  async getInstance(opt: {
-    entityRef: CompoundEntityRef;
-    fullJobNames?: string[];
-    credentials?: BackstageCredentials;
-  }): Promise<JenkinsInfo> {
-    const DEFAULT_LIMITATION_OF_PROJECTS = 50;
+  async getInstance(opt: JenkinsInfoProviderOptions): Promise<JenkinsInfo> {
+    const { entity, jobsByInstance } = await this.getEntityAndJobs(opt);
+    let instanceName = opt.instanceName;
+    if (!instanceName && jobsByInstance.size === 1) {
+      instanceName = jobsByInstance.keys().next().value;
+    } else if (!instanceName && jobsByInstance.has('default')) {
+      instanceName = 'default';
+    }
+    const fullJobNames = instanceName
+      ? jobsByInstance.get(instanceName)
+      : undefined;
 
+    if (!instanceName || !fullJobNames) {
+      const requestedInstance = opt.instanceName
+        ? `Jenkins instance '${opt.instanceName}'`
+        : 'a default Jenkins instance';
+      throw new Error(
+        `Couldn't find ${requestedInstance} in the Jenkins annotations on entity with name: ${stringifyEntityRef(
+          opt.entityRef,
+        )}`,
+      );
+    }
+
+    return this.getJenkinsInfo(entity, instanceName, fullJobNames);
+  }
+
+  async getInstances(
+    opt: JenkinsInfoProviderOptions,
+  ): Promise<Array<JenkinsInfo & { instanceName: string }>> {
+    const { entity, jobsByInstance } = await this.getEntityAndJobs(opt);
+
+    return Array.from(jobsByInstance, ([instanceName, fullJobNames]) =>
+      this.getJenkinsInfo(entity, instanceName, fullJobNames),
+    );
+  }
+
+  private async getEntityAndJobs(
+    opt: JenkinsInfoProviderOptions,
+  ): Promise<{ entity: Entity; jobsByInstance: Map<string, string[]> }> {
     const credentials =
       opt.credentials ?? (await this.auth.getOwnServiceCredentials());
 
@@ -254,58 +305,54 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
       );
     }
 
-    // Group job names by their Jenkins instances.
-    const jobsByInstance = jenkinsAndJobNames.reduce(
-      (acc: Record<string, string[]>, name) => {
-        const splitIndex = name.indexOf(':');
+    const jobsByInstance = new Map<string, string[]>();
+    for (const annotationValue of jenkinsAndJobNames) {
+      const name = annotationValue.trim();
+      if (!name) {
+        continue;
+      }
 
-        const { default: defaultJobs = [] } = acc;
+      const splitIndex = name.indexOf(':');
+      const instanceName =
+        splitIndex === -1 ? 'default' : name.substring(0, splitIndex).trim();
+      const jobName =
+        splitIndex === -1 ? name : name.substring(splitIndex + 1).trim();
 
-        // No instance specified, default
-        if (splitIndex === -1) {
-          acc.default = [...defaultJobs, name];
-        } else {
-          const instanceName = name.substring(0, splitIndex);
-          const jobName = name.substring(splitIndex + 1);
+      if (!instanceName || !jobName) {
+        throw new Error(
+          `Invalid Jenkins annotation value '${annotationValue}' on entity with name: ${stringifyEntityRef(
+            opt.entityRef,
+          )}`,
+        );
+      }
 
-          acc[instanceName] = [...(acc[instanceName] || []), jobName];
-        }
-
-        return acc;
-      },
-      {},
-    );
-
-    // Ensure that all jobs belong to a single Jenkins instance.
-    const instancesFound: string[] = Object.keys(jobsByInstance);
-    if (instancesFound.length > 1) {
-      throw new Error(
-        `More than one Jenkins instance found: (${instancesFound}) ` +
-          `on entity with name: ${stringifyEntityRef(opt.entityRef)}. ` +
-          `Please use the same instance for all jobs.`,
-      );
+      jobsByInstance.set(instanceName, [
+        ...(jobsByInstance.get(instanceName) ?? []),
+        jobName,
+      ]);
     }
 
-    const jenkinsName: string = instancesFound.pop() ?? 'default';
-    const fullJobNames = jobsByInstance[jenkinsName];
+    return { entity, jobsByInstance };
+  }
 
-    // lookup baseURL + creds from config
-    const instanceConfig = this.config.getInstanceConfig(jenkinsName);
-
-    // override baseURL if config has override set to true
+  private getJenkinsInfo(
+    entity: Entity,
+    instanceName: string,
+    fullJobNames: string[],
+  ): JenkinsInfo & { instanceName: string } {
+    const DEFAULT_LIMITATION_OF_PROJECTS = 50;
+    const instanceConfig = this.config.getInstanceConfig(instanceName);
     const overrideUrlValue =
       DefaultJenkinsInfoProvider.getEntityOverrideURL(entity);
-    if (
+    const useOverrideUrl =
       instanceConfig.allowedBaseUrlOverrideRegex &&
       overrideUrlValue &&
       DefaultJenkinsInfoProvider.verifyUrlMatchesRegex(
         overrideUrlValue,
         instanceConfig.allowedBaseUrlOverrideRegex,
         this.logger,
-      )
-    ) {
-      instanceConfig.baseUrl = overrideUrlValue;
-    }
+      );
+    const baseUrl = useOverrideUrl ? overrideUrlValue : instanceConfig.baseUrl;
 
     const creds = Buffer.from(
       `${instanceConfig.username}:${instanceConfig.apiKey}`,
@@ -313,7 +360,8 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     ).toString('base64');
 
     return {
-      baseUrl: instanceConfig.baseUrl,
+      instanceName,
+      baseUrl,
       headers: {
         Authorization: `Basic ${creds}`,
         ...instanceConfig.extraRequestHeaders,

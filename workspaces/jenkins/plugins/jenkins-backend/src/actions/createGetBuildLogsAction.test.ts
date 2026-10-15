@@ -65,6 +65,7 @@ describe('createGetBuildLogsAction', () => {
         kind: 'Component',
         namespace: 'default',
         jobFullName: 'my-pipeline/main',
+        instanceName: 'dev',
         buildNumber: 7,
       },
       credentials,
@@ -76,6 +77,16 @@ describe('createGetBuildLogsAction', () => {
       ['my-pipeline', 'main'],
       7,
     );
+    expect(mockJenkinsInfoProvider.getInstance).toHaveBeenCalledWith({
+      entityRef: {
+        kind: 'Component',
+        namespace: 'default',
+        name: 'my-service',
+      },
+      fullJobNames: ['my-pipeline/main'],
+      instanceName: 'dev',
+      credentials,
+    });
     expect(result.output.consoleText).toBe(
       'Started by user admin\nFinished: SUCCESS\n',
     );
@@ -93,6 +104,8 @@ describe('createGetBuildLogsAction', () => {
 
     expect(mockJenkinsInfoProvider.getInstance).toHaveBeenCalledWith({
       entityRef: { kind: 'Component', namespace: 'default', name: 'svc' },
+      fullJobNames: ['pipeline'],
+      instanceName: undefined,
       credentials,
     });
   });

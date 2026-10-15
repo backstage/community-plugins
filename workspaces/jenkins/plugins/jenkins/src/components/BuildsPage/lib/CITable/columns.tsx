@@ -114,13 +114,16 @@ export const columnFactories = Object.freeze({
             );
           }
 
+          const buildLink = routeLink({
+            jobFullName: encodeURIComponent(row.fullName),
+            buildNumber: String(row.lastBuild?.number),
+          });
+          const instanceQuery = row.instanceName
+            ? `?instanceName=${encodeURIComponent(row.instanceName)}`
+            : '';
+
           return (
-            <Link
-              to={routeLink({
-                jobFullName: encodeURIComponent(row.fullName),
-                buildNumber: String(row.lastBuild?.number),
-              })}
-            >
+            <Link to={`${buildLink}${instanceQuery}`}>
               {row.fullDisplayName}
             </Link>
           );
@@ -128,6 +131,13 @@ export const columnFactories = Object.freeze({
 
         return <LinkWrapper />;
       },
+    };
+  },
+
+  createInstanceColumn(): TableColumn<Project> {
+    return {
+      title: 'Instance',
+      field: 'instanceName',
     };
   },
 
@@ -223,6 +233,12 @@ export const columnFactories = Object.freeze({
 
           const toastApi = useApi(toastApiRef);
           const jobRunsLink = useRouteRef(jobRunsRouteRef);
+          const runsLink = jobRunsLink({
+            jobFullName: encodeURIComponent(row.fullName || ''),
+          });
+          const instanceQuery = row.instanceName
+            ? `?instanceName=${encodeURIComponent(row.instanceName)}`
+            : '';
 
           const onRebuild = async () => {
             if (row.onRestartClick) {
@@ -264,11 +280,7 @@ export const columnFactories = Object.freeze({
                   </IconButton>
                 </Tooltip>
               )}
-              <Link
-                to={jobRunsLink({
-                  jobFullName: encodeURIComponent(row.fullName || ''),
-                })}
-              >
+              <Link to={`${runsLink}${instanceQuery}`}>
                 <Tooltip title="View Runs">
                   <IconButton>
                     <HistoryIcon />

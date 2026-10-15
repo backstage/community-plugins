@@ -25,7 +25,7 @@ export enum ErrorType {
   NOT_FOUND,
 }
 
-export function useJobRuns(jobFullName: string) {
+export function useJobRuns(jobFullName: string, instanceName?: string) {
   const { entity } = useEntity();
   const api = useApi(jenkinsApiRef);
   const errorApi = useApi(errorApiRef);
@@ -43,6 +43,7 @@ export function useJobRuns(jobFullName: string) {
       const jobBuilds = await api.getJobBuilds({
         entity: getCompoundEntityRef(entity),
         jobFullName,
+        instanceName,
       });
       return jobBuilds;
     } catch (e) {
@@ -52,7 +53,7 @@ export function useJobRuns(jobFullName: string) {
       setError({ message: e.message, errorType });
       throw e;
     }
-  }, [api, errorApi, entity]);
+  }, [api, errorApi, entity, instanceName, jobFullName]);
 
   return [
     {
