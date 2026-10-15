@@ -22,6 +22,8 @@ This workflow supports patching older release lines. It is useful when backporti
 
 Triggered on pull requests, this workflow runs tests on the target branch, focusing only on workspaces that have changes. Once all checks pass successfully, the pull request can be merged.
 
+The `verify` job checks each changed workspace's lockfile and changesets. It also runs `scripts/ci/verify-dependency-policy.js` to reject `@remixicon/react` dependency ranges or resolved versions at 4.9.0 and later, due to the license change in that release. This check covers manual and transitive updates that the [Renovate version pin](renovate.md#version-pins) cannot prevent. To run it locally from the repository root, use `node scripts/ci/verify-dependency-policy.js <workspace-name>`.
+
 ## Workflows for managing dependency updates
 
 ### [renovate.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/renovate.yml)

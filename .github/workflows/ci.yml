@@ -66,7 +66,7 @@ jobs:
     env:
       CI: true
       NODE_OPTIONS: --max-old-space-size=8192
-    
+
     services:
       postgres18:
         image: postgres:18
@@ -256,8 +256,10 @@ jobs:
           node-version: 22.x
       - name: Install root dependencies
         run: yarn install --immutable
-      - name: Verify lockfile duplicates
-        run: node scripts/ci/verify-lockfile-duplicates.js workspaces/${{ matrix.workspace }}/yarn.lock
+      - name: Verify dependencies
+        run: |
+          node scripts/ci/verify-lockfile-duplicates.js workspaces/${{ matrix.workspace }}/yarn.lock
+          node scripts/ci/verify-dependency-policy.js ${{ matrix.workspace }}
       - name: Verify changesets
         run: node scripts/ci/verify-changesets.js ${{ matrix.workspace }}
   result:
