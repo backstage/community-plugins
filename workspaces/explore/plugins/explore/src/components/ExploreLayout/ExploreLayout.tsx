@@ -127,6 +127,10 @@ export const ExploreLayout = (props: ExploreLayoutProps) => {
         <div
           style={{
             padding: 'var(--bui-space-6)',
+            height: '100%',
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {element ?? routes[0]?.children ?? null}
