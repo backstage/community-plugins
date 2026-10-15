@@ -15,77 +15,52 @@
  */
 
 import { memo, useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
-import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
-import Button from '@material-ui/core/Button';
-import LuxonUtils from '@date-io/luxon';
-import FormControl from '@material-ui/core/FormControl';
-import Link from '@material-ui/core/Link';
-import Popover from '@material-ui/core/Popover';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import { Box, Button, DialogTrigger, Flex, Popover, Text } from '@backstage/ui';
 import { isValid } from 'date-fns';
 import { find, get } from 'lodash';
 
-const useStyles = makeStyles({
-  dateContainer: {
-    paddingLeft: 18,
-    paddingRight: 18,
-    paddingTop: 6,
-    paddingBottom: 18,
-    display: 'flex',
-    flexFlow: 'row',
-  },
-  dateContainerColumn: {
-    display: 'flex',
-    flexFlow: 'column',
-  },
-  formControl: {
-    margin: 8,
-    width: 120,
-  },
-});
-
 const SelectWindow = ({ windowOptions, window, setWindow }) => {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [intervalString, setIntervalString] = useState(null);
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleStartDateChange = date => {
-    if (isValid(date.toJSDate())) {
-      setStartDate(date.startOf('day').toJSDate());
-    }
-  };
-
-  const handleEndDateChange = date => {
-    if (isValid(date.toJSDate())) {
-      setEndDate(date.endOf('day').toJSDate());
-    }
-  };
-
   const handleSubmitPresetDates = dateString => {
     setWindow(dateString);
     setStartDate(null);
     setEndDate(null);
-    handleClose();
+    setOpen(false);
   };
 
   const handleSubmitCustomDates = () => {
     if (intervalString !== null) {
       setWindow(intervalString);
-      handleClose();
+      setOpen(false);
+    }
+  };
+
+  const handleStartDateChange = e => {
+    const dateStr = e.target.value;
+    if (dateStr) {
+      const date = new Date(`${dateStr}T00:00:00`);
+      if (isValid(date)) {
+        setStartDate(date);
+      }
+    } else {
+      setStartDate(null);
+    }
+  };
+
+  const handleEndDateChange = e => {
+    const dateStr = e.target.value;
+    if (dateStr) {
+      const date = new Date(`${dateStr}T23:59:59`);
+      if (isValid(date)) {
+        setEndDate(date);
+      }
+    } else {
+      setEndDate(null);
     }
   };
 
@@ -105,106 +80,127 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
     }
   }, [startDate, endDate]);
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'date-range-popover' : undefined;
+  const windowLabel = get(
+    find(windowOptions, { value: window }),
+    'name',
+    'Custom',
+  );
 
   return (
-    <>
-      <FormControl className={classes.formControl}>
-        <TextField
-          id="filled-read-only-input"
-          label="Date Range"
-          value={get(find(windowOptions, { value: window }), 'name', 'Custom')}
-          onClick={e => handleClick(e)}
-          inputProps={{
-            readOnly: true,
-            style: { cursor: 'pointer' },
-          }}
-        />
-      </FormControl>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
+    <Box m="2" style={{ width: '120px' }}>
+      <Text
+        as="label"
+        variant="body-small"
+        color="secondary"
+        style={{ marginBottom: 'var(--bui-space-1)', display: 'block' }}
       >
-        <div className={classes.dateContainer}>
-          <div className={classes.dateContainerColumn}>
-            <MuiPickersUtilsProvider utils={LuxonUtils}>
-              <KeyboardDatePicker
-                style={{ width: '144px' }}
-                autoOk
-                disableToolbar
-                variant="inline"
-                format="MM/dd/yyyy"
-                margin="normal"
-                id="date-picker-start"
-                label="Start Date"
-                value={startDate}
-                maxDate={new Date()}
-                maxDateMessage="Date should not be after today."
-                onChange={handleStartDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-              <KeyboardDatePicker
-                style={{ width: '144px' }}
-                autoOk
-                disableToolbar
-                variant="inline"
-                format="MM/dd/yyyy"
-                margin="normal"
-                id="date-picker-end"
-                label="End Date"
-                value={endDate}
-                maxDate={new Date()}
-                maxDateMessage="Date should not be after today."
-                onChange={handleEndDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-            <div>
-              <Button
-                style={{ marginTop: 16 }}
-                variant="contained"
-                color="default"
-                onClick={handleSubmitCustomDates}
-              >
-                Apply
-              </Button>
-            </div>
-          </div>
-          <div
-            className={classes.dateContainerColumn}
-            style={{ paddingTop: 12, marginLeft: 18 }}
+        Date Range
+      </Text>
+      <DialogTrigger isOpen={open} onOpenChange={setOpen}>
+        <Button variant="tertiary">{windowLabel}</Button>
+        <Popover placement="bottom left" hideArrow>
+          <Flex
+            direction="row"
+            gap="4"
+            style={{
+              padding:
+                'var(--bui-space-3) var(--bui-space-4) var(--bui-space-4) var(--bui-space-4)',
+              backgroundColor: 'var(--bui-bg-surface-1)',
+            }}
           >
-            {windowOptions.map(opt => (
-              <Typography key={opt.value}>
-                <Link
-                  style={{ cursor: 'pointer' }}
+            <Flex direction="column" gap="3">
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="date-picker-start"
+                  variant="body-small"
+                  color="secondary"
+                  style={{
+                    marginBottom: 'var(--bui-space-1)',
+                    display: 'block',
+                  }}
+                >
+                  Start Date
+                </Text>
+                <input
+                  id="date-picker-start"
+                  type="date"
+                  style={{
+                    padding: 'var(--bui-space-2)',
+                    border: '1px solid var(--bui-border)',
+                    borderRadius: 'var(--bui-radius-2)',
+                    backgroundColor: 'var(--bui-bg-surface-1)',
+                    color: 'var(--bui-fg-primary)',
+                    fontSize: 'var(--bui-font-size-2)',
+                    width: '144px',
+                  }}
+                  max={new Date().toISOString().split('T')[0]}
+                  onChange={handleStartDateChange}
+                  aria-label="Start date"
+                />
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="date-picker-end"
+                  variant="body-small"
+                  color="secondary"
+                  style={{
+                    marginBottom: 'var(--bui-space-1)',
+                    display: 'block',
+                  }}
+                >
+                  End Date
+                </Text>
+                <input
+                  id="date-picker-end"
+                  type="date"
+                  style={{
+                    padding: 'var(--bui-space-2)',
+                    border: '1px solid var(--bui-border)',
+                    borderRadius: 'var(--bui-radius-2)',
+                    backgroundColor: 'var(--bui-bg-surface-1)',
+                    color: 'var(--bui-fg-primary)',
+                    fontSize: 'var(--bui-font-size-2)',
+                    width: '144px',
+                  }}
+                  max={new Date().toISOString().split('T')[0]}
+                  onChange={handleEndDateChange}
+                  aria-label="End date"
+                />
+              </Box>
+              <Box>
+                <Button
+                  variant="primary"
+                  onPress={handleSubmitCustomDates}
+                  isDisabled={intervalString === null}
+                >
+                  Apply
+                </Button>
+              </Box>
+            </Flex>
+            <Flex
+              direction="column"
+              gap="1"
+              style={{
+                paddingTop: 'var(--bui-space-3)',
+                marginLeft: 'var(--bui-space-4)',
+              }}
+            >
+              {windowOptions.map(opt => (
+                <Button
                   key={opt.value}
-                  value={opt.value}
-                  onClick={() => handleSubmitPresetDates(opt.value)}
+                  variant="tertiary"
+                  onPress={() => handleSubmitPresetDates(opt.value)}
                 >
                   {opt.name}
-                </Link>
-              </Typography>
-            ))}
-          </div>
-        </div>
-      </Popover>
-    </>
+                </Button>
+              ))}
+            </Flex>
+          </Flex>
+        </Popover>
+      </DialogTrigger>
+    </Box>
   );
 };
 
