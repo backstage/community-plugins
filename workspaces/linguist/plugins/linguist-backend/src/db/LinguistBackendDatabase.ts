@@ -34,6 +34,7 @@ export type RawDbEntityResultRow = {
 export interface LinguistBackendStore {
   insertEntityResults(entityLanguages: EntityResults): Promise<string>;
   insertNewEntity(entityRef: string): Promise<void>;
+  markEntityProcessed(entityRef: string, processedDate: Date): Promise<void>;
   getEntityResults(entityRef: string): Promise<Languages>;
   getProcessedEntities(): Promise<ProcessedEntity[]>;
   getUnprocessedEntities(): Promise<string[]>;
@@ -85,6 +86,29 @@ export class LinguistBackendDatabase implements LinguistBackendStore {
       })
       .onConflict('entity_ref')
       .ignore(); // If the entity_ref is in the table already then we don't want to add it again
+  }
+
+  async markEntityProcessed(
+    entityRef: string,
+    processedDate: Date,
+  ): Promise<void> {
+    // Keep any previous results; entities that were never analysed get empty
+    // results so they leave the unprocessed queue until they become stale.
+    const emptyLanguages: Languages = {
+      languageCount: 0,
+      totalBytes: 0,
+      processedDate: processedDate.toISOString(),
+      breakdown: [],
+    };
+
+    await this.db<RawDbEntityResultRow>('entity_result')
+      .where({ entity_ref: entityRef })
+      .update({
+        processed_date: processedDate,
+        languages: this.db.raw('COALESCE(languages, ?)', [
+          JSON.stringify(emptyLanguages),
+        ]),
+      });
   }
 
   async getEntityResults(entityRef: string): Promise<Languages> {
