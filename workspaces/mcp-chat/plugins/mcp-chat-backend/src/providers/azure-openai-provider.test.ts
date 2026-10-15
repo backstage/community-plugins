@@ -308,4 +308,77 @@ describe('AzureOpenAIProvider', () => {
       ).rejects.toThrow();
     });
   });
+
+  describe('pathOverrides', () => {
+    it('should use pathOverrides for inference and models if present', async () => {
+      const customPathProvider = new AzureOpenAIProvider({
+        ...config,
+        pathOverrides: {
+          inference: '/custom-chat-completions',
+          models: '/custom-models',
+        },
+      });
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { role: 'assistant', content: 'Hi there!' } }],
+        }),
+      });
+
+      await customPathProvider.sendMessage(messages);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://my-resource.openai.azure.com/openai/v1/custom-chat-completions',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: [{ id: 'gpt-4o-mini' }] }),
+      });
+
+      await customPathProvider.testConnection();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://my-resource.openai.azure.com/openai/v1/custom-models',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('should use default paths for inference and models if pathOverrides is not provided', async () => {
+      const defaultPathProvider = new AzureOpenAIProvider({
+        ...config,
+        pathOverrides: undefined,
+      });
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { role: 'assistant', content: 'Hi there!' } }],
+        }),
+      });
+
+      await defaultPathProvider.sendMessage(messages);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://my-resource.openai.azure.com/openai/v1/chat/completions',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: [{ id: 'gpt-4o-mini' }] }),
+      });
+
+      await defaultPathProvider.testConnection();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://my-resource.openai.azure.com/openai/v1/models',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+  });
 });
