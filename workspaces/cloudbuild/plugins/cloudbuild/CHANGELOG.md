@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cloudbuild
 
+## 1.1.1
+
+### Patch Changes
+
+- 97317ec: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 1.1.0
 
 ### Minor Changes
