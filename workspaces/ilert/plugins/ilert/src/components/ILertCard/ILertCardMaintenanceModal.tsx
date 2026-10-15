@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 import { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from '@backstage/ui';
 import { ilertApiRef } from '../../api';
 import { AlertSource } from '../../types';
 import { useApi } from '@backstage/core-plugin-api';
@@ -62,31 +62,12 @@ export const ILertCardMaintenanceModal = ({
     }, 250);
   };
 
-  const handleMinutesChange = (event: any) => {
-    setMinutes(event.target.value);
-  };
-
   const minuteOptions = [
-    {
-      value: 5,
-      label: '5 minutes',
-    },
-    {
-      value: 10,
-      label: '10 minutes',
-    },
-    {
-      value: 15,
-      label: '15 minutes',
-    },
-    {
-      value: 30,
-      label: '30 minutes',
-    },
-    {
-      value: 60,
-      label: '60 minutes',
-    },
+    { value: 5, label: '5 minutes' },
+    { value: 10, label: '10 minutes' },
+    { value: 15, label: '15 minutes' },
+    { value: 30, label: '30 minutes' },
+    { value: 60, label: '60 minutes' },
   ];
 
   if (!alertSource) {
@@ -94,46 +75,41 @@ export const ILertCardMaintenanceModal = ({
   }
 
   return (
-    <Dialog
-      open={isModalOpened}
-      onClose={handleClose}
-      aria-labelledby="maintenance-form-title"
-    >
-      <DialogTitle id="maintenance-form-title">
-        New maintenance window
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Keep your alert sources quiet, when your systems are under
-          maintenance.
-        </DialogContentText>
-        <TextField
-          select
-          label="Duration"
-          value={minutes}
-          onChange={handleMinutesChange}
-          variant="outlined"
-          fullWidth
-        >
-          {minuteOptions.map(option => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleImmediateMaintenance}
-          color="primary"
-          variant="contained"
-        >
-          Create
-        </Button>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <DialogTrigger isOpen={isModalOpened} onOpenChange={setIsModalOpened}>
+      <Dialog>
+        <DialogHeader>New maintenance window</DialogHeader>
+        <DialogBody>
+          <div style={{ marginBottom: '16px' }}>
+            Keep your alert sources quiet, when your systems are under
+            maintenance.
+          </div>
+          <select
+            value={minutes}
+            onChange={e => setMinutes(Number(e.target.value))}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: '1px solid var(--bui-fg-muted)',
+              borderRadius: '4px',
+              fontSize: '14px',
+            }}
+          >
+            {minuteOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </DialogBody>
+        <DialogFooter>
+          <Button onPress={handleImmediateMaintenance} variant="primary">
+            Create
+          </Button>
+          <Button onPress={handleClose} variant="secondary" slot="close">
+            Cancel
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };
