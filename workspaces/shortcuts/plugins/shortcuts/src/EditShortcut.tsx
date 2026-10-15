@@ -24,7 +24,8 @@ import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ShortcutApi } from './api';
-import { alertApiRef, useApi, useAnalytics } from '@backstage/core-plugin-api';
+import { useApi, useAnalytics } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -54,7 +55,7 @@ export const EditShortcut = ({
   allowExternalLinks,
 }: Props) => {
   const classes = useStyles();
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const open = Boolean(anchorEl);
   const analytics = useAnalytics();
 
@@ -68,15 +69,15 @@ export const EditShortcut = ({
 
     try {
       await api.update(newShortcut);
-      alertApi.post({
-        message: `Updated shortcut '${title}'`,
-        severity: 'success',
-        display: 'transient',
+      toastApi.post({
+        title: `Updated shortcut '${title}'`,
+        status: 'success',
+        timeout: 5000,
       });
     } catch (error) {
-      alertApi.post({
-        message: `Could not update shortcut: ${error.message}`,
-        severity: 'error',
+      toastApi.post({
+        title: `Could not update shortcut: ${error.message}`,
+        status: 'danger',
       });
     }
 
@@ -88,15 +89,15 @@ export const EditShortcut = ({
 
     try {
       await api.remove(shortcut.id);
-      alertApi.post({
-        message: `Removed shortcut '${shortcut.title}' from your sidebar`,
-        severity: 'success',
-        display: 'transient',
+      toastApi.post({
+        title: `Removed shortcut '${shortcut.title}' from your sidebar`,
+        status: 'success',
+        timeout: 5000,
       });
     } catch (error) {
-      alertApi.post({
-        message: `Could not delete shortcut: ${error.message}`,
-        severity: 'error',
+      toastApi.post({
+        title: `Could not delete shortcut: ${error.message}`,
+        status: 'danger',
       });
     }
   };
