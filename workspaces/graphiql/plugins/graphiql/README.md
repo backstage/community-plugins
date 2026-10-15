@@ -5,6 +5,9 @@ This plugin integrates [GraphiQL](https://github.com/graphql/graphiql) as a tool
 The purpose of the plugin is to provide a convenient way for developers to try out GraphQL queries in their own environment.
 By exposing GraphiQL as a plugin instead of a standalone app, it's possible to provide a preconfigured environment for engineers, and also tie into authentication providers already inside Backstage.
 
+> [!Note]
+> Backstage UI (BUI) is now required for the GraphiQL plugin to function. It has been included as part of Backstage since `1.41.0`, which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed, and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 ## Getting Started
 
 ### Installing the plugin
