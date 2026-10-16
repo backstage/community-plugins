@@ -17,7 +17,7 @@
 import useAsync from 'react-use/esm/useAsync';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import Chip from '@material-ui/core/Chip';
+import { Tag, TagGroup } from '@backstage/ui';
 import { dynatraceApiRef } from '../../../api';
 
 type SyntheticsLocationProps = {
@@ -61,14 +61,17 @@ export const SyntheticsLocation = (props: SyntheticsLocationProps) => {
   }
 
   return (
-    <Chip
-      label={`${value?.name}${
-        failedInLastXHours(new Date(lastFailedTimestamp), 24)
-          ? `: failed @ ${lastFailedTimestamp.toLocaleTimeString()}`
-          : ''
-      }`}
-      size="medium"
-      style={{ backgroundColor: chipColor(lastFailedTimestamp) }}
-    />
+    <TagGroup aria-label={`Synthetic location ${value?.name}`}>
+      <Tag
+        size="medium"
+        style={{ backgroundColor: chipColor(lastFailedTimestamp) }}
+      >
+        {`${value?.name}${
+          failedInLastXHours(new Date(lastFailedTimestamp), 24)
+            ? `: failed @ ${lastFailedTimestamp.toLocaleTimeString()}`
+            : ''
+        }`}
+      </Tag>
+    </TagGroup>
   );
 };
