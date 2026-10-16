@@ -14,55 +14,34 @@
  * limitations under the License.
  */
 
-import * as React from 'react';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import { styled } from '@material-ui/core/styles';
+import { Box, Button, Flex } from '@backstage/ui';
 import { CalendarEvent } from './CalendarEvent';
 import { eventsMock } from './signInEventMock';
 import { GCalendarEvent } from '../../api';
+import styles from './SignInContent.module.css';
 
 type Props = {
-  handleAuthClick: React.MouseEventHandler<HTMLElement>;
+  handleAuthClick: () => void;
   events?: GCalendarEvent[];
 };
-
-const TransparentBox = styled(Box)({
-  opacity: 0.3,
-  filter: 'blur(1.5px)',
-});
 
 export const SignInContent = ({
   handleAuthClick,
   events = eventsMock,
 }: Props) => {
   return (
-    <Box position="relative" height="100%" width="100%">
-      <TransparentBox p={1}>
+    <Box className={styles.root}>
+      <Box className={styles.preview}>
         {events.map(event => (
           <CalendarEvent key={event.id} event={event} />
         ))}
-      </TransparentBox>
+      </Box>
 
-      <Box
-        height="100%"
-        width="100%"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        position="absolute"
-        left={0}
-        top={0}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAuthClick}
-          size="large"
-        >
+      <Flex className={styles.overlay} align="center" justify="center">
+        <Button variant="primary" size="medium" onPress={handleAuthClick}>
           Sign in
         </Button>
-      </Box>
+      </Flex>
     </Box>
   );
 };

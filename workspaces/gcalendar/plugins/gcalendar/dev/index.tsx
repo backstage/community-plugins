@@ -19,6 +19,8 @@ import { createDevApp } from '@backstage/dev-utils';
 import { calendarListMock, eventsMock } from './mocks';
 import { gcalendarPlugin, HomePageCalendar } from '../src/plugin';
 import { gcalendarApiRef } from '../src';
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 
 createDevApp()
   .registerPlugin(gcalendarPlugin)
