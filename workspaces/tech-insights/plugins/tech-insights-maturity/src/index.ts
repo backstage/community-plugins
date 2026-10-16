@@ -22,3 +22,4 @@ export {
   EntityMaturitySummaryCard,
 } from './plugin';
 export * from './api';
+export type { MaturityDisplayProps } from './types';
