@@ -15,13 +15,11 @@
  */
 import { JSX } from 'react';
 import { EmptyState, InfoCard } from '@backstage/core-components';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { ButtonLink, Grid, Text } from '@backstage/ui';
 import { PropsWithChildren } from 'react';
 import { Analysis } from '../../api/types';
 import { Gauge } from '../Gauge/Gauge';
+import styles from './CodeHealthKpisCard.module.css';
 
 type CodeHealthKpi = {
   name: string;
@@ -46,14 +44,6 @@ const CodeHealthKpiInfoCard = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-const useStyles = makeStyles({
-  root: {
-    height: '100%',
-    width: 100,
-    margin: '12.5px 0px 0px 50px',
-  },
-});
-
 export const CodeHealthKpisCard = ({
   codesceneHost,
   analysis,
@@ -61,8 +51,6 @@ export const CodeHealthKpisCard = ({
   codesceneHost: string;
   analysis: Analysis;
 }): JSX.Element => {
-  const classes = useStyles();
-
   if (
     !analysis.high_level_metrics.hotspots_code_health_now_weighted_average ||
     !analysis.high_level_metrics.hotspots_code_health_month_weighted_average ||
@@ -78,13 +66,12 @@ export const CodeHealthKpisCard = ({
           title="Your project does not expose Code Health KPIs"
           description="Enable the 'Full Code Health Scan' option and trigger an analysis to scan the health of all code in the project."
           action={
-            <Button
-              color="primary"
+            <ButtonLink
+              variant="primary"
               href={`${codesceneHost}/projects/${analysis.project_id}/configuration#hotspots`}
-              variant="contained"
             >
               Configuration
-            </Button>
+            </ButtonLink>
           }
         />
       </CodeHealthKpiInfoCard>
@@ -123,26 +110,19 @@ export const CodeHealthKpisCard = ({
         : `(from ${kpi.oldValue} last month)`;
     return (
       <div key={kpi.name}>
-        <Grid
-          container
-          spacing={2}
-          direction="row"
-          wrap="nowrap"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Grid item md={4}>
-            <div className={classes.root}>
+        <Grid.Root columns={{ sm: '12' }} gap="4">
+          <Grid.Item colSpan={{ sm: '4' }}>
+            <div className={styles.gauge}>
               <Gauge value={kpi.value} max={10} tooltipText={kpi.description} />
             </div>
-          </Grid>
-          <Grid item md={8}>
-            <Typography variant="body1">{kpi.name}</Typography>
-            <Typography variant="h6">
+          </Grid.Item>
+          <Grid.Item colSpan={{ sm: '8' }}>
+            <Text variant="body-medium">{kpi.name}</Text>
+            <Text variant="title-small">
               <b>{Math.round(kpi.value * 10) / 10}</b> {lastMonthText}
-            </Typography>
-          </Grid>
-        </Grid>
+            </Text>
+          </Grid.Item>
+        </Grid.Root>
       </div>
     );
   });

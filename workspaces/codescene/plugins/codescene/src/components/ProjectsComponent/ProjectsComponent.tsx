@@ -21,26 +21,22 @@ import {
   ItemCardHeader,
 } from '@backstage/core-components';
 import { useRouteRef, useApi } from '@backstage/core-plugin-api';
-import Alert from '@material-ui/lab/Alert';
 import useAsync from 'react-use/esm/useAsync';
-import { Link as RouterLink } from 'react-router-dom';
 import { rootRouteRef } from '../../routes';
 import { codesceneApiRef } from '../../api/api';
 import { Project, Analysis } from '../../api/types';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import Input from '@material-ui/core/Input';
-import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
-import CardActions from '@material-ui/core/CardActions';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles(() => ({
-  overflowXScroll: {
-    overflowX: 'scroll',
-  },
-}));
+import {
+  Alert,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Grid,
+  SearchField,
+  Tag,
+  TagGroup,
+} from '@backstage/ui';
+import styles from './ProjectsComponent.module.css';
 
 function matchFilter(filter?: string): (entry: Project) => boolean {
   const terms = filter
@@ -77,7 +73,6 @@ export const ProjectsComponent = () => {
   const routeRef = useRouteRef(rootRouteRef);
   const codesceneApi = useApi(codesceneApiRef);
 
-  const classes = useStyles();
   const [searchText, setSearchText] = useState('');
   const {
     value: projectsWithAnalyses,
@@ -117,12 +112,12 @@ export const ProjectsComponent = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   } else if (
     !projectsWithAnalyses ||
     Object.keys(projectsWithAnalyses).length === 0
   ) {
-    return <Alert severity="error">No projects found!</Alert>;
+    return <Alert status="danger" title="No projects found!" />;
   }
 
   const projects = Object.values(projectsWithAnalyses)
@@ -134,43 +129,47 @@ export const ProjectsComponent = () => {
     const subtitle = analysis
       ? `Last analysis: ${analysis.readable_analysis_time} · Score: ${analysis.high_level_metrics.current_score} · Active authors: ${analysis.high_level_metrics.active_developers}`
       : undefined;
-    const chips = analysis
-      ? topLanguages(analysis, 3).map(lang => (
-          <Chip label={lang} key={lang} size="small" />
-        ))
-      : undefined;
+    const languages = analysis ? topLanguages(analysis, 3) : [];
     return (
-      <Grid key={project.id} item xs={3}>
-        <Card>
-          <CardActionArea
-            style={{
-              height: '100%',
-              overflow: 'hidden',
-              width: '100%',
-            }}
-            component={RouterLink}
-            to={`${routeRef()}/${project.id}`}
-          >
+      <Grid.Item key={project.id} colSpan={{ sm: '6', md: '3' }}>
+        <Card
+          className={styles.projectCard}
+          href={`${routeRef()}/${project.id}`}
+          label={project.name}
+        >
+          <CardHeader>
             <ItemCardHeader title={project.name} />
-            <CardContent>{subtitle}</CardContent>
-            <CardActions disableSpacing>{chips}</CardActions>
-          </CardActionArea>
+          </CardHeader>
+          <CardBody>{subtitle}</CardBody>
+          {languages.length > 0 && (
+            <CardFooter>
+              <TagGroup aria-label={`Top languages for ${project.name}`}>
+                {languages.map(lang => (
+                  <Tag key={lang} size="small">
+                    {lang}
+                  </Tag>
+                ))}
+              </TagGroup>
+            </CardFooter>
+          )}
         </Card>
-      </Grid>
+      </Grid.Item>
     );
   });
 
   return (
-    <Content className={classes.overflowXScroll}>
+    <Content className={styles.overflowXScroll}>
       <ContentHeader title="Projects">
-        <Input
-          id="projects-filter"
-          type="search"
+        <SearchField
+          aria-label="Filter projects"
           placeholder="Filter"
-          onChange={e => setSearchText(e.target.value)}
+          value={searchText}
+          onChange={value => setSearchText(value)}
         />
       </ContentHeader>
-      <Grid container>{cards}</Grid>
+      <Grid.Root columns={{ sm: '12' }} gap="4">
+        {cards}
+      </Grid.Root>
     </Content>
   );
 };
