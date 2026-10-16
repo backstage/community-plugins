@@ -111,6 +111,7 @@ yarn.lock                                                               @backsta
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-backend-module-annotator                         @backstage/community-plugins-maintainers  @debsmita1 @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
+/workspaces/scaffolder-backend-module-http-request                      @backstage/community-plugins-maintainers  @hopehadfield @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/scaffolder-backend-module-kubernetes                        @backstage/community-plugins-maintainers  @debsmita1 @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova

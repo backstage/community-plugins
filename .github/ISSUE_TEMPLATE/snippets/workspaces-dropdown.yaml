@@ -10,6 +10,7 @@ attributes:
     - adr
     - agent-forge
     - airbrake
+    - akeyless
     - allure
     - amplication
     - analytics
@@ -17,6 +18,7 @@ attributes:
     - apache-airflow
     - apiiro
     - apollo-explorer
+    - argo-workflows
     - argocd
     - azure-devops
     - azure-resources
@@ -51,12 +53,15 @@ attributes:
     - gcp-projects
     - git-release-manager
     - github
+    - github-actions
+    - github-discussions
     - gitops-profiles
     - gocd
     - grafana
     - graphiql
     - graphql-voyager
     - growthbook-flags
+    - healert
     - ilert
     - jaeger
     - jenkins
@@ -68,6 +73,7 @@ attributes:
     - linguist
     - linkerd
     - manage
+    - matomo
     - mcp-chat
     - mend
     - microsoft-calendar
@@ -87,9 +93,11 @@ attributes:
     - puppetdb
     - quay
     - rbac
+    - redhat-argocd
     - report-portal
     - rollbar
     - scaffolder-backend-module-annotator
+    - scaffolder-backend-module-http-request
     - scaffolder-backend-module-kubernetes
     - scaffolder-backend-module-regex
     - scaffolder-backend-module-servicenow
