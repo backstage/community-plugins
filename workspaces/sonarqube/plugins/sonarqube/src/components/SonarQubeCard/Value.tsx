@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(theme => {
-  return {
+const useStyles = makeStyles(theme =>
+  createStyles({
     value: {
       fontSize: '1.5rem',
-      fontWeight: theme.typography.fontWeightMedium,
+      fontWeight: theme.typography.fontWeightMedium as number | undefined,
     },
     compact: {
       lineHeight: '1.0',
     },
-  };
-});
+  }),
+);
 
 export const Value = (props: { value?: string; compact?: boolean }) => {
   const classes = useStyles();
