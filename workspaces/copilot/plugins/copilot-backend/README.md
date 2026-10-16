@@ -121,7 +121,25 @@ copilot:
 
 `copilot.apiBaseUrl` is only needed if you want the plugin to use a different API host than the rest of Backstage. Note that Backstage only defaults `apiBaseUrl` for `github.com`, so on any other host you must set it in one place or the other — otherwise the plugin falls back to the public `https://api.github.com`.
 
-Report documents are downloaded from signed URLs. GitHub serves those from `copilot-reports.github.com`, or `copilot-reports.SUBDOMAIN.ghe.com` on GHE.com, and documents a fallback to Azure Blob Storage. The plugin only follows such links over HTTPS, and only to the configured `copilot.host` and its subdomains, to `githubusercontent.com` and its subdomains, or to the documented object storage hosts. Redirects are re-checked against the same rules on every hop.
+To keep a token with enterprise scopes away from the rest of Backstage, for example when everything else authenticates as a GitHub App, put it on a separate integration entry for the API host and point `copilot.host` at that entry:
+
+```yaml
+integrations:
+  github:
+    - host: octocorp.ghe.com
+      apiBaseUrl: https://api.octocorp.ghe.com
+      apps:
+        - $include: github-app-credentials.yaml
+    - host: api.octocorp.ghe.com
+      apiBaseUrl: https://api.octocorp.ghe.com
+      token: ${COPILOT_TOKEN}
+
+copilot:
+  host: api.octocorp.ghe.com
+  enterprise: octocorp
+```
+
+Report documents are downloaded from signed URLs. GitHub serves those from `copilot-reports.github.com`, or `copilot-reports.SUBDOMAIN.ghe.com` on GHE.com, and documents a fallback to Azure Blob Storage. The plugin only follows such links over HTTPS, and only to the configured `copilot.host` and its subdomains, to `githubusercontent.com` and its subdomains, or to the documented object storage hosts. When the API base URL is `https://api.SUBDOMAIN.ghe.com`, `SUBDOMAIN.ghe.com` and its subdomains are allowed too. Redirects are re-checked against the same rules on every hop.
 
 ### Why V2 Exists
 
