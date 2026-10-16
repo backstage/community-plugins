@@ -28,7 +28,7 @@ All values can be found in [`__fixtures__/keycloak-realm.json`](../catalog-backe
 
 **Option A — `app-config.local.yaml`** (recommended, one-time setup):
 
-Create `plugins/auth-backend-module-keycloak/app-config.local.yaml` (gitignored via `*.local.yaml`) and fill in values matching the env var table below.
+Create `plugins/auth-backend-module-keycloak-provider/app-config.local.yaml` (gitignored via `*.local.yaml`) and fill in values matching the env var table below.
 
 **Option B — environment variables:**
 

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.24.1
+
+### Patch Changes
+
+- 4511548: Limit the Remix Icon dependency to versions below 4.9.0 due to a license change.
+
 ## 0.24.0
 
 ### Minor Changes

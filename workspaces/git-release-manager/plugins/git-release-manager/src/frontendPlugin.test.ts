@@ -21,6 +21,20 @@ jest.mock('./GitReleaseManager', () => {
 });
 
 describe('git release manager frontend plugin', () => {
+  it('exposes the override API through its default export', () => {
+    const overriddenPlugin = gitReleaseManagerPlugin.withOverrides({
+      title: 'Custom Git Release Manager',
+    });
+
+    expect(overriddenPlugin.title).toBe('Custom Git Release Manager');
+    expect(
+      overriddenPlugin.getExtension('page:git-release-manager'),
+    ).toBeDefined();
+    expect(
+      overriddenPlugin.getExtension('api:git-release-manager/service'),
+    ).toBeDefined();
+  });
+
   it('registers the frontend feature without loading the page eagerly', () => {
     expect(gitReleaseManagerPlugin.pluginId).toBe('git-release-manager');
     expect(gitReleaseManagerPlugin.routes.root).toBeDefined();

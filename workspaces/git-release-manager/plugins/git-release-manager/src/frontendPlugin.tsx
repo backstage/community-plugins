@@ -18,7 +18,6 @@ import {
   ApiBlueprint,
   configApiRef,
   createFrontendPlugin,
-  FrontendPlugin,
   githubAuthApiRef,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
@@ -54,7 +53,7 @@ export const gitReleaseManagerPage = PageBlueprint.make({
 });
 
 /** @public */
-const gitReleaseManagerFrontendPlugin: FrontendPlugin = createFrontendPlugin({
+const gitReleaseManagerFrontendPlugin = createFrontendPlugin({
   pluginId: 'git-release-manager',
   info: {
     packageJson: () => import('../package.json'),

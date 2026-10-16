@@ -24,7 +24,10 @@ backend:
 auth:
   environment: development
   providers:
-    guest: {}
+    guest:
+      # Match catalog User + permission.rbac.admin.superUsers for e2e seeding.
+      userEntityRef: user:default/guest
+      ownershipEntityRefs: [user:default/guest]
 
 catalog:
   rules:
@@ -40,6 +43,10 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+    - type: file
+      target: ../rbac/tests/fixtures/catalog-org.yaml
+      rules:
+        - allow: [User, Group]
 
 permission:
   enabled: true
@@ -48,6 +55,9 @@ permission:
       - catalog
       - permission
       - scaffolder
+    # Guest is a super user so e2e can seed/edit REST roles. Do not use
+    # admin.users here — that creates a read-only configuration rbac_admin.
     admin:
-      users:
+      superUsers:
         - name: user:development/guest
+        - name: user:default/guest
