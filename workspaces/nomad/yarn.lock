@@ -1890,7 +1890,7 @@ __metadata:
     "@backstage/dev-utils": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
+    "@remixicon/react": "npm:<4.10.0"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
@@ -6307,6 +6307,15 @@ __metadata:
   version: 1.15.3
   resolution: "@remix-run/router@npm:1.15.3"
   checksum: 10/43d402b4ad3dff6dee5c1bc0822aeeb4d885d11c74c45fca7f2f4d7e57853fddbbb813c372919bb3fcc63f95fbcffdd1d4ac1c406857ea07b9d09a09d0562c8e
+  languageName: node
+  linkType: hard
+
+"@remixicon/react@npm:<4.10.0":
+  version: 4.9.0
+  resolution: "@remixicon/react@npm:4.9.0"
+  peerDependencies:
+    react: ">=18.2.0"
+  checksum: 10/3d8f1d86b2bb20ab5e44d15f18811e928b0886f7710eb7a1516afb9913ba72e46facec5dfee382825139d800bcbb6704c15d0c760d0f977c12257d4af8db3295
   languageName: node
   linkType: hard
 
@@ -13029,10 +13038,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csstype@npm:3.0.9":
-  version: 3.0.9
-  resolution: "csstype@npm:3.0.9"
-  checksum: 10/ffa22664f3310f7590e20391d8e1ad7deadde83321f446731e3f6307cadd91aa57909b622445de695a29b9c93a28cb14ecd15f56c2f034b129d35e45ea66dbb6
+"csstype@npm:3.2.3":
+  version: 3.2.3
+  resolution: "csstype@npm:3.2.3"
+  checksum: 10/ad41baf7e2ffac65ab544d79107bf7cd1a4bb9bab9ac3302f59ab4ba655d5e30942a8ae46e10ba160c6f4ecea464cc95b975ca2fefbdeeacd6ac63f12f99fe1f
   languageName: node
   linkType: hard
 

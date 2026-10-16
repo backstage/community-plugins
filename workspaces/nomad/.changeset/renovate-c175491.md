@@ -1,0 +1,5 @@
+---
+'@backstage-community/plugin-nomad': patch
+---
+
+Updated dependency `@remixicon/react` to `<4.10.0`.
