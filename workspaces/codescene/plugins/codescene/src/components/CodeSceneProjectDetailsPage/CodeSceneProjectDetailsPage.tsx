@@ -25,9 +25,7 @@ import {
   TableColumn,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useApp } from '@backstage/core-plugin-api';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Grid, Text } from '@backstage/ui';
 import { useParams } from 'react-router-dom';
 import { CodeHealthKpisCard } from '../CodeHealthKpisCard/CodeHealthKpisCard';
 import { useAnalyses } from '../../hooks/useAnalyses';
@@ -77,7 +75,7 @@ export const CodeSceneProjectDetailsPage = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   } else if (!analysis) {
     return (
       <EmptyState
@@ -94,15 +92,15 @@ export const CodeSceneProjectDetailsPage = () => {
 
   const analysisBody = (
     <>
-      <Typography variant="body1">
+      <Text variant="body-medium">
         <b>Active authors</b>: {analysis.summary.active_authors_count}
-      </Typography>
-      <Typography variant="body1">
+      </Text>
+      <Text variant="body-medium">
         <b>Total authors</b>: {analysis.summary.authors_count}
-      </Typography>
-      <Typography variant="body1">
+      </Text>
+      <Text variant="body-medium">
         <b>Commits</b>: {analysis.summary.commits}
-      </Typography>
+      </Text>
     </>
   );
 
@@ -118,36 +116,36 @@ export const CodeSceneProjectDetailsPage = () => {
         </SupportButton>
       </Header>
       <Content>
-        <Grid container spacing={2}>
-          <Grid item xs sm md>
+        <Grid.Root columns={{ sm: '12' }} gap="4">
+          <Grid.Item colSpan={{ sm: '12', md: '5' }}>
             <CodeHealthKpisCard
               codesceneHost={codesceneHost}
               analysis={analysis}
             />
-          </Grid>
-          <Grid item>
+          </Grid.Item>
+          <Grid.Item colSpan={{ sm: '6', md: '2' }}>
             <GaugeCard
               title="System Mastery"
               progress={analysis.high_level_metrics.system_mastery / 100}
             />
-          </Grid>
-          <Grid item>
+          </Grid.Item>
+          <Grid.Item colSpan={{ sm: '6', md: '2' }}>
             <GaugeCard
               title="Current Score"
               progress={analysis.high_level_metrics.current_score / 10}
             />
-          </Grid>
-          <Grid item style={{ minWidth: '460px' }}>
+          </Grid.Item>
+          <Grid.Item colSpan={{ sm: '12', md: '3' }}>
             <InfoCard title="Analysis" deepLink={analysisLink}>
               {analysisBody}
             </InfoCard>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
+          </Grid.Item>
+        </Grid.Root>
+        <Grid.Root columns={{ sm: '12' }} gap="4">
+          <Grid.Item colSpan={{ sm: '12' }}>
             <CodeSceneFileSummary {...analysis} />
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Content>
     </Page>
   );

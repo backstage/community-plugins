@@ -15,7 +15,7 @@
  */
 import { EmptyState, GaugeCard, InfoCard } from '@backstage/core-components';
 import { configApiRef, useApi, useApp } from '@backstage/core-plugin-api';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Grid, Text } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import useAsync from 'react-use/esm/useAsync';
 import { codesceneApiRef } from '../../api/api';
@@ -28,8 +28,6 @@ import {
 } from '../../utils/commonUtil';
 import { DateTime } from 'luxon';
 import { MissingAnnotationEmptyState } from '@backstage/plugin-catalog-react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 
 export const CodeSceneEntityKPICard = () => {
   const { entity } = useEntity();
@@ -50,7 +48,7 @@ export const CodeSceneEntityKPICard = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   } else if (!analysis) {
     return (
       <EmptyState
@@ -66,61 +64,53 @@ export const CodeSceneEntityKPICard = () => {
 
   const analysisBody = (
     <>
-      <Typography variant="body1">
+      <Text variant="body-medium">
         <b>Active authors</b>: {analysis.summary.active_authors_count}
-      </Typography>
-      <Typography variant="body1">
+      </Text>
+      <Text variant="body-medium">
         <b>Total authors</b>: {analysis.summary.authors_count}
-      </Typography>
-      <Typography variant="body1">
+      </Text>
+      <Text variant="body-medium">
         <b>Commits</b>: {analysis.summary.commits}
-      </Typography>
+      </Text>
     </>
   );
 
   return isCodeSceneAvailable(entity) ? (
     <>
-      <Grid
-        container
-        spacing={1}
-        direction="row"
-        justifyContent="center"
-        alignItems="stretch"
-      >
-        <Grid item xs={8}>
-          <Grid style={{ height: '100%' }}>
-            <CodeHealthKpisCard
-              codesceneHost={codesceneHost}
-              analysis={analysis}
-            />
-          </Grid>
-        </Grid>
-        <Grid item xs={4}>
-          <Grid container spacing={1}>
-            <Grid item xs={8}>
+      <Grid.Root columns={{ sm: '12' }} gap="2">
+        <Grid.Item colSpan={{ sm: '12', md: '8' }}>
+          <CodeHealthKpisCard
+            codesceneHost={codesceneHost}
+            analysis={analysis}
+          />
+        </Grid.Item>
+        <Grid.Item colSpan={{ sm: '12', md: '4' }}>
+          <Grid.Root columns={{ sm: '12' }} gap="2">
+            <Grid.Item colSpan={{ sm: '12' }}>
               <GaugeCard
                 title="System Mastery"
                 progress={analysis.high_level_metrics.system_mastery / 100}
               />
-            </Grid>
-            <Grid item xs={8} style={{ height: '100%' }}>
+            </Grid.Item>
+            <Grid.Item colSpan={{ sm: '12' }}>
               <GaugeCard
                 title="Current Score"
                 progress={analysis.high_level_metrics.current_score / 10}
               />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
+            </Grid.Item>
+          </Grid.Root>
+        </Grid.Item>
+        <Grid.Item colSpan={{ sm: '12' }}>
           <InfoCard title="Analysis" deepLink={analysisLink}>
             {analysisBody}
           </InfoCard>
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
       <div style={{ textAlign: 'center' }}>
-        <Typography variant="caption">{`Last analyzed on ${DateTime.fromISO(
+        <Text variant="body-x-small">{`Last analyzed on ${DateTime.fromISO(
           analysis.readable_analysis_time,
-        ).toLocaleString(DateTime.DATETIME_MED)}`}</Typography>
+        ).toLocaleString(DateTime.DATETIME_MED)}`}</Text>
       </div>
     </>
   ) : (

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import {
   Header,
   Page,
@@ -32,11 +32,11 @@ export const CodeScenePageComponent = () => (
       <SupportButton />
     </Header>
     <Content>
-      <Grid container spacing={3} direction="column">
-        <Grid item>
+      <Grid.Root columns={{ sm: '12' }} gap="6">
+        <Grid.Item colSpan={{ sm: '12' }}>
           <ProjectsComponent />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </Content>
   </Page>
 );
