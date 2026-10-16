@@ -176,7 +176,10 @@ describe('templateVersionUtils', () => {
 
       expect(mockCatalogClient.getEntities).toHaveBeenCalledWith(
         {
-          filter: { 'spec.scaffoldedFrom': payload.entityRef },
+          filter: {
+            'relations.type': 'scaffoldedFrom',
+            'relations.targetRef': payload.entityRef,
+          },
           fields: [
             'kind',
             'metadata.namespace',
