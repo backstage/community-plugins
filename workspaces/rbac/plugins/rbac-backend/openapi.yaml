@@ -651,8 +651,12 @@ paths:
                 properties:
                   id:
                     type: integer
+        '400':
+          description: Input Error
         '403':
           description: Refusal to authorize
+        '503':
+          description: Permission metadata of the plugin could not be retrieved to verify the condition rules
   /api/permission/roles/conditions/{id}:
     get:
       description: Returns condition by id.
@@ -724,6 +728,8 @@ paths:
           description: Refusal to authorize
         '404':
           description: Id is not a valid number.
+        '503':
+          description: Permission metadata of the plugin could not be retrieved to verify the condition rules
     delete:
       description: Deletes condition by id.
       parameters:

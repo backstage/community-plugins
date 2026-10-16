@@ -283,7 +283,13 @@ describe('REST policies api with conditions', () => {
               resourceType: 'catalog-entity',
             },
           ],
-          rules: [],
+          rules: [
+            {
+              name: 'IS_ENTITY_OWNER',
+              description: 'Allow entities owned by a specified claim',
+              resourceType: 'catalog-entity',
+            },
+          ],
         };
         return response;
       });
