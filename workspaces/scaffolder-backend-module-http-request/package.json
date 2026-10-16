@@ -1,0 +1,57 @@
+{
+  "name": "@internal/scaffolder-backend-module-http-request",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "22 || 24"
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
+    "build:all": "backstage-cli repo build --all",
+    "build:api-reports": "yarn build:api-reports:only",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
+    "clean": "backstage-cli repo clean",
+    "fix": "backstage-cli repo fix",
+    "test": "backstage-cli repo test",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/scaffolder-backend-module-http-request"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
+    "@changesets/cli": "^2.27.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
+    "@jest/environment-jsdom-abstract": "^30",
+    "@types/jest": "^30",
+    "@types/jsdom": "^27",
+    "jest": "^30",
+    "jsdom": "^27",
+    "prettier": "^2.3.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "typescript": "~5.8.0"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "prettier": "@backstage/cli/config/prettier"
+}

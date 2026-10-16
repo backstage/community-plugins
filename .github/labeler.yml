@@ -256,6 +256,9 @@ workspace/rollbar:
 workspace/scaffolder-backend-module-annotator:
   - "Workspace\\s*scaffolder-backend-module-annotator"
 
+workspace/scaffolder-backend-module-http-request:
+  - "Workspace\\s*scaffolder-backend-module-http-request"
+
 workspace/scaffolder-backend-module-kubernetes:
   - "Workspace\\s*scaffolder-backend-module-kubernetes"
 
