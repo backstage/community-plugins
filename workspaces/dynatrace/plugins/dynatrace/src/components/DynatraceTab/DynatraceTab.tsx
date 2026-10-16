@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import { Page, Content } from '@backstage/core-components';
 import {
   useEntity,
@@ -43,11 +43,11 @@ export const DynatraceTab = () => {
   return (
     <Page themeId="tool">
       <Content>
-        <Grid container spacing={2}>
+        <Grid.Root columns={{ sm: '12' }} gap="4">
           {dynatraceEntityId ? (
-            <Grid item xs={12} lg={12}>
+            <Grid.Item colSpan={{ sm: '12' }}>
               <ProblemsList dynatraceEntityId={dynatraceEntityId} />
-            </Grid>
+            </Grid.Item>
           ) : (
             ''
           )}
@@ -56,12 +56,12 @@ export const DynatraceTab = () => {
             .filter(Boolean)
             .map(id => {
               return (
-                <Grid key={id} item xs={12} lg={12}>
+                <Grid.Item key={id} colSpan={{ sm: '12' }}>
                   <SyntheticsCard syntheticsId={id} />
-                </Grid>
+                </Grid.Item>
               );
             })}
-        </Grid>
+        </Grid.Root>
       </Content>
     </Page>
   );
