@@ -18,6 +18,8 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import {
   CheckResult,
   Check,
@@ -42,6 +44,7 @@ import {
   techdocsFactRetriever,
 } from '../service';
 import { createFactRetrieverRegistrationFromConfig } from './config';
+import { createTechInsightsActions } from '../actions';
 
 /**
  * The tech-insights backend plugin.
@@ -107,6 +110,8 @@ export const techInsightsPlugin = createBackendPlugin({
         httpAuth: coreServices.httpAuth,
         permissions: coreServices.permissions,
         permissionsRegistry: coreServices.permissionsRegistry,
+        actionsRegistry: actionsRegistryServiceRef,
+        catalog: catalogServiceRef,
       },
       async init({
         config,
@@ -120,6 +125,8 @@ export const techInsightsPlugin = createBackendPlugin({
         httpAuth,
         permissions,
         permissionsRegistry,
+        actionsRegistry,
+        catalog,
       }) {
         permissionsRegistry.addPermissions(techInsightsPermissions);
 
@@ -147,6 +154,14 @@ export const techInsightsPlugin = createBackendPlugin({
           scheduler,
           auth,
           urlReader,
+        });
+
+        createTechInsightsActions({
+          actionsRegistry,
+          catalog,
+          factChecker: context.factChecker,
+          permissions,
+          persistenceContext: context.persistenceContext,
         });
 
         httpRouter.use(
