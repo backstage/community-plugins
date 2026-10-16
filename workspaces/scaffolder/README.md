@@ -3,6 +3,7 @@
 This workspace contains the following independently published scaffolder action modules:
 
 - [Annotator](./plugins/scaffolder-backend-module-annotator/README.md)
+- [HTTP Request](./plugins/scaffolder-backend-module-http-request/README.md)
 - [Kubernetes](./plugins/scaffolder-backend-module-kubernetes/README.md)
 - [Regex](./plugins/scaffolder-backend-module-regex/README.md)
 - [ServiceNow](./plugins/scaffolder-backend-module-servicenow/README.md)
