@@ -1,0 +1,36 @@
+@layer components {
+  .root {
+    position: relative;
+    display: inline-flex;
+    margin-right: var(--bui-space-2);
+    margin-bottom: var(--bui-space-2);
+  }
+
+  /* Mirrors the MUI Badge overlay the chip previously sat inside. */
+  .badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-flex;
+    border-radius: 50%;
+    background: var(--bui-bg-surface-1);
+    pointer-events: none;
+  }
+
+  .badge svg {
+    height: 16px;
+    width: 16px;
+  }
+
+  .accepted {
+    color: var(--bui-fg-success);
+  }
+
+  .declined {
+    color: var(--bui-fg-danger);
+  }
+
+  .pending {
+    color: var(--bui-fg-link);
+  }
+}

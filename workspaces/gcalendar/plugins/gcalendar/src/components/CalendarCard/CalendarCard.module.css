@@ -1,0 +1,30 @@
+@layer components {
+  .calendarIcon {
+    height: 24px;
+    width: 24px;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .loaderWrap {
+    padding: var(--bui-space-4) 0;
+  }
+
+  .eventList {
+    max-height: 602px;
+    overflow: auto;
+    padding: var(--bui-space-2);
+    padding-bottom: 0;
+  }
+
+  .noEventsWrap {
+    padding: var(--bui-space-4) 0;
+  }
+
+  .noEvents {
+    display: block;
+    text-align: center;
+  }
+}

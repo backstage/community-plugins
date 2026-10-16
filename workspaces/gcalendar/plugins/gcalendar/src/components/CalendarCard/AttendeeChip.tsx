@@ -14,46 +14,25 @@
  * limitations under the License.
  */
 
-import Badge from '@material-ui/core/Badge';
-import Chip from '@material-ui/core/Chip';
-import { makeStyles } from '@material-ui/core/styles';
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckIcon from '@material-ui/icons/CheckCircle';
+import { Tag, TagGroup } from '@backstage/ui';
+import { RiCheckboxCircleFill, RiCloseCircleFill } from '@remixicon/react';
 import { EventAttendee, ResponseStatus } from '../../api';
+import styles from './AttendeeChip.module.css';
 
-const useStyles = makeStyles(theme => {
-  const getIconColor = (responseStatus?: string) => {
-    if (!responseStatus) return theme.palette.primary.light;
-
-    return {
-      [ResponseStatus.accepted]: theme.palette.status.ok,
-      [ResponseStatus.declined]: theme.palette.status.error,
-    }[responseStatus];
-  };
-
-  return {
-    responseStatus: {
-      color: ({ responseStatus }: { responseStatus?: string }) =>
-        getIconColor(responseStatus),
-    },
-    badge: {
-      right: 10,
-      top: 5,
-      '& svg': {
-        height: 16,
-        width: 16,
-        background: theme.palette.common.white,
-      },
-    },
-  };
-});
-
-const ResponseIcon = ({ responseStatus }: any) => {
+const ResponseIcon = ({ responseStatus }: { responseStatus?: string }) => {
   if (responseStatus === ResponseStatus.accepted) {
-    return <CheckIcon data-testid="accepted-icon" />;
+    return (
+      <span className={`${styles.badge} ${styles.accepted}`}>
+        <RiCheckboxCircleFill data-testid="accepted-icon" />
+      </span>
+    );
   }
   if (responseStatus === ResponseStatus.declined) {
-    return <CancelIcon data-testid="declined-icon" />;
+    return (
+      <span className={`${styles.badge} ${styles.declined}`}>
+        <RiCloseCircleFill data-testid="declined-icon" />
+      </span>
+    );
   }
 
   return null;
@@ -64,22 +43,12 @@ type AttendeeChipProps = {
 };
 
 export const AttendeeChip = ({ user }: AttendeeChipProps) => {
-  const classes = useStyles({ responseStatus: user.responseStatus });
-
   return (
-    <Badge
-      classes={{
-        root: classes.responseStatus,
-        badge: classes.badge,
-      }}
-      badgeContent={<ResponseIcon responseStatus={user.responseStatus} />}
-    >
-      <Chip
-        size="small"
-        variant="outlined"
-        label={user.email}
-        color="primary"
-      />
-    </Badge>
+    <span className={styles.root}>
+      <TagGroup aria-label={`Attendee ${user.email}`}>
+        <Tag size="small">{user.email}</Tag>
+      </TagGroup>
+      <ResponseIcon responseStatus={user.responseStatus} />
+    </span>
   );
 };

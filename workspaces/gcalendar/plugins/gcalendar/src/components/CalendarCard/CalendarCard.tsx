@@ -21,11 +21,8 @@ import { useState } from 'react';
 import { InfoCard, Progress } from '@backstage/core-components';
 import { useAnalytics } from '@backstage/core-plugin-api';
 
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import PrevIcon from '@material-ui/icons/NavigateBefore';
-import NextIcon from '@material-ui/icons/NavigateNext';
+import { Box, ButtonIcon, Flex, Text } from '@backstage/ui';
+import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
 
 import {
   useCalendarsQuery,
@@ -39,6 +36,7 @@ import { CalendarSelect } from './CalendarSelect';
 import { SignInContent } from './SignInContent';
 import { getStartDate } from './util';
 import useAsync from 'react-use/esm/useAsync';
+import styles from './CalendarCard.module.css';
 
 export const CalendarCard = () => {
   const [date, setDate] = useState(DateTime.now());
@@ -84,28 +82,35 @@ export const CalendarCard = () => {
     <InfoCard
       noPadding
       title={
-        <Box display="flex" alignItems="center">
-          <Box height={24} width={24} mr={1}>
+        <Flex align="center" gap="2">
+          <Box className={styles.calendarIcon}>
             <img src={calendarCardIcon} alt="Google Calendar" />
           </Box>
           {isSignedIn ? (
             <>
-              <IconButton onClick={() => changeDay(-1)} size="small">
-                <PrevIcon />
-              </IconButton>
-              <IconButton onClick={() => changeDay(1)} size="small">
-                <NextIcon />
-              </IconButton>
-              <Box mr={0.5} />
-              <Typography variant="h6">
+              <ButtonIcon
+                aria-label="Previous day"
+                variant="tertiary"
+                size="small"
+                onPress={() => changeDay(-1)}
+                icon={<RiArrowLeftSLine />}
+              />
+              <ButtonIcon
+                aria-label="Next day"
+                variant="tertiary"
+                size="small"
+                onPress={() => changeDay(1)}
+                icon={<RiArrowRightSLine />}
+              />
+              <Text variant="title-small">
                 {date.toLocaleString({
                   weekday: 'short',
                   month: 'short',
                   day: 'numeric',
                 })}
-              </Typography>
+              </Text>
 
-              <Box flex={1} />
+              <div className={styles.spacer} />
 
               <CalendarSelect
                 calendars={calendars}
@@ -117,9 +122,9 @@ export const CalendarCard = () => {
               />
             </>
           ) : (
-            <Typography variant="h6">Agenda</Typography>
+            <Text variant="title-small">Agenda</Text>
           )}
-        </Box>
+        </Flex>
       }
       deepLink={{
         link: 'https://calendar.google.com/',
@@ -128,21 +133,21 @@ export const CalendarCard = () => {
     >
       <Box>
         {showLoader && (
-          <Box py={2}>
+          <div className={styles.loaderWrap}>
             <Progress variant="query" />
-          </Box>
+          </div>
         )}
         {!isSignedIn && isInitialized && (
           <SignInContent handleAuthClick={() => signIn(false)} />
         )}
         {!isEventLoading && !isCalendarLoading && isSignedIn && (
-          <Box p={1} pb={0} maxHeight={602} overflow="auto">
+          <Box className={styles.eventList}>
             {events.length === 0 && (
-              <Box pt={2} pb={2}>
-                <Typography align="center" variant="h6">
+              <div className={styles.noEventsWrap}>
+                <Text as="h6" variant="title-small" className={styles.noEvents}>
                   No events
-                </Typography>
-              </Box>
+                </Text>
+              </div>
             )}
             {sortBy(events, [getStartDate]).map(event => (
               <CalendarEvent

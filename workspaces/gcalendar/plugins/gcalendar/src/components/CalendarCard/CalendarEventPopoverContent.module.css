@@ -1,0 +1,30 @@
+@layer components {
+  .root {
+    width: 400px;
+  }
+
+  .title {
+    flex: 1;
+  }
+
+  .description {
+    word-break: break-word;
+  }
+
+  .description a {
+    color: var(--bui-fg-link);
+    font-weight: 500;
+  }
+
+  .attendees {
+    padding-top: var(--bui-space-2);
+  }
+
+  /* BUI has no Divider component, so this reproduces the MUI one. */
+  .divider {
+    height: 1px;
+    border: none;
+    margin: var(--bui-space-4) 0;
+    background-color: var(--bui-border);
+  }
+}
