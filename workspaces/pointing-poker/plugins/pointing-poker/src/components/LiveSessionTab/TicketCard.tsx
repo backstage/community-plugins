@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import styles from './TicketCard.module.css';
 import type { ReactNode } from 'react';
 import {
   Box,
@@ -89,6 +90,8 @@ export const TicketKeyBadge = ({
           borderRadius: 'var(--bui-radius-2)',
           padding: '0.25rem 0.75rem',
           width: 'fit-content',
+          flexShrink: 0,
+          whiteSpace: 'nowrap',
         }}
       >
         <JiraIcon />
@@ -113,6 +116,8 @@ export const TicketKeyBadge = ({
         borderRadius: 'var(--bui-radius-2)',
         padding: '0.25rem 0.75rem',
         width: 'fit-content',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
       }}
     >
       <TicketTypeIcon ticket={ticket} />
@@ -128,7 +133,7 @@ export const TicketKeyBadge = ({
   );
 
   return ticket?.url ? (
-    <Link href={ticket.url} style={{ textDecoration: 'none' }}>
+    <Link href={ticket.url} style={{ textDecoration: 'none', flexShrink: 0 }}>
       {content}
     </Link>
   ) : (
@@ -153,34 +158,53 @@ export const TicketCard = ({
         height: '100%',
         maxHeight: '100%',
         minHeight: 0,
+        minWidth: 0,
         overflow: 'hidden',
         position: 'relative',
       }}
     >
       <CardHeader>
-        <Flex align="center" justify="between" style={{ width: '100%' }}>
-          <Flex align="center" gap="2">
+        <Flex
+          align="center"
+          gap="3"
+          justify="between"
+          style={{ width: '100%', flexWrap: 'wrap' }}
+        >
+          <Flex
+            align="center"
+            gap="2"
+            style={{ flexWrap: 'wrap', minWidth: 0 }}
+          >
             {breadcrumb}
             <TicketKeyBadge ticket={ticket} />
             {badge}
           </Flex>
           {(actions || ticket?.key) && (
-            <Flex align="center" gap="2">
+            <Flex
+              align="center"
+              gap="2"
+              style={{ flexWrap: 'wrap', minWidth: 0 }}
+            >
               {actions}
               {ticket?.key && <TicketComments ticketKey={ticket.key} />}
             </Flex>
           )}
         </Flex>
       </CardHeader>
-      <CardBody>
-        <Text as="h2" variant="title-small" weight="bold">
+      <CardBody className={styles.body}>
+        <Text
+          as="h2"
+          variant="title-small"
+          weight="bold"
+          style={{ overflowWrap: 'anywhere', flexShrink: 0 }}
+        >
           {ticket?.summary ?? fallbackTitle ?? 'Loading…'}
         </Text>
         {ticket?.author && (
           <Flex
             align="center"
             gap="2"
-            style={{ marginTop: 'var(--bui-space-2)' }}
+            style={{ marginTop: 'var(--bui-space-2)', flexShrink: 0 }}
           >
             <CharacterAvatar name={ticket.author} size={24} />
             <Text as="span" color="secondary" variant="body-small">
@@ -198,11 +222,9 @@ export const TicketCard = ({
         {!children &&
           (Boolean(ticket?.description) || attachments.length > 0) && (
             <Box
+              className={styles.content}
               style={{
-                flex: 1,
-                marginTop: 'var(--bui-space-6)',
-                minHeight: 0,
-                overflowY: 'auto',
+                marginTop: 'var(--bui-space-4)',
               }}
             >
               <Markdown text={ticket?.description} />
@@ -213,11 +235,9 @@ export const TicketCard = ({
           )}
         {children && (
           <Box
+            className={styles.content}
             style={{
-              flex: 1,
               marginTop: 'var(--bui-space-4)',
-              minHeight: 0,
-              overflowY: 'auto',
             }}
           >
             {children}

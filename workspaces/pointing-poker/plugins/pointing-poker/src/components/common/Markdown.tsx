@@ -16,7 +16,8 @@
 import { Fragment, ReactNode } from 'react';
 import { Link, Text } from '@backstage/ui';
 
-const INLINE = /(\*\*[^*]+\*\*|_[^_]+_|~~[^~]+~~|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
+const INLINE =
+  /(\*\*[^*]+\*\*|_[^_]+_|~~[^~]+~~|`[^`]+`|!?\[[^\]]+\]\([^)]+\))/g;
 
 const renderInline = (text: string): ReactNode[] =>
   text.split(INLINE).map((part, i) => {
@@ -45,6 +46,24 @@ const renderInline = (text: string): ReactNode[] =>
         >
           {part.slice(1, -1)}
         </code>
+      );
+    }
+    const image = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(part);
+    if (image) {
+      return (
+        <img
+          key={i}
+          alt={image[1]}
+          src={image[2]}
+          loading="lazy"
+          style={{
+            display: 'block',
+            maxWidth: '100%',
+            height: 'auto',
+            margin: 'var(--bui-space-3) 0',
+            borderRadius: 'var(--bui-radius-2)',
+          }}
+        />
       );
     }
     const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
@@ -208,7 +227,8 @@ export const Markdown = ({ text }: { text?: string }) => {
     'title-x-small',
   ] as const;
 
-  for (const line of lines) {
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex];
     if (/^\s*```/.test(line)) {
       if (code === null) {
         flushAll();
@@ -220,6 +240,70 @@ export const Markdown = ({ text }: { text?: string }) => {
     }
     if (code !== null) {
       code.push(line);
+      continue;
+    }
+    const cells = (row: string) =>
+      row
+        .trim()
+        .replace(/^\|/, '')
+        .replace(/\|$/, '')
+        .split('|')
+        .map(cell => cell.trim());
+    if (
+      line.includes('|') &&
+      /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(
+        lines[lineIndex + 1] ?? '',
+      )
+    ) {
+      flushAll();
+      const headers = cells(line);
+      const rows: string[][] = [];
+      lineIndex++;
+      while (
+        lines[lineIndex + 1]?.trim() &&
+        lines[lineIndex + 1].includes('|')
+      ) {
+        rows.push(cells(lines[++lineIndex]));
+      }
+      const cellStyle = {
+        borderBottom: '1px solid var(--bui-border-1)',
+        padding: 'var(--bui-space-2) var(--bui-space-3)',
+        textAlign: 'left' as const,
+        verticalAlign: 'top',
+      };
+      blocks.push(
+        <div
+          key={blocks.length}
+          style={{
+            maxWidth: '100%',
+            overflowX: 'auto',
+            margin: 'var(--bui-space-3) 0',
+          }}
+        >
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <thead>
+              <tr>
+                {headers.map((cell, i) => (
+                  <th key={i} scope="col" style={cellStyle}>
+                    {renderInline(cell)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={i}>
+                  {headers.map((_, j) => (
+                    <td key={j} style={cellStyle}>
+                      {renderInline(row[j] ?? '')}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
       continue;
     }
     const quoted = /^\s*>\s?(.*)$/.exec(line);

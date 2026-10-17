@@ -36,6 +36,8 @@ const chipStyle = {
   fontWeight: 500,
   gap: '0.375rem',
   padding: '0.25rem 0.625rem',
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
 } as const;
 
 // The "N subtasks" affordance next to the story key. Everyone sees it; only the
