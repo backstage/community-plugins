@@ -152,7 +152,10 @@ export function createRouter(options: RouterOptions): express.Router {
       const tickets = await provider.searchTickets(query);
       return res.json(tickets);
     } catch (err) {
-      return res.status(502).json({ error: (err as Error).message });
+      if (err instanceof InputError || err instanceof NotAllowedError)
+        throw err;
+      logger.error('Ticket search failed', err as Error);
+      return res.status(502).json({ error: 'Ticket search failed' });
     }
   });
 
@@ -300,6 +303,29 @@ export function createRouter(options: RouterOptions): express.Router {
   router.post('/sessions', async (req, res) => {
     if (!req.body.teamRef) throw new InputError('teamRef is required');
     await requireTeamMember(req, req.body.teamRef);
+    if (req.body.stories !== undefined && !Array.isArray(req.body.stories)) {
+      throw new InputError('stories must be an array');
+    }
+    for (const story of req.body.stories ?? []) {
+      if (!story || typeof story !== 'object') {
+        throw new InputError('Invalid story');
+      }
+      if (story.ticketKey !== undefined) {
+        if (typeof story.ticketKey !== 'string' || !story.ticketKey) {
+          throw new InputError('Invalid ticket key');
+        }
+        const provider = ticketProvider();
+        if (!provider) {
+          return res
+            .status(503)
+            .json({ error: 'No ticket provider configured' });
+        }
+        // Provider lookup applies its access policy before any session is saved.
+        if (!(await provider.getTicket(story.ticketKey))) {
+          throw new NotFoundError('Ticket not found');
+        }
+      }
+    }
     const session = await db.createSession({
       ...req.body,
       userId: await currentUserId(req),

@@ -17,7 +17,11 @@ import express from 'express';
 import type { Server } from 'http';
 import type { AddressInfo } from 'net';
 import { mockServices } from '@backstage/backend-test-utils';
-import { AuthenticationError } from '@backstage/errors';
+import {
+  AuthenticationError,
+  InputError,
+  NotAllowedError,
+} from '@backstage/errors';
 import { createRouter } from './router';
 
 const session = {
@@ -69,6 +73,8 @@ describe('createRouter', () => {
   };
   const provider = {
     providerId: 'test',
+    getTicket: jest.fn(),
+    searchTickets: jest.fn(),
     postComment: jest.fn(),
     setEstimate: jest.fn(),
   };
@@ -120,6 +126,7 @@ describe('createRouter', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    provider.getTicket.mockResolvedValue({ key: 'ABC-1' });
     db.getSession.mockImplementation(async (id: string) =>
       id === 'sess' ? session : null,
     );
@@ -206,6 +213,49 @@ describe('createRouter', () => {
     expect(await call('GET', '/avatar-pref?userId=bob', 'bob')).toBe(200);
     expect(await call('GET', '/avatar-pref', 'bob')).toBe(200);
     expect(db.getAvatarPref).toHaveBeenLastCalledWith('bob');
+  });
+
+  it('validates every ticket before creating a session', async () => {
+    const create = (stories: unknown) =>
+      call('POST', '/sessions', 'alice', {
+        name: 'Planning',
+        teamRef: 'group:default/team-a',
+        stories,
+      });
+    provider.getTicket.mockImplementation(async (key: string) => {
+      if (key === 'SECRET-1')
+        throw new NotAllowedError('Jira project is not allowed');
+      if (key.includes('/')) throw new InputError('Invalid Jira ticket key');
+      return key === 'ABC-1' ? { key } : null;
+    });
+    expect(
+      await create([{ ticketKey: 'ABC-1' }, { ticketKey: 'SECRET-1' }]),
+    ).toBe(403);
+    expect(await create([{ ticketKey: 'ABC-1/../../user' }])).toBe(400);
+    expect(await create([{ ticketKey: 'ABC-99' }])).toBe(404);
+    expect(await create([{ ticketKey: 42 }])).toBe(400);
+    expect(await create('invalid')).toBe(400);
+    expect(db.createSession).not.toHaveBeenCalled();
+    expect(
+      await create([
+        { ticketKey: 'ABC-1', title: 'Ticket' },
+        { title: 'Manual story' },
+      ]),
+    ).toBe(201);
+    expect(db.createSession).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps provider diagnostics out of search responses', async () => {
+    provider.searchTickets.mockRejectedValueOnce(
+      new Error('private Jira diagnostic'),
+    );
+    const res = await fetch(`${baseUrl}/tickets/search`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: 'status = Open' }),
+    });
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({ error: 'Ticket search failed' });
   });
 
   it('only lets the host drive the session', async () => {

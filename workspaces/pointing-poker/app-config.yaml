@@ -45,3 +45,4 @@ pointingPoker:
       host: ${JIRA_HOST}
       email: ${JIRA_USER_EMAIL}
       apiToken: ${JIRA_API_TOKEN}
+      allowedProjects: [YOUR_PROJECT]

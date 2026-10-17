@@ -403,7 +403,7 @@ export const TeamQuerySettings = () => {
                       }}
                     >
                       {
-                        'pointingPoker:\n  providers:\n    jira:\n      host: https://your-company.atlassian.net'
+                        'pointingPoker:\n  providers:\n    jira:\n      host: https://your-company.atlassian.net\n      allowedProjects: [YOUR_PROJECT]'
                       }
                     </Box>
                     <Text as="p" variant="body-small" weight="bold">

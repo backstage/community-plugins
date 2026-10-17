@@ -35,6 +35,11 @@ export interface Config {
          * @visibility secret
          */
         apiToken: string;
+        /**
+         * Non-empty list of Jira project keys accessible through this plugin.
+         * @visibility backend
+         */
+        allowedProjects: string[];
       };
     };
   };

@@ -84,6 +84,7 @@ pointingPoker:
       host: https://YOUR_COMPANY.atlassian.net
       email: ${JIRA_USER_EMAIL}
       apiToken: ${JIRA_API_TOKEN}
+      allowedProjects: [YOUR_PROJECT]
 ```
 
 Set `JIRA_USER_EMAIL` and `JIRA_API_TOKEN` in the Backstage backend environment;
