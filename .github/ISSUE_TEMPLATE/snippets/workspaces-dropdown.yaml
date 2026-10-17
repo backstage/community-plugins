@@ -10,6 +10,7 @@ attributes:
     - adr
     - agent-forge
     - airbrake
+    - akeyless
     - allure
     - amplication
     - analytics
@@ -17,6 +18,7 @@ attributes:
     - apache-airflow
     - apiiro
     - apollo-explorer
+    - argo-workflows
     - argocd
     - azure-devops
     - azure-resources
@@ -57,6 +59,7 @@ attributes:
     - graphiql
     - graphql-voyager
     - growthbook-flags
+    - healert
     - ilert
     - jaeger
     - jenkins
