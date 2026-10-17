@@ -1,5 +1,23 @@
 # @backstage-community/plugin-flux
 
+## 0.3.6
+
+### Patch Changes
+
+- d5927ed: Updated dependency `@types/node` to `22.20.4`.
+
+## 0.3.5
+
+### Patch Changes
+
+- 47b9188: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 0.3.4
+
+### Patch Changes
+
+- 54d0856: Updated dependency `@types/node` to `22.20.2`.
+
 ## 0.3.3
 
 ### Patch Changes

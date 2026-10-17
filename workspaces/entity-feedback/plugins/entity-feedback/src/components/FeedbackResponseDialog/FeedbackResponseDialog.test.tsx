@@ -43,10 +43,10 @@ describe('FeedbackResponseDialog', () => {
         ]}
       >
         <FeedbackResponseDialog
-          {...props}
           entity={testEntity}
           open
           onClose={jest.fn()}
+          {...props}
         />
       </TestApiProvider>,
       {
@@ -115,5 +115,48 @@ describe('FeedbackResponseDialog', () => {
         },
       );
     });
+  });
+
+  it('saves selected response comments and contact consent', async () => {
+    const onClose = jest.fn();
+    const rendered = await render({ onClose });
+
+    await userEvent.click(
+      rendered.getByRole('checkbox', { name: 'Incorrect info' }),
+    );
+    await userEvent.type(
+      rendered.getByRole('textbox', { name: 'Comments about Incorrect info' }),
+      'The link is outdated',
+    );
+    await userEvent.click(
+      rendered.getByRole('switch', {
+        name: 'May we contact you about your feedback?',
+      }),
+    );
+    await userEvent.click(rendered.getByRole('button', { name: 'Submit' }));
+
+    await waitFor(() =>
+      expect(feedbackApi.recordResponse).toHaveBeenCalledWith(
+        'component:default/test',
+        expect.objectContaining({
+          comments:
+            '{"responseComments":{"incorrect":"The link is outdated"},"additionalComments":""}',
+          consent: false,
+          response: 'incorrect',
+        }),
+      ),
+    );
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+  });
+
+  it('closes from the dialog close control', async () => {
+    const onClose = jest.fn();
+    const rendered = await render({ onClose });
+
+    await userEvent.click(
+      rendered.getAllByRole('button', { name: 'Close' })[0],
+    );
+
+    expect(onClose).toHaveBeenCalled();
   });
 });

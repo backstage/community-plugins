@@ -15,11 +15,7 @@
  */
 import { expect, Page, test, type BrowserContext } from '@playwright/test';
 
-import {
-  Common,
-  isNfsAppMode,
-  topologyEntityTab,
-} from './utils/topologyHelper';
+import { Common, isNfsAppMode } from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
 
 const TOPOLOGY_NODES = {
@@ -67,7 +63,6 @@ test.describe('Topology plugin', () => {
         await expect(
           page.getByRole('heading', { name: 'permission-denied' }),
         ).toBeVisible({ timeout: 30000 });
-        await expect(topologyEntityTab(page)).not.toBeVisible();
         return;
       }
 
@@ -94,7 +89,6 @@ test.describe('Topology plugin', () => {
       await expect(
         page.getByRole('heading', { name: 'backstage' }),
       ).toBeVisible();
-      await expect(topologyEntityTab(page)).toBeVisible();
       const topology = page.locator('.pf-ri__topology');
       await expect(topology).toBeVisible();
       const box = await topology.boundingBox();
@@ -136,11 +130,17 @@ test.describe('Topology plugin', () => {
 
       for (const buttonName of controlBarButtons) {
         await expect(
-          controlBar.getByRole('button', { name: buttonName }),
+          controlBar.getByRole('button', {
+            name: buttonName,
+            exact: true,
+          }),
         ).toBeVisible();
       }
       await controlBar
-        .getByRole('button', { name: translations.controlBar.fitToScreen })
+        .getByRole('button', {
+          name: translations.controlBar.fitToScreen,
+          exact: true,
+        })
         .click();
     });
 
@@ -223,6 +223,46 @@ test.describe('Topology plugin', () => {
         'test-deployment',
       );
       await expect(page.getByTestId('details-tab')).toContainText(podCount!);
+    });
+  });
+
+  test.describe('Global styles', () => {
+    const otherPagePath = isNfsAppMode()
+      ? '/catalog/default/component/backstage'
+      : '/missing-permissions';
+
+    const readHostStyles = () =>
+      page.evaluate(() => {
+        const body = window.getComputedStyle(document.body);
+        const heading = document.querySelector('h1');
+        return {
+          bodyFontFamily: body.fontFamily,
+          bodyLineHeight: body.lineHeight,
+          bodyColor: body.color,
+          headingFontSize: heading
+            ? window.getComputedStyle(heading).fontSize
+            : '',
+          headingFontWeight: heading
+            ? window.getComputedStyle(heading).fontWeight
+            : '',
+        };
+      });
+
+    test('does not leak PatternFly global styles into other pages', async () => {
+      await page.goto(otherPagePath);
+      await page.waitForLoadState('networkidle');
+      const before = await readHostStyles();
+      expect(before.bodyFontFamily).not.toContain('Red Hat Text');
+
+      await common.navigateToTopologyView();
+      await expect(page.locator('.pf-ri__topology')).toBeVisible();
+
+      // Client-side navigation keeps whatever stylesheets Topology injected.
+      await page.locator(`a[href="${otherPagePath}"]`).first().click();
+      await page.waitForURL(url => url.pathname === otherPagePath);
+      await expect(page.locator('h1').first()).toBeVisible();
+
+      expect(await readHostStyles()).toEqual(before);
     });
   });
 });

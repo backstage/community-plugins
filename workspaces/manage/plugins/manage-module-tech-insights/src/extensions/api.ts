@@ -20,9 +20,6 @@ import { manageTechInsightsApiRef, DefaultManageTechInsightsApi } from '../api';
 
 export const manageTechInsightsApi = ApiBlueprint.makeWithOverrides({
   name: 'provider',
-  config: {
-    schema: {},
-  },
   factory(defineFactory) {
     return defineFactory(defineParams =>
       defineParams({

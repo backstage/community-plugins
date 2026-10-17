@@ -47,6 +47,7 @@ export const quayEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/quay',
     title: 'Quay',
+    group: 'development',
     routeRef: rootRouteRef,
     filter: isQuayAvailable,
     loader: async () => import('./components/Router').then(m => <m.Router />),

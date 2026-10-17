@@ -110,7 +110,7 @@ export type AdrSearchResultListItemProps = {
 export const EntityAdrContent: (props: {
   contentDecorators?: AdrContentDecorator[];
   filePathFilterFn?: AdrFilePathFilterFn;
-  statusComponent?: React.ReactNode;
+  statusComponent?: ReactNode;
 }) => JSX_2.Element;
 
 // @public

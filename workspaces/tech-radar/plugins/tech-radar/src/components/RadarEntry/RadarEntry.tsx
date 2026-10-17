@@ -99,6 +99,13 @@ const RadarEntry = (props: Props): React.JSX.Element => {
     setOpen(!open);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLAnchorElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggle();
+    }
+  };
+
   return (
     <g
       transform={`translate(${x}, ${y})`}
@@ -127,7 +134,7 @@ const RadarEntry = (props: Props): React.JSX.Element => {
           role="button"
           href="#"
           tabIndex={0}
-          onKeyPress={toggle}
+          onKeyDown={handleKeyDown}
           aria-labelledby={entryId}
         >
           {blip}

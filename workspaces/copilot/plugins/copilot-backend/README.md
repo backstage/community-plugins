@@ -70,6 +70,7 @@ To install the plugin using the legacy backend system:
 Configure the following `app-config.yaml` values:
 
 - `copilot.host`: GitHub host for the integration, such as `github.com`.
+- `copilot.apiBaseUrl`: Optional override for the base URL of the GitHub REST API. Falls back to `apiBaseUrl` on the matching `integrations.github` entry, then to `https://api.github.com`.
 - `copilot.enterprise`: Optional GitHub enterprise slug.
 - `copilot.organization`: Optional GitHub organization slug.
 - `copilot.schedule`: Optional Backstage scheduler configuration for recurring ingestion.
@@ -101,6 +102,26 @@ copilot:
 ```
 
 `defaultView` and `showLegacyView` are consumed by the frontend plugin, but they commonly live in the same `copilot` config block.
+
+### GitHub Enterprise Cloud With Data Residency (GHE.com)
+
+If your enterprise is hosted on a dedicated GHE.com subdomain, point the integration at that subdomain and set its `apiBaseUrl` to the tenant's API host:
+
+```yaml
+integrations:
+  github:
+    - host: octocorp.ghe.com
+      apiBaseUrl: https://api.octocorp.ghe.com
+      token: ${GITHUB_TOKEN}
+
+copilot:
+  host: octocorp.ghe.com
+  enterprise: octocorp
+```
+
+`copilot.apiBaseUrl` is only needed if you want the plugin to use a different API host than the rest of Backstage. Note that Backstage only defaults `apiBaseUrl` for `github.com`, so on any other host you must set it in one place or the other — otherwise the plugin falls back to the public `https://api.github.com`.
+
+Report documents are downloaded from signed URLs. GitHub serves those from `copilot-reports.github.com`, or `copilot-reports.SUBDOMAIN.ghe.com` on GHE.com, and documents a fallback to Azure Blob Storage. The plugin only follows such links over HTTPS, and only to the configured `copilot.host` and its subdomains, to `githubusercontent.com` and its subdomains, or to the documented object storage hosts. Redirects are re-checked against the same rules on every hop.
 
 ### Why V2 Exists
 

@@ -34,6 +34,11 @@ const useStyles = makeStyles(theme => {
     cardTitle: {
       textAlign: 'center',
     },
+    cardCaption: {
+      display: 'block',
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
     wrapIcon: {
       display: 'inline-flex',
       verticalAlign: 'baseline',
@@ -53,6 +58,7 @@ export const RatingCard = ({
   rightSlot,
   title,
   titleIcon,
+  caption,
   link,
   compact,
 }: {
@@ -60,6 +66,7 @@ export const RatingCard = ({
   rightSlot: ReactNode;
   title?: string;
   titleIcon?: ReactNode;
+  caption?: string;
   link: string;
   compact?: boolean;
 }) => {
@@ -81,6 +88,11 @@ export const RatingCard = ({
             <Typography variant="body1" className={classes.wrapIcon}>
               {titleIcon} {title}
             </Typography>
+            {caption && (
+              <Typography variant="caption" className={classes.cardCaption}>
+                {caption}
+              </Typography>
+            )}
           </Grid>
         )}
       </Grid>

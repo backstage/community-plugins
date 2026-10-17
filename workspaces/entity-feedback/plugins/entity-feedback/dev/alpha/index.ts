@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 import ReactDOM from 'react-dom/client';
 
 import { createApp } from '@backstage/frontend-defaults';

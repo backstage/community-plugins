@@ -24,16 +24,22 @@ export const isOctopusDeployAvailable: (entity: Entity) => boolean;
 export const OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION = 'octopus.com/project-id';
 
 // @public (undocumented)
+export const OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION =
+  'octopus.com/project-slug';
+
+// @public (undocumented)
 export interface OctopusDeployApi {
   // (undocumented)
   getConfig(): Promise<OctopusPluginConfig>;
   // (undocumented)
   getProjectGroups(): Promise<OctopusProjectGroup[]>;
   // (undocumented)
-  getProjectInfo(projectReference: ProjectReference): Promise<OctopusProject>;
+  getProjectInfo(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<OctopusProject>;
   // (undocumented)
   getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression>;
 }
@@ -54,10 +60,12 @@ export class OctopusDeployClient implements OctopusDeployApi {
   // (undocumented)
   getProjectGroups(): Promise<OctopusProjectGroup[]>;
   // (undocumented)
-  getProjectInfo(projectReference: ProjectReference): Promise<OctopusProject>;
+  getProjectInfo(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<OctopusProject>;
   // (undocumented)
   getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression>;
 }
@@ -101,6 +109,7 @@ export type OctopusProgression = {
 
 // @public (undocumented)
 export type OctopusProject = {
+  Id?: string;
   Name: string;
   Slug: string;
   Links: OctopusLinks;
@@ -131,6 +140,15 @@ export type OctopusReleaseProgression = {
 // @public (undocumented)
 export type ProjectReference = {
   projectId: string;
+  spaceId?: string;
+};
+
+// @public (undocumented)
+export type ProjectReferenceWithSlug = ProjectReference | ProjectSlugReference;
+
+// @public (undocumented)
+export type ProjectSlugReference = {
+  projectSlug: string;
   spaceId?: string;
 };
 

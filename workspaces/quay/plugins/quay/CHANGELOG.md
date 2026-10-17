@@ -1,5 +1,17 @@
 # @backstage-community/plugin-quay
 
+## 1.38.3
+
+### Patch Changes
+
+- 986f0d0: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 1.38.2
+
+### Patch Changes
+
+- cc80d00: Assign the Quay entity content to the development group.
+
 ## 1.38.1
 
 ### Patch Changes

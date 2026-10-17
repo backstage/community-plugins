@@ -1165,9 +1165,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-scaffolder-backend-module-kubernetes@workspace:plugins/kubernetes-actions":
+"@backstage-community/plugin-scaffolder-backend-module-kubernetes@workspace:plugins/scaffolder-backend-module-kubernetes":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-scaffolder-backend-module-kubernetes@workspace:plugins/kubernetes-actions"
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-kubernetes@workspace:plugins/scaffolder-backend-module-kubernetes"
   dependencies:
     "@backstage/backend-defaults": "npm:^0.17.7"
     "@backstage/backend-plugin-api": "npm:^1.10.0"

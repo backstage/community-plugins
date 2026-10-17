@@ -34,6 +34,7 @@ export const topologyEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/topology',
     title: 'Topology',
+    group: 'deployment',
     filter: isTopologyAvailable,
     loader: async () => {
       const { TopologyEntityContent } = await import('./components/Topology');

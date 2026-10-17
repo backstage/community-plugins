@@ -20,7 +20,7 @@ import {
   test,
   type BrowserContext,
 } from '@playwright/test';
-import { Common, isNfsAppMode, tektonEntityTab } from './utils/tektonHelper';
+import { Common, isNfsAppMode } from './utils/tektonHelper';
 import { getTranslations, TektonMessages } from './utils/translations';
 
 test.describe('Tekton plugin', () => {
@@ -55,7 +55,6 @@ test.describe('Tekton plugin', () => {
         await expect(
           page.getByRole('heading', { name: 'permission-denied' }),
         ).toBeVisible({ timeout: 30000 });
-        await expect(tektonEntityTab(page)).not.toBeVisible();
         return;
       }
 

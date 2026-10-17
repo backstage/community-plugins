@@ -18,6 +18,7 @@ import {
   createExtensionBlueprint,
   ExtensionBoundary,
 } from '@backstage/frontend-plugin-api';
+import { z } from 'zod';
 
 import {
   ManageCondition,
@@ -79,19 +80,16 @@ export const ManageEntityCardWidgetBlueprint = createExtensionBlueprint({
     attachTo: manageAttachToRef,
     condition: manageConditionRef,
   },
-  config: {
-    schema: {
-      attachTo: z =>
-        z
-          .array(z.string())
-          .optional()
-          .describe(
-            'Attach the widget to tabs of these kinds. ' +
-              'The special value "$entities" means the combined tab Entities, ' +
-              'the special value "$all" means all individual kinds, ' +
-              'and the special value "$starred" means the Starred tab.',
-          ),
-    },
+  configSchema: {
+    attachTo: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Attach the widget to tabs of these kinds. ' +
+          'The special value "$entities" means the combined tab Entities, ' +
+          'the special value "$all" means all individual kinds, ' +
+          'and the special value "$starred" means the Starred tab.',
+      ),
   },
   *factory(params: ManageCardWidgetParams, { config, node }) {
     const attachTo = config.attachTo ?? params.attachTo;

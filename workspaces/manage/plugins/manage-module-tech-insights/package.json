@@ -63,12 +63,13 @@
     "@backstage/ui": "backstage:^",
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
-    "react-use": "^17.5.0"
+    "react-use": "^17.5.0",
+    "zod": "^4.0.0"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react-router-dom": "6.30.5 ^6.30.5"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",

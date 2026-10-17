@@ -64,7 +64,7 @@ Triggered on a schedule (Tuesdays), this workflow checks for recent Backstage mi
 
 ### [cron.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/cron.yml)
 
-This workflow periodically runs the `backstage/actions/cron@v0.6.10` action for scheduled tasks defined within that action's logic.
+This workflow periodically runs the `backstage/actions/cron` action for scheduled tasks defined within that action's logic.
 
 ### [pr.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/pr.yml)
 

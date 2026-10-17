@@ -254,6 +254,26 @@ const PermissionPoliciesFormTable = ({
             .replace('{to}', String(to))
             .replace('{count}', count !== -1 ? String(count) : '?')
         }
+        slotProps={{
+          // RHDH/PatternFly global list styles can force MUI menu items horizontal.
+          select: {
+            MenuProps: {
+              sx: {
+                '& .MuiMenu-list': {
+                  display: 'grid',
+                },
+                '& .MuiMenuItem-root': {
+                  width: '100%',
+                  // Match Backstage Table pagination menu item spacing.
+                  paddingTop: '6px',
+                  paddingBottom: '6px',
+                  paddingLeft: '16px',
+                  paddingRight: '16px',
+                },
+              },
+            },
+          },
+        }}
       />
     </Paper>
   );

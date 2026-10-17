@@ -1,3 +1,133 @@
+/*
+ * The plugin loads `patternfly-no-globals.css`, which omits PatternFly's
+ * document-wide reset so it cannot restyle the rest of the Backstage app.
+ * The rules below restore that reset, but only inside the topology view and
+ * the PatternFly popups (tooltips, popovers, menus) that render in a portal
+ * outside of it.
+ */
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu) {
+  font-family: var(--pf-t--global--font--family--body);
+  font-size: var(--pf-t--global--font--size--body--default);
+  font-weight: var(--pf-t--global--font--weight--body--default);
+  line-height: var(--pf-t--global--font--line-height--body);
+  color: var(--pf-t--global--text--color--regular);
+}
+
+.pf-ri__topology,
+.pf-ri__topology *,
+.pf-ri__topology *::before,
+.pf-ri__topology *::after,
+.pf-v6-c-tooltip,
+.pf-v6-c-tooltip *,
+.pf-v6-c-popover,
+.pf-v6-c-popover *,
+.pf-v6-c-menu,
+.pf-v6-c-menu * {
+  box-sizing: border-box;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu) {
+  scrollbar-color: var(--pf-t--global--border--color--default) transparent;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(
+    p,
+    ol,
+    ul,
+    li,
+    dl,
+    dt,
+    dd,
+    blockquote,
+    figure,
+    fieldset,
+    legend,
+    textarea,
+    pre,
+    iframe,
+    hr,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6
+  ) {
+  padding: 0;
+  margin: 0;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(h1, h2, h3, h4, h5, h6) {
+  font-size: 100%;
+  font-weight: var(--pf-t--global--font--weight--body--default);
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(ul) {
+  list-style: none;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(button, input, optgroup, select, textarea) {
+  margin: 0;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: var(--pf-t--global--font--line-height--body);
+  color: var(--pf-t--global--text--color--regular);
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(img, embed, iframe, object, audio, video) {
+  max-width: 100%;
+  height: auto;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(iframe) {
+  border: 0;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(table) {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(td, th) {
+  padding: 0;
+  text-align: start;
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(code, pre) {
+  font-family: var(--pf-t--global--font--family--mono);
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(a) {
+  color: var(--pf-t--global--text--color--link--default);
+  text-decoration: var(--pf-t--global--text-decoration--link--line--default);
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(a:hover, a:focus) {
+  color: var(--pf-t--global--text--color--link--hover);
+  text-decoration: var(--pf-t--global--text-decoration--link--line--hover);
+}
+
+:where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu)
+  :where(a, button) {
+  cursor: pointer;
+}
+
+:where(.pf-v6-theme-dark)
+  :where(.pf-ri__topology, .pf-v6-c-tooltip, .pf-v6-c-popover, .pf-v6-c-menu) {
+  color-scheme: dark;
+}
+
 .pf-ri__topology {
   height: 100%;
   display: flex;

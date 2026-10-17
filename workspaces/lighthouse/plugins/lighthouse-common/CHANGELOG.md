@@ -1,5 +1,11 @@
 # @backstage-community/plugin-lighthouse-common
 
+## 0.24.0
+
+### Minor Changes
+
+- 8e1f482: Backstage version bump to v1.55.1
+
 ## 0.23.0
 
 ### Minor Changes

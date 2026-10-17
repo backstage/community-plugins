@@ -1,5 +1,29 @@
 # @backstage-community/plugin-rbac
 
+## 2.3.6
+
+### Patch Changes
+
+- e52795d: Updated dependency `@types/node` to `22.20.5`.
+
+## 2.3.5
+
+### Patch Changes
+
+- 9464b63: Fixed the Create Role plugins table "Rows per page" dropdown rendering options on a single line in RHDH.
+
+## 2.3.4
+
+### Patch Changes
+
+- cefe093: Updated dependency `@types/node` to `22.20.4`.
+
+## 2.3.3
+
+### Patch Changes
+
+- e0c6404: Updated dependency `@types/node` to `22.20.3`.
+
 ## 2.3.2
 
 ### Patch Changes

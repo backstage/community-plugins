@@ -1,5 +1,17 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 2.0.3
+
+### Patch Changes
+
+- 9eec65d: Updated included translations for Germany/Deutsch, Spain/Español, France/Français and Japan/日本語.
+
+## 2.0.2
+
+### Patch Changes
+
+- 1401bda: Assign the JFrog Artifactory entity content to the development group.
+
 ## 2.0.1
 
 ### Patch Changes

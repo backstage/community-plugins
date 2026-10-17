@@ -15,7 +15,6 @@
  */
 
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Progress } from '@backstage/core-components';
 import {
   ErrorApiError,
   errorApiRef,
@@ -26,26 +25,23 @@ import {
   entityRouteParams,
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import Collapse from '@material-ui/core/Collapse';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormLabel from '@material-ui/core/FormLabel';
-import Grid from '@material-ui/core/Grid';
-import Switch from '@material-ui/core/Switch';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+  Switch,
+  TextAreaField,
+} from '@backstage/ui';
 import { ReactNode, useState } from 'react';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 
 import { entityFeedbackApiRef } from '../../api';
+import styles from './FeedbackResponseDialog.module.css';
 
 /**
  * @public
@@ -78,30 +74,6 @@ export interface FeedbackResponseDialogProps {
   onClose: () => void;
 }
 
-const useStyles = makeStyles<Theme>(
-  theme => ({
-    contactConsent: {
-      marginTop: theme.spacing(1.5),
-    },
-    commentBoxes: {
-      marginBottom: theme.spacing(1.5),
-    },
-    boxContainer: {
-      marginBottom: theme.spacing(1.5),
-      marginTop: theme.spacing(1.5),
-      marginLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-    },
-    formLabel: {
-      marginBottom: theme.spacing(1.5),
-    },
-    dialogActions: {
-      justifyContent: 'flex-start',
-    },
-  }),
-  { name: 'BackstageEntityFeedbackDialog' },
-);
-
 /**
  * @public
  */
@@ -113,7 +85,6 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
     open,
     onClose,
   } = props;
-  const classes = useStyles();
   const errorApi = useApi(errorApiRef);
   const feedbackApi = useApi(entityFeedbackApiRef);
   const entityRoute = useRouteRef(entityRouteRef);
@@ -170,108 +141,85 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   ]);
 
   return (
-    <Dialog open={open} onClose={() => !saving && onClose()}>
-      {saving && <Progress />}
-      <DialogTitle>{feedbackDialogTitle}</DialogTitle>
-      <DialogContent>
-        <FormControl component="fieldset" fullWidth>
-          <FormLabel component="legend">Select all that apply</FormLabel>
-          <FormGroup className={classes.boxContainer}>
+    <DialogTrigger
+      isOpen={open}
+      onOpenChange={isOpen => !isOpen && !saving && onClose()}
+    >
+      <Dialog isDismissable={!saving}>
+        {saving && <Alert status="info" isPending title="Saving feedback" />}
+        <DialogHeader>{feedbackDialogTitle}</DialogHeader>
+        <DialogBody className={styles.body}>
+          <fieldset className={styles.responses} disabled={saving}>
+            <legend>Select all that apply</legend>
             {feedbackDialogResponses.map((response: EntityFeedbackResponse) => (
-              <Grid container key={response.id} direction="column" spacing={1}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={responseSelections[response.id]}
-                      disabled={saving}
-                      name={response.id}
-                      onChange={e =>
-                        setResponseSelections({
-                          ...responseSelections,
-                          [e.target.name]: e.target.checked,
-                        })
-                      }
-                      color="primary"
-                    />
+              <div key={response.id} className={styles.response}>
+                <Checkbox
+                  isSelected={responseSelections[response.id]}
+                  isDisabled={saving}
+                  onChange={selected =>
+                    setResponseSelections(previous => ({
+                      ...previous,
+                      [response.id]: selected,
+                    }))
                   }
-                  label={response.label}
-                />
-                <Collapse in={responseSelections[response.id]}>
-                  <TextField
-                    data-testid={`feedback-response-dialog-collapse-comments-input-${
-                      responseSelections[response.id]
-                    }`}
-                    disabled={saving}
-                    className={classes.commentBoxes}
-                    multiline
-                    minRows={2}
-                    fullWidth
-                    variant="outlined"
+                >
+                  {response.label}
+                </Checkbox>
+                {responseSelections[response.id] && (
+                  <TextAreaField
+                    data-testid={`feedback-response-dialog-comments-input-${response.id}`}
+                    label={`Comments about ${response.label}`}
+                    isDisabled={saving}
+                    rows={2}
                     value={comments.responseComments[response.id] || ''}
-                    onChange={e =>
-                      setComments(prevComments => ({
+                    onChange={value =>
+                      setComments(previous => ({
+                        ...previous,
                         responseComments: {
-                          ...prevComments.responseComments,
-                          [response.id]: e.target.value,
+                          ...previous.responseComments,
+                          [response.id]: value,
                         },
-                        additionalComments: prevComments.additionalComments,
                       }))
                     }
                   />
-                </Collapse>
-              </Grid>
+                )}
+              </div>
             ))}
-          </FormGroup>
-        </FormControl>
-        <FormControl fullWidth>
-          <FormLabel component="legend" className={classes.formLabel}>
-            Additional comments
-          </FormLabel>
-          <TextField
+          </fieldset>
+          <TextAreaField
             data-testid="feedback-response-dialog-comments-input"
-            disabled={saving}
-            multiline
-            minRows={2}
-            onChange={e =>
-              setComments(prevComments => ({
-                responseComments: {
-                  ...prevComments.responseComments,
-                },
-                additionalComments: e.target.value,
+            label="Additional comments"
+            isDisabled={saving}
+            rows={2}
+            onChange={value =>
+              setComments(previous => ({
+                ...previous,
+                additionalComments: value,
               }))
             }
-            variant="outlined"
             value={comments.additionalComments || ''}
           />
-        </FormControl>
-        <Typography className={classes.contactConsent}>
-          May we contact you about your feedback?
-          <Grid component="label" container alignItems="center" spacing={1}>
-            <Grid item>No</Grid>
-            <Grid item>
-              <Switch
-                checked={consent}
-                disabled={saving}
-                onChange={e => setConsent(e.target.checked)}
-              />
-            </Grid>
-            <Grid item>Yes</Grid>
-          </Grid>
-        </Typography>
-      </DialogContent>
-      <DialogActions className={classes.dialogActions}>
-        <Button
-          color="primary"
-          data-testid="feedback-response-dialog-submit-button"
-          disabled={saving}
-          onClick={saveResponse}
-        >
-          Submit
-        </Button>
-        <Button color="primary" disabled={saving} onClick={onClose}>
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <Switch
+            label="May we contact you about your feedback?"
+            isSelected={consent}
+            isDisabled={saving}
+            onChange={setConsent}
+          />
+        </DialogBody>
+        <DialogFooter className={styles.actions}>
+          <Button
+            variant="primary"
+            data-testid="feedback-response-dialog-submit-button"
+            isDisabled={saving}
+            onPress={saveResponse}
+          >
+            Submit
+          </Button>
+          <Button variant="secondary" isDisabled={saving} onPress={onClose}>
+            Close
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };

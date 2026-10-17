@@ -18,7 +18,6 @@ import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { GetColumnFunc } from '@backstage-community/plugin-manage-react';
 import { GetColumnsFunc } from '@backstage-community/plugin-manage-react';
 import { Header } from '@backstage/core-components';
-import { IconComponent } from '@backstage/frontend-plugin-api';
 import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { JSX as JSX_3 } from 'react/jsx-runtime';
@@ -42,9 +41,7 @@ import { TableOptions as TableOptions_2 } from '@backstage/core-components';
 import { UseUserSettingsResult } from '@backstage-community/plugin-manage-react';
 
 // @public
-export function DefaultSettings({
-  customSettings,
-}: {
+export function DefaultSettings(input: {
   readonly customSettings: readonly Setting[];
 }): JSX_3.Element;
 
@@ -102,9 +99,7 @@ export interface ManageKindOptions {
 export const ManagePage: ManagePageImpl;
 
 // @public
-export function ManagePageFilters({
-  switchColor,
-}: {
+export function ManagePageFilters(input: {
   switchColor?: SwitchColor;
 }): JSX_3.Element;
 
@@ -174,35 +169,14 @@ const managePlugin_2: OverridableFrontendPlugin<
       inputs: {};
       params: ManageConfig;
     }>;
-    'nav-item:manage/manage': OverridableExtensionDefinition<{
-      kind: 'nav-item';
-      name: 'manage';
-      config: {};
-      configInput: {};
-      output: ExtensionDataRef<
-        {
-          title: string;
-          icon: IconComponent;
-          routeRef: RouteRef<undefined>;
-        },
-        'core.nav-item.target',
-        {}
-      >;
-      inputs: {};
-      params: {
-        title: string;
-        icon: IconComponent;
-        routeRef: RouteRef<undefined>;
-      };
-    }>;
     'page:manage': OverridableExtensionDefinition<{
       config: {
         path: string | undefined;
         title: string | undefined;
       };
       configInput: {
-        title?: string | undefined | undefined;
         path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -415,7 +389,6 @@ const managePlugin_2: OverridableFrontendPlugin<
       kind: 'page';
       name: undefined;
       params: {
-        defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
         title?: string;
         icon?: IconElement;
@@ -453,9 +426,9 @@ export interface ManageTabsProps {
 export const OrganizationGraph: OrganizationGraphImpl;
 
 // @public
-export function OrganizationGraphImpl({
-  enableWholeOrganization,
-}: OrganizationGraphProps): JSX_3.Element;
+export function OrganizationGraphImpl(
+  input: OrganizationGraphProps,
+): JSX_3.Element;
 
 // @public (undocumented)
 export interface OrganizationGraphProps {
