@@ -18,8 +18,6 @@ import { useParams } from 'react-router-dom';
 import {
   Content,
   ErrorPage,
-  Header,
-  Page,
   Progress,
   useQueryParamState,
 } from '@backstage/core-components';
@@ -30,8 +28,13 @@ import { RoleForm } from './RoleForm';
 import { RoleFormValues } from './types';
 import { capitalizeFirstLetter } from '../../utils/string-utils';
 import { useTranslation } from '../../hooks/useTranslation';
+import { HeaderVariant, RolePageLayout } from '../RolePageLayout';
 
-export const EditRolePage = () => {
+export const EditRolePage = ({
+  headerVariant = 'legacy',
+}: {
+  headerVariant?: HeaderVariant;
+}) => {
   const { roleName, roleNamespace, roleKind } = useParams();
   const { t } = useTranslation();
   const [queryParamState] = useQueryParamState<number>('activeStep');
@@ -84,8 +87,7 @@ export const EditRolePage = () => {
   }
 
   return (
-    <Page themeId="tool">
-      <Header title={t('page.editRole')} type="RBAC" typeLink=".." />
+    <RolePageLayout headerVariant={headerVariant} title={t('page.editRole')}>
       <Content>
         <RoleForm
           initialValues={initialValues}
@@ -105,6 +107,6 @@ export const EditRolePage = () => {
           submitLabel={t('roleForm.steps.save')}
         />
       </Content>
-    </Page>
+    </RolePageLayout>
   );
 };
