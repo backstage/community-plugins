@@ -286,35 +286,46 @@ describe('publish:azure', () => {
     ).rejects.toThrow(/Pipeline run failed/);
   });
 
-  it('should output pipelineRunStatus if available', async () => {
-    mockPipelineClient.runPipeline.mockImplementation(() => ({
-      _links: { web: { href: 'http://pipeline-run-url.com' } },
-      result: '1',
-    }));
-    mockPipelineClient.getRun.mockImplementation(() => ({
-      _links: { web: { href: 'http://pipeline-run-url.com' } },
-      result: '1',
-    }));
+  it.each([
+    [RunResult.Succeeded, 'succeeded'],
+    [RunResult.Failed, 'failed'],
+    [RunResult.Canceled, 'canceled'],
+    [RunResult.Unknown, 'unknown'],
+    [undefined, 'unknown'],
+  ])(
+    'should output lowercase pipelineRunStatus for result %s',
+    async (result, expected) => {
+      mockPipelineClient.runPipeline.mockImplementation(() => ({
+        _links: { web: { href: 'http://pipeline-run-url.com' } },
+        id: 1,
+      }));
+      mockPipelineClient.getRun.mockImplementation(() => ({
+        _links: { web: { href: 'http://pipeline-run-url.com' } },
+        id: 1,
+        result,
+      }));
 
-    await action.handler({
-      ...mockContext,
-      input: {
-        host: 'dev.azure.com',
-        organization: 'org',
-        pipelineId: '1',
-        project: 'project',
-      },
-    });
+      await action.handler({
+        ...mockContext,
+        input: {
+          host: 'dev.azure.com',
+          organization: 'org',
+          pipelineId: '1',
+          project: 'project',
+        },
+      });
 
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'pipelineRunUrl',
-      'http://pipeline-run-url.com',
-    );
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'pipelineRunStatus',
-      'Succeeded',
-    );
-  });
+      expect(mockContext.output).toHaveBeenCalledWith(
+        'pipelineRunUrl',
+        'http://pipeline-run-url.com',
+      );
+      expect(mockContext.output).toHaveBeenCalledWith(
+        'pipelineRunStatus',
+        expected,
+      );
+      expect(mockPipelineClient.getRun).toHaveBeenCalledWith('project', 1, 1);
+    },
+  );
 
   it('should wait when polling is specified', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
