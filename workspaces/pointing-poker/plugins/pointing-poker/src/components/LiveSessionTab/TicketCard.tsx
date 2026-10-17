@@ -88,7 +88,7 @@ export const TicketKeyBadge = ({
         style={{
           background: 'var(--bui-bg-neutral-2)',
           borderRadius: 'var(--bui-radius-2)',
-          padding: '0.25rem 0.75rem',
+          padding: '0.25rem 0.5rem',
           width: 'fit-content',
           flexShrink: 0,
           whiteSpace: 'nowrap',
@@ -114,7 +114,7 @@ export const TicketKeyBadge = ({
       style={{
         background: 'var(--bui-bg-neutral-2)',
         borderRadius: 'var(--bui-radius-2)',
-        padding: '0.25rem 0.75rem',
+        padding: '0.25rem 0.5rem',
         width: 'fit-content',
         flexShrink: 0,
         whiteSpace: 'nowrap',
@@ -166,13 +166,13 @@ export const TicketCard = ({
       <CardHeader>
         <Flex
           align="center"
-          gap="3"
+          gap="1"
           justify="between"
           style={{ width: '100%', flexWrap: 'wrap' }}
         >
           <Flex
             align="center"
-            gap="2"
+            gap="1"
             style={{ flexWrap: 'wrap', minWidth: 0 }}
           >
             {breadcrumb}
@@ -182,7 +182,7 @@ export const TicketCard = ({
           {(actions || ticket?.key) && (
             <Flex
               align="center"
-              gap="2"
+              gap="1"
               style={{ flexWrap: 'wrap', minWidth: 0 }}
             >
               {actions}

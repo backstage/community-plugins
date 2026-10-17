@@ -9,4 +9,4 @@ Added a new Pointing Poker plugin for collaborative story point estimation. See 
 
 Jira access requires an explicit `pointingPoker.providers.jira.allowedProjects` list. Only include projects whose data can be shared with all signed-in Backstage users.
 
-Ticket details keep their actions visible in narrow panels and support images and tables in descriptions.
+Ticket details keep compact actions visible in narrow panels and support images and tables in descriptions. The story queue closes after selection and shows the selected story position.

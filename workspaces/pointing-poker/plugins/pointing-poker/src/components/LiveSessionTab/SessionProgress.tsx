@@ -326,7 +326,11 @@ export const SessionProgress = ({
     activeTop !== undefined &&
     activeTop.state !== 'estimated' &&
     activeTop.state !== 'skipped';
-  const current = Math.min(done + (activeCounts ? 1 : 0), total);
+  const current = activeCounts
+    ? topLevel
+        .filter(s => s.state !== 'skipped')
+        .findIndex(s => s.id === activeTop.id) + 1
+    : Math.min(done, total);
   const elapsedSeconds = useElapsedSeconds(focused?.startedAt);
   const overTimebox = elapsedSeconds > TIMEBOX_SECONDS;
 
@@ -356,6 +360,13 @@ export const SessionProgress = ({
     const timer = setTimeout(() => setCopied(false), 1500);
     return () => clearTimeout(timer);
   }, [copied]);
+
+  const handleActivateStory = onActivateStory
+    ? (storyId: string) => {
+        onActivateStory(storyId);
+        setOpen(false);
+      }
+    : undefined;
 
   const handleCopy = async () => {
     if (!jql) {
@@ -481,7 +492,7 @@ export const SessionProgress = ({
             <Box key={story.id}>
               <QueueRow
                 currentStoryId={currentStoryId}
-                onActivateStory={onActivateStory}
+                onActivateStory={handleActivateStory}
                 story={story}
               />
               {story.state === 'split' && kids.length > 0 && (
@@ -496,7 +507,7 @@ export const SessionProgress = ({
                     <QueueRow
                       currentStoryId={currentStoryId}
                       key={child.id}
-                      onActivateStory={onActivateStory}
+                      onActivateStory={handleActivateStory}
                       story={child}
                     />
                   ))}

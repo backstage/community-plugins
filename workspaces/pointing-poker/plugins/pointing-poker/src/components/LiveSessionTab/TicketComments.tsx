@@ -99,7 +99,8 @@ export const TicketComments = ({ ticketKey }: TicketCommentsProps) => {
       <Button
         iconStart={<MessageCircle size={16} />}
         onClick={() => setOpen(true)}
-        variant="secondary"
+        size="small"
+        variant="tertiary"
       >
         Comments
         {comments.length > 0 && (
@@ -114,7 +115,7 @@ export const TicketComments = ({ ticketKey }: TicketCommentsProps) => {
               fontSize: '0.75rem',
               fontWeight: 500,
               justifyContent: 'center',
-              marginLeft: 'var(--bui-space-2)',
+              marginLeft: 'var(--bui-space-1)',
               minWidth: 20,
               padding: '0 0.375rem',
             }}

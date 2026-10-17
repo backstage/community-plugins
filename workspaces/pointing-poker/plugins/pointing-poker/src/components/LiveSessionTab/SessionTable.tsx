@@ -16,7 +16,14 @@
 import { useEffect, useRef, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Eye, Flag, LogOut, XCircle } from 'lucide-react';
-import { Box, Button, Flex, Text } from '@backstage/ui';
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import type {
   NewStory,
   ParticipantRole,
@@ -670,13 +677,18 @@ export const SessionTable = ({
             <TicketCard
               actions={
                 isHost && currentStory && !isSplitResolution ? (
-                  <Button
-                    iconStart={<Flag size={16} />}
-                    onClick={() => onSkip()}
-                    variant="secondary"
-                  >
-                    Skip — not ready
-                  </Button>
+                  <TooltipTrigger>
+                    <Button
+                      aria-label="Skip story — not ready"
+                      iconStart={<Flag size={16} />}
+                      onClick={() => onSkip()}
+                      size="small"
+                      variant="tertiary"
+                    >
+                      Skip
+                    </Button>
+                    <Tooltip>Skip — not ready</Tooltip>
+                  </TooltipTrigger>
                 ) : undefined
               }
               badge={
