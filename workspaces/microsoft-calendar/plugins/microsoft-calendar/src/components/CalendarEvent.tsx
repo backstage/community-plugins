@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import classnames from 'classnames';
-import {
-  bindPopover,
-  bindTrigger,
-  usePopupState,
-} from 'material-ui-popup-state/hooks';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { Link } from '@backstage/core-components';
-
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import Popover from '@material-ui/core/Popover';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text, Box } from '@backstage/ui';
 
 import webcamIcon from '../icons/webcam.svg';
 import { CalendarEventPopoverContent } from './CalendarEventPopoverContent';
@@ -40,125 +29,157 @@ import {
   isPassed,
 } from './util';
 
-const useStyles = makeStyles(
-  theme => ({
-    event: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: theme.spacing(1),
-      cursor: 'pointer',
-      paddingRight: 12,
-    },
-    declined: {
-      textDecoration: 'line-through',
-    },
-    passed: {
-      opacity: 0.6,
-      transition: 'opacity 0.15s ease-in-out',
-      '&:hover': {
-        opacity: 1,
-      },
-    },
-    link: {
-      width: 48,
-      height: 48,
-      display: 'inline-block',
-      padding: 8,
-      borderRadius: '50%',
-      '&:hover': {
-        backgroundColor: theme.palette.grey[100],
-      },
-    },
-    calendarColor: {
-      width: 8,
-      borderTopLeftRadius: 4,
-      borderBottomLeftRadius: 4,
-    },
-  }),
-  {
-    name: 'MicrosoftCalendarEvent',
-  },
-);
-
 export const CalendarEvent = ({ event }: { event: MicrosoftCalendarEvent }) => {
-  const classes = useStyles();
-  const popoverState = usePopupState({
-    variant: 'popover',
-    popupId: event.id,
-    disableAutoFocus: true,
-  });
   const [hovered, setHovered] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const onlineMeetingLink = getOnlineMeetingLink(event);
 
-  const { onClick, ...restBindProps } = bindTrigger(popoverState);
+  const eventStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 'var(--bui-space-2)',
+    cursor: 'pointer',
+    paddingRight: '12px',
+    padding: 'var(--bui-space-2)',
+    borderRadius: 'var(--bui-radius-1)',
+    backgroundColor: 'var(--bui-bg-surface-1)',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+    transition: 'box-shadow 150ms ease-in-out',
+    opacity: isPassed(event) ? 0.6 : 1,
+  };
 
   return (
-    <>
-      <Paper
-        onClick={e => {
-          onClick(e);
-        }}
-        {...restBindProps}
+    <div ref={containerRef} style={{ position: 'relative' }}>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+      <div
+        onClick={() => setPopoverOpen(!popoverOpen)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        elevation={hovered ? 4 : 1}
-        className={classnames(classes.event, {
-          [classes.passed]: isPassed(event),
-        })}
+        style={{
+          ...eventStyle,
+          boxShadow: hovered
+            ? '0 4px 12px rgba(0, 0, 0, 0.12)'
+            : '0 1px 3px rgba(0, 0, 0, 0.08)',
+        }}
         data-testid="microsoft-calendar-event"
       >
-        <Box className={classes.calendarColor} mr={1} alignSelf="stretch" />
-        <Box flex={1} pt={1} pb={1}>
-          <Typography
-            variant="subtitle2"
-            className={classnames({ [classes.declined]: event.isCancelled })}
+        <div
+          style={{
+            width: '8px',
+            height: '100%',
+            borderTopLeftRadius: '4px',
+            borderBottomLeftRadius: '4px',
+            backgroundColor: 'var(--bui-fg-primary)',
+            marginRight: 'var(--bui-space-2)',
+            flexShrink: 0,
+          }}
+        />
+        <div
+          style={{
+            flex: 1,
+            paddingTop: 'var(--bui-space-1)',
+            paddingBottom: 'var(--bui-space-1)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--bui-space-1)',
+          }}
+        >
+          <Text
+            variant="body-small"
+            style={{
+              textDecoration: event.isCancelled ? 'line-through' : 'none',
+            }}
           >
             {event.subject}
-          </Typography>
+          </Text>
           {!isAllDay(event) && (
-            <Typography variant="body2" data-testid="calendar-event-time">
+            <Text
+              variant="body-x-small"
+              color="secondary"
+              data-testid="calendar-event-time"
+            >
               {getTimePeriod(event)}
-            </Typography>
+            </Text>
           )}
-        </Box>
+        </div>
 
         {event.isOnlineMeeting && (
-          <Tooltip title="Join Online Meeting">
+          <TooltipTrigger>
             <Link
               data-testid="calendar-event-online-meeting-link"
-              className={classes.link}
+              style={{
+                width: '48px',
+                height: '48px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '8px',
+                borderRadius: '50%',
+                flexShrink: 0,
+                transition: 'background-color 150ms ease-in-out',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.backgroundColor =
+                  'var(--bui-bg-surface-2)';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.backgroundColor =
+                  'transparent';
+              }}
               to={onlineMeetingLink}
               onClick={e => {
                 e.stopPropagation();
               }}
               noTrack
             >
-              {/* we can use onlineMeetingProvider to show icon accordingly */}
               <img
                 height={32}
                 width={32}
                 src={webcamIcon}
                 alt="Online Meeting link"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             </Link>
-          </Tooltip>
+            <Tooltip>Join Online Meeting</Tooltip>
+          </TooltipTrigger>
         )}
-      </Paper>
+      </div>
 
-      <Popover
-        {...bindPopover(popoverState)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        data-testid="calendar-event-popover"
-      >
-        <CalendarEventPopoverContent event={event} />
-      </Popover>
-    </>
+      {popoverOpen && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+        <Box
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            zIndex: 1000,
+            backgroundColor: 'var(--bui-bg-surface-1)',
+            border: '1px solid var(--bui-border-neutral)',
+            borderRadius: 'var(--bui-radius-2)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+            marginTop: 'var(--bui-space-2)',
+          }}
+          onClick={e => e.stopPropagation()}
+        >
+          <CalendarEventPopoverContent event={event} />
+        </Box>
+      )}
+      {popoverOpen && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+        <div
+          style={{
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: 999,
+          }}
+          onClick={() => setPopoverOpen(false)}
+        />
+      )}
+    </div>
   );
 };
