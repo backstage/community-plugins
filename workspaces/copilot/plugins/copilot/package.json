@@ -60,7 +60,7 @@
     "@internationalized/date": "^3.12.1",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "@mui/x-charts": "^9.3.0",
+    "@mui/x-charts": "^8.29.3",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "luxon": "^3.5.0",
     "react-aria-components": "~1.22.0",

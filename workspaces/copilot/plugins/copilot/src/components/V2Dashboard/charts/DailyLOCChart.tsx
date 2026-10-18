@@ -42,6 +42,7 @@ export function DailyLOCChart({ data, from, to }: Props) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,
