@@ -22,7 +22,7 @@ This plugin contains no other functionality.
    plugin to `createApp()`:
 
    ```tsx
-   import analyticsProviderSegmentModule from '@backstage-community/plugin-analytics-provider-segment/alpha';
+   import analyticsProviderSegmentModule from '@backstage-community/plugin-analytics-provider-segment';
 
    const app = createApp({
      features: [analyticsProviderSegmentModule],
@@ -31,11 +31,11 @@ This plugin contains no other functionality.
 
    This can be skipped entirely if you have feature discovery enabled.
 
-   For all other Backstage apps, wire up the API implementation like this:
+   For legacy frontend apps, wire up the API implementation like this:
 
    ```tsx title="packages/app/src/apis.ts"
    /* highlight-add-start */
-   import { SegmentAnalytics } from '@backstage-community/plugin-analytics-provider-segment';
+   import { SegmentAnalytics } from '@backstage-community/plugin-analytics-provider-segment/legacy';
    import {
      analyticsApiRef,
      configApiRef,

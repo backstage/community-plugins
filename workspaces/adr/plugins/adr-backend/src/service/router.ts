@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import path from 'path';
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
@@ -167,18 +168,32 @@ export async function createRouter(
       webp: 'image/webp',
     };
 
-    const imageType = urlToProcess.match(/\.([a-z0-9]+)(\?.*)?$/i);
-    if (!(imageType && imageType[1])) {
+    const questionMarkIndex = urlToProcess.indexOf('?');
+    const pathPart =
+      questionMarkIndex === -1
+        ? urlToProcess
+        : urlToProcess.substring(0, questionMarkIndex);
+    const queryPart =
+      questionMarkIndex === -1
+        ? ''
+        : urlToProcess.substring(questionMarkIndex + 1);
+    // Some providers (e.g. Azure DevOps) encode the file path in a `path`
+    // query parameter instead of the URL path itself. Prefer that when
+    // present, otherwise a dot in the repository name can be mistaken for
+    // the file extension.
+    const filePath = new URLSearchParams(queryPart).get('path') ?? pathPart;
+    const imageExtension = path.extname(filePath).slice(1).toLowerCase();
+    if (!imageExtension) {
       res.statusCode = 400;
       res.json({ message: 'No URL to image' });
       return;
     }
-    if (!imageTypeMap[imageType[1].toLowerCase()]) {
+    if (!imageTypeMap[imageExtension]) {
       res.statusCode = 400;
-      res.json({ message: `Image type ${imageType[1]} is not supported` });
+      res.json({ message: `Image type ${imageExtension} is not supported` });
       return;
     }
-    const contentType = imageTypeMap[imageType[1].toLowerCase()];
+    const contentType = imageTypeMap[imageExtension];
 
     const cachedFileContent = (await cacheClient.get(urlToProcess)) as {
       data: string;

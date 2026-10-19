@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cloudbuild",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Backstage plugin that integrates towards Google Cloud Build",
   "backstage": {
     "role": "frontend-plugin",
@@ -61,7 +61,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@remixicon/react": "^4.2.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.0.0",
     "qs": "^6.9.4",

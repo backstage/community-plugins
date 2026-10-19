@@ -1,6 +1,7 @@
 app:
   title: ArgoCD
   baseUrl: http://localhost:3000
+  packages: all
   experimental:
     packages: 'all'
   extensions:
@@ -99,14 +100,4 @@ argocd:
 
 permission:
   # setting this to `false` will disable permissions
-  enabled: false
-  rbac:
-    pluginsWithPermission:
-      - argocd
-      - catalog
-      - permission
-      - scaffolder
-    policies-csv-file: ../../examples/rbac-policies.csv
-    admin:
-      users:
-        - name: user:development/guest
+  enabled: true

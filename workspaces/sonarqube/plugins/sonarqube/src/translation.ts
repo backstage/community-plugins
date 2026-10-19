@@ -52,7 +52,9 @@ export const sonarqubeTranslationRef = createTranslationRef({
       bugReportRatingCardTitle: 'Bugs',
       vulnerabilitiesRatingCardTitle: 'Vulnerabilities',
       codeSmellsRatingCardTitle: 'Code Smells',
+      technicalDebtCaption: 'Debt: {{debt}}',
       hotspotsReviewedTitle: 'Hotspots Reviewed',
+      hotspotsCountCaption: 'Hotspots: {{hotspots}}',
       coverageRatingCardTitle: 'Coverage',
       duplicationsRatingCard: 'Duplications',
       qualityBadgeLabel: {

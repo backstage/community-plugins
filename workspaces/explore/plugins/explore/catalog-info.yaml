@@ -9,4 +9,4 @@ metadata:
 spec:
   lifecycle: experimental
   type: backstage-frontend-plugin
-  owner: sda-se-reviewers
+  owner: maintainers

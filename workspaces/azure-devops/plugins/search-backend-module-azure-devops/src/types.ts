@@ -15,8 +15,11 @@
  */
 
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { AzureDevOpsCredentialsProvider } from '@backstage/integration';
 
 export const CONFIG_SECTION_NAME = 'search.collators.azureDevOpsWikiCollator';
+
+export const DEFAULT_BASE_URL = 'https://dev.azure.com';
 
 export type WikiArticleCollatorOptions = {
   organization?: string;
@@ -27,7 +30,12 @@ export type WikiArticleCollatorOptions = {
 
 export type WikiArticleCollatorFactoryOptions = {
   baseUrl?: string;
+  /**
+   * @deprecated Use `integrations.azure` in your app-config.yaml instead.
+   * This field will be removed in a future release.
+   */
   token?: string;
+  credentialsProvider?: AzureDevOpsCredentialsProvider;
   wikis?: WikiArticleCollatorOptions[];
   logger: LoggerService;
 };

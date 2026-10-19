@@ -27,21 +27,56 @@ import {
   getGithubCredentials,
 } from '../utils/GithubUtils';
 
-// Allowed hosts for signed URL download (SSRF guard)
-const ALLOWED_DOWNLOAD_HOSTS = [
-  /^[a-zA-Z0-9-]+\.github\.com$/,
-  /^[a-zA-Z0-9-]+\.githubusercontent\.com$/,
+// GitHub serves user content from this domain on both github.com and GHE.com.
+const GITHUB_USER_CONTENT_DOMAIN = 'githubusercontent.com';
+
+// Object storage the signed report links can fall back to. GitHub documents the
+// Azure Blob Storage fallback for github.com and GHE.com alike, so this list is
+// not scoped to the configured host.
+const STORAGE_DOWNLOAD_HOSTS = [
   /^[a-zA-Z0-9.-]+\.s3\.amazonaws\.com$/,
   /^[a-zA-Z0-9.-]+\.s3\.[a-z0-9-]+\.amazonaws\.com$/,
+  /^[a-zA-Z0-9-]+\.blob\.core\.windows\.net$/,
 ];
 
-function isAllowedDownloadHost(url: string): boolean {
+// Follow at most this many redirects, re-checking the allowlist on every hop.
+const MAX_DOWNLOAD_REDIRECTS = 5;
+
+function isWithinDomain(hostname: string, domain: string): boolean {
+  return hostname === domain || hostname.endsWith(`.${domain}`);
+}
+
+// `copilot.host` may carry a port, which URL.hostname never does.
+function normalizeConfiguredHost(githubHost: string): string {
   try {
-    const { hostname } = new URL(url);
-    return ALLOWED_DOWNLOAD_HOSTS.some(pattern => pattern.test(hostname));
+    return new URL(`https://${githubHost}`).hostname;
   } catch {
+    return githubHost.toLowerCase();
+  }
+}
+
+/**
+ * SSRF guard for signed report download links. The allowed hosts are derived
+ * from the configured GitHub host so that a github.com deployment never trusts
+ * a GHE.com tenant, and vice versa.
+ */
+function isAllowedDownloadHost(url: URL, githubHost: string): boolean {
+  const hostname = url.hostname.toLowerCase();
+  const host = normalizeConfiguredHost(githubHost);
+
+  // An empty host would make every domain check below match.
+  if (!host) {
     return false;
   }
+
+  if (
+    isWithinDomain(hostname, host) ||
+    isWithinDomain(hostname, GITHUB_USER_CONTENT_DOMAIN)
+  ) {
+    return true;
+  }
+
+  return STORAGE_DOWNLOAD_HOSTS.some(pattern => pattern.test(hostname));
 }
 
 export class GithubClientV2 {
@@ -87,6 +122,7 @@ export class GithubClientV2 {
       octokitConfig.auth = authStrategy;
     } else {
       const appOctokit = new Octokit({
+        baseUrl: this.copilotConfig.apiBaseUrl,
         authStrategy: createAppAuth,
         auth: {
           appId: authStrategy.appId,
@@ -187,7 +223,8 @@ export class GithubClientV2 {
 
   /**
    * Download a signed document URL containing a JSON payload (array or object).
-   * SSRF guard: only allows downloads from known GitHub/AWS S3 hosts.
+   * SSRF guard: only allows downloads from hosts derived from the configured
+   * GitHub host, plus the documented object storage fallbacks.
    * Logs only origin+pathname (never query string which contains credentials).
    * Use for entity-level reports (enterprise-1-day, organization-1-day).
    */
@@ -218,30 +255,81 @@ export class GithubClientV2 {
     return rows;
   }
 
-  private async downloadText(url: string): Promise<string> {
+  /**
+   * Parses a download URL and applies the SSRF guard. Called for the initial
+   * URL and again for every redirect target, so a signed link on an allowed
+   * host cannot bounce the download to an internal address.
+   */
+  private assertAllowedDownloadUrl(url: string): URL {
     let parsedUrl: URL;
     try {
       parsedUrl = new URL(url);
     } catch {
-      throw new Error(`Malformed URL: ${url}`);
+      // The URL carries a signature, so it must never reach the logs.
+      throw new Error('Malformed download URL');
     }
 
-    if (!isAllowedDownloadHost(url)) {
+    if (parsedUrl.protocol !== 'https:') {
+      throw new Error(
+        `Refused to download over insecure protocol: ${parsedUrl.protocol}`,
+      );
+    }
+
+    if (!isAllowedDownloadHost(parsedUrl, this.copilotConfig.host)) {
       throw new Error(
         `Refused to download from disallowed host: ${parsedUrl.hostname}`,
       );
     }
-    const { origin, pathname } = parsedUrl;
-    this.logger.debug(
-      `[GithubClientV2] Downloading document: ${origin}${pathname}`,
-    );
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(
-        `Failed to download document: HTTP ${response.status} ${response.statusText}`,
+    return parsedUrl;
+  }
+
+  private async downloadText(url: string): Promise<string> {
+    let currentUrl = url;
+
+    for (let hop = 0; hop <= MAX_DOWNLOAD_REDIRECTS; hop++) {
+      const { origin, pathname } = this.assertAllowedDownloadUrl(currentUrl);
+      this.logger.debug(
+        `[GithubClientV2] Downloading document: ${origin}${pathname}`,
       );
+
+      const response = await fetch(currentUrl, { redirect: 'manual' });
+
+      if (response.status >= 300 && response.status < 400) {
+        const location = response.headers.get('location');
+        if (!location) {
+          throw new Error(
+            `Failed to download document: HTTP ${response.status} ${response.statusText} without a location header`,
+          );
+        }
+        // Drain the redirect body so undici can reuse the connection. A
+        // truncated body must not fail a download whose target we already have.
+        await response.text().catch(() => undefined);
+
+        let nextUrl: URL;
+        try {
+          nextUrl = new URL(location, currentUrl);
+        } catch {
+          // Node attaches the base URL, which carries a signature, to the
+          // thrown error, so none of it may reach the caller.
+          throw new Error('Malformed redirect location');
+        }
+
+        currentUrl = nextUrl.toString();
+        continue;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to download document: HTTP ${response.status} ${response.statusText}`,
+        );
+      }
+
+      return response.text();
     }
-    return response.text();
+
+    throw new Error(
+      `Failed to download document: exceeded ${MAX_DOWNLOAD_REDIRECTS} redirects`,
+    );
   }
 }

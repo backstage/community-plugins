@@ -1,5 +1,27 @@
 # @backstage-community/plugin-github-issues
 
+## 1.5.1
+
+### Patch Changes
+
+- cb2c31b: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 1.5.0
+
+### Minor Changes
+
+- 5956bca: Backstage version bump to v1.55.1
+
+## 1.4.0
+
+### Minor Changes
+
+- 00f747c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 745fd2f: Fixed the GitHub Issues card failing to load for entities that own a repository whose name starts with a number (for example `123-service`).
+
 ## 1.3.2
 
 ### Patch Changes

@@ -58,6 +58,7 @@ const tektonTranslationFr = createTranslationMessages({
     'pipelineRunList.vulnerabilitySeverityTitle.high': 'Haut',
     'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Moyen',
     'pipelineRunList.vulnerabilitySeverityTitle.low': 'Faible',
+    'pipelineRunList.vulnerabilitySeverityTitle.unknown': 'Inconnu',
     'pipelineRunList.tableHeaderTitle.name': 'NOM',
     'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNÉRABILITÉS',
     'pipelineRunList.tableHeaderTitle.status': 'STATUT',

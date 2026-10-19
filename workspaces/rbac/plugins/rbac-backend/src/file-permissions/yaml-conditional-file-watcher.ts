@@ -19,7 +19,7 @@ import type {
 } from '@backstage/backend-plugin-api';
 import { InputError } from '@backstage/errors';
 
-import yaml from 'js-yaml';
+import { loadAll } from 'js-yaml';
 import { omit } from 'lodash';
 
 import {
@@ -185,9 +185,9 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     }
 
     const parsedDocuments: RoleConditionalPolicyDecision[] = [];
-    yaml.loadAll(fileContents, doc => {
+    for (const doc of loadAll(fileContents)) {
       if (doc === null) {
-        return;
+        continue;
       }
 
       parsedDocuments.push(doc as RoleConditionalPolicyDecision);
@@ -196,7 +196,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
           `conditional policies file exceeds maximum of ${this.maxFileDocuments} YAML documents`,
         );
       }
-    });
+    }
 
     for (const condition of parsedDocuments) {
       validateRoleCondition(condition, this.conditionValidationLimits);

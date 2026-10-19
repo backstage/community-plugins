@@ -17,21 +17,22 @@
 import { Entity } from '@backstage/catalog-model';
 import { Route, Routes } from 'react-router';
 import PullRequestList from './PullRequestList';
-import { BITBUCKET_PULL_REQUESTS_ANNOTATION } from '../utils/isBitbucketSlugSet';
+import {
+  isBitbucketSlugSet,
+  BITBUCKET_PROJECT_ANNOTATION,
+} from '../utils/isBitbucketSlugSet';
 import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
 
 export const isBitbucketPullRequestsAvailable = (entity: Entity) =>
-  Boolean(entity.metadata.annotations?.[BITBUCKET_PULL_REQUESTS_ANNOTATION]);
+  Boolean(isBitbucketSlugSet(entity));
 
 export const Router = () => {
   const { entity } = useEntity();
   return !isBitbucketPullRequestsAvailable(entity) ? (
-    <MissingAnnotationEmptyState
-      annotation={BITBUCKET_PULL_REQUESTS_ANNOTATION}
-    />
+    <MissingAnnotationEmptyState annotation={BITBUCKET_PROJECT_ANNOTATION} />
   ) : (
     <Routes>
       <Route path="/" element={<PullRequestList />} />

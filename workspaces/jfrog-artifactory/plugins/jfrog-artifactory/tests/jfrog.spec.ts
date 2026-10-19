@@ -31,6 +31,7 @@ test.describe('JFrog Artifactory plugin', () => {
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
+    await common.navigateToJfrogArtifactory();
     const currentLocale = await page.evaluate(
       () => globalThis.navigator.language,
     );
@@ -43,7 +44,9 @@ test.describe('JFrog Artifactory plugin', () => {
       image: 'backstage',
     });
 
-    await expect(page.getByRole('heading')).toHaveText(headingText);
+    await expect(
+      page.getByRole('heading', { name: headingText }),
+    ).toBeVisible();
     await common.a11yCheck(testInfo);
   });
 

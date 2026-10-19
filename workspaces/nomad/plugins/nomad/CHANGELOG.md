@@ -1,5 +1,23 @@
 # @backstage-community/plugin-nomad
 
+## 1.1.1
+
+### Patch Changes
+
+- 43237db: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 1.1.0
+
+### Minor Changes
+
+- a97287f: Backstage version bump to v1.55.1
+
+## 1.0.0
+
+### Major Changes
+
+- 8a742c1: Migrated from Material-UI (MUI) to Backstage UI (BUI)
+
 ## 0.22.0
 
 ### Minor Changes

@@ -123,6 +123,8 @@ The Tekton plugin enables you to visualize the `PipelineRun` resources available
 
 If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Tekton entity tab is registered automatically for entities with the `tekton.dev/cicd` annotation.
 
+The Tekton entity tab uses an extension `if` predicate so it is only shown when the signed-in user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`. Users without those permissions will not see the **Tekton** tab on the entity page.
+
 ```ts
 import tektonPlugin, {
   tektonTranslationsModule,
@@ -176,6 +178,8 @@ If you are using permissions, please ensure that the following Kubernetes permis
 
 - `kubernetes.clusters.read`
 - `kubernetes.resources.read`
+
+In the new frontend system, users without `kubernetes.clusters.read` and `kubernetes.resources.read` permissions will not see the **Tekton** entity tab.
 
 Read [the documentation](https://github.com/backstage/backstage/blob/master/docs/features/kubernetes/permissions.md) for more info on these permissions.
 

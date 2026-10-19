@@ -27,7 +27,7 @@ import { QuayApiClient, quayApiRef } from './api';
 import { isQuayAvailable } from './lib/isQuayAvailable';
 import { rootRouteRef, tagRouteRef } from './routes';
 
-const quayApi = ApiBlueprint.make({
+export const quayApi = ApiBlueprint.make({
   name: 'quay',
   params: defineParams =>
     defineParams({
@@ -42,11 +42,12 @@ const quayApi = ApiBlueprint.make({
     }),
 });
 
-const quayEntityContent = EntityContentBlueprint.make({
+export const quayEntityContent = EntityContentBlueprint.make({
   name: 'quay',
   params: {
     path: '/quay',
     title: 'Quay',
+    group: 'development',
     routeRef: rootRouteRef,
     filter: isQuayAvailable,
     loader: async () => import('./components/Router').then(m => <m.Router />),

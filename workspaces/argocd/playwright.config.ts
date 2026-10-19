@@ -16,15 +16,17 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  timeout: 120_000,
   testDir: './plugins/argocd/tests',
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: 'yarn start',
+          command: 'yarn start:mock',
           cwd: 'plugins/argocd',
           port: 3000,
-          reuseExistingServer: true,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120_000,
         },
       ],
   retries: process.env.CI ? 2 : 0,

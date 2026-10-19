@@ -22,15 +22,16 @@ import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
 import { NewRelicBrowser } from './apis/implementations/AnalyticsApi';
 
-const newRelicBrowserImplementation = AnalyticsImplementationBlueprint.make({
-  name: 'newrelic-browser',
-  params: defineParams =>
-    defineParams({
-      deps: { configApi: configApiRef, identityApi: identityApiRef },
-      factory: ({ configApi, identityApi }) =>
-        NewRelicBrowser.fromConfig(configApi, { identityApi }),
-    }),
-});
+export const newRelicBrowserImplementation =
+  AnalyticsImplementationBlueprint.make({
+    name: 'newrelic-browser',
+    params: defineParams =>
+      defineParams({
+        deps: { configApi: configApiRef, identityApi: identityApiRef },
+        factory: ({ configApi, identityApi }) =>
+          NewRelicBrowser.fromConfig(configApi, { identityApi }),
+      }),
+  });
 
 /**
  * @public

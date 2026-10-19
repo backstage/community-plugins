@@ -25,7 +25,7 @@ import { Entity, makeValidator } from '@backstage/catalog-model';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import fetch, { Response } from 'node-fetch';
 import * as path from 'path';
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 import * as fs from 'fs';
 import { mockServices } from '@backstage/backend-test-utils';
 
@@ -57,7 +57,7 @@ const cache: CatalogProcessorCache = {
 };
 
 describe('sanitizeTag', () => {
-  const linguistDataSet = yaml.load(
+  const linguistDataSet = yamlLoad(
     fs.readFileSync(
       path.resolve(require.resolve('linguist-js'), '../../ext/languages.yml'),
       'utf-8',

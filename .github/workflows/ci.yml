@@ -21,20 +21,26 @@ jobs:
           COMMITS: ${{ github.event.pull_request.commits }}
         run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
 
-      - name: Checkout base branch for diff purposes
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 50 # TODO(awanlin): Temporary fix
-
       - name: Checkout head branch
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Needed for diff
-          fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
+          # Use GitHub's tested merge revision, falling back to the PR head for conflicted PRs.
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.event.pull_request.head.sha }}
+          # Keep the commit graph while avoiding historical file contents.
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Diagnose PR diff refs
+        run: |
+          echo "HEAD=$(git rev-parse HEAD)"
+          echo "BASE=$(git rev-parse origin/${BASE_REF})"
+          echo "MERGE_BASE=$(git merge-base origin/${BASE_REF} HEAD || true)"
+          git rev-parse --is-shallow-repository
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
 
       - name: Set up Node
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
@@ -87,16 +93,16 @@ jobs:
 
     steps:
       - name: Checkout main branch for tests purposes
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
       - name: Checkout
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Set up Node ${{ matrix.workspaceNodeMatrix.nodeVersion }}
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.workspaceNodeMatrix.nodeVersion }}
           registry-url: https://registry.npmjs.org/ # Needed for auth
@@ -241,11 +247,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout head branch
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
       - name: Set up Node
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
       - name: Install root dependencies

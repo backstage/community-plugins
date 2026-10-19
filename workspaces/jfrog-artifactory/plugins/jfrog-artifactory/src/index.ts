@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  jfrogArtifactoryPlugin,
-  JfrogArtifactoryPage,
-  isJfrogArtifactoryAvailable,
-} from './plugin';
+
+/**
+ * A Backstage plugin that shows container image metadata from JFrog Artifactory.
+ *
+ * @packageDocumentation
+ */
+
+export { default } from './plugin';
+export { isJfrogArtifactoryAvailable } from './isJfrogArtifactoryAvailable';

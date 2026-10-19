@@ -1,5 +1,20 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.10.0
+
+### Minor Changes
+
+- efd82d4: Backstage version bump to v1.52.0
+- 9fcbc6c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 28758c6: Conditions can now set `params.factRetrieverId` to disambiguate between fact retrievers that publish facts under the same name. When set, the condition resolves against that retriever's value; when omitted, the existing flat-merge behaviour is preserved unchanged.
+- Updated dependencies [efd82d4]
+- Updated dependencies [9fcbc6c]
+  - @backstage-community/plugin-tech-insights-common@0.11.0
+  - @backstage-community/plugin-tech-insights-node@2.9.0
+
 ## 0.9.0
 
 ### Minor Changes

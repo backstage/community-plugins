@@ -21,7 +21,12 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { policyEntityCreatePermission } from '@backstage-community/plugin-rbac-common';
 
-import { createRoleRouteRef, editRoleRouteRef, roleRouteRef } from '../routes';
+// TODO: Migrate this to NFS, probably by having two different Routers.
+import {
+  createRoleRouteRef,
+  editRoleRouteRef,
+  roleRouteRef,
+} from '../legacy/routes';
 import { CreateRolePage } from './CreateRole/CreateRolePage';
 import { EditRolePage } from './CreateRole/EditRolePage';
 import { RbacPage } from './RbacPage';

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-fossa
 
+## 0.12.1
+
+### Patch Changes
+
+- d678e80: Updated `csstype` to v3.2.3
+
 ## 0.12.0
 
 ### Minor Changes

@@ -43,7 +43,7 @@ export const analyticsModuleMatomoPlugin = createPlugin({
   apis: [MatomoAnalyticsApi],
 });
 
-const matomoImplementation = AnalyticsImplementationBlueprint.make({
+export const matomoImplementation = AnalyticsImplementationBlueprint.make({
   params: defineParams =>
     defineParams({
       deps: { configApi: configApiRef, identityApi: identityApiRef },

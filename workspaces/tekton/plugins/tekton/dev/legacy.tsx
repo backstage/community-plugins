@@ -33,7 +33,7 @@ import {
   mockKubernetesAuthProviderApi,
   mockKubernetesClient,
   mockKubernetesProxyApi,
-} from './shared';
+} from './mocks';
 
 const mockPermissionApi = mockApis.permission({});
 

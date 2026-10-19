@@ -20,7 +20,7 @@ import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
-const _default: OverridableFrontendPlugin<
+const rbacPlugin: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
   },
@@ -134,7 +134,7 @@ const _default: OverridableFrontendPlugin<
     }>;
   }
 >;
-export default _default;
+export default rbacPlugin;
 
 // @public
 export const rbacTranslationRef: TranslationRef<

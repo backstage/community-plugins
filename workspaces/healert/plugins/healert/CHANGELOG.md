@@ -1,5 +1,11 @@
 # @backstage-community/plugin-healert
 
+## 0.3.0
+
+### Minor Changes
+
+- 4c43506: Backstage version bump to v1.54.5
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,20 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.2.0
+
+### Minor Changes
+
+- ac132bb: Added support for GitHub Enterprise Cloud with data residency (GHE.com), including a new optional `copilot.apiBaseUrl` setting and a fix so GitHub App authentication targets the configured API host instead of always using `api.github.com`. Report downloads are now allowed from the configured `copilot.host` and its subdomains rather than a fixed list of `github.com` hosts, so GitHub Enterprise Server setups can download reports from their own instance too. An invalid `copilot.apiBaseUrl` is rejected on startup instead of silently falling back to the public GitHub API.
+- 61c542e: Backstage version bump to v1.53.0
+- 23dd212: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- fc7e7f4: Upgraded `zod` from v3 to v4.
+- Updated dependencies [61c542e]
+- Updated dependencies [23dd212]
+  - @backstage-community/plugin-copilot-common@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes

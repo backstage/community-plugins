@@ -15,7 +15,7 @@
  */
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { Progress } from '@backstage/core-components';
+import { ButtonIcon, Skeleton, Tooltip, TooltipTrigger } from '@backstage/ui';
 import {
   ErrorApiError,
   errorApiRef,
@@ -23,12 +23,12 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
+import {
+  RiThumbDownFill,
+  RiThumbDownLine,
+  RiThumbUpFill,
+  RiThumbUpLine,
+} from '@remixicon/react';
 import { ReactNode, useCallback, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
@@ -124,39 +124,55 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
   );
 
   if (loadingEntity || loadingFeedback || savingFeedback) {
-    return <Progress />;
+    return <Skeleton width={96} height={32} aria-label="Loading feedback" />;
   }
 
   return (
     <>
-      <IconButton
-        data-testid="entity-feedback-like-button"
-        onClick={() => applyRating(LikeDislikeFeedbackRatings.like)}
-      >
-        {rating === LikeDislikeFeedbackRatings.like ? (
-          <Tooltip title="Liked">
-            <ThumbUpIcon fontSize="small" />
-          </Tooltip>
-        ) : (
-          <Tooltip title="Like">
-            <ThumbUpOutlinedIcon fontSize="small" />
-          </Tooltip>
-        )}
-      </IconButton>
-      <IconButton
-        data-testid="entity-feedback-dislike-button"
-        onClick={() => applyRating(LikeDislikeFeedbackRatings.dislike)}
-      >
-        {rating === LikeDislikeFeedbackRatings.dislike ? (
-          <Tooltip title="Disliked">
-            <ThumbDownIcon fontSize="small" />
-          </Tooltip>
-        ) : (
-          <Tooltip title="Dislike">
-            <ThumbDownOutlinedIcon fontSize="small" />
-          </Tooltip>
-        )}
-      </IconButton>
+      <TooltipTrigger>
+        <ButtonIcon
+          data-testid="entity-feedback-like-button"
+          aria-label={
+            rating === LikeDislikeFeedbackRatings.like ? 'Liked' : 'Like'
+          }
+          variant="tertiary"
+          icon={
+            rating === LikeDislikeFeedbackRatings.like ? (
+              <RiThumbUpFill size={20} />
+            ) : (
+              <RiThumbUpLine size={20} />
+            )
+          }
+          onPress={() => applyRating(LikeDislikeFeedbackRatings.like)}
+        />
+        <Tooltip>
+          {rating === LikeDislikeFeedbackRatings.like ? 'Liked' : 'Like'}
+        </Tooltip>
+      </TooltipTrigger>
+      <TooltipTrigger>
+        <ButtonIcon
+          data-testid="entity-feedback-dislike-button"
+          aria-label={
+            rating === LikeDislikeFeedbackRatings.dislike
+              ? 'Disliked'
+              : 'Dislike'
+          }
+          variant="tertiary"
+          icon={
+            rating === LikeDislikeFeedbackRatings.dislike ? (
+              <RiThumbDownFill size={20} />
+            ) : (
+              <RiThumbDownLine size={20} />
+            )
+          }
+          onPress={() => applyRating(LikeDislikeFeedbackRatings.dislike)}
+        />
+        <Tooltip>
+          {rating === LikeDislikeFeedbackRatings.dislike
+            ? 'Disliked'
+            : 'Dislike'}
+        </Tooltip>
+      </TooltipTrigger>
       <FeedbackResponseDialog
         entity={entity!}
         open={openFeedbackDialog}
