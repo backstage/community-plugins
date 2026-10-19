@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.30.0
+
+### Minor Changes
+
+- 7931d39: Fixed the `list-announcements` and `get-announcement` actions (for example when used through MCP) failing when an announcement has no "on behalf of" value. Announcements created without "on behalf of" are now returned with the field omitted instead of set to `null`. This also applies to the announcements REST API responses.
+
 ## 0.29.1
 
 ### Patch Changes
