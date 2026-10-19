@@ -36,12 +36,12 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
   const [tabId, setTabId] = useState<string>('0');
 
   if (!endpoints.length) {
-    return <Text variant="title-large">No endpoints available</Text>;
+    return (
+      <Text as="h4" variant="title-large">
+        No endpoints available
+      </Text>
+    );
   }
-
-  const tabIndex = Number(tabId);
-  const { id, fetcher, plugins } = endpoints[tabIndex];
-  const storage = StorageBucket.forLocalStorage(`plugin/graphiql/data/${id}`);
 
   return (
     <div className={styles.root}>
@@ -57,13 +57,15 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
               </Tab>
             ))}
           </TabList>
-          {endpoints.map((_, index) => (
-            <TabPanel key={index} id={String(index)}>
+          {endpoints.map(({ id, fetcher, plugins }, index) => (
+            <TabPanel key={id} id={String(index)}>
               <div className={styles.graphiQlWrapper}>
                 <GraphiQL
-                  key={index}
+                  key={id}
                   fetcher={fetcher}
-                  storage={storage}
+                  storage={StorageBucket.forLocalStorage(
+                    `plugin/graphiql/data/${id}`,
+                  )}
                   plugins={plugins}
                 />
               </div>

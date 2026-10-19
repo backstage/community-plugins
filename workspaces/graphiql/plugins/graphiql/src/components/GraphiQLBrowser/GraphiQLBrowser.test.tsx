@@ -18,11 +18,14 @@ import { renderInTestApp } from '@backstage/test-utils';
 import { GraphiQLBrowser } from './GraphiQLBrowser';
 import { GraphiQLIcon } from '../../GraphiQLIcon';
 import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
 
 describe('GraphiQLBrowser', () => {
   it('should render error text if there are no endpoints', async () => {
-    const rendered = await renderInTestApp(<GraphiQLBrowser endpoints={[]} />);
-    rendered.getByText('No endpoints available');
+    await renderInTestApp(<GraphiQLBrowser endpoints={[]} />);
+    expect(
+      screen.getByRole('heading', { level: 4, name: 'No endpoints available' }),
+    ).toBeVisible();
   });
 
   it('should render endpoint tabs', async () => {

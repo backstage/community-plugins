@@ -44,7 +44,7 @@ export const GraphiQLPage = () => {
   } else if (endpoints.error) {
     content = (
       <Content>
-        <Text variant="title-large" color="danger">
+        <Text as="h4" variant="title-large" color="danger">
           {/* TODO: provide a proper error component */}
           Failed to load GraphQL endpoints, {String(endpoints.error)}
         </Text>
