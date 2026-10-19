@@ -4,21 +4,61 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
+import { ExtensionPoint } from '@backstage/backend-plugin-api';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import { UserInfoService } from '@backstage/backend-plugin-api';
 
 // @public
 const copilotPlugin: BackendFeature;
 export default copilotPlugin;
 
 // @public
+export interface CopilotUserResolver {
+  resolveUserLogin(
+    context: CopilotUserResolverContext,
+  ): Promise<string | undefined>;
+}
+
+// @public
+export interface CopilotUserResolverContext {
+  credentials: BackstageCredentials;
+  services: CopilotUserResolverServices;
+  userEntityRef: string;
+}
+
+// @public
+export interface CopilotUserResolverExtensionPoint {
+  setUserResolver(resolver: CopilotUserResolver): void;
+}
+
+// @public (undocumented)
+export const copilotUserResolverExtensionPoint: ExtensionPoint<CopilotUserResolverExtensionPoint>;
+
+// @public
+export interface CopilotUserResolverServices {
+  catalog: CatalogService;
+}
+
+// @public
 export function createRouterFromConfig(
   routerOptions: RouterOptions,
 ): Promise<express.Router>;
+
+// @public
+export class DefaultCopilotUserResolver implements CopilotUserResolver {
+  // (undocumented)
+  resolveUserLogin(
+    input: CopilotUserResolverContext,
+  ): Promise<string | undefined>;
+}
 
 // @public
 export interface PluginOptions {
@@ -27,9 +67,13 @@ export interface PluginOptions {
 
 // @public
 export interface RouterOptions {
+  catalog?: CatalogService;
   config: Config;
   database: DatabaseService;
+  httpAuth?: HttpAuthService;
   logger: LoggerService;
   scheduler: SchedulerService;
+  userInfo?: UserInfoService;
+  userResolver?: CopilotUserResolver;
 }
 ```

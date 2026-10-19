@@ -45,6 +45,27 @@ export function formatDay(day: string): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+/**
+ * Generates an array of every calendar day (YYYY-MM-DD) between `from` and
+ * `to` inclusive. Used by per-day charts to build a complete x-axis so that
+ * days with no activity are rendered as zero rather than simply omitted.
+ *
+ * Returns an empty array if either date is invalid or `from` is after `to`.
+ */
+export function fillDateRange(from: string, to: string): string[] {
+  const start = new Date(`${from.slice(0, 10)}T00:00:00Z`);
+  const end = new Date(`${to.slice(0, 10)}T00:00:00Z`);
+  if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) return [];
+
+  const days: string[] = [];
+  const cursor = new Date(start);
+  while (cursor <= end) {
+    days.push(cursor.toISOString().slice(0, 10));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return days;
+}
+
 /** Shared x-axis tick label style: 45° angle to give room for date labels. */
 export const DATE_TICK_LABEL_STYLE = {
   angle: -45,

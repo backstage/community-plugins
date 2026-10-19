@@ -16,10 +16,12 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2MetricsByFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { formatDay, DATE_TICK_LABEL_STYLE } from './chartUtils';
+import { formatDay, DATE_TICK_LABEL_STYLE, fillDateRange } from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
+  from: string;
+  to: string;
 }
 
 interface DayTotal {
@@ -30,7 +32,7 @@ interface DayTotal {
 
 function aggregateCodeCompletionByDay(
   data: V2MetricsByFeatureRow[],
-): DayTotal[] {
+): Map<string, DayTotal> {
   const byDay = new Map<string, DayTotal>();
   for (const row of data.filter(r => r.feature === 'code_completion')) {
     const existing = byDay.get(row.day) ?? {
@@ -42,13 +44,13 @@ function aggregateCodeCompletionByDay(
     existing.accepted += row.code_acceptance_activity_count ?? 0;
     byDay.set(row.day, existing);
   }
-  return [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day));
+  return byDay;
 }
 
-export function CodeCompletionsAcceptanceChart({ data }: Props) {
-  const aggregated = aggregateCodeCompletionByDay(data);
+export function CodeCompletionsAcceptanceChart({ data, from, to }: Props) {
+  const byDay = aggregateCodeCompletionByDay(data);
 
-  if (aggregated.length === 0) {
+  if (byDay.size === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
         No data available
@@ -56,10 +58,13 @@ export function CodeCompletionsAcceptanceChart({ data }: Props) {
     );
   }
 
-  const days = aggregated.map(d => d.day);
-  const values = aggregated.map(d =>
-    d.suggested > 0 ? Math.round((d.accepted / d.suggested) * 1000) / 10 : 0,
-  );
+  const days = fillDateRange(from, to);
+  const values = days.map(day => {
+    const d = byDay.get(day);
+    return d && d.suggested > 0
+      ? Math.round((d.accepted / d.suggested) * 1000) / 10
+      : 0;
+  });
 
   return (
     <LineChart

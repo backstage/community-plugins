@@ -22,6 +22,7 @@ import {
   V2MetricsByLanguageFeatureRow,
   V2MetricsByModelFeatureRow,
   V2MetricsByLanguageModelRow,
+  V2MetricsByVscodeAgentRow,
   V2PrMetricsRow,
   V2UserMetric,
   V2UserMetricRow,
@@ -39,6 +40,7 @@ export interface ParsedEnterpriseDocument {
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
   byCli: V2MetricsByCliRow[];
+  byVscodeAgent: V2MetricsByVscodeAgentRow[];
 }
 
 /**
@@ -46,6 +48,7 @@ export interface ParsedEnterpriseDocument {
  */
 export interface UserBreakdownData {
   user_id: number;
+  user_login: string;
   byFeature: Array<{
     feature: string;
     user_initiated_interaction_count: number;
@@ -142,16 +145,19 @@ export function parseEnterpriseDocument(
     byModelFeature: [],
     byLanguageModel: [],
     byCli: [],
+    byVscodeAgent: [],
   };
 
   // Normalize: the GitHub report API (2026-03-10) downloads a single flat
   // V2EnterpriseDayTotal object per file — not a V2EnterpriseDocument with a
   // day_totals wrapper. Accept both shapes for robustness.
-  let rawDocs: unknown[] = [];
+  let rawDocs: unknown[];
   if (Array.isArray(doc)) {
     rawDocs = doc;
   } else if (isRecord(doc)) {
     rawDocs = [doc];
+  } else {
+    rawDocs = [];
   }
 
   if (rawDocs.length === 0) {
@@ -196,6 +202,9 @@ export function parseEnterpriseDocument(
         weekly_active_users: toNumber(dayTotal.weekly_active_users),
         monthly_active_users: toNumber(dayTotal.monthly_active_users),
         daily_active_cli_users: toNumber(dayTotal.daily_active_cli_users),
+        daily_active_vscode_agent_users: toNumber(
+          dayTotal.daily_active_vscode_agent_users,
+        ),
         monthly_active_agent_users: toNumber(
           dayTotal.monthly_active_agent_users,
         ),
@@ -463,6 +472,18 @@ export function parseEnterpriseDocument(
           ),
         });
       }
+
+      if (isRecord(dayTotal.totals_by_vscode_agent)) {
+        const vscodeAgent = dayTotal.totals_by_vscode_agent;
+        parsed.byVscodeAgent.push({
+          day,
+          metrics_type: metricsType,
+          entity_id: entityId,
+          team_slug: '',
+          session_count: toNumber(vscodeAgent.session_count),
+          total_user_messages: toNumber(vscodeAgent.total_user_messages),
+        });
+      }
     }
   }
 
@@ -489,6 +510,7 @@ export function parseOrganizationDocument(
     byModelFeature: [],
     byLanguageModel: [],
     byCli: [],
+    byVscodeAgent: [],
   };
 
   // Normalize: the API downloads a single flat object per file, but accept arrays too.
@@ -557,6 +579,9 @@ export function parseOrganizationDocument(
       weekly_active_users: toNumber(orgDoc.weekly_active_users),
       monthly_active_users: toNumber(orgDoc.monthly_active_users),
       daily_active_cli_users: toNumber(orgDoc.daily_active_cli_users),
+      daily_active_vscode_agent_users: toNumber(
+        orgDoc.daily_active_vscode_agent_users,
+      ),
       monthly_active_agent_users: toNumber(orgDoc.monthly_active_agent_users),
       monthly_active_chat_users: toNumber(orgDoc.monthly_active_chat_users),
       code_acceptance_activity_count: toNumber(
@@ -775,6 +800,18 @@ export function parseOrganizationDocument(
         ),
       });
     }
+
+    if (isRecord(orgDoc.totals_by_vscode_agent)) {
+      const vscodeAgent = orgDoc.totals_by_vscode_agent;
+      parsed.byVscodeAgent.push({
+        day,
+        metrics_type: metricsType,
+        entity_id: entityId,
+        team_slug: '',
+        session_count: toNumber(vscodeAgent.session_count),
+        total_user_messages: toNumber(vscodeAgent.total_user_messages),
+      });
+    }
   }
 
   return parsed;
@@ -822,6 +859,7 @@ export function parseUserDocument(
       used_agent: Boolean(metric.used_agent),
       used_chat: Boolean(metric.used_chat),
       used_cli: Boolean(metric.used_cli),
+      used_vscode_agent: Boolean(metric.used_vscode_agent),
       code_acceptance_activity_count: toNumber(
         metric.code_acceptance_activity_count,
       ),
@@ -835,10 +873,12 @@ export function parseUserDocument(
       user_initiated_interaction_count: toNumber(
         metric.user_initiated_interaction_count,
       ),
+      ai_credits_used: toNumber(metric.ai_credits_used),
     });
 
     const breakdown: UserBreakdownData = {
       user_id: userId,
+      user_login: userLogin,
       byFeature: [],
       byIde: [],
       byLanguageFeature: [],

@@ -37,6 +37,7 @@ describe('reportParser', () => {
               weekly_active_users: 3,
               monthly_active_users: 4,
               daily_active_cli_users: 5,
+              daily_active_vscode_agent_users: 15,
               monthly_active_agent_users: 6,
               monthly_active_chat_users: 7,
               code_acceptance_activity_count: 8,
@@ -98,6 +99,10 @@ describe('reportParser', () => {
                   loc_suggested_to_delete_sum: 6,
                 },
               ],
+              totals_by_vscode_agent: {
+                session_count: 21,
+                total_user_messages: 84,
+              },
             },
           ],
         },
@@ -113,6 +118,7 @@ describe('reportParser', () => {
           entity_id: 'ent-1',
           team_slug: '',
           daily_active_users: 2,
+          daily_active_vscode_agent_users: 15,
           user_initiated_interaction_count: 14,
         }),
       );
@@ -154,6 +160,17 @@ describe('reportParser', () => {
           team_slug: '',
         }),
       ]);
+
+      expect(result.byVscodeAgent).toEqual([
+        expect.objectContaining({
+          day: '2025-10-01',
+          metrics_type: 'enterprise',
+          entity_id: 'ent-1',
+          team_slug: '',
+          session_count: 21,
+          total_user_messages: 84,
+        }),
+      ]);
     });
 
     it('returns empty structure for invalid input', () => {
@@ -171,6 +188,7 @@ describe('reportParser', () => {
         byModelFeature: [],
         byLanguageModel: [],
         byCli: [],
+        byVscodeAgent: [],
       });
     });
 
@@ -185,6 +203,7 @@ describe('reportParser', () => {
         byModelFeature: [],
         byLanguageModel: [],
         byCli: [],
+        byVscodeAgent: [],
       });
     });
 
@@ -291,6 +310,7 @@ describe('reportParser', () => {
         weekly_active_users: 5,
         monthly_active_users: 4,
         daily_active_cli_users: 1,
+        daily_active_vscode_agent_users: 2,
         monthly_active_agent_users: 3,
         monthly_active_chat_users: 3,
         user_initiated_interaction_count: 104,
@@ -333,6 +353,10 @@ describe('reportParser', () => {
             loc_deleted_sum: 0,
           },
         ],
+        totals_by_vscode_agent: {
+          session_count: 12,
+          total_user_messages: 48,
+        },
       };
 
       const result = parseOrganizationDocument(doc, 'organization', 'org-1');
@@ -347,6 +371,7 @@ describe('reportParser', () => {
           daily_active_users: 4,
           weekly_active_users: 5,
           monthly_active_users: 4,
+          daily_active_vscode_agent_users: 2,
           user_initiated_interaction_count: 104,
           // LOC summed from IDE rows
           loc_added_sum: 1763,
@@ -388,6 +413,18 @@ describe('reportParser', () => {
           day: '2026-06-01',
           metrics_type: 'organization',
           entity_id: 'org-1',
+        }),
+      );
+
+      expect(result.byVscodeAgent).toHaveLength(1);
+      expect(result.byVscodeAgent[0]).toEqual(
+        expect.objectContaining({
+          day: '2026-06-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          team_slug: '',
+          session_count: 12,
+          total_user_messages: 48,
         }),
       );
     });
@@ -486,6 +523,7 @@ describe('reportParser', () => {
         byModelFeature: [],
         byLanguageModel: [],
         byCli: [],
+        byVscodeAgent: [],
       });
     });
 
@@ -514,6 +552,7 @@ describe('reportParser', () => {
           loc_suggested_to_add_sum: 15,
           loc_suggested_to_delete_sum: 16,
           user_initiated_interaction_count: 17,
+          ai_credits_used: 78,
         },
       ];
 
@@ -529,6 +568,7 @@ describe('reportParser', () => {
           used_agent: false,
           used_chat: true,
           used_cli: true,
+          used_vscode_agent: false,
           code_acceptance_activity_count: 11,
           code_generation_activity_count: 12,
           loc_added_sum: 13,
@@ -536,12 +576,48 @@ describe('reportParser', () => {
           loc_suggested_to_add_sum: 15,
           loc_suggested_to_delete_sum: 16,
           user_initiated_interaction_count: 17,
+          ai_credits_used: 78,
         },
       ]);
       expect(result.userBreakdowns).toHaveLength(1);
       expect(result.userBreakdowns[0].user_id).toBe(1);
       expect(result.userBreakdowns[0].byFeature).toEqual([]);
       expect(result.userBreakdowns[0].byIde).toEqual([]);
+    });
+
+    it('parses used_vscode_agent when the user used the VS Code Agents window', () => {
+      const doc = [
+        {
+          user_id: 3,
+          user_login: 'agent-user',
+          day: '2025-10-01',
+          used_agent: false,
+          used_chat: false,
+          used_cli: false,
+          used_vscode_agent: true,
+          code_acceptance_activity_count: 0,
+          code_generation_activity_count: 0,
+          loc_added_sum: 0,
+          loc_deleted_sum: 0,
+          loc_suggested_to_add_sum: 0,
+          loc_suggested_to_delete_sum: 0,
+          user_initiated_interaction_count: 0,
+          totals_by_vscode_agent: {
+            session_count: 3,
+            total_user_messages: 12,
+          },
+        },
+      ];
+
+      const result = parseUserDocument(doc, 'enterprise', 'ent-1');
+
+      expect(result.userMetrics).toHaveLength(1);
+      expect(result.userMetrics[0]).toEqual(
+        expect.objectContaining({
+          user_id: 3,
+          used_vscode_agent: true,
+        }),
+      );
     });
 
     it('parses breakdown sub-arrays from user metrics', () => {

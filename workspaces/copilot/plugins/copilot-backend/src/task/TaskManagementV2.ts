@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { DateTime } from 'luxon';
@@ -31,6 +30,7 @@ import {
   UserBreakdownData,
 } from '../utils/reportParser';
 import { aggregateTeamMetrics } from '../utils/teamAggregator';
+import { buildUserBreakdownRows } from '../utils/userBreakdownRows';
 
 type IngestSource = 'scheduled' | 'backfill';
 
@@ -224,6 +224,7 @@ export class TaskManagementV2 {
       await db.insertByModelFeature(parsed.byModelFeature);
       await db.insertByLanguageModel(parsed.byLanguageModel);
       await db.insertByCli(parsed.byCli);
+      await db.insertByVscodeAgent(parsed.byVscodeAgent);
 
       totalRowsParsed += parsed.dailyTotals.length;
     }
@@ -272,6 +273,20 @@ export class TaskManagementV2 {
     }
 
     await db.insertUserMetrics(userMetrics);
+
+    const breakdownRows = buildUserBreakdownRows(
+      userBreakdowns,
+      day,
+      metricsType,
+      entityId,
+    );
+    await db.insertUserMetricsByFeature(breakdownRows.byFeature);
+    await db.insertUserMetricsByIde(breakdownRows.byIde);
+    await db.insertUserMetricsByLanguageFeature(
+      breakdownRows.byLanguageFeature,
+    );
+    await db.insertUserMetricsByModelFeature(breakdownRows.byModelFeature);
+    await db.insertUserMetricsByLanguageModel(breakdownRows.byLanguageModel);
 
     return { loaded: true, userMetrics, userBreakdowns };
   }
