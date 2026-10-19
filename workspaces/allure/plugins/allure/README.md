@@ -38,3 +38,44 @@ const serviceEntityPage = (
   </EntityLayoutWrapper>
 );
 ```
+
+## New Frontend System (Alpha)
+
+The Allure plugin supports the New Frontend System via an `/alpha` export, here's how to use it:
+
+1. Add the plugin to your app, using either auto discovery or the manual option:
+
+   For auto discovery, add the following to your `app-config.yaml` file:
+
+   ```yaml
+   app:
+     packages: all
+   ```
+
+   Alternatively, add the plugin manually in your `packages/app(-next)/src/App.tsx`, after all other imports:
+
+   ```tsx
+   import allurePlugin from '@backstage-community/plugin-allure/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       allurePlugin,
+       // ...
+     ],
+   });
+   ```
+
+2. Next, enable the entity content extension in your `app-config.yaml`:
+
+   ```yaml
+   app:
+     extensions:
+       - entity-content:allure/entity
+   ```
+
+   The `Allure Report` tab is shown on entities annotated with `qameta.io/allure-project`, as described above.
