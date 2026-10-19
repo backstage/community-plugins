@@ -614,6 +614,16 @@ async function createRouter(
         }
 
         const { type, entityId, from, to } = req.query as V2MeDashboardQuery;
+        const hasUserMetrics = await dbV2.hasUserMetrics(
+          type,
+          entityId,
+          userLogin,
+        );
+        if (!hasUserMetrics) {
+          const notMatched: V2MyDashboardResponse = { matched: false };
+          return res.json(notMatched);
+        }
+
         const data = await dbV2.getUserDashboardData(
           type,
           entityId,

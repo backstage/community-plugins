@@ -37,7 +37,20 @@ export function IDEActiveUsersChart({ data, variant, from, to }: Props) {
 
   const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
   const days = aggregated.map(d => d.day);
-  const values = aggregated.map(d => (d[field] ?? 0) as number);
+  const supportsRollingActiveUsers =
+    variant === 'weekly' &&
+    data.some(row => row.weekly_active_users !== undefined);
+  const values = aggregated.map(d => {
+    if (
+      variant === 'weekly' &&
+      d.weekly_active_users === undefined &&
+      supportsRollingActiveUsers
+    ) {
+      return null;
+    }
+
+    return (d[field] ?? 0) as number;
+  });
 
   if (aggregated.length === 0) {
     return (

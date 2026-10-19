@@ -17,7 +17,6 @@ import {
   BackstageCredentials,
   createExtensionPoint,
 } from '@backstage/backend-plugin-api';
-import { parseEntityRef } from '@backstage/catalog-model';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 
 /**
@@ -84,25 +83,26 @@ export interface CopilotUserResolver {
 }
 
 /**
- * Default {@link CopilotUserResolver}. Parses the signed-in user's entity ref
- * (e.g. `user:default/jdoe`) and uses the `name` part (`jdoe`) directly as
- * the GitHub login, without requiring a catalog lookup.
+ * Default {@link CopilotUserResolver}. Resolves the signed-in user's GitHub
+ * login from their `github.com/user-login` catalog annotation.
  *
- * This means it works even for users whose catalog entity cannot be resolved
- * for some reason (e.g. it doesn't exist, or the caller lacks permission to
- * read it) — the user's own identity token is trusted as the source of
- * truth for their entity ref, so no catalog round-trip is required.
+ * Entity names are not a trusted GitHub identity mapping: separate Backstage
+ * namespaces can contain users with the same name. Install a custom resolver
+ * through {@link CopilotUserResolverExtensionPoint} for a different trusted
+ * identity source.
  *
  * @public
  */
 export class DefaultCopilotUserResolver implements CopilotUserResolver {
   async resolveUserLogin({
     userEntityRef,
+    credentials,
+    services,
   }: CopilotUserResolverContext): Promise<string | undefined> {
-    const { name } = parseEntityRef(userEntityRef, {
-      defaultKind: 'user',
+    const entity = await services.catalog.getEntityByRef(userEntityRef, {
+      credentials,
     });
-    return name;
+    return entity?.metadata.annotations?.['github.com/user-login'];
   }
 }
 
@@ -115,7 +115,7 @@ export class DefaultCopilotUserResolver implements CopilotUserResolver {
  */
 export interface CopilotUserResolverExtensionPoint {
   /**
-   * Overrides the default catalog-name-based user resolver.
+   * Overrides the default catalog-annotation-based user resolver.
    */
   setUserResolver(resolver: CopilotUserResolver): void;
 }

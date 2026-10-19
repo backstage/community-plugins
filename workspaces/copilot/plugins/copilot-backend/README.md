@@ -199,12 +199,14 @@ endpoint returns `{ "matched": false }` (HTTP 200) rather than an error.
 Requires `copilot.ingestTeams: true` (per-user breakdown data is only
 ingested when that flag is enabled).
 
-By default, the `name` part of the caller's Backstage user entity ref (e.g.
-`user:default/jdoe` → `jdoe`) is parsed directly and used as their GitHub
-login — no catalog lookup is required, so this works even for callers whose
-catalog entity can't be resolved for some reason. To customize this matching
-(e.g. if your entity names don't match GitHub logins), register a custom
-resolver via the `copilotUserResolverExtensionPoint`:
+By default, the backend reads the caller's `github.com/user-login` annotation
+from their catalog entity and uses that value as their GitHub login. This
+avoids incorrectly matching users with the same entity name in different
+namespaces. If the entity is inaccessible or does not have this annotation,
+the endpoint returns `{ "matched": false }`.
+
+To use another trusted identity source, register a custom resolver via the
+`copilotUserResolverExtensionPoint`:
 
 ```typescript
 import { createBackendModule } from '@backstage/backend-plugin-api';

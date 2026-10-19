@@ -735,6 +735,19 @@ describe('DatabaseHandlerV2', () => {
       expect(rows[0].user_login).toBe('OctoCat');
     });
 
+    it('hasUserMetrics finds historical data independent of the date range', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'OctoCat', day: '2026-05-01' }),
+      ]);
+
+      await expect(
+        handler.hasUserMetrics('organization', 'org-1', 'octocat'),
+      ).resolves.toBe(true);
+      await expect(
+        handler.hasUserMetrics('organization', 'org-1', 'someone-else'),
+      ).resolves.toBe(false);
+    });
+
     it('getUserDashboardData scopes every dimension to a single user login', async () => {
       await handler.insertUserMetrics([
         buildUserMetric({ user_login: 'octocat', user_id: 1 }),

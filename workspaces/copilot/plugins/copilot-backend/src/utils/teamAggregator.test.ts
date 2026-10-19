@@ -172,6 +172,32 @@ describe('aggregateTeamMetrics', () => {
     ]);
   });
 
+  it('counts VS Code Agent users per team', () => {
+    const result = aggregateTeamMetrics(
+      [
+        makeUserMetric({ user_id: 1, used_vscode_agent: true }),
+        makeUserMetric({ user_id: 2, used_vscode_agent: false }),
+        makeUserMetric({ user_id: 3, used_vscode_agent: true }),
+      ],
+      [
+        makeUserTeam({ user_id: 1, team_slug: 'platform' }),
+        makeUserTeam({ user_id: 2, team_slug: 'platform' }),
+        makeUserTeam({ user_id: 3, team_slug: 'platform' }),
+      ],
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      expect.objectContaining({
+        team_slug: 'platform',
+        daily_active_vscode_agent_users: 2,
+      }),
+    ]);
+  });
+
   it('filters userTeams by day', () => {
     const userMetrics: V2UserMetricRow[] = [
       makeUserMetric({ user_id: 1, loc_added_sum: 20 }),

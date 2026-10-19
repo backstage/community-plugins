@@ -1036,6 +1036,21 @@ export class DatabaseHandlerV2 {
     };
   }
 
+  async hasUserMetrics(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+  ): Promise<boolean> {
+    const row = await this.db('copilot_user_metrics')
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .select('user_id')
+      .first();
+
+    return Boolean(row);
+  }
+
   async getTeams(
     metricsType: MetricsScope,
     entityId: string,

@@ -28,6 +28,8 @@ import {
   copilotApiRef,
   copilotApiV2Ref,
 } from './api';
+import { myMetricsApiRef } from './me/api';
+import { MyMetricsClient } from './me/api/MyMetricsClient';
 import {
   copilotRouteRef,
   enterpriseRouteRef,
@@ -61,6 +63,15 @@ export const copilotPlugin = createPlugin({
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new CopilotClientV2({ discoveryApi, fetchApi }),
+    }),
+    createApiFactory({
+      api: myMetricsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new MyMetricsClient({ discoveryApi, fetchApi }),
     }),
   ],
   routes: {

@@ -77,6 +77,7 @@ describe('router v2 endpoints', () => {
       getIngestionLog: jest.fn(),
       getDashboardData: jest.fn(),
       getUserDashboardData: jest.fn(),
+      hasUserMetrics: jest.fn(),
     };
 
     mockTaskV2 = {
@@ -116,6 +117,7 @@ describe('router v2 endpoints', () => {
       byModelFeature: [],
       byLanguageModel: [],
     });
+    mockDbV2.hasUserMetrics.mockResolvedValue(true);
     mockTaskV2.runAsync.mockResolvedValue(undefined);
     mockTaskV2.runBackfill.mockResolvedValue(undefined);
     mockScheduler.scheduleTask.mockResolvedValue(undefined);
@@ -408,7 +410,11 @@ describe('router v2 endpoints', () => {
       overrides: Partial<RouterOptions> = {},
     ) {
       const catalog = {
-        getEntityByRef: jest.fn(),
+        getEntityByRef: jest.fn().mockResolvedValue({
+          metadata: {
+            annotations: { 'github.com/user-login': 'mock' },
+          },
+        }),
       };
       return createTestApp({
         httpAuth: mockServices.httpAuth(httpAuthOverrides),
@@ -480,6 +486,41 @@ describe('router v2 endpoints', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({ matched: false });
       expect(mockDbV2.getUserDashboardData).not.toHaveBeenCalled();
+    });
+
+    it('returns matched: false when the resolved login has no ingested metrics', async () => {
+      mockDbV2.hasUserMetrics.mockResolvedValue(false);
+      const app = await createMeTestApp();
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ matched: false });
+      expect(mockDbV2.getUserDashboardData).not.toHaveBeenCalled();
+    });
+
+    it('returns matched data when historical metrics are outside the selected range', async () => {
+      const app = await createMeTestApp();
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        matched: true,
+        userLogin: 'octocat',
+        daily: [],
+        byFeature: [],
+        byIde: [],
+        byLanguage: [],
+        byModelFeature: [],
+        byLanguageModel: [],
+      });
     });
 
     it('rejects unauthenticated callers and never reaches the database', async () => {
