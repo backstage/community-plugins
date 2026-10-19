@@ -94,30 +94,28 @@ const removeVisitedPathGroup = (
 export const buildFileStructure = (row: CoverageTableRow) => {
   const dataGroupedByPath: FileStructureObject = groupByPath(row.files);
   row.files = Object.keys(dataGroupedByPath).map(pathGroup => {
+    const missing = dataGroupedByPath[pathGroup].reduce(
+      (acc: number, cur: CoverageTableRow) => acc + cur.missing,
+      0,
+    );
+    const tracked = dataGroupedByPath[pathGroup].reduce(
+      (acc: number, cur: CoverageTableRow) => acc + cur.tracked,
+      0,
+    );
     return buildFileStructure({
       path: pathGroup,
       files: dataGroupedByPath.hasOwnProperty('files')
         ? removeVisitedPathGroup(dataGroupedByPath.files, pathGroup)
         : removeVisitedPathGroup(dataGroupedByPath[pathGroup], pathGroup),
-      coverage:
-        dataGroupedByPath[pathGroup].reduce(
-          (acc: number, cur: CoverageTableRow) => acc + cur.coverage,
-          0,
-        ) / dataGroupedByPath[pathGroup].length,
-      missing: dataGroupedByPath[pathGroup].reduce(
-        (acc: number, cur: CoverageTableRow) => acc + cur.missing,
-        0,
-      ),
-      tracked: dataGroupedByPath[pathGroup].reduce(
-        (acc: number, cur: CoverageTableRow) => acc + cur.tracked,
-        0,
-      ),
+      coverage: tracked > 0 ? ((tracked - missing) / tracked) * 100 : 0,
+      missing,
+      tracked,
     });
   });
   return row;
 };
 
-const formatInitialData = (value: any) => {
+export const formatInitialData = (value: any) => {
   return buildFileStructure({
     path: '',
     coverage: value.aggregate.line.percentage,
@@ -129,12 +127,10 @@ const formatInitialData = (value: any) => {
         filename: fc.filename,
         coverage:
           Object.values(fc.lineHits).length > 0
-            ? Math.floor(
-                (Object.values(fc.lineHits).filter((hits: number) => hits > 0)
-                  .length /
-                  Object.values(fc.lineHits).length) *
-                  100,
-              )
+            ? (Object.values(fc.lineHits).filter((hits: number) => hits > 0)
+                .length /
+                Object.values(fc.lineHits).length) *
+              100
             : 0,
         missing: Object.values(fc.lineHits).filter(hits => !hits).length,
         tracked: Object.values(fc.lineHits).length,
