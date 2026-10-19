@@ -40,7 +40,7 @@
     "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@changesets/cli": "^3.0.0",
+    "@changesets/cli": "^2.27.4",
     "@microsoft/api-extractor-model": "^7.31.2",
     "@microsoft/tsdoc": "^0.17.0",
     "@microsoft/tsdoc-config": "^0.18.0",

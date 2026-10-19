@@ -39,6 +39,9 @@
     "semver": "^7.7.2",
     "ts-morph": "^21.0.1"
   },
+  "resolutions": {
+    "@yarnpkg/core": "4.9.1"
+  },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
