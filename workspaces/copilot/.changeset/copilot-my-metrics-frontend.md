@@ -6,4 +6,5 @@ Added a privacy-scoped, individual ("my Copilot metrics") view showing only the 
 
 This view reuses the same charts and controls as the main dashboard, scoped entirely to data returned by the backend's privacy-scoped `GET /v2/me/dashboard` endpoint — it has no way to request another user's or a team's metrics.
 
-Also exported the V2 dashboard's chart and summary components (e.g. `CodeCompletionsChart`, `DailyLOCChart`, `AiCreditsConsumptionChart`, `CodeGenerationSummary`, `ConsumptionSummary`) and chart utility helpers (`getMostUsedChatModel`, `chatFeatureLabel`, `featureLabel`) from the plugin's public API, so they can be reused by consumers building their own custom individual metrics views.
+The plugin exports `myMetricsApiRef`, `MyMetricsApi`, `MyDashboardParams`, and
+`MyMetricsContent` for consumers that customize where this view is mounted.

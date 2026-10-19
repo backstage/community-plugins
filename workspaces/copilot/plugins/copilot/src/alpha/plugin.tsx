@@ -75,8 +75,23 @@ export const copilotPage = PageBlueprint.make({
     title: 'Copilot Insights',
     icon: <CopilotIcon />,
     routeRef: copilotRouteRef,
+  },
+});
+
+/**
+ * The default Copilot V2 dashboard, rendered at `/copilot/v2` and used as
+ * the parent page's default tab.
+ *
+ * @alpha
+ */
+export const copilotDashboardPage = SubPageBlueprint.make({
+  name: 'dashboard',
+  attachTo: { id: 'page:copilot', input: 'pages' },
+  params: {
+    path: 'v2',
+    title: 'Copilot Usage',
     loader: () =>
-      import('../components').then(m => compatWrapper(<m.CopilotIndexPage />)),
+      import('../components').then(m => compatWrapper(<m.V2DashboardPage />)),
   },
 });
 
@@ -121,14 +136,55 @@ export const copilotMePage = SubPageBlueprint.make({
 });
 
 /** @alpha */
+export const copilotLegacyPage = PageBlueprint.make({
+  name: 'legacy',
+  params: {
+    path: '/copilot/legacy',
+    title: 'Copilot Legacy',
+    loader: () =>
+      import('../components/Pages').then(m => compatWrapper(<m.HomePage />)),
+  },
+});
+
+/** @alpha */
+export const copilotLegacyEnterprisePage = PageBlueprint.make({
+  name: 'legacy-enterprise',
+  params: {
+    path: '/copilot/legacy/enterprise',
+    title: 'Copilot Legacy Enterprise',
+    loader: () =>
+      import('../components/Pages/EnterprisePage').then(m =>
+        compatWrapper(<m.EnterprisePage />),
+      ),
+  },
+});
+
+/** @alpha */
+export const copilotLegacyOrganizationPage = PageBlueprint.make({
+  name: 'legacy-organization',
+  params: {
+    path: '/copilot/legacy/organization',
+    title: 'Copilot Legacy Organization',
+    loader: () =>
+      import('../components/Pages/OrganizationPage').then(m =>
+        compatWrapper(<m.OrganizationPage />),
+      ),
+  },
+});
+
+/** @alpha */
 export default createFrontendPlugin({
   pluginId: 'copilot',
   extensions: [
     copilotLegacyApi,
     copilotApi,
     copilotPage,
+    copilotDashboardPage,
     copilotMyMetricsApi,
     copilotMePage,
+    copilotLegacyPage,
+    copilotLegacyEnterprisePage,
+    copilotLegacyOrganizationPage,
   ],
   routes: {
     copilot: copilotRouteRef,
