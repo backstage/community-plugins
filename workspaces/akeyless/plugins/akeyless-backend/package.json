@@ -50,11 +50,11 @@
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@types/express": "*",
-    "akeyless": "^3.0.0",
-    "akeyless-cloud-id": "^1.0.0",
-    "express": "^4.17.1",
+    "akeyless": "^5.0.0",
+    "akeyless-cloud-id": "^2.0.0",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
-    "p-limit": "^3.1.0"
+    "p-limit": "^7.0.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "backstage:^",
