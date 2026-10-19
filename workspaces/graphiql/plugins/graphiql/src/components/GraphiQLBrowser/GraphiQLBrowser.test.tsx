@@ -50,7 +50,8 @@ describe('GraphiQLBrowser', () => {
     expect(rendered.getByTestId('graphiql-container')).not.toBeNull();
   });
 
-  it('should render plugins', async () => {
+  it('should render the selected endpoint plugins when switching tabs', async () => {
+    const user = userEvent.setup();
     const rendered = await renderInTestApp(
       <GraphiQLBrowser
         endpoints={[
@@ -66,14 +67,41 @@ describe('GraphiQLBrowser', () => {
               },
             ],
           },
+          {
+            id: 'b',
+            title: 'Endpoint B',
+            async fetcher() {},
+            plugins: [
+              {
+                content: () => <div>Hello from Other plugin</div>,
+                icon: GraphiQLIcon,
+                title: 'Other plugin',
+              },
+            ],
+          },
         ]}
       />,
     );
 
-    await userEvent.click(
-      rendered.getByRole('button', { name: 'Show My plugin' }),
-    );
+    await user.click(rendered.getByRole('button', { name: 'Show My plugin' }));
 
     expect(rendered.getByText('Hello from My plugin')).toBeVisible();
+
+    await user.click(screen.getByRole('tab', { name: 'Endpoint B' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Show Other plugin' }),
+    );
+    expect(await screen.findByText('Hello from Other plugin')).toBeVisible();
+    expect(
+      screen.queryByRole('button', { name: 'Show My plugin' }),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('tab', { name: 'Endpoint A' }));
+    expect(
+      await screen.findByRole('button', { name: 'Show My plugin' }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('button', { name: 'Show Other plugin' }),
+    ).not.toBeInTheDocument();
   });
 });

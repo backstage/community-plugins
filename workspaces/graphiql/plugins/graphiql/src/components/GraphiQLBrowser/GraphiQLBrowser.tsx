@@ -47,6 +47,7 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
     <div className={styles.root}>
       <Suspense fallback={<Progress />}>
         <Tabs
+          className={styles.tabContainer}
           selectedKey={tabId}
           onSelectionChange={key => setTabId(String(key))}
         >
@@ -58,7 +59,7 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
             ))}
           </TabList>
           {endpoints.map(({ id, fetcher, plugins }, index) => (
-            <TabPanel key={id} id={String(index)}>
+            <TabPanel key={id} id={String(index)} className={styles.tabPanel}>
               <div className={styles.graphiQlWrapper}>
                 <GraphiQL
                   key={id}
