@@ -88,6 +88,26 @@ describe('AnnouncementsDatabase', () => {
     });
   });
 
+  it('should handle an announcement without optional on_behalf_of', async () => {
+    await store.insertAnnouncement({
+      id: 'no-on-behalf-of',
+      publisher: 'publisher',
+      title: 'title',
+      excerpt: 'excerpt',
+      body: 'body',
+      created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
+      start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+    });
+
+    const announcement = await store.announcementByID('no-on-behalf-of');
+    expect(announcement?.on_behalf_of).toBeUndefined();
+
+    const { results } = await store.announcements({});
+    expect(results[0].on_behalf_of).toBeUndefined();
+  });
+
   it('should return an announcement by id', async () => {
     await store.insertAnnouncement({
       id: 'id',
