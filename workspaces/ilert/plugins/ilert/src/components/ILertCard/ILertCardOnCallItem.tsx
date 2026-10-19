@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,47 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Avatar from '@material-ui/core/Avatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import EmailIcon from '@material-ui/icons/Email';
-import PhoneIcon from '@material-ui/icons/Phone';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text, ButtonIcon } from '@backstage/ui';
+import { RiMailLine, RiPhoneLine } from '@remixicon/react';
 import { OnCall } from '../../types';
 import { ilertApiRef } from '../../api';
 import { DateTime as dt } from 'luxon';
 import { useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles({
-  listItemPrimary: {
-    fontWeight: 'bold',
-  },
-  fistItemLine: {
-    position: 'absolute',
-    bottom: 0,
-    height: '50%',
-    left: 36,
-  },
-  lastItemLine: {
-    position: 'absolute',
-    top: 0,
-    height: '50%',
-    left: 36,
-  },
-  itemLine: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    height: '100%',
-    left: 36,
-  },
-});
+import styles from './ILertCardOnCallItem.module.css';
 
 export const ILertCardOnCallItem = ({
   onCall,
@@ -65,7 +31,6 @@ export const ILertCardOnCallItem = ({
   lastItem?: boolean;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const classes = useStyles();
 
   if (!onCall || !onCall.user) {
     return null;
@@ -99,70 +64,58 @@ export const ILertCardOnCallItem = ({
     }
   }
 
+  let dividerClass = styles.itemLine;
+  if (fistItem) {
+    dividerClass = styles.fistItemLine;
+  } else if (lastItem) {
+    dividerClass = styles.lastItemLine;
+  }
+
   return (
-    <ListItem>
-      {fistItem ? (
-        <Divider orientation="vertical" className={classes.fistItemLine} />
-      ) : null}
-      {lastItem ? (
-        <Divider orientation="vertical" className={classes.lastItemLine} />
-      ) : null}
-      {!fistItem && !lastItem ? (
-        <Divider orientation="vertical" className={classes.itemLine} />
-      ) : null}
-      <ListItemIcon>
-        <Tooltip
-          title={`Escalation level #${onCall.escalationLevel}`}
-          placement="top"
-        >
-          <Avatar>{onCall.escalationLevel}</Avatar>
-        </Tooltip>
-      </ListItemIcon>
-      {onCall.schedule ? (
-        <Tooltip
-          title={
-            'On call shift ' +
-            `${dt.fromISO(onCall.start).toFormat('D MMM, HH:mm')} - ` +
-            `${dt.fromISO(onCall.end).toFormat('D MMM, HH:mm')}`
-          }
-          placement="top-start"
-        >
-          <ListItemText
-            primary={
-              <Typography className={classes.listItemPrimary}>
-                {ilertApi.getUserInitials(onCall.user)}
-              </Typography>
+    <li className={styles.listItem}>
+      <div className={dividerClass} />
+      <div
+        className={styles.avatarContainer}
+        title={`Escalation level #${onCall.escalationLevel}`}
+      >
+        <div className={styles.avatar}>{onCall.escalationLevel}</div>
+      </div>
+      <div className={styles.content}>
+        {onCall.schedule ? (
+          <div
+            title={
+              'On call shift ' +
+              `${dt.fromISO(onCall.start).toFormat('D MMM, HH:mm')} - ` +
+              `${dt.fromISO(onCall.end).toFormat('D MMM, HH:mm')}`
             }
-            secondary={escalationText}
-          />
-        </Tooltip>
-      ) : (
-        <ListItemText
-          primary={
-            <Typography className={classes.listItemPrimary}>
+          >
+            <Text variant="body-medium" className={styles.primary}>
               {ilertApi.getUserInitials(onCall.user)}
-            </Typography>
-          }
-          secondary={escalationText}
-        />
-      )}
-      <ListItemSecondaryAction>
+            </Text>
+            <Text variant="body-small">{escalationText}</Text>
+          </div>
+        ) : (
+          <div>
+            <Text variant="body-medium" className={styles.primary}>
+              {ilertApi.getUserInitials(onCall.user)}
+            </Text>
+            <Text variant="body-small">{escalationText}</Text>
+          </div>
+        )}
+      </div>
+      <div className={styles.actions}>
         {phoneNumber ? (
-          <Tooltip title="Call to user" placement="top">
-            <IconButton href={`tel:${phoneNumber}`}>
-              <PhoneIcon color="secondary" />
-            </IconButton>
-          </Tooltip>
+          <a href={`tel:${phoneNumber}`} title="Call to user">
+            <ButtonIcon icon={<RiPhoneLine size={16} />} variant="secondary" />
+          </a>
         ) : null}
-        <Tooltip
+        <a
+          href={`mailto:${onCall.user.email}`}
           title={`Send e-mail to user ${onCall.user.email}`}
-          placement="top"
         >
-          <IconButton href={`mailto:${onCall.user.email}`}>
-            <EmailIcon color="primary" />
-          </IconButton>
-        </Tooltip>
-      </ListItemSecondaryAction>
-    </ListItem>
+          <ButtonIcon icon={<RiMailLine size={16} />} variant="secondary" />
+        </a>
+      </div>
+    </li>
   );
 };

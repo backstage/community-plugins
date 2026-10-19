@@ -1,0 +1,9 @@
+.root {
+  padding: 12px 0;
+  position: relative;
+}
+
+.text {
+  font-style: italic;
+  color: var(--bui-fg-muted);
+}
