@@ -74,7 +74,13 @@ describe('migration 202609140000_add_vscode_agent_metrics', () => {
         .where(row)
         .first();
 
-      expect(stored).toMatchObject(row);
+      expect(stored).toMatchObject({
+        ...row,
+        day: expect.anything(),
+      });
+      expect(new Date(stored.day).toISOString()).toBe(
+        '2026-09-14T00:00:00.000Z',
+      );
     });
   });
 });
