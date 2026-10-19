@@ -328,6 +328,79 @@ describe('DefaultJenkinsInfoProvider', () => {
     });
   });
 
+  describe('with jobs on several named instances', () => {
+    const config = {
+      jenkins: {
+        instances: [
+          {
+            name: 'prod',
+            baseUrl: 'https://jenkins-prod.example.com',
+            username: 'backstage-bot',
+            apiKey: 'prod-token',
+          },
+          {
+            name: 'dev',
+            baseUrl: 'https://jenkins-dev.example.com',
+            username: 'backstage-bot',
+            apiKey: 'dev-token',
+          },
+          {
+            name: 'other',
+            baseUrl: 'https://jenkins-other.example.com',
+            username: 'backstage-bot',
+            apiKey: 'other-token',
+          },
+        ],
+      },
+    };
+    const entity = {
+      metadata: {
+        annotations: {
+          'jenkins.io/job-full-name': 'prod:teamA/build,dev:teamA/build',
+        },
+      },
+    };
+
+    it('rejects an instance the entity does not reference', async () => {
+      const provider = configureProvider(config, entity);
+
+      await expect(
+        provider.getInstance({ entityRef, instanceName: 'other' }),
+      ).rejects.toThrow(
+        "Couldn't find Jenkins instance 'other' in the Jenkins annotations on entity with name: component:foo/bar",
+      );
+    });
+
+    it('requires instanceName when there is no default instance', async () => {
+      const provider = configureProvider(config, entity);
+
+      await expect(provider.getInstance({ entityRef })).rejects.toThrow(
+        "Couldn't find a default Jenkins instance in the Jenkins annotations on entity with name: component:foo/bar",
+      );
+    });
+  });
+
+  it('rejects an annotation that contains no job names', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          baseUrl: 'https://jenkins.example.com',
+          username: 'backstage-bot',
+          apiKey: '123456789abcdef0123456789abcedf012',
+        },
+      },
+      {
+        metadata: {
+          annotations: { 'jenkins.io/job-full-name': ' , ' },
+        },
+      },
+    );
+
+    await expect(provider.getInstances({ entityRef })).rejects.toThrow(
+      "Couldn't find jenkins annotation (jenkins.io/job-full-name) on entity with name: component:foo/bar",
+    );
+  });
+
   it('Reads named default config and annotation', async () => {
     const provider = configureProvider(
       {

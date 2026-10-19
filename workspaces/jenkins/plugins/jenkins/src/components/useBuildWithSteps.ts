@@ -44,7 +44,8 @@ export function useBuildWithSteps({
   const getBuildWithSteps = useCallback(async () => {
     try {
       const entityName = await getCompoundEntityRef(entity);
-      return api.getBuild({
+      // Awaited so that a rejection reaches the catch below.
+      return await api.getBuild({
         entity: entityName,
         jobFullName,
         buildNumber,

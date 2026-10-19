@@ -18,13 +18,13 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { JenkinsInfoProvider } from './jenkinsInfoProvider';
 import { getJenkinsInstances } from './getJenkinsInstances';
+import { getProjectsFromInstances } from './getProjectsFromInstances';
 import { JenkinsApiImpl } from './jenkinsApi';
 import {
   PermissionEvaluator,
   toPermissionEvaluator,
 } from '@backstage/plugin-permission-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { stringifyError } from '@backstage/errors';
 import {
   AuthService,
   DiscoveryService,
@@ -148,37 +148,16 @@ export class JenkinsBuilder {
           },
         );
 
-        const projectsByInstance = await Promise.all(
-          jenkinsInstances.map(async jenkinsInfo => {
-            try {
-              const projects = await jenkinsApi.getProjects(
-                jenkinsInfo,
-                branches,
-              );
-
-              return projects.map(project => ({
-                ...project,
-                instanceName: jenkinsInfo.instanceName,
-              }));
-            } catch (error) {
-              const errorDetails =
-                error instanceof AggregateError ? error.errors : error;
-
-              // Promise.any can return an AggregateError with the unhelpful
-              // message "All promises were rejected", so include its causes.
-              throw new Error(
-                `Unable to fetch projects from Jenkins instance '${
-                  jenkinsInfo.instanceName
-                }', for ${jenkinsInfo.fullJobNames}: ${stringifyError(
-                  errorDetails,
-                )}`,
-              );
-            }
-          }),
-        );
+        const { projects, errors } = await getProjectsFromInstances({
+          jenkinsApi,
+          jenkinsInstances,
+          branches,
+          logger,
+        });
 
         response.json({
-          projects: projectsByInstance.flat(),
+          projects,
+          errors,
         });
       },
     );

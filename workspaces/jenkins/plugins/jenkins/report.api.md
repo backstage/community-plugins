@@ -72,6 +72,12 @@ export interface JenkinsApi {
       branch?: string;
     };
   }): Promise<Project[]>;
+  getProjectsWithErrors?(options: {
+    entity: CompoundEntityRef;
+    filter: {
+      branch?: string;
+    };
+  }): Promise<JenkinsProjectsResult>;
   // (undocumented)
   retry(options: {
     entity: CompoundEntityRef;
@@ -119,12 +125,25 @@ export class JenkinsClient implements JenkinsApi {
     };
   }): Promise<Project[]>;
   // (undocumented)
+  getProjectsWithErrors(options: {
+    entity: CompoundEntityRef;
+    filter: {
+      branch?: string;
+    };
+  }): Promise<JenkinsProjectsResult>;
+  // (undocumented)
   retry(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
     instanceName?: string;
   }): Promise<void>;
+}
+
+// @public
+export interface JenkinsInstanceError {
+  instanceName: string;
+  message: string;
 }
 
 // @public (undocumented)
@@ -137,6 +156,12 @@ const jenkinsPlugin: BackstagePlugin<
 >;
 export { jenkinsPlugin };
 export { jenkinsPlugin as plugin };
+
+// @public
+export interface JenkinsProjectsResult {
+  errors: JenkinsInstanceError[];
+  projects: Project[];
+}
 
 // Warning: (ae-missing-release-tag) "LatestRunCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

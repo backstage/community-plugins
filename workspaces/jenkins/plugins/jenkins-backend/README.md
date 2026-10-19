@@ -196,11 +196,15 @@ The two `artistLookup-build` jobs above do not collide because their instance na
 
 If a request does not specify an instance, the provider uses the `default` instance. For backwards compatibility, an entity that references exactly one named instance also works without an explicit instance selector.
 
-All referenced instances are queried in parallel. The current API does not return partial results: if one instance is unavailable, misconfigured, or lacks credentials for its annotated job, the projects request fails for the entity. The error identifies the failing instance and its job names. `projectCountLimit` continues to apply independently to each instance.
+All referenced instances are queried in parallel, and one failing instance does not hide the jobs of the others. The projects endpoint returns `{ projects, errors }`: `projects` holds the jobs of every instance that responded, and `errors` lists each instance that did not as `{ instanceName, message }`. The message names the instance and its job names, for example `Unable to fetch projects from Jenkins instance 'departmentBar', for teamA/artistLookup-build; caused by Error: ...`, and is also logged as a warning. The request only fails when every referenced instance fails, so an entity with a single instance behaves as before.
+
+An annotation that references an instance missing from `jenkins.instances` still fails the whole request with `Couldn't find a jenkins instance in the config with name ...`, because that is a configuration error rather than an outage. `projectCountLimit` continues to apply independently to each instance.
 
 ### Actions
 
 The `jenkins:list-builds` action returns `instanceName` for every build. Pass that value to the optional `instanceName` input of `jenkins:get-build`, `jenkins:get-build-logs`, and `jenkins:trigger-build`. This is required to disambiguate jobs whose full names are equal across instances. Omitting it selects the entity's default instance.
+
+Like the projects endpoint, `jenkins:list-builds` returns the builds of the instances that responded and lists the others in `errors`. It only fails when every instance fails.
 
 ### Custom JenkinsInfoProvider
 

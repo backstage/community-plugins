@@ -114,7 +114,9 @@ spec:
 - View summary of a build
 - View and operate jobs from multiple Jenkins instances on the same entity
 
-The projects table includes the Jenkins instance name. The same job full name can appear on multiple instances; build details, run history, console logs, and retries are resolved using both the instance name and job full name.
+When the jobs of an entity come from more than one Jenkins instance, the projects table adds an Instance column. The same job full name can appear on multiple instances; build details, run history, console logs, and retries are resolved using both the instance name and job full name. If you pass your own `columns`, add one with `field: 'instanceName'` to show the instance.
+
+If some instances cannot be reached, the table still shows the jobs of the others, with a warning that names each failing instance and its error. If none can be reached, the table shows the error instead of an empty list.
 
 ## Limitations
 

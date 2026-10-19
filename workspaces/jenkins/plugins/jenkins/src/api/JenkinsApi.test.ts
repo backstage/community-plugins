@@ -15,6 +15,7 @@
  */
 
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { ResponseError } from '@backstage/errors';
 import { JenkinsClient } from './JenkinsApi';
 
 describe('JenkinsClient', () => {
@@ -74,6 +75,63 @@ describe('JenkinsClient', () => {
       `${baseUrl}/v1/entity/default/Component/my-service/job/folder%2Fshared-job/12?instanceName=dev`,
     );
     expect(fetchApi.fetch.mock.calls[1][1]).toEqual({ method: 'POST' });
+  });
+
+  it('reports the instances that failed next to the projects that loaded', async () => {
+    const error = {
+      instanceName: 'prod',
+      message: "Unable to fetch projects from Jenkins instance 'prod'",
+    };
+    fetchApi.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        projects: [{ fullName: 'folder/job', instanceName: 'dev' }],
+        errors: [error],
+      }),
+    } as Response);
+
+    const result = await client.getProjectsWithErrors({ entity, filter: {} });
+
+    expect(result.projects.map(p => p.instanceName)).toEqual(['dev']);
+    expect(result.errors).toEqual([error]);
+  });
+
+  it('lets the backend resolve the instance when the response has none', async () => {
+    fetchApi.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        projects: [{ fullName: 'folder/job', lastBuild: { number: 3 } }],
+      }),
+    } as Response);
+
+    const [project] = await client.getProjects({ entity, filter: {} });
+    await project.onRestartClick();
+
+    expect(project.instanceName).toBeUndefined();
+    expect(fetchApi.fetch.mock.calls[1][0].toString()).toBe(
+      `${baseUrl}/v1/entity/default/Component/my-service/job/folder%2Fjob/3`,
+    );
+  });
+
+  it('throws the backend error instead of returning no projects', async () => {
+    fetchApi.fetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      headers: new Map([['content-type', 'application/json']]),
+      text: async () =>
+        JSON.stringify({
+          error: { name: 'Error', message: 'prod is down' },
+          response: { statusCode: 500 },
+        }),
+    } as unknown as Response);
+
+    const result = client.getProjects({ entity, filter: {} });
+
+    await expect(result).rejects.toBeInstanceOf(ResponseError);
+    await expect(result).rejects.toMatchObject({
+      cause: { message: 'prod is down' },
+    });
   });
 
   it('passes instanceName to build, history, and console requests', async () => {

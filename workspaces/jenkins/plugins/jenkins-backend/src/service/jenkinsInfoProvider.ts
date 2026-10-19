@@ -297,13 +297,6 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     // lookup `[jenkinsName#]jobFullName` from entity annotation
     const jenkinsAndJobNames =
       DefaultJenkinsInfoProvider.getEntityAnnotationValue(entity);
-    if (!jenkinsAndJobNames || jenkinsAndJobNames.length === 0) {
-      throw new Error(
-        `Couldn't find jenkins annotation (${
-          DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
-        }) on entity with name: ${stringifyEntityRef(opt.entityRef)}`,
-      );
-    }
 
     const jobsByInstance = new Map<string, string[]>();
     for (const annotationValue of jenkinsAndJobNames) {
@@ -330,6 +323,16 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
         ...(jobsByInstance.get(instanceName) ?? []),
         jobName,
       ]);
+    }
+
+    // Checked after parsing so that a value made only of separators, such as
+    // ' , ', fails like a missing annotation instead of matching no jobs.
+    if (jobsByInstance.size === 0) {
+      throw new Error(
+        `Couldn't find jenkins annotation (${
+          DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
+        }) on entity with name: ${stringifyEntityRef(opt.entityRef)}`,
+      );
     }
 
     return { entity, jobsByInstance };

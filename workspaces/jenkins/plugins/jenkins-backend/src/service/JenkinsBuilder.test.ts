@@ -18,7 +18,8 @@ import express from 'express';
 import http, { Server } from 'http';
 import { AddressInfo } from 'net';
 import { ConfigReader } from '@backstage/config';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockErrorHandler, mockServices } from '@backstage/backend-test-utils';
+import { NotFoundError } from '@backstage/errors';
 import { JenkinsApiImpl } from './jenkinsApi';
 import { JenkinsBuilder, JenkinsEnvironment } from './JenkinsBuilder';
 import { JenkinsInfoProvider } from './jenkinsInfoProvider';
@@ -57,7 +58,7 @@ class TestJenkinsBuilder extends JenkinsBuilder {
 
 describe('JenkinsBuilder', () => {
   let server: Server | undefined;
-  let provider: jest.Mocked<JenkinsInfoProvider>;
+  let provider: jest.Mocked<Required<JenkinsInfoProvider>>;
   let jenkinsApi: jest.Mocked<Pick<JenkinsApiImpl, 'getProjects' | 'getBuild'>>;
 
   afterEach(async () => {
@@ -88,7 +89,7 @@ describe('JenkinsBuilder', () => {
       jenkinsApi as unknown as JenkinsApiImpl,
     );
     const { router } = await builder.build();
-    const app = express().use(router);
+    const app = express().use(router).use(mockErrorHandler());
 
     return new Promise(resolve => {
       server = app.listen(0, () => {
@@ -155,8 +156,128 @@ describe('JenkinsBuilder', () => {
           fullName: 'folder/shared-job',
         }),
       ],
+      errors: [],
     });
     expect(jenkinsApi.getProjects).toHaveBeenCalledTimes(2);
+  });
+
+  it('returns the projects of the healthy instances when one fails', async () => {
+    jenkinsApi.getProjects.mockImplementation(async jenkinsInfo => {
+      if (jenkinsInfo.instanceName === 'prod') {
+        throw new Error('connect ECONNREFUSED');
+      }
+      return [
+        {
+          fullName: 'folder/shared-job',
+          fullDisplayName: 'folder » shared-job',
+          displayName: 'shared-job',
+          inQueue: false,
+          status: 'SUCCESS',
+          lastBuild: null,
+        },
+      ];
+    });
+    const baseUrl = await startServer();
+
+    const response = await httpGet(
+      `${baseUrl}/v1/entity/default/Component/my-service/projects`,
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      projects: [
+        expect.objectContaining({
+          instanceName: 'dev',
+          fullName: 'folder/shared-job',
+        }),
+      ],
+      errors: [
+        {
+          instanceName: 'prod',
+          message:
+            "Unable to fetch projects from Jenkins instance 'prod', for folder/shared-job; caused by Error: connect ECONNREFUSED",
+        },
+      ],
+    });
+  });
+
+  it('fails when every instance fails', async () => {
+    jenkinsApi.getProjects.mockImplementation(async jenkinsInfo => {
+      throw new Error(`${jenkinsInfo.instanceName} is down`);
+    });
+    const baseUrl = await startServer();
+
+    const response = await httpGet(
+      `${baseUrl}/v1/entity/default/Component/my-service/projects`,
+    );
+
+    expect(response.status).toBe(500);
+    expect(response.body).toMatchObject({
+      error: {
+        message:
+          "Unable to fetch projects from Jenkins instance 'prod', for folder/shared-job; caused by Error: prod is down\n" +
+          "Unable to fetch projects from Jenkins instance 'dev', for folder/shared-job; caused by Error: dev is down",
+      },
+    });
+  });
+
+  it('keeps the status of a typed error from a single instance', async () => {
+    provider.getInstances.mockResolvedValue([
+      {
+        instanceName: 'dev',
+        baseUrl: 'http://jenkins-dev',
+        fullJobNames: ['folder/missing-job'],
+        projectCountLimit: 50,
+      },
+    ]);
+    jenkinsApi.getProjects.mockRejectedValue(new NotFoundError('no such job'));
+    const baseUrl = await startServer();
+
+    const response = await httpGet(
+      `${baseUrl}/v1/entity/default/Component/my-service/projects`,
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.body).toMatchObject({
+      error: {
+        name: 'NotFoundError',
+        message:
+          "Unable to fetch projects from Jenkins instance 'dev', for folder/missing-job; caused by NotFoundError: no such job",
+      },
+    });
+  });
+
+  it('includes the causes of a failed branch lookup', async () => {
+    provider.getInstances.mockResolvedValue([
+      {
+        instanceName: 'dev',
+        baseUrl: 'http://jenkins-dev',
+        fullJobNames: ['folder/shared-job'],
+        projectCountLimit: 50,
+      },
+    ]);
+    jenkinsApi.getProjects.mockRejectedValue(
+      new AggregateError(
+        [new Error('Jenkins API error 404')],
+        'All promises were rejected',
+      ),
+    );
+    const baseUrl = await startServer();
+
+    const response = await httpGet(
+      `${baseUrl}/v1/entity/default/Component/my-service/projects?branch=main`,
+    );
+
+    expect(response.status).toBe(500);
+    expect(response.body).toMatchObject({
+      error: {
+        message: expect.stringContaining('Jenkins API error 404'),
+      },
+    });
+    expect(jenkinsApi.getProjects).toHaveBeenCalledWith(
+      expect.objectContaining({ instanceName: 'dev' }),
+      ['main'],
+    );
   });
 
   it('uses instanceName when resolving a job with a duplicate full name', async () => {
