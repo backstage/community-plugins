@@ -38,6 +38,7 @@ import {
   YAxis,
 } from 'recharts';
 import { codeCoverageApiRef } from '../../api';
+import { AggregateCoverage } from '../../types';
 
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -66,6 +67,14 @@ const getTrendIcon = (trend: number, classes: ClassNameMap) => {
       return <TrendingFlatIcon />;
   }
 };
+
+export const getTrendForCoverage = (
+  history: AggregateCoverage[],
+  type: Coverage,
+) => history[0][type].percentage - history[history.length - 1][type].percentage;
+
+export const formatTrend = (trend: number) =>
+  `${trend > 0 ? '+' : ''}${trend.toFixed(2)} pp`;
 
 // convert timestamp to human friendly form
 function formatDateToHuman(timeStamp: string | number) {
@@ -109,22 +118,9 @@ export const CoverageHistoryChart = () => {
     );
   }
 
-  const [oldestCoverage] = valueHistory.history.slice(-1);
   const latestCoverage = valueHistory.history[0];
-
-  const getTrendForCoverage = (type: Coverage) => {
-    if (!oldestCoverage[type].percentage) {
-      return 0;
-    }
-    return (
-      ((latestCoverage[type].percentage - oldestCoverage[type].percentage) /
-        oldestCoverage[type].percentage) *
-      100
-    );
-  };
-
-  const lineTrend = getTrendForCoverage('line');
-  const branchTrend = getTrendForCoverage('branch');
+  const lineTrend = getTrendForCoverage(valueHistory.history, 'line');
+  const branchTrend = getTrendForCoverage(valueHistory.history, 'branch');
 
   return (
     <Card>
@@ -135,7 +131,7 @@ export const CoverageHistoryChart = () => {
             {getTrendIcon(lineTrend, classes)}
             <Typography>
               Current line: {latestCoverage.line.percentage}%<br />(
-              {Math.floor(lineTrend)}% change over {valueHistory.history.length}{' '}
+              {formatTrend(lineTrend)} over {valueHistory.history.length}{' '}
               builds)
             </Typography>
           </Box>
@@ -143,8 +139,8 @@ export const CoverageHistoryChart = () => {
             {getTrendIcon(branchTrend, classes)}
             <Typography>
               Current branch: {latestCoverage.branch.percentage}%<br />(
-              {Math.floor(branchTrend)}% change over{' '}
-              {valueHistory.history.length} builds)
+              {formatTrend(branchTrend)} over {valueHistory.history.length}{' '}
+              builds)
             </Typography>
           </Box>
         </Box>
@@ -159,16 +155,24 @@ export const CoverageHistoryChart = () => {
               tickFormatter={formatDateToHuman}
               reversed
             />
-            <YAxis dataKey="line.percentage" />
-            <YAxis dataKey="branch.percentage" />
-            <Tooltip labelFormatter={formatDateToHuman} />
+            <YAxis domain={[0, 100]} unit="%" />
+            <Tooltip
+              labelFormatter={formatDateToHuman}
+              formatter={value => `${value}%`}
+            />
             <Legend />
             <Line
               type="monotone"
               dataKey="branch.percentage"
+              name="Branch"
               stroke="#8884d8"
             />
-            <Line type="monotone" dataKey="line.percentage" stroke="#82ca9d" />
+            <Line
+              type="monotone"
+              dataKey="line.percentage"
+              name="Line"
+              stroke="#82ca9d"
+            />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
