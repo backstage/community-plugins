@@ -6,8 +6,8 @@
   }
 
   .tabs {
-    background: var(--bui-bg-surface-1);
-    border-bottom: 1px solid var(--bui-border);
+background: var(--bui-bg-neutral-1);
+    border-bottom: 1px solid var(--bui-border-1);
   }
 
   .graphiQlWrapper {
