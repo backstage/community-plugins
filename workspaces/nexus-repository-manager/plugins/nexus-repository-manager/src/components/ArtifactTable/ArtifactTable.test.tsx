@@ -248,6 +248,46 @@ describe('ArtifactTable', () => {
     expect(getCellText(table, 0, 'Version')).toBe('june');
   });
 
+  it('sorts rows with a missing modified date to the front, ahead of dated rows', async () => {
+    const rowData = [
+      {
+        ...sampleRows[0],
+        version: 'nodate1',
+        lastModified: undefined,
+      },
+      {
+        ...sampleRows[0],
+        version: 'dated',
+        lastModified: '2023-01-15T00:00:00.000Z',
+      },
+      {
+        ...sampleRows[0],
+        version: 'nodate2',
+        lastModified: undefined,
+      },
+    ];
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
+
+    const user = userEvent.setup();
+    const table = screen.getAllByRole('table')[0];
+    const header = screen.getByText('Modified');
+
+    // Column defaults to descending, so the first click switches to ascending.
+    await user.click(header);
+    expect(getCellText(table, 0, 'Version')).toBe('nodate1');
+    expect(getCellText(table, 1, 'Version')).toBe('nodate2');
+    expect(getCellText(table, 2, 'Version')).toBe('dated');
+  });
+
   it('filters by modified date using the displayed text', async () => {
     const rowData = [
       {
