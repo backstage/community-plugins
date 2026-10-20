@@ -39,16 +39,20 @@
     ]
   },
   "dependencies": {
-    "@backstage/cli": "^0.36.0",
-    "@backstage/cli-defaults": "^0.1.0",
-    "@backstage/repo-tools": "^0.17.0",
-    "@changesets/cli": "^2.27.1",
+    "@backstage/cli": "^0.36.6",
+    "@backstage/cli-defaults": "^0.1.6",
+    "@backstage/repo-tools": "^0.19.1",
+    "@changesets/cli": "^2.27.4",
     "@playwright/test": "^1.32.3",
     "prettier": "^2.3.2",
     "ts-morph": "^23.0.0",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "devDependencies": {
     "knip": "^5.27.4"
+  },
+  "resolutions": {
+    "got": "^11.8.6",
+    "@types/webpack-env": "^1.18.8"
   }
 }
