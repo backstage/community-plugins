@@ -14,33 +14,16 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
+import { Flex } from '@backstage/ui';
 
-const useStyles = makeStyles({
-  wrapper: {
-    display: 'flex',
-    flexFlow: 'column',
-    flexGrow: 1,
-    margin: '20px 30px 0 30px',
-    minWidth: 800,
-  },
-  flexGrow: {
-    display: 'flex',
-    flexFlow: 'column',
-    flexGrow: 1,
-  },
-});
-
-const Page = props => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.flexGrow}>
-      <div className={classes.wrapper}>
-        <div className={classes.flexGrow}>{props.children}</div>
-      </div>
-    </div>
-  );
-};
+const Page = props => (
+  <Flex
+    direction="column"
+    grow={1}
+    style={{ margin: '20px 30px 0 30px', minWidth: '800px' }}
+  >
+    {props.children}
+  </Flex>
+);
 
 export default Page;
