@@ -67,7 +67,7 @@ These relations should also appear on the `EntityCatalogGraphView` component fro
 
 ## Template Update Notifications
 
-This plugin includes a notification feature that automatically notifies entity owners when the scaffolder template used to create their entities has been updated to a new version. When a template update is detected, the plugin finds all entities that were scaffolded from that template (using the `spec.scaffoldedFrom` field) and notifies the owners of those entities.
+This plugin includes a notification feature that automatically notifies entity owners when the scaffolder template used to create their entities has been updated to a new version. When a template update is detected, the plugin finds all entities that were scaffolded from that template (using the `relations.scaffoldedFrom` field) and notifies the owners of those entities.
 
 ### Prerequisites
 
