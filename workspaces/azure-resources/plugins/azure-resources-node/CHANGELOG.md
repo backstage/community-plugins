@@ -1,5 +1,12 @@
 # @backstage-community/plugin-azure-resources-node
 
+## 0.15.1
+
+### Patch Changes
+
+- 02f6bd3: Updated dependency `@azure/arm-resourcegraph` to `^5.0.0`.
+  Updated dependency `uuid` to `^14.0.0`.
+
 ## 0.15.0
 
 ### Minor Changes
