@@ -44,17 +44,17 @@ The server is available at `/api/mcp-actions/v1/tech-insights`.
 
 The following read-only actions are registered:
 
-- `tech-insights:get-fact-schemas`: Gets the latest schemas for configured fact retrievers.
-- `tech-insights:get-latest-facts`: Gets the latest facts for an entity.
-- `tech-insights:get-facts-in-range`: Gets facts for an entity over an ISO 8601 time range.
+- `tech-insights:get-tech-insights-fact-schemas`: Gets the latest schemas for configured fact retrievers.
+- `tech-insights:get-tech-insights-latest-facts`: Gets the latest facts for an entity.
+- `tech-insights:get-tech-insights-facts-in-range`: Gets facts for an entity over an ISO 8601 time range.
 
 When a FactChecker is configured, these additional actions are registered:
 
-- `tech-insights:get-checks`: Gets all configured checks.
-- `tech-insights:run-checks`: Runs selected checks against an entity.
-- `tech-insights:get-entity-insights`: Gets an entity's applicable checks and results.
-- `tech-insights:get-entity-scorecard`: Gets an entity's categorized compliance scorecard.
-- `tech-insights:get-entity-maturity`: Gets an entity's maturity rank from ranked checks.
+- `tech-insights:get-tech-insights-checks`: Gets all configured checks.
+- `tech-insights:run-tech-insights-checks`: Runs selected checks against an entity.
+- `tech-insights:get-tech-insights-entity-insights`: Gets an entity's applicable checks and results.
+- `tech-insights:get-tech-insights-entity-scorecard`: Gets an entity's categorized compliance scorecard.
+- `tech-insights:get-tech-insights-entity-maturity`: Gets an entity's maturity rank from ranked checks.
 
 MCP requests are authorized using the same Tech Insights permissions as the REST API. Ensure that the identity used by the MCP client has the required fact retriever and check permissions.
 

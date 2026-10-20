@@ -36,7 +36,7 @@ export const createRunChecksAction = ({
   permissions: PermissionsService;
 }) => {
   actionsRegistry.register({
-    name: 'run-checks',
+    name: 'run-tech-insights-checks',
     title: 'Run Tech Insights Checks',
     visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {

@@ -29,7 +29,7 @@ export const createGetLatestFactsAction = ({
   techInsightsStore: TechInsightsStore;
 }) => {
   actionsRegistry.register({
-    name: 'get-latest-facts',
+    name: 'get-tech-insights-latest-facts',
     title: 'Get Latest Tech Insights Facts',
     visibilityPermission: techInsightsFactRetrieverReadPermission,
     attributes: {

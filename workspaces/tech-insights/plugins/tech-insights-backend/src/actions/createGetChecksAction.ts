@@ -34,7 +34,7 @@ export const createGetChecksAction = ({
   permissions: PermissionsService;
 }) => {
   actionsRegistry.register({
-    name: 'get-checks',
+    name: 'get-tech-insights-checks',
     title: 'Get Tech Insights Checks',
     visibilityPermission: techInsightsCheckReadPermission,
     attributes: {

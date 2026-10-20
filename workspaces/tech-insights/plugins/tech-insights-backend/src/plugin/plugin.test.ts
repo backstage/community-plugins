@@ -25,17 +25,17 @@ import request from 'supertest';
 import { techInsightsPlugin } from './plugin';
 
 const baselineActionIds = [
-  'tech-insights:get-fact-schemas',
-  'tech-insights:get-latest-facts',
-  'tech-insights:get-facts-in-range',
+  'tech-insights:get-tech-insights-fact-schemas',
+  'tech-insights:get-tech-insights-latest-facts',
+  'tech-insights:get-tech-insights-facts-in-range',
 ];
 
 const factCheckerActionIds = [
-  'tech-insights:get-checks',
-  'tech-insights:run-checks',
-  'tech-insights:get-entity-insights',
-  'tech-insights:get-entity-scorecard',
-  'tech-insights:get-entity-maturity',
+  'tech-insights:get-tech-insights-checks',
+  'tech-insights:run-tech-insights-checks',
+  'tech-insights:get-tech-insights-entity-insights',
+  'tech-insights:get-tech-insights-entity-scorecard',
+  'tech-insights:get-tech-insights-entity-maturity',
 ];
 
 const factCheckerModule = createBackendModule({

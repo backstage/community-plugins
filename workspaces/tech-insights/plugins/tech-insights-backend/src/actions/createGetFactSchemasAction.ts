@@ -29,7 +29,7 @@ export const createGetFactSchemasAction = ({
   techInsightsStore: TechInsightsStore;
 }) => {
   actionsRegistry.register({
-    name: 'get-fact-schemas',
+    name: 'get-tech-insights-fact-schemas',
     title: 'Get Tech Insights Fact Schemas',
     visibilityPermission: techInsightsFactRetrieverReadPermission,
     attributes: {

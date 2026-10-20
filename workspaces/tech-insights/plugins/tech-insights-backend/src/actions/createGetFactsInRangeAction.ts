@@ -31,7 +31,7 @@ export const createGetFactsInRangeAction = ({
   techInsightsStore: TechInsightsStore;
 }) => {
   actionsRegistry.register({
-    name: 'get-facts-in-range',
+    name: 'get-tech-insights-facts-in-range',
     title: 'Get Tech Insights Facts In Range',
     visibilityPermission: techInsightsFactRetrieverReadPermission,
     attributes: {

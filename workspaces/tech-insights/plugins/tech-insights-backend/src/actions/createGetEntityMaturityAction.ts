@@ -36,7 +36,7 @@ export const createGetEntityMaturityAction = ({
   actionsRegistry: ActionsRegistryService;
 }) => {
   actionsRegistry.register({
-    name: 'get-entity-maturity',
+    name: 'get-tech-insights-entity-maturity',
     title: 'Get Entity Maturity',
     visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {

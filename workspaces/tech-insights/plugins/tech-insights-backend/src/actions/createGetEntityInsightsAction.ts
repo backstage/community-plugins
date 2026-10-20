@@ -27,7 +27,7 @@ export const createGetEntityInsightsAction = ({
   techInsightsStore: TechInsightsStore;
 }) => {
   actionsRegistry.register({
-    name: 'get-entity-insights',
+    name: 'get-tech-insights-entity-insights',
     title: 'Get Entity Tech Insights Report',
     visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {

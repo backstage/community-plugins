@@ -28,7 +28,7 @@ export const createGetEntityScorecardAction = ({
   actionsRegistry: ActionsRegistryService;
 }) => {
   actionsRegistry.register({
-    name: 'get-entity-scorecard',
+    name: 'get-tech-insights-entity-scorecard',
     title: 'Get Entity Scorecard',
     visibilityPermission: techInsightsCheckUpdatePermission,
     attributes: {
