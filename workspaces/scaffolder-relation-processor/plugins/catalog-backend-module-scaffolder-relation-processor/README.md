@@ -112,7 +112,7 @@ Both the title and description support the following template variables:
 
 1. A scaffolder template `template:default/my-service-template` is updated from version `1.0.0` to `1.1.0`
 2. The plugin detects this version change and emits a `relationProcessor.template:version_updated` event
-3. The plugin queries the catalog for all entities with a `scaffoldedFrom` relation targeting `template:default/my-service-template`
+3. The plugin queries the catalog for all entities with `relations.scaffoldedFrom: 'template:default/my-service-template'`
 4. For each found entity, notifications are sent to all entities listed in the `ownedBy` relations
 5. The notification includes a link to the entity's catalog page and the configured message
 
