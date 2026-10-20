@@ -38,7 +38,7 @@ export const copilotMeOverrideModule = createFrontendModule({
   pluginId: 'copilot',
   extensions: [
     SubPageBlueprint.make({
-      name: 'me',
+      name: 'settings-me',
       attachTo: { id: 'page:user-settings', input: 'pages' },
       params: {
         path: 'copilot-me',
@@ -50,7 +50,7 @@ export const copilotMeOverrideModule = createFrontendModule({
       },
     }),
     PageBlueprint.make({
-      name: 'me',
+      name: 'standalone-me',
       params: {
         path: 'copilot-me',
         title: 'My Copilot Metrics',

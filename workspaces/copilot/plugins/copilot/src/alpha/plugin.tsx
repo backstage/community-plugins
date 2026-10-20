@@ -88,7 +88,7 @@ export const copilotDashboardPage = SubPageBlueprint.make({
   name: 'dashboard',
   attachTo: { id: 'page:copilot', input: 'pages' },
   params: {
-    path: 'v2',
+    path: '',
     title: 'Copilot Usage',
     loader: () =>
       import('../components').then(m => compatWrapper(<m.V2DashboardPage />)),

@@ -58,16 +58,14 @@ techdocs:
 
 auth:
   providers:
-    # The guest user's entity ref is overridden here (instead of the default
-    # `user:default/guest`) so that its `name` part — `your-github-username`
-    # — matches a real GitHub login with ingested Copilot data. This lets you
-    # exercise the individual "my metrics" plugin locally as the guest user,
-    # since the default CopilotUserResolver resolves the caller's GitHub
-    # login directly from this entity ref's name. Replace
-    # `your-github-username` with your own GitHub username (or any login
-    # that has ingested data) when testing.
+    # Keep the guest identity matched to the User entity in examples/org.yaml.
+    # To test individual "my metrics" locally, update that entity's
+    # github.com/user-login annotation to your GitHub username (or a login
+    # with ingested Copilot data). The default CopilotUserResolver looks up
+    # this entity ref, then reads the annotation; it does not use the entity
+    # name as the GitHub login.
     guest:
-      userEntityRef: user:default/your-github-username
+      userEntityRef: user:default/guest
 
 catalog:
   import:
