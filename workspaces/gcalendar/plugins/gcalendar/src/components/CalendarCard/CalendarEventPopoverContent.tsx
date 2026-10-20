@@ -18,8 +18,14 @@ import DOMPurify from 'dompurify';
 
 import { useAnalytics } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
-import { Box, ButtonIcon, Flex, Text, Tooltip } from '@backstage/ui';
-import { TooltipTrigger } from 'react-aria-components';
+import {
+  Box,
+  ButtonIcon,
+  Flex,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import { RiArrowRightLine } from '@remixicon/react';
 
 import { AttendeeChip } from './AttendeeChip';
