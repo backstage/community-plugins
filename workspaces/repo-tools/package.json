@@ -52,7 +52,7 @@
     "knip": "^5.27.4"
   },
   "resolutions": {
-    "@yarnpkg/core": "4.9.1",
+    "got": "^11.8.6",
     "@types/webpack-env": "^1.18.8"
   }
 }

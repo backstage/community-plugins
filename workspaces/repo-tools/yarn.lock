@@ -4906,9 +4906,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/core@npm:4.9.1":
-  version: 4.9.1
-  resolution: "@yarnpkg/core@npm:4.9.1"
+"@yarnpkg/core@npm:^4.9.1, @yarnpkg/core@npm:^4.9.2":
+  version: 4.9.2
+  resolution: "@yarnpkg/core@npm:4.9.2"
   dependencies:
     "@arcanis/slice-ansi": "npm:^1.1.1"
     "@types/semver": "npm:^7.1.0"
@@ -4926,7 +4926,7 @@ __metadata:
     dotenv: "npm:^16.3.1"
     es-toolkit: "npm:^1.39.7"
     fast-glob: "npm:^3.2.2"
-    got: "npm:^11.7.0"
+    got: "patch:got@npm%3A11.8.2#~/.yarn/patches/got-npm-11.8.2-c1eb105458.patch"
     hpagent: "npm:^1.2.0"
     micromatch: "npm:^4.0.2"
     p-limit: "npm:^2.2.0"
@@ -4936,7 +4936,7 @@ __metadata:
     tinylogic: "npm:^2.0.0"
     treeify: "npm:^1.1.0"
     tslib: "npm:^2.4.0"
-  checksum: 10/d8aaa8670b82efbb0a92e4df92f5fd67143c66408d9fa28607725b534e80bc6647b627df4798672575bb818bc603a14ff8f7dcd1020c8d79efef4291e874ef67
+  checksum: 10/699e4636741db486caf9220ceb8846ae3a999acbc0822e64413240bce14a208694caf336048640ddac6a6d8be69d2988e43d3d410ac5d06d0bfc97f937b45576
   languageName: node
   linkType: hard
 
@@ -9704,7 +9704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^11.7.0":
+"got@npm:^11.8.6":
   version: 11.8.6
   resolution: "got@npm:11.8.6"
   dependencies:
