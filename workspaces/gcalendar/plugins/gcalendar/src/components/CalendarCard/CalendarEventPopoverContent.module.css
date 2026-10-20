@@ -12,7 +12,7 @@
   }
 
   .description a {
-    color: var(--bui-fg-link);
+    color: var(--bui-fg-info);
     font-weight: 500;
   }
 
@@ -25,6 +25,6 @@
     height: 1px;
     border: none;
     margin: var(--bui-space-4) 0;
-    background-color: var(--bui-border);
+    background-color: var(--bui-border-1);
   }
 }

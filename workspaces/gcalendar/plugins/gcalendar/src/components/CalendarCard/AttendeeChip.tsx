@@ -44,11 +44,11 @@ type AttendeeChipProps = {
 
 export const AttendeeChip = ({ user }: AttendeeChipProps) => {
   return (
-    <span className={styles.root}>
+    <div className={styles.root}>
       <TagGroup aria-label={`Attendee ${user.email}`}>
         <Tag size="small">{user.email}</Tag>
       </TagGroup>
       <ResponseIcon responseStatus={user.responseStatus} />
-    </span>
+    </div>
   );
 };

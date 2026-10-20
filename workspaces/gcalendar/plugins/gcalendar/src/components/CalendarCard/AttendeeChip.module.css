@@ -13,7 +13,7 @@
     top: 0;
     display: inline-flex;
     border-radius: 50%;
-    background: var(--bui-bg-surface-1);
+    background: var(--bui-bg-neutral-1);
     pointer-events: none;
   }
 
@@ -31,6 +31,6 @@
   }
 
   .pending {
-    color: var(--bui-fg-link);
+    color: var(--bui-fg-info);
   }
 }
