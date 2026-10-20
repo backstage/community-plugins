@@ -31,9 +31,9 @@ describe('getTrendForCoverage function', () => {
 });
 
 describe('formatTrend function', () => {
-  it('should format the trend in percentage points with a sign', () => {
-    expect(formatTrend(9.29)).toBe('+9.29 pp');
-    expect(formatTrend(-1.5)).toBe('-1.50 pp');
-    expect(formatTrend(0)).toBe('0.00 pp');
+  it('should format the trend as a signed percentage', () => {
+    expect(formatTrend(9.29)).toBe('+9.29%');
+    expect(formatTrend(-1.5)).toBe('-1.50%');
+    expect(formatTrend(0)).toBe('0.00%');
   });
 });

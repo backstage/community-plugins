@@ -74,7 +74,7 @@ export const getTrendForCoverage = (
 ) => history[0][type].percentage - history[history.length - 1][type].percentage;
 
 export const formatTrend = (trend: number) =>
-  `${trend > 0 ? '+' : ''}${trend.toFixed(2)} pp`;
+  `${trend > 0 ? '+' : ''}${trend.toFixed(2)}%`;
 
 // convert timestamp to human friendly form
 function formatDateToHuman(timeStamp: string | number) {
