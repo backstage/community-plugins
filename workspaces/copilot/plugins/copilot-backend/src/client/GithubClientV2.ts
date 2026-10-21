@@ -42,6 +42,10 @@ const STORAGE_DOWNLOAD_HOSTS = [
 // Follow at most this many redirects, re-checking the allowlist on every hop.
 const MAX_DOWNLOAD_REDIRECTS = 5;
 
+// GHE.com serves the API from api.SUBDOMAIN.ghe.com and the reports from
+// copilot-reports.SUBDOMAIN.ghe.com.
+const GHE_COM_API_HOST = /^api\.([a-z0-9-]+\.ghe\.com)$/;
+
 function isWithinDomain(hostname: string, domain: string): boolean {
   return hostname === domain || hostname.endsWith(`.${domain}`);
 }
@@ -57,10 +61,14 @@ function normalizeConfiguredHost(githubHost: string): string {
 
 /**
  * SSRF guard for signed report download links. The allowed hosts are derived
- * from the configured GitHub host so that a github.com deployment never trusts
- * a GHE.com tenant, and vice versa.
+ * from the configured GitHub host and API base URL so that a github.com
+ * deployment never trusts a GHE.com tenant, and vice versa.
  */
-function isAllowedDownloadHost(url: URL, githubHost: string): boolean {
+function isAllowedDownloadHost(
+  url: URL,
+  githubHost: string,
+  apiBaseUrl: string,
+): boolean {
   const hostname = url.hostname.toLowerCase();
   const host = normalizeConfiguredHost(githubHost);
 
@@ -69,8 +77,13 @@ function isAllowedDownloadHost(url: URL, githubHost: string): boolean {
     return false;
   }
 
+  // Lets `copilot.host` name an `api.SUBDOMAIN.ghe.com` integration entry, which
+  // on its own would not cover the reports on the sibling host.
+  const tenantDomain = GHE_COM_API_HOST.exec(new URL(apiBaseUrl).hostname)?.[1];
+
   if (
     isWithinDomain(hostname, host) ||
+    (tenantDomain !== undefined && isWithinDomain(hostname, tenantDomain)) ||
     isWithinDomain(hostname, GITHUB_USER_CONTENT_DOMAIN)
   ) {
     return true;
@@ -275,7 +288,13 @@ export class GithubClientV2 {
       );
     }
 
-    if (!isAllowedDownloadHost(parsedUrl, this.copilotConfig.host)) {
+    if (
+      !isAllowedDownloadHost(
+        parsedUrl,
+        this.copilotConfig.host,
+        this.copilotConfig.apiBaseUrl,
+      )
+    ) {
       throw new Error(
         `Refused to download from disallowed host: ${parsedUrl.hostname}`,
       );

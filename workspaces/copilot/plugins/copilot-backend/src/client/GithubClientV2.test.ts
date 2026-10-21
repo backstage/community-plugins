@@ -237,6 +237,69 @@ describe('GithubClientV2', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
+  it('allows the GHE.com tenant of the API base url when copilot.host is the API host', async () => {
+    const mockFetch = (global as any).fetch as jest.MockedFunction<any>;
+    const fakeJson = { ok: true };
+    const download = (client: GithubClientV2, url: string) => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        text: jest.fn().mockResolvedValue(JSON.stringify(fakeJson)),
+        status: 200,
+        statusText: 'OK',
+      });
+      return client.downloadDocument(url);
+    };
+
+    const apiHostClient = new GithubClientV2(
+      {
+        host: 'api.octocorp.ghe.com',
+        enterprise: 'octocorp',
+        apiBaseUrl: 'https://api.octocorp.ghe.com',
+      },
+      mockConfig,
+      mockLogger,
+    );
+
+    await expect(
+      download(
+        apiHostClient,
+        'https://copilot-reports.octocorp.ghe.com/report.json?sig=a',
+      ),
+    ).resolves.toEqual(fakeJson);
+    await expect(
+      download(apiHostClient, 'https://octocorp.ghe.com/report.json?sig=b'),
+    ).resolves.toEqual(fakeJson);
+
+    await expect(
+      download(
+        apiHostClient,
+        'https://copilot-reports.evilcorp.ghe.com/report.json',
+      ),
+    ).rejects.toThrow(/Refused to download from disallowed host/i);
+    await expect(
+      download(
+        apiHostClient,
+        'https://copilot-reports.octocorp.ghe.com.evil.example/report.json',
+      ),
+    ).rejects.toThrow(/Refused to download from disallowed host/i);
+
+    // Only a GHE.com API host extends the allowlist to its parent domain.
+    const otherApiHostClient = new GithubClientV2(
+      {
+        host: 'api.example.com',
+        enterprise: 'example',
+        apiBaseUrl: 'https://api.example.com',
+      },
+      mockConfig,
+      mockLogger,
+    );
+    await expect(
+      download(otherApiHostClient, 'https://reports.example.com/report.json'),
+    ).rejects.toThrow(/Refused to download from disallowed host/i);
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+
   it('re-applies the host allowlist to redirect targets', async () => {
     const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
     const mockFetch = (global as any).fetch as jest.MockedFunction<any>;
