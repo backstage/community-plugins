@@ -81,8 +81,15 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
       throw new InputError('All enabledTools must be strings');
     }
 
+    const credentials = await httpAuth.credentials(req, {
+      allow: ['user'],
+      allowLimitedAccess: true,
+    });
+
+    const userId = credentials.principal.userEntityRef;
+
     const { reply, toolCalls, toolResponses } =
-      await mcpClientService.processQuery(messages, enabledTools);
+      await mcpClientService.processQuery(messages, enabledTools, credentials);
 
     const toolsUsed =
       toolCalls.length > 0 ? toolCalls.map(call => call.function.name) : [];
@@ -99,15 +106,7 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
 
     // Save conversation for authenticated non-guest users
     let savedConversationId: string | undefined;
-    let userId: string | undefined;
     try {
-      const credentials = await httpAuth.credentials(req, {
-        allow: ['user'],
-        allowLimitedAccess: true,
-      });
-
-      userId = credentials.principal.userEntityRef;
-
       if (!isGuestUser(userId)) {
         const savedConversation = await conversationStore.saveConversation(
           userId,
