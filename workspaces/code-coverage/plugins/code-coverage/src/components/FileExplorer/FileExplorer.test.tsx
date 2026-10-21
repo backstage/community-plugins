@@ -16,6 +16,7 @@
 import {
   groupByPath,
   buildFileStructure,
+  formatInitialData,
   getObjectsAtPath,
 } from './FileExplorer';
 
@@ -23,41 +24,41 @@ const dummyFiles = [
   {
     filename: 'dir1/file1',
     files: [],
-    coverage: 1,
+    coverage: 75,
     missing: 1,
-    tracked: 1,
+    tracked: 4,
     path: '',
   },
   {
     filename: 'dir1/file2',
     files: [],
-    coverage: 1,
-    missing: 1,
-    tracked: 1,
+    coverage: 50,
+    missing: 3,
+    tracked: 6,
     path: '',
   },
   {
     filename: 'dir2/file3',
     files: [],
-    coverage: 1,
-    missing: 1,
-    tracked: 1,
+    coverage: 100,
+    missing: 0,
+    tracked: 2,
     path: '',
   },
   {
     filename: 'dir3/dir2/dir1/file4',
     files: [],
-    coverage: 1,
-    missing: 1,
-    tracked: 1,
+    coverage: 0,
+    missing: 5,
+    tracked: 5,
     path: '',
   },
   {
     filename: 'dir3/dir2/dir3/file4',
     files: [],
-    coverage: 1,
-    missing: 1,
-    tracked: 1,
+    coverage: 100,
+    missing: 0,
+    tracked: 5,
     path: '',
   },
 ];
@@ -67,17 +68,17 @@ const dummyDataGroupedByPath = {
     {
       filename: 'dir1/file1',
       files: [],
-      coverage: 1,
+      coverage: 75,
       missing: 1,
-      tracked: 1,
+      tracked: 4,
       path: '',
     },
     {
       filename: 'dir1/file2',
       files: [],
-      coverage: 1,
-      missing: 1,
-      tracked: 1,
+      coverage: 50,
+      missing: 3,
+      tracked: 6,
       path: '',
     },
   ],
@@ -85,9 +86,9 @@ const dummyDataGroupedByPath = {
     {
       filename: 'dir2/file3',
       files: [],
-      coverage: 1,
-      missing: 1,
-      tracked: 1,
+      coverage: 100,
+      missing: 0,
+      tracked: 2,
       path: '',
     },
   ],
@@ -95,17 +96,17 @@ const dummyDataGroupedByPath = {
     {
       filename: 'dir3/dir2/dir1/file4',
       files: [],
-      coverage: 1,
-      missing: 1,
-      tracked: 1,
+      coverage: 0,
+      missing: 5,
+      tracked: 5,
       path: '',
     },
     {
       filename: 'dir3/dir2/dir3/file4',
       files: [],
-      coverage: 1,
-      missing: 1,
-      tracked: 1,
+      coverage: 100,
+      missing: 0,
+      tracked: 5,
       path: '',
     },
   ],
@@ -113,9 +114,9 @@ const dummyDataGroupedByPath = {
 
 const coverageTableRow = {
   files: dummyFiles,
-  coverage: 1,
-  missing: 1,
-  tracked: 1,
+  coverage: (13 / 22) * 100,
+  missing: 9,
+  tracked: 22,
   path: '',
 };
 
@@ -127,21 +128,21 @@ const coverageTableRowResults = {
         {
           path: 'file1',
           files: [],
-          coverage: 1,
+          coverage: 75,
           missing: 1,
-          tracked: 1,
+          tracked: 4,
         },
         {
           path: 'file2',
           files: [],
-          coverage: 1,
-          missing: 1,
-          tracked: 1,
+          coverage: 50,
+          missing: 3,
+          tracked: 6,
         },
       ],
-      coverage: 1,
-      missing: 2,
-      tracked: 2,
+      coverage: 60,
+      missing: 4,
+      tracked: 10,
     },
     {
       path: 'dir2',
@@ -149,14 +150,14 @@ const coverageTableRowResults = {
         {
           path: 'file3',
           files: [],
-          coverage: 1,
-          missing: 1,
-          tracked: 1,
+          coverage: 100,
+          missing: 0,
+          tracked: 2,
         },
       ],
-      coverage: 1,
-      missing: 1,
-      tracked: 1,
+      coverage: 100,
+      missing: 0,
+      tracked: 2,
     },
     {
       path: 'dir3',
@@ -170,14 +171,14 @@ const coverageTableRowResults = {
                 {
                   path: 'file4',
                   files: [],
-                  coverage: 1,
-                  missing: 1,
-                  tracked: 1,
+                  coverage: 0,
+                  missing: 5,
+                  tracked: 5,
                 },
               ],
-              coverage: 1,
-              missing: 1,
-              tracked: 1,
+              coverage: 0,
+              missing: 5,
+              tracked: 5,
             },
             {
               path: 'dir3',
@@ -185,37 +186,37 @@ const coverageTableRowResults = {
                 {
                   path: 'file4',
                   files: [],
-                  coverage: 1,
-                  missing: 1,
-                  tracked: 1,
+                  coverage: 100,
+                  missing: 0,
+                  tracked: 5,
                 },
               ],
-              coverage: 1,
-              missing: 1,
-              tracked: 1,
+              coverage: 100,
+              missing: 0,
+              tracked: 5,
             },
           ],
-          coverage: 1,
-          missing: 2,
-          tracked: 2,
+          coverage: 50,
+          missing: 5,
+          tracked: 10,
         },
       ],
-      coverage: 1,
-      missing: 2,
-      tracked: 2,
+      coverage: 50,
+      missing: 5,
+      tracked: 10,
     },
   ],
-  coverage: 1,
-  missing: 1,
-  tracked: 1,
+  coverage: (13 / 22) * 100,
+  missing: 9,
+  tracked: 22,
   path: '',
 };
 
 const pathTestLeaf = {
   files: [],
-  coverage: 1,
-  missing: 3,
-  tracked: 2,
+  coverage: 75,
+  missing: 1,
+  tracked: 4,
   path: 'file5',
 };
 
@@ -227,9 +228,9 @@ const dummyFilesPathTest = {
       filename: 'dir3/dir7/file5',
     },
   ],
-  coverage: 1,
-  missing: 1,
-  tracked: 1,
+  coverage: (16 / 26) * 100,
+  missing: 10,
+  tracked: 26,
   path: '',
 };
 
@@ -244,6 +245,66 @@ describe('buildFileStructure function', () => {
     expect(buildFileStructure(coverageTableRow)).toStrictEqual(
       coverageTableRowResults,
     );
+  });
+
+  it('should compute folder coverage from line counts, not by averaging files', () => {
+    const structure = buildFileStructure({
+      files: [
+        {
+          filename: 'src/a.ts',
+          files: [],
+          coverage: 100,
+          missing: 0,
+          tracked: 5,
+          path: '',
+        },
+        {
+          filename: 'src/b.ts',
+          files: [],
+          coverage: 40,
+          missing: 1200,
+          tracked: 2000,
+          path: '',
+        },
+        {
+          filename: 'empty/c.ts',
+          files: [],
+          coverage: 0,
+          missing: 0,
+          tracked: 0,
+          path: '',
+        },
+      ],
+      coverage: (805 / 2005) * 100,
+      missing: 1200,
+      tracked: 2005,
+      path: '',
+    });
+
+    const [src, empty] = structure.files;
+    expect(src.missing).toBe(1200);
+    expect(src.tracked).toBe(2005);
+    expect(src.coverage).toBeCloseTo(40.15, 2);
+    expect(empty.coverage).toBe(0);
+  });
+});
+
+describe('formatInitialData function', () => {
+  it('should not round file coverage down', () => {
+    const structure = formatInitialData({
+      aggregate: { line: { percentage: 66.67, missed: 1, available: 3 } },
+      files: [
+        {
+          filename: 'src/a.ts',
+          lineHits: { 1: 1, 2: 4, 3: 0 },
+          branchHits: {},
+        },
+      ],
+    });
+
+    const [src] = structure.files;
+    expect(src.coverage).toBeCloseTo(66.67, 2);
+    expect(src.files[0].coverage).toBeCloseTo(66.67, 2);
   });
 });
 
