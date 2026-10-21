@@ -19,6 +19,13 @@ import {
   detectType,
   mgmtTypeToFlagType,
   MgmtFeature,
+  MgmtExperiment,
+  MgmtResults,
+  MgmtFeatureDetail,
+  normalizeExperiment,
+  normalizeResults,
+  normalizeFlagDetail,
+  resolveAppUrl,
 } from './helpers';
 
 const MGMT_FEATURES: MgmtFeature[] = [
@@ -179,5 +186,259 @@ describe('normalizeSdkFlags', () => {
   it('handles null defaultValue', () => {
     const flags = normalizeSdkFlags({ 'null-flag': { defaultValue: null } });
     expect(flags[0]).toMatchObject({ key: 'null-flag', type: 'null' });
+  });
+});
+
+const EXPERIMENT: MgmtExperiment = {
+  id: 'exp_1',
+  name: 'Checkout button colour',
+  status: 'running',
+  type: 'standard',
+  owner: 'alice',
+  tags: ['checkout'],
+  variations: [
+    { variationId: 'v0', key: '0', name: 'Control' },
+    { variationId: 'v1', key: '1', name: 'Green' },
+  ],
+  phases: [{ name: 'Main', dateStarted: '2026-09-01T00:00:00Z' }],
+  resultSummary: { winner: '' },
+};
+
+describe('normalizeExperiment', () => {
+  it('maps fields and builds a GrowthBook link', () => {
+    expect(normalizeExperiment(EXPERIMENT, 'https://gb.example.com')).toEqual({
+      id: 'exp_1',
+      name: 'Checkout button colour',
+      status: 'running',
+      type: 'standard',
+      owner: 'alice',
+      tags: ['checkout'],
+      variations: [
+        { id: 'v0', key: '0', name: 'Control' },
+        { id: 'v1', key: '1', name: 'Green' },
+      ],
+      phases: [{ name: 'Main', dateStarted: '2026-09-01T00:00:00Z' }],
+      winnerVariationId: undefined,
+      url: 'https://gb.example.com/experiment/exp_1',
+    });
+  });
+
+  it('treats an empty winner string as no winner and keeps a real winner', () => {
+    const withWinner = {
+      ...EXPERIMENT,
+      status: 'stopped',
+      resultSummary: { winner: 'v1' },
+    };
+    expect(
+      normalizeExperiment(withWinner, 'https://gb').winnerVariationId,
+    ).toBe('v1');
+    expect(
+      normalizeExperiment(EXPERIMENT, 'https://gb').winnerVariationId,
+    ).toBeUndefined();
+  });
+
+  it('falls back to draft for unknown status and tolerates missing arrays', () => {
+    const sparse = {
+      id: 'exp_2',
+      name: 'x',
+      status: 'weird',
+      variations: [],
+    } as MgmtExperiment;
+    const row = normalizeExperiment(sparse, 'https://gb');
+    expect(row.status).toBe('draft');
+    expect(row.tags).toEqual([]);
+    expect(row.phases).toEqual([]);
+  });
+
+  it('url-encodes the experiment id', () => {
+    const row = normalizeExperiment(
+      { ...EXPERIMENT, id: 'a/b c' },
+      'https://gb',
+    );
+    expect(row.url).toBe('https://gb/experiment/a%2Fb%20c');
+  });
+});
+
+describe('normalizeResults', () => {
+  it('summarises the first metric, preferring the bayesian analysis', () => {
+    const result: MgmtResults = {
+      results: [
+        {
+          metrics: [
+            {
+              metricId: 'm1',
+              metricName: 'Purchase rate',
+              variations: [
+                {
+                  variationId: 'v0',
+                  variationName: 'Control',
+                  users: 1000,
+                  analyses: [{ engine: 'bayesian' }],
+                },
+                {
+                  variationId: 'v1',
+                  users: 990,
+                  analyses: [
+                    { engine: 'frequentist', percentChange: 0.5 },
+                    {
+                      engine: 'bayesian',
+                      percentChange: 0.12,
+                      ciLow: 0.02,
+                      ciHigh: 0.22,
+                      chanceToBeatControl: 0.97,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(normalizeResults(EXPERIMENT, result)).toEqual({
+      available: true,
+      metricName: 'Purchase rate',
+      variations: [
+        { id: 'v0', name: 'Control', users: 1000 },
+        {
+          id: 'v1',
+          name: 'Green',
+          users: 990,
+          percentChange: 0.12,
+          ciLow: 0.02,
+          ciHigh: 0.22,
+          chanceToBeatControl: 0.97,
+        },
+      ],
+    });
+  });
+
+  it.each([
+    ['no results key', {}],
+    ['empty results', { results: [] }],
+    ['no metrics', { results: [{ totalUsers: 10 }] }],
+    ['empty metrics', { results: [{ metrics: [] }] }],
+  ])('is unavailable when %s', (_label, result) => {
+    expect(normalizeResults(EXPERIMENT, result as MgmtResults)).toEqual({
+      available: false,
+      variations: [],
+    });
+  });
+});
+
+describe('normalizeFlagDetail', () => {
+  const FEATURE: MgmtFeatureDetail = {
+    id: 'my-flag',
+    dateUpdated: '2026-09-20T10:00:00Z',
+    archived: false,
+    owner: 'bob',
+    tags: ['beta'],
+    environments: {
+      prod: {
+        enabled: true,
+        rules: [
+          { id: 'fr_1', type: 'force', description: 'EU only', enabled: true },
+          { type: 'rollout' },
+        ],
+      },
+      dev: { enabled: false, rules: [] },
+    },
+  };
+
+  it('maps environments sorted by name and defaults rule enabled to true', () => {
+    const detail = normalizeFlagDetail(FEATURE, {
+      isStale: true,
+      staleReason: 'no-rules',
+    });
+    expect(detail).toEqual({
+      key: 'my-flag',
+      dateUpdated: '2026-09-20T10:00:00Z',
+      archived: false,
+      owner: 'bob',
+      tags: ['beta'],
+      isStale: true,
+      staleReason: 'no-rules',
+      environments: [
+        { name: 'dev', enabled: false, rules: [] },
+        {
+          name: 'prod',
+          enabled: true,
+          rules: [
+            { type: 'force', description: 'EU only', enabled: true },
+            { type: 'rollout', description: undefined, enabled: true },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('reports not stale when stale info is missing', () => {
+    const detail = normalizeFlagDetail(FEATURE, undefined);
+    expect(detail.isStale).toBe(false);
+    expect(detail.staleReason).toBeUndefined();
+  });
+
+  it('drops a null stale reason and skips undefined environments', () => {
+    const detail = normalizeFlagDetail(
+      { ...FEATURE, environments: { prod: undefined } },
+      { isStale: false, staleReason: null },
+    );
+    expect(detail.staleReason).toBeUndefined();
+    expect(detail.environments).toEqual([]);
+  });
+});
+
+describe('resolveAppUrl', () => {
+  it('uses the configured app URL without trailing slashes', () => {
+    expect(resolveAppUrl('https://app.growthbook.io//', 'https://api.gb')).toBe(
+      'https://app.growthbook.io',
+    );
+  });
+
+  it('falls back to the base URL when no app URL is configured', () => {
+    expect(resolveAppUrl(undefined, 'https://api.gb')).toBe('https://api.gb');
+    expect(resolveAppUrl('', 'https://api.gb')).toBe('https://api.gb');
+  });
+});
+
+describe('normalizeResults primary metric', () => {
+  const metrics = [
+    {
+      metricId: 'guard',
+      metricName: 'Latency',
+      variations: [{ variationId: 'v0', users: 1 }],
+    },
+    {
+      metricId: 'm2',
+      metricName: 'Purchase rate',
+      variations: [{ variationId: 'v0', users: 2 }],
+    },
+  ];
+  const result: MgmtResults = { results: [{ metrics }] };
+
+  it('uses the experiment goal metric rather than the first listed metric', () => {
+    const experiment = {
+      ...EXPERIMENT,
+      settings: { goals: [{ metricId: 'm2' }] },
+    };
+    const summary = normalizeResults(experiment, result);
+    expect(summary.metricName).toBe('Purchase rate');
+    expect(summary.variations[0].users).toBe(2);
+  });
+
+  it('falls back to the first metric when no goal matches', () => {
+    const experiment = {
+      ...EXPERIMENT,
+      settings: { goals: [{ metricId: 'zzz' }] },
+    };
+    expect(normalizeResults(experiment, result).metricName).toBe('Latency');
+    expect(normalizeResults(EXPERIMENT, result).metricName).toBe('Latency');
+  });
+});
+
+describe('normalizeExperiment with sparse data', () => {
+  it('tolerates an experiment without variations', () => {
+    const sparse = { id: 'e', name: 'n', status: 'running' } as MgmtExperiment;
+    expect(normalizeExperiment(sparse, 'https://gb').variations).toEqual([]);
   });
 });
