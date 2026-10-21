@@ -1,5 +1,34 @@
 # @backstage-community/plugin-copilot
 
+## 1.4.0
+
+### Minor Changes
+
+- 2da17b5: Add support for the new GitHub Copilot "AI credits consumed per user" metric (`ai_credits_used`).
+
+  The per-user metric is now ingested into `copilot_user_metrics` and aggregated to team level
+  (`total_ai_credits_used` on `copilot_daily_totals`). A new **Consumption** tab is shown in the V2
+  dashboard when a team is selected, displaying the total AI credits used and a chart of consumption
+  over the selected timeframe. AI credits are only exposed by the user-level report, so the tab is only
+  available for team-scoped views.
+
+- 2da17b5: Added a privacy-scoped, individual ("my Copilot metrics") view showing only the signed-in user's own Copilot usage and consumption. It is mounted by default as a `/copilot/me` sub-page of the main Copilot Insights page, and can be re-attached elsewhere by overriding the `sub-page:copilot/me` extension in a frontend module.
+
+  This view reuses the same charts and controls as the main dashboard, scoped entirely to data returned by the backend's privacy-scoped `GET /v2/me/dashboard` endpoint — it has no way to request another user's or a team's metrics.
+
+  The plugin exports `myMetricsApiRef`, `MyMetricsApi`, `MyDashboardParams`, and
+  `MyMetricsContent` for consumers that customize where this view is mounted.
+
+### Patch Changes
+
+- 2da17b5: Fixed the Copilot dashboard and "My Metrics" per-day charts (active users, chat requests, code completions, model/language usage, lines of code, AI credits) to always render a linear, gap-free x-axis spanning every calendar day in the selected date range. Previously, days with no Copilot activity were silently omitted from the API response and therefore skipped on the x-axis, distorting the visual spacing between data points.
+- 2da17b5: Added a proper page header to the "My Copilot Metrics" personal view, showing the signed-in user's name/avatar via `HeaderMetadataUsers` alongside the page title and description. The header is now rendered by `MyMetricsContent` itself (using the signed-in user's identity) instead of a static header in `MyMetricsPage`.
+- 28fab21: Limit the Remix Icon dependency to versions below 4.9.0 due to a license change.
+- 319e6e1: Updated dependency `react-aria-components` to `~1.22.0`.
+- Updated dependencies [2da17b5]
+- Updated dependencies [2da17b5]
+  - @backstage-community/plugin-copilot-common@1.3.0
+
 ## 1.3.1
 
 ### Patch Changes

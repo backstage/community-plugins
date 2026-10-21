@@ -1,5 +1,23 @@
 # @backstage-community/plugin-copilot-common
 
+## 1.3.0
+
+### Minor Changes
+
+- 2da17b5: Add support for the new GitHub Copilot "AI credits consumed per user" metric (`ai_credits_used`).
+
+  The per-user metric is now ingested into `copilot_user_metrics` and aggregated to team level
+  (`total_ai_credits_used` on `copilot_daily_totals`). A new **Consumption** tab is shown in the V2
+  dashboard when a team is selected, displaying the total AI credits used and a chart of consumption
+  over the selected timeframe. AI credits are only exposed by the user-level report, so the tab is only
+  available for team-scoped views.
+
+- 2da17b5: Add ingestion and privacy-scoped serving of per-user Copilot metric breakdowns (by feature, IDE, language, model, and language/model), and a new `GET /v2/me/dashboard` endpoint that returns only the signed-in caller's own Copilot metrics.
+
+  The caller's GitHub login is always resolved server-side from their own request credentials — this endpoint has no way to request another user's data. The default matching strategy uses the caller's `github.com/user-login` catalog annotation as their GitHub login; this can be customized by registering a resolver via the new `copilotUserResolverExtensionPoint`.
+
+  Requires `copilot.ingestTeams: true` to be set, since per-user data is only ingested under that flag.
+
 ## 1.2.0
 
 ### Minor Changes
