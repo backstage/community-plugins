@@ -25,8 +25,15 @@ import {
   V2MetricsByLanguageFeatureRow,
   V2MetricsByModelFeatureRow,
   V2MetricsByLanguageModelRow,
+  V2MetricsByVscodeAgentRow,
   V2PrMetricsRow,
+  V2UserDashboardData,
   V2UserMetricRow,
+  V2UserMetricsByFeatureRow,
+  V2UserMetricsByIdeRow,
+  V2UserMetricsByLanguageFeatureRow,
+  V2UserMetricsByModelFeatureRow,
+  V2UserMetricsByLanguageModelRow,
   V2UserTeamRow,
   MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
@@ -37,6 +44,15 @@ import { batchInsertInChunks } from '../utils/batchInsert';
 
 type Options = {
   database: DatabaseService;
+};
+
+type DayValue = string | Date;
+
+type TeamActivityRow = {
+  day: DayValue;
+  user_id: number;
+  used_agent: boolean | number | null;
+  used_chat: boolean | number | null;
 };
 
 export class DatabaseHandlerV2 {
@@ -61,8 +77,12 @@ export class DatabaseHandlerV2 {
     await batchInsertInChunks(rows, 100, async chunk => {
       await this.db<V2DailyTotal>('copilot_daily_totals')
         .insert(chunk)
+        // Merge `total_ai_credits_used`/`daily_active_vscode_agent_users` on
+        // conflict (rather than ignoring) so that re-ingesting a day that
+        // was already stored before these columns existed backfills the new
+        // metrics in place.
         .onConflict(['day', 'metrics_type', 'entity_id', 'team_slug'])
-        .ignore();
+        .merge(['total_ai_credits_used', 'daily_active_vscode_agent_users']);
     });
   }
 
@@ -183,7 +203,35 @@ export class DatabaseHandlerV2 {
       await this.db<V2MetricsByCliRow>('copilot_metrics_by_cli')
         .insert(chunk)
         .onConflict(['day', 'metrics_type', 'entity_id', 'team_slug'])
-        .ignore();
+        // Merge (rather than ignore) on conflict so that re-ingesting a day
+        // updates any stale/zeroed row already stored for that key — e.g.
+        // rows written before the `output_tokens_sum`/`prompt_tokens_sum`
+        // columns were widened to `bigint` (see
+        // 202608240000_widen_cli_token_sum_columns.js), which would
+        // otherwise be silently skipped forever by `.ignore()`.
+        .merge([
+          'prompt_count',
+          'request_count',
+          'session_count',
+          'avg_tokens_per_request',
+          'output_tokens_sum',
+          'prompt_tokens_sum',
+        ]);
+    });
+  }
+
+  async insertByVscodeAgent(rows: V2MetricsByVscodeAgentRow[]): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2MetricsByVscodeAgentRow>(
+        'copilot_metrics_by_vscode_agent',
+      )
+        .insert(chunk)
+        .onConflict(['day', 'metrics_type', 'entity_id', 'team_slug'])
+        // Merge (rather than ignore) on conflict so that re-ingesting a day
+        // updates any stale/zeroed row already stored for that key, mirroring
+        // insertByCli above.
+        .merge(['session_count', 'total_user_messages']);
     });
   }
 
@@ -195,8 +243,11 @@ export class DatabaseHandlerV2 {
     await batchInsertInChunks(rows, 100, async chunk => {
       await this.db<V2UserMetricRow>('copilot_user_metrics')
         .insert(chunk)
+        // Merge `ai_credits_used`/`used_vscode_agent` on conflict (rather
+        // than ignoring) so that re-ingesting a day that was already stored
+        // before these columns existed backfills the new metrics in place.
         .onConflict(['day', 'metrics_type', 'entity_id', 'user_id'])
-        .ignore();
+        .merge(['ai_credits_used', 'used_vscode_agent']);
     });
   }
 
@@ -209,6 +260,93 @@ export class DatabaseHandlerV2 {
       await this.db<V2UserTeamRow>('copilot_user_teams')
         .insert(chunk)
         .onConflict(['day', 'metrics_type', 'entity_id', 'user_id', 'team_id'])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByFeature(
+    rows: V2UserMetricsByFeatureRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByFeatureRow>(
+        'copilot_user_metrics_by_feature',
+      )
+        .insert(chunk)
+        .onConflict(['day', 'metrics_type', 'entity_id', 'user_id', 'feature'])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByIde(rows: V2UserMetricsByIdeRow[]): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByIdeRow>('copilot_user_metrics_by_ide')
+        .insert(chunk)
+        .onConflict(['day', 'metrics_type', 'entity_id', 'user_id', 'ide'])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByLanguageFeature(
+    rows: V2UserMetricsByLanguageFeatureRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByLanguageFeatureRow>(
+        'copilot_user_metrics_by_language_feature',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'user_id',
+          'language',
+          'feature',
+        ])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByModelFeature(
+    rows: V2UserMetricsByModelFeatureRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByModelFeatureRow>(
+        'copilot_user_metrics_by_model_feature',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'user_id',
+          'model_id',
+          'feature',
+        ])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByLanguageModel(
+    rows: V2UserMetricsByLanguageModelRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByLanguageModelRow>(
+        'copilot_user_metrics_by_language_model',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'user_id',
+          'language',
+          'model_id',
+        ])
         .ignore();
     });
   }
@@ -314,11 +452,218 @@ export class DatabaseHandlerV2 {
 
     query.where('team_slug', teamSlug ?? '');
 
-    const rows = await query.orderBy('day', 'asc').select('*');
-    return rows.map(row => ({
+    const rows = (await query.orderBy('day', 'asc').select('*')).map(row => ({
       ...row,
       day: this.normalizeRequiredDay(row.day),
     }));
+
+    // Org/enterprise-level rows already carry rolling weekly/monthly active
+    // user counts straight from GitHub's report. Team-level rows are derived
+    // from daily per-user data and have no rolling windows, so we compute them
+    // here from the persisted per-user activity tables.
+    if (teamSlug) {
+      return this.enrichTeamRollingActiveUsers(
+        rows,
+        metricsType,
+        entityId,
+        from,
+        to,
+        teamSlug,
+      );
+    }
+
+    return rows;
+  }
+
+  /**
+   * Enrich team-level daily totals with rolling weekly/monthly active-user
+   * counts derived from the persisted per-user activity tables
+   * (copilot_user_metrics joined with copilot_user_teams).
+   *
+   * Definitions follow GitHub's standard rolling windows:
+   * - weekly_active_users: distinct active users over the trailing 7 days
+   * - monthly_active_users: distinct active users over the trailing 28 days
+   * - monthly_active_agent_users / monthly_active_chat_users: distinct users
+   *   that used agent/chat over the trailing 28 days
+   *
+   * A user is "active" for the team on a given day when they have a per-user
+   * metrics row that day and a team-membership row for the same day.
+   */
+  private async enrichTeamRollingActiveUsers(
+    rows: V2DailyTotal[],
+    metricsType: MetricsScope,
+    entityId: string,
+    from: string,
+    to: string,
+    teamSlug: string,
+  ): Promise<V2DailyTotal[]> {
+    if (rows.length === 0) {
+      return rows;
+    }
+
+    const WEEKLY_WINDOW_DAYS = 7;
+    const MONTHLY_WINDOW_DAYS = 28;
+    const activityRows = await this.loadTeamActivityRows(
+      metricsType,
+      entityId,
+      from,
+      to,
+      teamSlug,
+      MONTHLY_WINDOW_DAYS,
+    );
+
+    const { activeByDay, agentByDay, chatByDay } =
+      this.collectRollingUsersByDay(activityRows as TeamActivityRow[]);
+
+    return rows.map(row =>
+      this.enrichDailyTotalWithRollingUsers(row, {
+        activeByDay,
+        agentByDay,
+        chatByDay,
+        weeklyWindowDays: WEEKLY_WINDOW_DAYS,
+        monthlyWindowDays: MONTHLY_WINDOW_DAYS,
+      }),
+    );
+  }
+
+  private async loadTeamActivityRows(
+    metricsType: MetricsScope,
+    entityId: string,
+    from: string,
+    to: string,
+    teamSlug: string,
+    monthlyWindowDays: number,
+  ) {
+    // Each emitted row's rolling value is anchored at *that row's own day* and
+    // looks backwards. `fetchLowerBound` only widens the SQL fetch so the
+    // earliest days in [from, to] still have a full trailing window available.
+    const fetchLowerBound = DateTime.fromISO(from)
+      .minus({ days: monthlyWindowDays - 1 })
+      .toFormat('yyyy-MM-dd');
+
+    return this.db('copilot_user_metrics as m')
+      .join('copilot_user_teams as t', function joinOn() {
+        this.on('m.day', '=', 't.day')
+          .andOn('m.user_id', '=', 't.user_id')
+          .andOn('m.metrics_type', '=', 't.metrics_type')
+          .andOn('m.entity_id', '=', 't.entity_id');
+      })
+      .where('m.metrics_type', metricsType)
+      .where('m.entity_id', entityId)
+      .where('t.team_slug', teamSlug)
+      .whereBetween('m.day', [fetchLowerBound, to])
+      .select(
+        'm.day as day',
+        'm.user_id as user_id',
+        'm.used_agent as used_agent',
+        'm.used_chat as used_chat',
+      );
+  }
+
+  private enrichDailyTotalWithRollingUsers(
+    row: V2DailyTotal,
+    params: {
+      activeByDay: Map<string, Set<number>>;
+      agentByDay: Map<string, Set<number>>;
+      chatByDay: Map<string, Set<number>>;
+      weeklyWindowDays: number;
+      monthlyWindowDays: number;
+    },
+  ): V2DailyTotal {
+    const day = this.normalizeDay(row.day);
+    if (!day) {
+      return row;
+    }
+
+    return {
+      ...row,
+      weekly_active_users: this.countDistinctUsersOverWindow(
+        params.activeByDay,
+        day,
+        params.weeklyWindowDays,
+      ),
+      monthly_active_users: this.countDistinctUsersOverWindow(
+        params.activeByDay,
+        day,
+        params.monthlyWindowDays,
+      ),
+      monthly_active_agent_users: this.countDistinctUsersOverWindow(
+        params.agentByDay,
+        day,
+        params.monthlyWindowDays,
+      ),
+      monthly_active_chat_users: this.countDistinctUsersOverWindow(
+        params.chatByDay,
+        day,
+        params.monthlyWindowDays,
+      ),
+    };
+  }
+
+  private collectRollingUsersByDay(activityRows: TeamActivityRow[]): {
+    activeByDay: Map<string, Set<number>>;
+    agentByDay: Map<string, Set<number>>;
+    chatByDay: Map<string, Set<number>>;
+  } {
+    const activeByDay = new Map<string, Set<number>>();
+    const agentByDay = new Map<string, Set<number>>();
+    const chatByDay = new Map<string, Set<number>>();
+
+    for (const row of activityRows) {
+      const day = this.normalizeDay(row.day);
+      if (!day) {
+        continue;
+      }
+
+      const userId = Number(row.user_id);
+      this.addUserToDayMap(activeByDay, day, userId);
+
+      if (row.used_agent) {
+        this.addUserToDayMap(agentByDay, day, userId);
+      }
+
+      if (row.used_chat) {
+        this.addUserToDayMap(chatByDay, day, userId);
+      }
+    }
+
+    return { activeByDay, agentByDay, chatByDay };
+  }
+
+  private countDistinctUsersOverWindow(
+    byDay: Map<string, Set<number>>,
+    endDay: string,
+    windowDays: number,
+  ): number {
+    const end = DateTime.fromISO(endDay, { zone: 'utc' });
+    if (!end.isValid) {
+      return 0;
+    }
+
+    const users = new Set<number>();
+    for (let dayOffset = 0; dayOffset < windowDays; dayOffset++) {
+      const dayKey = end.minus({ days: dayOffset }).toFormat('yyyy-MM-dd');
+      const dayUsers = byDay.get(dayKey);
+      if (!dayUsers) {
+        continue;
+      }
+
+      for (const userId of dayUsers) {
+        users.add(userId);
+      }
+    }
+
+    return users.size;
+  }
+
+  private addUserToDayMap(
+    byDay: Map<string, Set<number>>,
+    day: string,
+    userId: number,
+  ): void {
+    const users = byDay.get(day) ?? new Set<number>();
+    users.add(userId);
+    byDay.set(day, users);
   }
 
   async getPrMetrics(
@@ -485,6 +830,225 @@ export class DatabaseHandlerV2 {
       byLanguageModel,
       prMetrics,
     };
+  }
+
+  /**
+   * Fetch daily per-user metric rows for a single, specific user.
+   *
+   * `userLogin` is a required parameter (not optional) by design: there is
+   * intentionally no variant of this method that returns rows for more than
+   * one user, since this data backs privacy-scoped "my metrics" APIs that
+   * must never be able to return another user's data.
+   */
+  async getUserMetrics(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricRow[]> {
+    const rows = await this.db<V2UserMetricRow>('copilot_user_metrics')
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByFeature(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByFeatureRow[]> {
+    const rows = await this.db<V2UserMetricsByFeatureRow>(
+      'copilot_user_metrics_by_feature',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByIde(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByIdeRow[]> {
+    const rows = await this.db<V2UserMetricsByIdeRow>(
+      'copilot_user_metrics_by_ide',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByLanguageFeature(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByLanguageFeatureRow[]> {
+    const rows = await this.db<V2UserMetricsByLanguageFeatureRow>(
+      'copilot_user_metrics_by_language_feature',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByModelFeature(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByModelFeatureRow[]> {
+    const rows = await this.db<V2UserMetricsByModelFeatureRow>(
+      'copilot_user_metrics_by_model_feature',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByLanguageModel(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByLanguageModelRow[]> {
+    const rows = await this.db<V2UserMetricsByLanguageModelRow>(
+      'copilot_user_metrics_by_language_model',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  /**
+   * Fetch the full set of chart data needed to render an individual user's
+   * "my metrics" dashboard, scoped strictly to `userLogin`. Backs the
+   * `/v2/me/dashboard` endpoint, whose route handler resolves `userLogin`
+   * itself from the caller's own Backstage identity — this method has no
+   * knowledge of, and cannot be called with, an unauthenticated or
+   * arbitrary user identifier from client input.
+   */
+  async getUserDashboardData(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserDashboardData> {
+    const [
+      daily,
+      byFeature,
+      byIde,
+      byLanguage,
+      byModelFeature,
+      byLanguageModel,
+    ] = await Promise.all([
+      this.getUserMetrics(metricsType, entityId, userLogin, from, to),
+      this.getUserMetricsByFeature(metricsType, entityId, userLogin, from, to),
+      this.getUserMetricsByIde(metricsType, entityId, userLogin, from, to),
+      this.getUserMetricsByLanguageFeature(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+      this.getUserMetricsByModelFeature(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+      this.getUserMetricsByLanguageModel(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+    ]);
+
+    return {
+      userLogin,
+      daily,
+      byFeature,
+      byIde,
+      byLanguage,
+      byModelFeature,
+      byLanguageModel,
+    };
+  }
+
+  async hasUserMetrics(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+  ): Promise<boolean> {
+    const row = await this.db('copilot_user_metrics')
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .select('user_id')
+      .first();
+
+    return Boolean(row);
   }
 
   async getTeams(

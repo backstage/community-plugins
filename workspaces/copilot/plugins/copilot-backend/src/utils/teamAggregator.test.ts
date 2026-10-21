@@ -142,6 +142,62 @@ describe('aggregateTeamMetrics', () => {
     });
   });
 
+  it('sums ai_credits_used into total_ai_credits_used per team', () => {
+    const userMetrics: V2UserMetricRow[] = [
+      makeUserMetric({ user_id: 1, ai_credits_used: 10.5 }),
+      makeUserMetric({ user_id: 2, ai_credits_used: 4.5 }),
+      // user without credits should be treated as 0
+      makeUserMetric({ user_id: 3, ai_credits_used: undefined }),
+    ];
+    const userTeams: V2UserTeamRow[] = [
+      makeUserTeam({ user_id: 1, team_slug: 'platform' }),
+      makeUserTeam({ user_id: 2, team_slug: 'platform' }),
+      makeUserTeam({ user_id: 3, team_slug: 'platform' }),
+    ];
+
+    const result = aggregateTeamMetrics(
+      userMetrics,
+      userTeams,
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      expect.objectContaining({
+        team_slug: 'platform',
+        total_ai_credits_used: 15,
+      }),
+    ]);
+  });
+
+  it('counts VS Code Agent users per team', () => {
+    const result = aggregateTeamMetrics(
+      [
+        makeUserMetric({ user_id: 1, used_vscode_agent: true }),
+        makeUserMetric({ user_id: 2, used_vscode_agent: false }),
+        makeUserMetric({ user_id: 3, used_vscode_agent: true }),
+      ],
+      [
+        makeUserTeam({ user_id: 1, team_slug: 'platform' }),
+        makeUserTeam({ user_id: 2, team_slug: 'platform' }),
+        makeUserTeam({ user_id: 3, team_slug: 'platform' }),
+      ],
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      expect.objectContaining({
+        team_slug: 'platform',
+        daily_active_vscode_agent_users: 2,
+      }),
+    ]);
+  });
+
   it('filters userTeams by day', () => {
     const userMetrics: V2UserMetricRow[] = [
       makeUserMetric({ user_id: 1, loc_added_sum: 20 }),
@@ -182,6 +238,7 @@ function makeUserMetric(
     used_agent: false,
     used_chat: false,
     used_cli: true,
+    used_vscode_agent: false,
     code_acceptance_activity_count: 1,
     code_generation_activity_count: 2,
     loc_added_sum: 10,

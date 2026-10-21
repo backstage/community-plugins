@@ -19,6 +19,12 @@ import { Knex } from 'knex';
 import {
   V2DailyTotal,
   V2IngestionLogRow,
+  V2UserMetricRow,
+  V2UserMetricsByFeatureRow,
+  V2UserMetricsByIdeRow,
+  V2UserMetricsByLanguageFeatureRow,
+  V2UserMetricsByModelFeatureRow,
+  V2UserMetricsByLanguageModelRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
@@ -211,6 +217,83 @@ describe('DatabaseHandlerV2', () => {
       expect(rows).toHaveLength(1);
     });
 
+    it('persists daily_active_vscode_agent_users and backfills it on re-ingestion', async () => {
+      const row = buildDailyTotal({
+        day: '2026-05-21',
+        team_slug: '',
+        daily_active_vscode_agent_users: undefined,
+      });
+
+      await handler.insertDailyTotals([row]);
+      await handler.insertDailyTotals([
+        { ...row, daily_active_vscode_agent_users: 9 },
+      ]);
+
+      const [stored] = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-21',
+        '2026-05-21',
+      );
+
+      expect(stored.daily_active_vscode_agent_users).toBe(9);
+    });
+
+    it('insertByVscodeAgent persists team-level session/message totals and merges on re-ingestion', async () => {
+      await handler.insertByVscodeAgent([
+        {
+          day: '2026-05-21',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          team_slug: '',
+          session_count: 3,
+          total_user_messages: 12,
+        },
+      ]);
+
+      await handler.insertByVscodeAgent([
+        {
+          day: '2026-05-21',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          team_slug: '',
+          session_count: 5,
+          total_user_messages: 20,
+        },
+      ]);
+
+      const rows = await knex('copilot_metrics_by_vscode_agent').where({
+        day: '2026-05-21',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+      });
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].session_count).toBe(5);
+      expect(rows[0].total_user_messages).toBe(20);
+    });
+
+    it('persists used_vscode_agent on per-user metrics and backfills it on re-ingestion', async () => {
+      const row = buildUserMetric({
+        day: '2026-05-21',
+        used_vscode_agent: false,
+      });
+
+      await handler.insertUserMetrics([row]);
+      await handler.insertUserMetrics([{ ...row, used_vscode_agent: true }]);
+
+      const [stored] = await handler.getUserMetrics(
+        'organization',
+        'org-1',
+        row.user_login,
+        '2026-05-21',
+        '2026-05-21',
+      );
+
+      expect(stored.used_vscode_agent).toBeTruthy();
+    });
+
     it('getDailyTotals filters by date range and team', async () => {
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-01', team_slug: 'team-a' }),
@@ -253,6 +336,246 @@ describe('DatabaseHandlerV2', () => {
       expect(rows).toHaveLength(1);
       expect(typeof rows[0].day).toBe('string');
       expect(rows[0].day).toBe('2026-05-26');
+    });
+
+    it('getDailyTotals computes rolling weekly/monthly active users for teams', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      // user 1: active 05-04 (agent) and again 05-10 — distinct counts once
+      // user 2: active 05-08 (chat)
+      // user 3: active 05-01 — inside 28-day window, outside 7-day window
+      const activity: Array<{
+        day: string;
+        user_id: number;
+        used_agent?: boolean;
+        used_chat?: boolean;
+      }> = [
+        { day: '2026-05-04', user_id: 1, used_agent: true },
+        { day: '2026-05-10', user_id: 1 },
+        { day: '2026-05-08', user_id: 2, used_chat: true },
+        { day: '2026-05-01', user_id: 3 },
+      ];
+
+      await handler.insertUserMetrics(
+        activity.map(a =>
+          buildUserMetric({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            used_agent: a.used_agent ?? false,
+            used_chat: a.used_chat ?? false,
+          }),
+        ),
+      );
+      await handler.insertUserTeams(
+        activity.map(a =>
+          buildUserTeam({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ),
+      );
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(2);
+      expect(rows[0].monthly_active_users).toBe(3);
+      expect(rows[0].monthly_active_agent_users).toBe(1);
+      expect(rows[0].monthly_active_chat_users).toBe(1);
+    });
+
+    it('getDailyTotals anchors rolling windows to each returned day', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-08', team_slug: 'team-a' }),
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      const activity: Array<{
+        day: string;
+        user_id: number;
+        used_agent?: boolean;
+        used_chat?: boolean;
+      }> = [
+        { day: '2026-05-02', user_id: 1 },
+        { day: '2026-05-04', user_id: 2, used_agent: true },
+        { day: '2026-05-08', user_id: 3, used_chat: true },
+        { day: '2026-05-10', user_id: 4 },
+      ];
+
+      await handler.insertUserMetrics(
+        activity.map(a =>
+          buildUserMetric({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            used_agent: a.used_agent ?? false,
+            used_chat: a.used_chat ?? false,
+          }),
+        ),
+      );
+      await handler.insertUserTeams(
+        activity.map(a =>
+          buildUserTeam({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ),
+      );
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-08',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(2);
+      expect(typeof rows[0].day).toBe('string');
+      expect(rows[0].day).toBe('2026-05-08');
+      expect(rows[0].weekly_active_users).toBe(3);
+      expect(rows[0].monthly_active_users).toBe(3);
+      expect(rows[0].monthly_active_agent_users).toBe(1);
+      expect(rows[0].monthly_active_chat_users).toBe(1);
+
+      expect(typeof rows[1].day).toBe('string');
+      expect(rows[1].day).toBe('2026-05-10');
+      expect(rows[1].weekly_active_users).toBe(3);
+      expect(rows[1].monthly_active_users).toBe(4);
+      expect(rows[1].monthly_active_agent_users).toBe(1);
+      expect(rows[1].monthly_active_chat_users).toBe(1);
+    });
+
+    it('getDailyTotals computes rolling users when dates come back as Date objects', async () => {
+      const originalDb = (handler as any).db;
+      const fakeActivityRows = [
+        {
+          day: new Date('2026-05-04T00:00:00.000Z'),
+          user_id: 1,
+          used_agent: true,
+          used_chat: false,
+        },
+        {
+          day: new Date('2026-05-08T00:00:00.000Z'),
+          user_id: 2,
+          used_agent: false,
+          used_chat: true,
+        },
+        {
+          day: new Date('2026-05-10T00:00:00.000Z'),
+          user_id: 1,
+          used_agent: false,
+          used_chat: false,
+        },
+      ];
+      const fakeQuery = {
+        join: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        whereBetween: jest.fn().mockReturnThis(),
+        select: jest.fn().mockResolvedValue(fakeActivityRows),
+      };
+      (handler as any).db = jest.fn().mockReturnValue(fakeQuery);
+
+      try {
+        const rows = await (handler as any).enrichTeamRollingActiveUsers(
+          [
+            buildDailyTotal({
+              day: new Date('2026-05-10T00:00:00.000Z') as any,
+              team_slug: 'team-a',
+            }),
+          ],
+          'organization',
+          'org-1',
+          '2026-05-10',
+          '2026-05-10',
+          'team-a',
+        );
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].weekly_active_users).toBe(2);
+        expect(rows[0].monthly_active_users).toBe(2);
+        expect(rows[0].monthly_active_agent_users).toBe(1);
+        expect(rows[0].monthly_active_chat_users).toBe(1);
+      } finally {
+        (handler as any).db = originalDb;
+      }
+    });
+
+    it('getDailyTotals only counts users active within the selected team', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      await handler.insertUserMetrics([
+        buildUserMetric({ day: '2026-05-10', user_id: 1, user_login: 'u1' }),
+        buildUserMetric({ day: '2026-05-10', user_id: 2, user_login: 'u2' }),
+      ]);
+      // user 1 is in team-a, user 2 is in team-b
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: '2026-05-10',
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+        buildUserTeam({
+          day: '2026-05-10',
+          user_id: 2,
+          user_login: 'u2',
+          team_slug: 'team-b',
+          team_id: 2,
+        }),
+      ]);
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBe(1);
+    });
+
+    it('getDailyTotals leaves org-level rolling counts untouched', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          day: '2026-05-10',
+          team_slug: '',
+          weekly_active_users: 42,
+          monthly_active_users: 99,
+        }),
+      ]);
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(42);
+      expect(rows[0].monthly_active_users).toBe(99);
     });
 
     it('getPeriodRange returns min/max day from daily totals', async () => {
@@ -362,6 +685,129 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toHaveProperty('prMetrics');
       expect(result.daily).toHaveLength(2);
     });
+
+    it('getUserMetrics only returns rows for the requested user login', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'octocat', day: '2026-05-01' }),
+        buildUserMetric({
+          user_login: 'octocat',
+          user_id: 1,
+          day: '2026-05-02',
+        }),
+        buildUserMetric({
+          user_login: 'someone-else',
+          user_id: 2,
+          day: '2026-05-01',
+        }),
+      ]);
+
+      const rows = await handler.getUserMetrics(
+        'organization',
+        'org-1',
+        'octocat',
+        '2026-05-01',
+        '2026-05-03',
+      );
+
+      expect(rows).toHaveLength(2);
+      expect(rows.every(r => r.user_login === 'octocat')).toBe(true);
+    });
+
+    it('getUserMetrics matches user login case-insensitively', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'OctoCat', day: '2026-05-01' }),
+        buildUserMetric({
+          user_login: 'someone-else',
+          user_id: 2,
+          day: '2026-05-01',
+        }),
+      ]);
+
+      const rows = await handler.getUserMetrics(
+        'organization',
+        'org-1',
+        'octocat',
+        '2026-05-01',
+        '2026-05-03',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].user_login).toBe('OctoCat');
+    });
+
+    it('hasUserMetrics finds historical data independent of the date range', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'OctoCat', day: '2026-05-01' }),
+      ]);
+
+      await expect(
+        handler.hasUserMetrics('organization', 'org-1', 'octocat'),
+      ).resolves.toBe(true);
+      await expect(
+        handler.hasUserMetrics('organization', 'org-1', 'someone-else'),
+      ).resolves.toBe(false);
+    });
+
+    it('getUserDashboardData scopes every dimension to a single user login', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'octocat', user_id: 1 }),
+        buildUserMetric({ user_login: 'someone-else', user_id: 2 }),
+      ]);
+      await handler.insertUserMetricsByFeature([
+        buildUserMetricsByFeature({ user_login: 'octocat', user_id: 1 }),
+        buildUserMetricsByFeature({
+          user_login: 'someone-else',
+          user_id: 2,
+          feature: 'agent',
+        }),
+      ]);
+      await handler.insertUserMetricsByIde([
+        buildUserMetricsByIde({ user_login: 'octocat', user_id: 1 }),
+      ]);
+      await handler.insertUserMetricsByLanguageFeature([
+        buildUserMetricsByLanguageFeature({
+          user_login: 'octocat',
+          user_id: 1,
+        }),
+      ]);
+      await handler.insertUserMetricsByModelFeature([
+        buildUserMetricsByModelFeature({ user_login: 'octocat', user_id: 1 }),
+      ]);
+      await handler.insertUserMetricsByLanguageModel([
+        buildUserMetricsByLanguageModel({ user_login: 'octocat', user_id: 1 }),
+      ]);
+
+      const result = await handler.getUserDashboardData(
+        'organization',
+        'org-1',
+        'octocat',
+        '2026-05-01',
+        '2026-05-01',
+      );
+
+      expect(result.userLogin).toBe('octocat');
+      expect(result.daily).toHaveLength(1);
+      expect(result.daily[0].user_login).toBe('octocat');
+      expect(result.byFeature).toHaveLength(1);
+      expect(result.byFeature[0].feature).toBe('chat_panel');
+      expect(result.byIde).toHaveLength(1);
+      expect(result.byLanguage).toHaveLength(1);
+      expect(result.byModelFeature).toHaveLength(1);
+      expect(result.byLanguageModel).toHaveLength(1);
+
+      // Never returns another user's rows, even though they exist in the
+      // same day/entity/metrics_type scope.
+      const otherUser = await handler.getUserDashboardData(
+        'organization',
+        'org-1',
+        'someone-else',
+        '2026-05-01',
+        '2026-05-01',
+      );
+      expect(otherUser.byFeature).toEqual([
+        expect.objectContaining({ feature: 'agent' }),
+      ]);
+    });
   });
 });
 
@@ -411,6 +857,138 @@ function buildUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {
     user_login: 'octocat',
     team_id: 100,
     team_slug: 'alpha',
+    ...overrides,
+  };
+}
+
+function buildUserMetric(
+  overrides: Partial<V2UserMetricRow> = {},
+): V2UserMetricRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    used_agent: true,
+    used_chat: true,
+    used_cli: false,
+    used_vscode_agent: false,
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    user_initiated_interaction_count: 7,
+    ai_credits_used: 5.5,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByFeature(
+  overrides: Partial<V2UserMetricsByFeatureRow> = {},
+): V2UserMetricsByFeatureRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    feature: 'chat_panel',
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    user_initiated_interaction_count: 7,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByIde(
+  overrides: Partial<V2UserMetricsByIdeRow> = {},
+): V2UserMetricsByIdeRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    ide: 'vscode',
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    user_initiated_interaction_count: 7,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByLanguageFeature(
+  overrides: Partial<V2UserMetricsByLanguageFeatureRow> = {},
+): V2UserMetricsByLanguageFeatureRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    language: 'typescript',
+    feature: 'chat_panel',
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByModelFeature(
+  overrides: Partial<V2UserMetricsByModelFeatureRow> = {},
+): V2UserMetricsByModelFeatureRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    model_id: 'gpt-4o',
+    feature: 'chat_panel',
+    user_initiated_interaction_count: 7,
+    code_generation_activity_count: 4,
+    code_acceptance_activity_count: 3,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByLanguageModel(
+  overrides: Partial<V2UserMetricsByLanguageModelRow> = {},
+): V2UserMetricsByLanguageModelRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    language: 'typescript',
+    model_id: 'gpt-4o',
+    request_count: 4,
+    code_generation_activity_count: 4,
+    code_acceptance_activity_count: 3,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
     ...overrides,
   };
 }

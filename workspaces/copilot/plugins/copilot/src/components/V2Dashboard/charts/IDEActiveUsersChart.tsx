@@ -16,23 +16,41 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2DailyTotal } from '@backstage-community/plugin-copilot-common';
-import { aggregateDailyTotals } from './aggregateDailyTotals';
+import {
+  aggregateDailyTotals,
+  fillDailyTotalsGaps,
+} from './aggregateDailyTotals';
 import { formatDay, DATE_TICK_LABEL_STYLE } from './chartUtils';
 
 interface Props {
   data: V2DailyTotal[];
   variant: 'daily' | 'weekly';
+  from: string;
+  to: string;
 }
 
-export function IDEActiveUsersChart({ data, variant }: Props) {
+export function IDEActiveUsersChart({ data, variant, from, to }: Props) {
   const field =
     variant === 'daily' ? 'daily_active_users' : 'weekly_active_users';
   const label =
     variant === 'daily' ? 'Daily Active Users' : 'Weekly Active Users';
 
-  const aggregated = aggregateDailyTotals(data);
+  const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
   const days = aggregated.map(d => d.day);
-  const values = aggregated.map(d => (d[field] ?? 0) as number);
+  const supportsRollingActiveUsers =
+    variant === 'weekly' &&
+    data.some(row => row.weekly_active_users !== undefined);
+  const values = aggregated.map(d => {
+    if (
+      variant === 'weekly' &&
+      d.weekly_active_users === undefined &&
+      supportsRollingActiveUsers
+    ) {
+      return null;
+    }
+
+    return (d[field] ?? 0) as number;
+  });
 
   if (aggregated.length === 0) {
     return (

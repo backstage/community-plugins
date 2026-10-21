@@ -22,13 +22,16 @@ import {
   compactNumber,
   formatDay,
   DATE_TICK_LABEL_STYLE,
+  fillDateRange,
 } from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
+  from: string;
+  to: string;
 }
 
-export function RequestsByChatModeChart({ data }: Readonly<Props>) {
+export function RequestsByChatModeChart({ data, from, to }: Readonly<Props>) {
   if (data.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -39,9 +42,7 @@ export function RequestsByChatModeChart({ data }: Readonly<Props>) {
 
   const filtered = filterChatRows(data);
 
-  const days = [...new Set(filtered.map(d => d.day))].sort((a, b) =>
-    a.localeCompare(b),
-  );
+  const days = fillDateRange(from, to);
   const features = [...new Set(filtered.map(d => d.feature))].sort((a, b) =>
     a.localeCompare(b),
   );

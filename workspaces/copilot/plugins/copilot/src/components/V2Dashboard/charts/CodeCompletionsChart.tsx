@@ -16,10 +16,17 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2MetricsByFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { compactNumber, formatDay, DATE_TICK_LABEL_STYLE } from './chartUtils';
+import {
+  compactNumber,
+  formatDay,
+  DATE_TICK_LABEL_STYLE,
+  fillDateRange,
+} from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
+  from: string;
+  to: string;
 }
 
 interface DayTotal {
@@ -30,7 +37,7 @@ interface DayTotal {
 
 function aggregateCodeCompletionByDay(
   data: V2MetricsByFeatureRow[],
-): DayTotal[] {
+): Map<string, DayTotal> {
   const byDay = new Map<string, DayTotal>();
   for (const row of data.filter(r => r.feature === 'code_completion')) {
     const existing = byDay.get(row.day) ?? {
@@ -42,13 +49,14 @@ function aggregateCodeCompletionByDay(
     existing.accepted += row.code_acceptance_activity_count ?? 0;
     byDay.set(row.day, existing);
   }
-  return [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day));
+  return byDay;
 }
 
-export function CodeCompletionsChart({ data }: Props) {
-  const aggregated = aggregateCodeCompletionByDay(data);
+export function CodeCompletionsChart({ data, from, to }: Props) {
+  const byDay = aggregateCodeCompletionByDay(data);
+  const days = fillDateRange(from, to);
 
-  if (aggregated.length === 0) {
+  if (days.length === 0 && byDay.size === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
         No data available
@@ -56,7 +64,15 @@ export function CodeCompletionsChart({ data }: Props) {
     );
   }
 
-  const days = aggregated.map(d => d.day);
+  if (byDay.size === 0) {
+    return (
+      <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
+        No data available
+      </div>
+    );
+  }
+
+  const ZERO: DayTotal = { day: '', suggested: 0, accepted: 0 };
 
   return (
     <LineChart
@@ -72,12 +88,12 @@ export function CodeCompletionsChart({ data }: Props) {
       ]}
       series={[
         {
-          data: aggregated.map(d => d.suggested),
+          data: days.map(d => (byDay.get(d) ?? ZERO).suggested),
           label: 'Suggested',
           showMark: false,
         },
         {
-          data: aggregated.map(d => d.accepted),
+          data: days.map(d => (byDay.get(d) ?? ZERO).accepted),
           label: 'Accepted',
           showMark: false,
         },

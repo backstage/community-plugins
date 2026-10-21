@@ -15,6 +15,7 @@
  */
 
 import { V2DailyTotal } from '@backstage-community/plugin-copilot-common';
+import { fillDateRange } from './chartUtils';
 
 /**
  * Aggregate V2DailyTotal rows by day, summing all numeric fields.
@@ -57,6 +58,9 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
       existing.daily_active_cli_users =
         (existing.daily_active_cli_users ?? 0) +
         (row.daily_active_cli_users ?? 0);
+      existing.daily_active_vscode_agent_users =
+        (existing.daily_active_vscode_agent_users ?? 0) +
+        (row.daily_active_vscode_agent_users ?? 0);
       existing.monthly_active_agent_users =
         (existing.monthly_active_agent_users ?? 0) +
         (row.monthly_active_agent_users ?? 0);
@@ -73,10 +77,55 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
       existing.loc_suggested_to_delete_sum += row.loc_suggested_to_delete_sum;
       existing.user_initiated_interaction_count +=
         row.user_initiated_interaction_count;
+      existing.total_ai_credits_used =
+        (existing.total_ai_credits_used ?? 0) +
+        (row.total_ai_credits_used ?? 0);
     }
   }
 
   // Sort by day to ensure deterministic ordering. Charts expect chronologically
   // sorted data for consistent x-axis labeling and hover behavior.
   return [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day));
+}
+
+/**
+ * Ensures a sorted `V2DailyTotal[]` contains an entry for every calendar day
+ * in [`from`, `to`]. Days already present are kept as-is; missing days are
+ * inserted with all numeric metrics set to zero.
+ *
+ * This guarantees a linear, gap-free x-axis on all per-day charts even when
+ * a user (or org) had no Copilot activity on certain days — the GitHub API
+ * only returns rows for active days, so without this fill step those days
+ * would be silently skipped on the chart.
+ */
+export function fillDailyTotalsGaps(
+  data: V2DailyTotal[],
+  from: string,
+  to: string,
+): V2DailyTotal[] {
+  if (data.length === 0) return [];
+  const byDay = new Map(data.map(row => [row.day, row]));
+  const first = data[0];
+  return fillDateRange(from, to).map(
+    day =>
+      byDay.get(day) ?? {
+        day,
+        metrics_type: first.metrics_type,
+        entity_id: first.entity_id,
+        team_slug: first.team_slug,
+        daily_active_users: 0,
+        daily_active_cli_users: 0,
+        daily_active_vscode_agent_users: 0,
+        monthly_active_agent_users: 0,
+        monthly_active_chat_users: 0,
+        code_acceptance_activity_count: 0,
+        code_generation_activity_count: 0,
+        loc_added_sum: 0,
+        loc_deleted_sum: 0,
+        loc_suggested_to_add_sum: 0,
+        loc_suggested_to_delete_sum: 0,
+        user_initiated_interaction_count: 0,
+        total_ai_credits_used: 0,
+      },
+  );
 }

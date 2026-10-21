@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// @ts-nocheck -- unmodified vendored copy from open-source `@backstage-community/plugin-copilot`,
+// kept in plugins/temp until the upstream PR is merged. It has a pre-existing type error passing the
+// global fetch `Response` to `ResponseError.fromResponse`, which works fine at runtime. See
+// plugins/temp/README.md.
 
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';

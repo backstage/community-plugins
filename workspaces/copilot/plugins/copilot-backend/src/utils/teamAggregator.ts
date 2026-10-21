@@ -114,6 +114,8 @@ export function aggregateTeamMetrics(
     const activeUsers = new Set<number>();
     let agentUsers = 0;
     let chatUsers = 0;
+    let vscodeAgentUsers = 0;
+    let aiCreditsUsedSum = 0;
 
     // Aggregation maps for breakdown dimensions
     const featureMap = new Map<string, V2MetricsByFeatureRow>();
@@ -131,6 +133,7 @@ export function aggregateTeamMetrics(
       activeUsers.add(userId);
       if (metric.used_agent) agentUsers++;
       if (metric.used_chat) chatUsers++;
+      if (metric.used_vscode_agent) vscodeAgentUsers++;
       locAddedSum += metric.loc_added_sum;
       locDeletedSum += metric.loc_deleted_sum;
       locSuggestedToAddSum += metric.loc_suggested_to_add_sum;
@@ -138,6 +141,7 @@ export function aggregateTeamMetrics(
       codeAcceptanceActivityCount += metric.code_acceptance_activity_count;
       codeGenerationActivityCount += metric.code_generation_activity_count;
       userInitiatedInteractionCount += metric.user_initiated_interaction_count;
+      aiCreditsUsedSum += metric.ai_credits_used ?? 0;
 
       const bd = breakdownsByUserId.get(userId);
       if (!bd) continue;
@@ -325,6 +329,7 @@ export function aggregateTeamMetrics(
       monthly_active_users: undefined,
       monthly_active_agent_users: agentUsers,
       monthly_active_chat_users: chatUsers,
+      daily_active_vscode_agent_users: vscodeAgentUsers,
       code_acceptance_activity_count: codeAcceptanceActivityCount,
       code_generation_activity_count: codeGenerationActivityCount,
       loc_added_sum: locAddedSum,
@@ -332,6 +337,7 @@ export function aggregateTeamMetrics(
       loc_suggested_to_add_sum: locSuggestedToAddSum,
       loc_suggested_to_delete_sum: locSuggestedToDeleteSum,
       user_initiated_interaction_count: userInitiatedInteractionCount,
+      total_ai_credits_used: aiCreditsUsedSum,
     });
 
     byFeature.push(...featureMap.values());
