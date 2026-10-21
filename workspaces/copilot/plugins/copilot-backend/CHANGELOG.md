@@ -1,5 +1,41 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.3.0
+
+### Minor Changes
+
+- 2da17b5: Add support for the new GitHub Copilot "AI credits consumed per user" metric (`ai_credits_used`).
+
+  The per-user metric is now ingested into `copilot_user_metrics` and aggregated to team level
+  (`total_ai_credits_used` on `copilot_daily_totals`). A new **Consumption** tab is shown in the V2
+  dashboard when a team is selected, displaying the total AI credits used and a chart of consumption
+  over the selected timeframe. AI credits are only exposed by the user-level report, so the tab is only
+  available for team-scoped views.
+
+- 2da17b5: Add ingestion and privacy-scoped serving of per-user Copilot metric breakdowns (by feature, IDE, language, model, and language/model), and a new `GET /v2/me/dashboard` endpoint that returns only the signed-in caller's own Copilot metrics.
+
+  The caller's GitHub login is always resolved server-side from their own request credentials — this endpoint has no way to request another user's data. The default matching strategy uses the caller's `github.com/user-login` catalog annotation as their GitHub login; this can be customized by registering a resolver via the new `copilotUserResolverExtensionPoint`.
+
+  Requires `copilot.ingestTeams: true` to be set, since per-user data is only ingested under that flag.
+
+### Patch Changes
+
+- 2da17b5: Fix `value "..." is out of range for type integer` ingestion errors on Postgres by widening `copilot_metrics_by_cli.output_tokens_sum` and `.prompt_tokens_sum` from `integer` to `bigint`. These columns store daily CLI token-usage sums which can exceed the 32-bit signed integer range (2,147,483,647) for large organizations/enterprises. SQLite does not enforce fixed-width integer storage, so this only manifested on Postgres-backed deployments.
+
+  Previously, once this overflow occurred, the failing `insertByCli` call aborted ingestion for the entire day, which in turn silently skipped per-user and per-team aggregation for that day (e.g. `ai_credits_used`/`total_ai_credits_used`). `insertByCli` now merges (rather than ignores) on conflict, and a follow-up migration re-triggers ingestion for any previously-stored `copilot_metrics_by_cli` rows that show real CLI activity but have their token sums stuck at `0`, so historical data self-heals once re-ingested.
+
+- b88c76a: Report downloads are now also allowed from the GHE.com tenant of the API base URL, so `copilot.host` can point at a dedicated `api.SUBDOMAIN.ghe.com` integration entry and still download reports from `copilot-reports.SUBDOMAIN.ghe.com`. This lets the Copilot token live apart from the GitHub App the rest of Backstage uses for `SUBDOMAIN.ghe.com`.
+- 2da17b5: Fixed team-filtered V2 dashboard metrics (IDE Active Users, Agent Adoption, IDE
+  Weekly Active Users) showing 0. Team-level daily totals had no rolling
+  weekly/monthly active-user counts because GitHub's per-user API only exposes
+  daily activity. These are now derived on read from the persisted per-user
+  activity (`copilot_user_metrics` joined with `copilot_user_teams`) using GitHub's
+  standard rolling windows (7-day weekly, 28-day monthly), including
+  `monthly_active_agent_users` and `monthly_active_chat_users`.
+- Updated dependencies [2da17b5]
+- Updated dependencies [2da17b5]
+  - @backstage-community/plugin-copilot-common@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes
