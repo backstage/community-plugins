@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { Content, EmptyState, InfoCard } from '@backstage/core-components';
-import Grid from '@material-ui/core/Grid';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Grid } from '@backstage/ui';
 import {
   useEntity,
   MissingAnnotationEmptyState,
@@ -38,7 +37,7 @@ export const CodeSceneEntityFileSummary = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   } else if (!analysis) {
     return (
       <EmptyState
@@ -52,11 +51,11 @@ export const CodeSceneEntityFileSummary = () => {
   return isCodeSceneAvailable(entity) ? (
     <InfoCard>
       <Content>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
+        <Grid.Root columns={{ sm: '12' }} gap="4">
+          <Grid.Item colSpan={{ sm: '12' }}>
             <CodeSceneFileSummary {...analysis} />
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Content>
     </InfoCard>
   ) : (

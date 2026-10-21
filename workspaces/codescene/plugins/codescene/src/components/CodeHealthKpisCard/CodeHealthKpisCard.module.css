@@ -1,0 +1,7 @@
+@layer components {
+  .gauge {
+    height: 100%;
+    width: 100px;
+    margin: var(--bui-space-3) 0 0 var(--bui-space-12);
+  }
+}
