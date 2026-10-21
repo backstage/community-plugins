@@ -83,6 +83,7 @@ export function LanguageUsagePerDayChart({ data, from, to }: Props) {
 
   return (
     <LineChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,

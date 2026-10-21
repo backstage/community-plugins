@@ -42,6 +42,7 @@ export const DashboardCharts = ({
   <MainBox>
     <Chart title="Acceptance Rate %">
       <LineChart
+        enableKeyboardNavigation
         xAxis={[
           {
             id: 'days',
@@ -67,6 +68,7 @@ export const DashboardCharts = ({
     </Chart>
     <Chart title="Total Suggestions Count | Total Acceptances Count">
       <LineChart
+        enableKeyboardNavigation
         xAxis={[
           {
             id: 'days',
@@ -92,6 +94,7 @@ export const DashboardCharts = ({
     </Chart>
     <Chart title="Total Lines Suggested | Total Lines Accepted">
       <LineChart
+        enableKeyboardNavigation
         xAxis={[
           {
             id: 'days',
@@ -117,6 +120,7 @@ export const DashboardCharts = ({
     </Chart>
     <Chart title="Total Active Users">
       <BarChart
+        enableKeyboardNavigation
         xAxis={[
           {
             data: metrics.map(x => new Date(x.day)),

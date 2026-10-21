@@ -80,6 +80,7 @@ export function ModelUsagePerChatModeChart({ data }: Readonly<Props>) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: displayModels,

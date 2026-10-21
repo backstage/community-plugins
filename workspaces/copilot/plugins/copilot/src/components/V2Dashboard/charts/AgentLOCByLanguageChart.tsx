@@ -53,6 +53,7 @@ export function AgentLOCByLanguageChart({ data }: Readonly<Props>) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[{ data: languages, scaleType: 'band' }]}
       series={[
         {

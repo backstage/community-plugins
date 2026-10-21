@@ -50,6 +50,7 @@ export function LanguageUsageDonut({ data }: Props) {
 
   return (
     <PieChart
+      enableKeyboardNavigation
       series={[
         {
           data: pieData,
