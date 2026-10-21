@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.17.2
+
+### Patch Changes
+
+- a3e0c82: Fixed template update notifications not being sent for entities with object or array format scaffoldedFrom
+
 ## 2.17.1
 
 ### Patch Changes
