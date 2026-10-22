@@ -1,5 +1,20 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.30.0
+
+### Minor Changes
+
+- 6b28131: Dependency upgrade
+
+### Patch Changes
+
+- fdecadf: Updated dependency `supertest` to `7.3.1`.
+  Updated dependency `cytoscape` to `3.34.3`.
+  Updated dependency `@types/node` to `22.20.5`.
+- f14f418: Updated dependency `@types/supertest` to `7.2.1`.
+  Updated dependency `@patternfly/react-topology` to `6.6.0`.
+  Updated dependency `cytoscape` to `3.34.2`.
+
 ## 1.29.3
 
 ### Patch Changes
