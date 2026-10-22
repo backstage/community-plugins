@@ -18,7 +18,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { ShortcutItem } from './ShortcutItem';
 import { Shortcut } from './types';
 import { DefaultShortcutsApi } from './api';
-import { MockStorageApi, renderInTestApp } from '@backstage/test-utils';
+import { mockApis, renderInTestApp } from '@backstage/test-utils';
 import { SidebarOpenStateProvider } from '@backstage/core-components';
 
 describe('ShortcutItem', () => {
@@ -27,7 +27,7 @@ describe('ShortcutItem', () => {
     url: '/some-url',
     title: 'some title',
   };
-  const api = new DefaultShortcutsApi(MockStorageApi.create());
+  const api = new DefaultShortcutsApi(mockApis.storage());
 
   it('displays the shortcut', async () => {
     await renderInTestApp(
