@@ -342,6 +342,10 @@ workspace/scaffolder-backend-module-annotator:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-annotator/**']
 
+workspace/scaffolder-backend-module-http-request:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-http-request/**']
+
 workspace/scaffolder-backend-module-kubernetes:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-kubernetes/**']
