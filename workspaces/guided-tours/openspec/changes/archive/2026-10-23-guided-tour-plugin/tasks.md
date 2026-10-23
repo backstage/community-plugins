@@ -43,4 +43,4 @@
 
 - [x] 6.1 `yarn tsc`, `yarn lint:all`, `yarn prettier:check`, `yarn test:all` green.
 - [x] 6.2 Playwright e2e: welcome tour across pages, reload resumes saved step, dismiss is remembered, Reset all replays.
-- [ ] 6.3 Manual check in light and dark theme, keyboard-only navigation, screen reader announces step title. _Done so far: light theme via Playwright screenshots, Escape and button focus via e2e; dark theme and screen reader not yet checked._
+- [ ] 6.3 (left open at archive time) Manual check in light and dark theme, keyboard-only navigation, screen reader announces step title. _Done so far: light theme via Playwright screenshots, Escape and button focus via e2e; dark theme and screen reader not yet checked._
