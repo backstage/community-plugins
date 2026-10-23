@@ -35,6 +35,7 @@ import {
 } from '@internal/backstage-plugin-guided-tour-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { routeForStep } from '../overlay/isOnRoute';
 import { useGuidedTourSnapshot } from '../overlay/useGuidedTourSnapshot';
 import { guidedTourTranslationRef } from '../../translation';
 
@@ -56,7 +57,8 @@ function TourRow(props: { tour: GuidedTour; progress?: GuidedTourProgress }) {
   const onStart = () => {
     const resume = status === 'inProgress';
     const stepIndex = resume ? progress?.stepIndex ?? 0 : 0;
-    const route = tour.steps[stepIndex]?.route;
+    // the page the step is on, even if an earlier step set the route
+    const route = routeForStep(tour.steps, stepIndex);
     if (route) {
       navigate(route);
     }

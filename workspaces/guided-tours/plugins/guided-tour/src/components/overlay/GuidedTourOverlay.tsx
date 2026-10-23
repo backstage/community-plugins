@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 import { selectLoginTours } from '../../api/DefaultGuidedTourApi';
 import { ActiveStep } from './ActiveStep';
-import { isOnRoute } from './isOnRoute';
+import { isOnRoute, routeForStep } from './isOnRoute';
 import { useGuidedTourSnapshot } from './useGuidedTourSnapshot';
 
 /**
@@ -61,7 +61,7 @@ export function GuidedTourOverlay() {
       .map(t => ({ tour: t, id: t.id, progress: api.getProgress(t.id) }))
       .filter(t => t.progress?.status === 'in-progress')
       .filter(t => {
-        const route = t.tour.steps[t.progress?.stepIndex ?? 0]?.route;
+        const route = routeForStep(t.tour.steps, t.progress?.stepIndex ?? 0);
         return !route || isOnRoute(route, location.pathname);
       })
       .sort((a, b) =>

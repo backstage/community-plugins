@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isOnRoute } from './isOnRoute';
+import { isOnRoute, routeForStep } from './isOnRoute';
 
 describe('isOnRoute', () => {
   it('matches the route and its sub paths', () => {
@@ -27,5 +27,24 @@ describe('isOnRoute', () => {
   it('matches the root route only exactly', () => {
     expect(isOnRoute('/', '/')).toBe(true);
     expect(isOnRoute('/', '/catalog')).toBe(false);
+  });
+});
+
+describe('routeForStep', () => {
+  const steps = [{}, { route: '/example' }, {}, { route: '/' }, {}];
+
+  it('returns the route of the step itself', () => {
+    expect(routeForStep(steps, 1)).toBe('/example');
+    expect(routeForStep(steps, 3)).toBe('/');
+  });
+
+  it('falls back to the closest earlier route', () => {
+    expect(routeForStep(steps, 2)).toBe('/example');
+    expect(routeForStep(steps, 4)).toBe('/');
+  });
+
+  it('returns undefined when no step so far set a route', () => {
+    expect(routeForStep(steps, 0)).toBeUndefined();
+    expect(routeForStep([], 0)).toBeUndefined();
   });
 });

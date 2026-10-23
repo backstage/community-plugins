@@ -21,3 +21,21 @@ export function isOnRoute(route: string, pathname: string): boolean {
   }
   return pathname === base || pathname.startsWith(`${base}/`);
 }
+
+/**
+ * The page a step belongs to: its own `route`, or the route of the closest
+ * earlier step that set one. A step without a route stays on the page the
+ * tour reached before it.
+ */
+export function routeForStep(
+  steps: ReadonlyArray<{ route?: string }>,
+  stepIndex: number,
+): string | undefined {
+  for (let i = Math.min(stepIndex, steps.length - 1); i >= 0; i--) {
+    const route = steps[i]?.route;
+    if (route) {
+      return route;
+    }
+  }
+  return undefined;
+}
