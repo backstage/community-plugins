@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useApi } from '@backstage/frontend-plugin-api';
-import { Dialog, Popover, Skeleton } from '@backstage/ui';
+import { Dialog, DialogBody, Popover, Skeleton } from '@backstage/ui';
 import {
   GuidedTour,
   guidedTourApiRef,
@@ -111,7 +111,9 @@ export function ActiveStep(props: ActiveStepProps) {
   if (status === 'resolving') {
     return (
       <Dialog key="resolving" isOpen isDismissable={false} width={360}>
-        <Skeleton width="100%" height={80} />
+        <DialogBody>
+          <Skeleton width="100%" height={80} />
+        </DialogBody>
       </Dialog>
     );
   }
@@ -133,7 +135,7 @@ export function ActiveStep(props: ActiveStepProps) {
         >
           <AriaDialog
             aria-label={step.title ?? tour.title}
-            style={{ outline: 'none' }}
+            style={{ outline: 'none', width: 360, maxWidth: '80vw' }}
           >
             {card}
           </AriaDialog>
@@ -155,7 +157,7 @@ export function ActiveStep(props: ActiveStepProps) {
       onOpenChange={open => !open && api.dismiss()}
       width={420}
     >
-      {card}
+      <DialogBody>{card}</DialogBody>
     </Dialog>
   );
 }

@@ -49,7 +49,7 @@ export function StepCard(props: StepCardProps) {
   const clickToAdvance = step.advanceOn === 'click';
 
   return (
-    <Flex direction="column" gap="3" style={{ width: 360, maxWidth: '80vw' }}>
+    <Flex direction="column" gap="3" style={{ width: '100%' }}>
       <Flex justify="between" align="start" gap="2">
         <Flex direction="column" gap="1">
           <Text variant="body-x-small" color="secondary">
