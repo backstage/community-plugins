@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**
+ * Web library for the guided tour plugin. Depend on this package to ship a
+ * guided tour from any Backstage frontend plugin.
+ *
+ * @packageDocumentation
+ */
 export * from './types';
 export * from './api';
 export * from './blueprint';

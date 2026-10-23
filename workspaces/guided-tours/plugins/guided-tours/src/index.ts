@@ -14,4 +14,3 @@
  * limitations under the License.
  */
 export { guidedTourPlugin as default, guidedTourPlugin } from './plugin';
-export { guidedTourTranslationRef } from './translation';

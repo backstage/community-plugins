@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**
+ * Placement of the step card relative to the highlighted element.
+ * A subset of react-aria placements.
+ *
+ * @public
+ */
 export type GuidedTourPlacement =
   | 'top'
   | 'bottom'

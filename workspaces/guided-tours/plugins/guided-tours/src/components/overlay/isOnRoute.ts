@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * Whether the current pathname is "on" a step route. A route matches
+ * itself and any sub path (pages often redirect to a sub path, e.g.
+ * `/create` to `/create/templates`); the root route only matches exactly.
+ */
 export function isOnRoute(route: string, pathname: string): boolean {
   const base = route.replace(/\/+$/, '') || '/';
   if (base === '/') {

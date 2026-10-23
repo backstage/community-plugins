@@ -14,3 +14,15 @@
  * limitations under the License.
  */
 import '@testing-library/jest-dom';
+
+// jsdom 20 (jest-environment-jsdom) ships a URL without canParse, which
+// @braintree/sanitize-url relies on.
+if (typeof URL.canParse !== 'function') {
+  URL.canParse = (url: string | URL, base?: string | URL): boolean => {
+    try {
+      return Boolean(new URL(url, base));
+    } catch {
+      return false;
+    }
+  };
+}
