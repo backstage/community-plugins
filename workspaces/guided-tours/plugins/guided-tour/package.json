@@ -1,0 +1,55 @@
+{
+  "name": "@internal/backstage-plugin-guided-tour",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "description": "Guided tours for Backstage: spotlight steps, per-user progress, auto-start on login or route",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "guided-tour"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/frontend-plugin-api": "^0.18.0",
+    "@backstage/types": "^1.2.2",
+    "@backstage/ui": "^0.17.1",
+    "@internal/backstage-plugin-guided-tour-react": "workspace:^",
+    "@remixicon/react": "^4.6.0",
+    "react-aria-components": "~1.17.0",
+    "zod": "^4.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.2"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.36.5",
+    "@backstage/frontend-defaults": "^0.5.5",
+    "@backstage/frontend-dev-utils": "^0.1.5",
+    "@backstage/frontend-test-utils": "^0.6.3",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.2"
+  },
+  "files": [
+    "dist"
+  ]
+}

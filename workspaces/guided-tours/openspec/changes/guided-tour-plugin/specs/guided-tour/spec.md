@@ -63,6 +63,11 @@ The system SHALL persist, through `storageApiRef` bucket `guided-tour`, for each
 - **WHEN** the user presses Next and then reloads the page
 - **THEN** the tour resumes at the saved step
 
+#### Scenario: Deep link while a tour is in progress
+
+- **WHEN** a tour is saved as `in-progress` at a step with `route: '/'` and the user opens `/guided-tours` directly
+- **THEN** the user stays on `/guided-tours`, no tour starts, and the tour's row offers Continue
+
 #### Scenario: Dismiss is remembered
 
 - **WHEN** the user closes a tour

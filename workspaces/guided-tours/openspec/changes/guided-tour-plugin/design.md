@@ -147,13 +147,17 @@ export interface GuidedTourApi {
   getTours(): GuidedTour[]; // global ordered list
   getTour(id: string): GuidedTour | undefined;
   start(id: string, opts?: { force?: boolean; stepId?: string }): void; // force ignores saved progress
+  startQueue(ids: string[], opts?: { onboarding?: boolean }): void; // first starts, rest queued
   next(): void;
   previous(): void;
   dismiss(): void;
   complete(): void;
-  state$(): Observable<GuidedTourRunnerState>;
-  progress$(): Observable<Record<string, GuidedTourProgress>>;
-  resetProgress(id?: string): Promise<void>; // undefined = all
+  isAutoStartEnabled(): boolean;
+  getSnapshot(): GuidedTourSnapshot; // { ready, onboarded, state, progress }, immutable
+  subscribe(listener: () => void): () => void; // for useSyncExternalStore
+  getProgress(id: string): GuidedTourProgress | undefined; // undefined when version differs
+  resetProgress(id?: string): Promise<void>; // undefined = all + onboarded flag
+  markOnboarded(): Promise<void>;
 }
 export const guidedTourApiRef = createApiRef<GuidedTourApi>({
   id: 'plugin.guided-tour.api',
@@ -166,6 +170,10 @@ export function useGuidedTour(id: string): {
   progress?: GuidedTourProgress;
 };
 ```
+
+The API exposes a snapshot plus `subscribe` instead of Observables so that
+React consumers use `useSyncExternalStore` directly and tests need no
+observable helpers.
 
 Why the API and not the overlay owns the registry: tours must be queryable
 by the page, by `useGuidedTour`, and by the overlay. `api:guided-tour` is
@@ -229,6 +237,10 @@ seen".
    navigation, they do not interrupt.
 7. Manual: `useGuidedTour(id).start()` or the page. `start` while a tour runs
    replaces it (the replaced tour is saved as `in-progress`).
+8. Resume: before 4–6, a tour saved as `in-progress` resumes at its step,
+   but only when that step has no `route` or its route matches the current
+   page. A deep link is never redirected; the tours page shows "Continue"
+   for such a tour instead.
 
 ### Steps, targets and cross-page flows
 
@@ -258,8 +270,11 @@ portal so the card is always on top. Colors come from BUI tokens
 
 Step card = BUI `Popover` (`triggerRef={{ current: targetElement }}`,
 `isNonModal`, `isOpen`, `placement`, `shouldFlip`) wrapping a
-`react-aria-components` `Dialog` for `role="dialog"`, `aria-labelledby`,
-focus containment and Esc handling. Contents: `Text` title, `MarkdownText`
+`react-aria-components` `Dialog` for `role="dialog"` and focus handling.
+Escape is handled by the overlay itself with a capturing `keydown`
+listener; the popover's `onOpenChange` is deliberately ignored because
+react-aria also reports "closed" when focus leaves the popover, which
+happens for a moment on every step change. Contents: `Text` title, `MarkdownText`
 body, footer `Flex` with step counter `n / total`, `Button variant="secondary"` Previous
 (disabled on first step), `Button variant="primary"` Next / Done, and a
 `ButtonIcon` close in the header. Steps without a target reuse the same
