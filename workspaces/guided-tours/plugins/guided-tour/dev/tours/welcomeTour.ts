@@ -38,6 +38,15 @@ export const welcomeTour = GuidedTourBlueprint.make({
           'services and documentation. This short tour shows you around.',
       },
       {
+        id: 'guided-tours-nav',
+        title: 'Guided tours',
+        route: '/guided-tours',
+        target: { selector: 'nav a[href="/guided-tours"]' },
+        placement: 'right',
+        content:
+          'Every tour, including this one, can be replayed from here at any time.',
+      },
+      {
         id: 'catalog-nav',
         title: 'The software catalog',
         route: '/catalog',
@@ -59,7 +68,7 @@ export const welcomeTour = GuidedTourBlueprint.make({
       },
       {
         id: 'notifications-nav',
-        title: 'Notifications',
+        title: 'Your notifications',
         route: '/notifications',
         target: { selector: 'nav a[href="/notifications"]' },
         placement: 'right',
@@ -73,17 +82,9 @@ export const welcomeTour = GuidedTourBlueprint.make({
         route: '/settings',
         target: { selector: 'nav a[href="/settings"]' },
         placement: 'right',
-        content: 'Switch themes, manage your identity and more.',
-      },
-      {
-        id: 'guided-tours-nav',
-        title: 'Guided tours',
-        route: '/guided-tours',
-        target: { selector: 'nav a[href="/guided-tours"]' },
-        placement: 'right',
         content:
-          'Every tour, including this one, can be replayed from here at any ' +
-          'time. Done takes you back to the start page.',
+          'Switch themes, manage your identity and more. ' +
+          'Done takes you back to the start page.',
       },
     ],
   },
