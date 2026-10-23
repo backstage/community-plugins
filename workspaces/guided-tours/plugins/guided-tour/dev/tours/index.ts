@@ -16,7 +16,6 @@
 import { catalogTour } from './catalogTour';
 import { demoLoginTour } from './demoLoginTour';
 import { demoRouteTour } from './demoRouteTour';
-import { exploreTour } from './exploreTour';
 import { notificationsTour } from './notificationsTour';
 import { scaffolderTour } from './scaffolderTour';
 import { settingsTour } from './settingsTour';
@@ -26,7 +25,6 @@ import { welcomeTour } from './welcomeTour';
 export const devTours = [
   demoLoginTour,
   welcomeTour,
-  exploreTour,
   demoRouteTour,
   catalogTour,
   scaffolderTour,

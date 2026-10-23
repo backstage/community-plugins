@@ -37,19 +37,12 @@ export const catalogTour = GuidedTourBlueprint.make({
       {
         id: 'personal',
         title: 'Yours, starred, or everything',
-        target: { selector: '[data-testid="user-picker-all"]' },
+        // the Personal + Company block of the user list picker
+        target: { selector: '[class*="CatalogReactUserListPicker-root"]' },
         placement: 'right',
         content:
           '_Owned_ shows what your groups own, _Starred_ your favourites and ' +
           '_All_ the whole company.',
-      },
-      {
-        id: 'tags',
-        title: 'More filters',
-        target: { selector: '[data-testid="tags-picker-expand"]' },
-        placement: 'right',
-        content:
-          'Narrow the list down by owner, lifecycle, tags or processing status.',
       },
       {
         id: 'table',

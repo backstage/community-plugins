@@ -36,7 +36,10 @@ export const scaffolderTour = GuidedTourBlueprint.make({
       {
         id: 'card',
         title: 'A template',
-        target: { selector: '[data-testid="template-card-content"]' },
+        // the whole card, not only its content
+        target: {
+          selector: '.MuiCard-root:has([data-testid="template-card-content"])',
+        },
         placement: 'right',
         content:
           'Each card is a template from the catalog with its type, tags and owner.',

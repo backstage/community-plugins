@@ -127,7 +127,7 @@ const homeModule = createFrontendModule({
             <MarkdownText
               content={
                 'This home page is part of the guided tour dev app. ' +
-                'Start the **Explore the portal** tour from [Guided tours](/guided-tours).'
+                'Start or replay any tour from [Guided tours](/guided-tours).'
               }
             />
           ),

@@ -28,16 +28,26 @@ export const settingsTour = GuidedTourBlueprint.make({
         id: 'profile',
         title: 'Who you are',
         route: '/settings',
+        // the display name and email next to the avatar
+        target: {
+          selector:
+            '.MuiGrid-container:has([data-testid="user-settings-menu"]) .MuiGrid-grid-xs-true',
+        },
+        placement: 'bottom',
+        content:
+          'Your display name and email come from the identity you signed in with.',
+      },
+      {
+        id: 'logout',
+        title: 'Logout',
         target: { selector: '[data-testid="user-settings-menu"]' },
         placement: 'left',
-        content:
-          'Your profile comes from the identity you signed in with. The menu ' +
-          'behind this button lets you sign out.',
+        content: 'The menu behind this button lets you sign out.',
       },
       {
         id: 'theme',
         title: 'Light or dark',
-        target: { selector: 'button[value="dark"]' },
+        target: { selector: '.MuiToggleButtonGroup-root' },
         placement: 'bottom',
         content:
           'Pick a theme, or leave it on _Auto_ to follow your operating system.',
@@ -49,16 +59,7 @@ export const settingsTour = GuidedTourBlueprint.make({
         placement: 'left',
         onMissingTarget: 'center',
         content:
-          'Unpin the sidebar to collapse it and gain some room on small screens.',
-      },
-      {
-        id: 'tabs',
-        title: 'More settings',
-        target: { selector: 'a[href="/settings/feature-flags"]' },
-        placement: 'bottom',
-        onMissingTarget: 'center',
-        content:
-          'Authentication providers and feature flags live in the other tabs. ' +
+          'Unpin the sidebar to collapse it and gain some room on small screens. ' +
           'That is the end of this tour.',
       },
     ],
