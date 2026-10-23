@@ -14,40 +14,26 @@
  * limitations under the License.
  */
 import { createDevApp } from '@backstage/frontend-dev-utils';
-import {
-  createFrontendModule,
-  PluginHeaderActionBlueprint,
-} from '@backstage/frontend-plugin-api';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import homePlugin from '@backstage/plugin-home/alpha';
 import { HomePageWidgetBlueprint } from '@backstage/plugin-home-react/alpha';
 import notificationsPlugin from '@backstage/plugin-notifications/alpha';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import {
-  MarkdownText,
-  RestartTourAction,
-} from '@internal/backstage-plugin-guided-tour-react';
+import { MarkdownText } from '@internal/backstage-plugin-guided-tour-react';
 import plugin from '../src';
 import {
   catalogMockModule,
   notificationsMockModule,
   scaffolderMockModule,
 } from './mockApis';
+import { headerActionModules } from './headerActions';
 import { devTours } from './tours';
 
 const demoModule = createFrontendModule({
   pluginId: 'guided-tour',
-  extensions: [
-    // the header action from the react library, shown on the guided tours page
-    PluginHeaderActionBlueprint.make({
-      name: 'restart-welcome-tour',
-      params: {
-        loader: async () => <RestartTourAction tourId="guided-tour/welcome" />,
-      },
-    }),
-    ...devTours,
-  ],
+  extensions: [...devTours],
 });
 
 const homeModule = createFrontendModule({
@@ -87,5 +73,8 @@ createDevApp({
     notificationsPlugin,
     notificationsMockModule,
     userSettingsPlugin,
+    // "restart the guided tour" header buttons on catalog, create,
+    // notifications and settings
+    ...headerActionModules,
   ],
 });
