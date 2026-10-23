@@ -22,9 +22,13 @@ import { GuidedTour } from './types';
  * @public
  */
 export interface GuidedTourProgress {
+  /** Where the user left the tour. */
   status: 'in-progress' | 'completed' | 'dismissed';
+  /** Index of the step that was shown last. */
   stepIndex: number;
+  /** Version of the tour the progress was written for. */
   version: number;
+  /** ISO timestamp of the last change. */
   updatedAt: string;
 }
 
@@ -34,8 +38,11 @@ export interface GuidedTourProgress {
  * @public
  */
 export interface GuidedTourRunnerState {
+  /** Id of the running tour; undefined while no tour runs. */
   activeTourId?: string;
+  /** Index of the step currently shown. */
   stepIndex: number;
+  /** Ids of the tours that play after the running one. */
   queue: string[];
 }
 
@@ -51,7 +58,9 @@ export interface GuidedTourSnapshot {
   ready: boolean;
   /** True once the user has gone through (or dismissed) the login sequence. */
   onboarded: boolean;
+  /** The running tour and its queue. */
   state: GuidedTourRunnerState;
+  /** Saved progress by tour id, including entries of older tour versions. */
   progress: Record<string, GuidedTourProgress>;
 }
 
@@ -76,6 +85,7 @@ export interface GuidedTourStartOptions {
 export interface GuidedTourApi {
   /** All registered tours, ordered by `order` then title. */
   getTours(): GuidedTour[];
+  /** A registered tour by id. */
   getTour(id: string): GuidedTour | undefined;
 
   /**
@@ -86,14 +96,20 @@ export interface GuidedTourApi {
   start(id: string, options?: GuidedTourStartOptions): void;
   /** Starts the first tour of the list and queues the rest. */
   startQueue(ids: string[], options?: { onboarding?: boolean }): void;
+  /** Shows the next step; completes the tour on its last step. */
   next(): void;
+  /** Shows the previous step; a no-op on the first step. */
   previous(): void;
+  /** Closes the running tour and remembers it as dismissed. */
   dismiss(): void;
+  /** Finishes the running tour and starts the next one in the queue. */
   complete(): void;
 
   /** Whether tours may start on their own (login and route triggers). */
   isAutoStartEnabled(): boolean;
+  /** The current state; a new object on every change. */
   getSnapshot(): GuidedTourSnapshot;
+  /** Calls the listener on every change; returns the unsubscribe function. */
   subscribe(listener: () => void): () => void;
 
   /**

@@ -25,7 +25,7 @@ import { GuidedTour, GuidedTourParams } from './types';
  * @public
  */
 export const guidedTourDataRef = createExtensionDataRef<GuidedTour>().with({
-  id: 'guided-tour.tour',
+  id: 'guided-tours.tour',
 });
 
 /**
@@ -48,6 +48,8 @@ export const guidedTourDataRef = createExtensionDataRef<GuidedTour>().with({
  * @public
  */
 export const GuidedTourBlueprint = createExtensionBlueprint({
+  // Singular on purpose: every extension of this kind is one tour, so ids
+  // read as `guided-tour:<plugin>/<name>`, like `nav-item` or `entity-card`.
   kind: 'guided-tour',
   attachTo: { id: 'api:guided-tours', input: 'tours' },
   output: [guidedTourDataRef],

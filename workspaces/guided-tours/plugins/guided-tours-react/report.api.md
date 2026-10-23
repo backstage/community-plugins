@@ -13,37 +13,27 @@ import { ReactNode } from 'react';
 
 // @public
 export interface GuidedTour {
-  // (undocumented)
   autoStart?: GuidedTourAutoStart;
   completeRoute?: string;
-  // (undocumented)
   description?: string;
   id: string;
   order?: number;
-  // (undocumented)
   steps: GuidedTourStep[];
-  // (undocumented)
   title: string;
   version?: number;
 }
 
 // @public
 export interface GuidedTourApi {
-  // (undocumented)
   complete(): void;
-  // (undocumented)
   dismiss(): void;
   getProgress(id: string): GuidedTourProgress | undefined;
-  // (undocumented)
   getSnapshot(): GuidedTourSnapshot;
-  // (undocumented)
   getTour(id: string): GuidedTour | undefined;
   getTours(): GuidedTour[];
   isAutoStartEnabled(): boolean;
   markOnboarded(): Promise<void>;
-  // (undocumented)
   next(): void;
-  // (undocumented)
   previous(): void;
   resetAllProgress(): Promise<void>;
   resetProgress(id: string): Promise<void>;
@@ -54,7 +44,6 @@ export interface GuidedTourApi {
       onboarding?: boolean;
     },
   ): void;
-  // (undocumented)
   subscribe(listener: () => void): () => void;
 }
 
@@ -78,19 +67,19 @@ export type GuidedTourAutoStart =
 export const GuidedTourBlueprint: ExtensionBlueprint<{
   kind: 'guided-tour';
   params: GuidedTourParams;
-  output: ExtensionDataRef<GuidedTour, 'guided-tour.tour', {}>;
+  output: ExtensionDataRef<GuidedTour, 'guided-tours.tour', {}>;
   inputs: {};
   config: {};
   configInput: {};
   dataRefs: {
-    tour: ConfigurableExtensionDataRef<GuidedTour, 'guided-tour.tour', {}>;
+    tour: ConfigurableExtensionDataRef<GuidedTour, 'guided-tours.tour', {}>;
   };
 }>;
 
 // @public
 export const guidedTourDataRef: ConfigurableExtensionDataRef<
   GuidedTour,
-  'guided-tour.tour',
+  'guided-tours.tour',
   {}
 >;
 
@@ -110,33 +99,24 @@ export type GuidedTourPlacement =
 
 // @public
 export interface GuidedTourProgress {
-  // (undocumented)
   status: 'in-progress' | 'completed' | 'dismissed';
-  // (undocumented)
   stepIndex: number;
-  // (undocumented)
   updatedAt: string;
-  // (undocumented)
   version: number;
 }
 
 // @public
 export interface GuidedTourRunnerState {
-  // (undocumented)
   activeTourId?: string;
-  // (undocumented)
   queue: string[];
-  // (undocumented)
   stepIndex: number;
 }
 
 // @public
 export interface GuidedTourSnapshot {
   onboarded: boolean;
-  // (undocumented)
   progress: Record<string, GuidedTourProgress>;
   ready: boolean;
-  // (undocumented)
   state: GuidedTourRunnerState;
 }
 
@@ -185,9 +165,7 @@ export function MarkdownText(props: MarkdownTextProps): JSX_2.Element;
 
 // @public
 export interface MarkdownTextProps {
-  // (undocumented)
   className?: string;
-  // (undocumented)
   content: string;
 }
 

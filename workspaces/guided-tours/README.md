@@ -1,4 +1,4 @@
-# guided-tours
+# Guided Tours plugin for Backstage
 
 This workspace contains the guided tours plugins for Backstage: spotlight
 steps on top of any page, per-user progress and automatic start on login or
@@ -17,11 +17,22 @@ To start the dev app, run:
 
 ```sh
 yarn install
-yarn --cwd plugins/guided-tours start
+yarn start
 ```
 
-To generate knip reports for this workspace, run:
+It opens a portal-like demo at http://localhost:3000 with a welcome tour and
+page tours for the catalog, templates, notifications and settings.
+
+## Tests
 
 ```sh
-yarn backstage-repo-tools knip-reports
+yarn test            # unit tests
+yarn test:e2e        # Playwright tests against the dev app
+```
+
+To generate the API and knip reports for this workspace, run:
+
+```sh
+yarn build:api-reports
+yarn build:knip-reports
 ```

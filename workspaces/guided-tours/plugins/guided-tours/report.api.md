@@ -34,7 +34,7 @@ const guidedTourPlugin: OverridableFrontendPlugin<
       output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
       inputs: {
         tours: ExtensionInput<
-          ConfigurableExtensionDataRef<GuidedTour, 'guided-tour.tour', {}>,
+          ConfigurableExtensionDataRef<GuidedTour, 'guided-tours.tour', {}>,
           {
             singleton: false;
             optional: false;

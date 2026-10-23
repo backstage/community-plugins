@@ -88,7 +88,9 @@ export type GuidedTourAutoStart = false | 'login' | { route: string };
 export interface GuidedTour {
   /** Unique id, e.g. `example/intro`. */
   id: string;
+  /** Shown above every step and on the overview page. */
   title: string;
+  /** One or two sentences for the overview page. */
   description?: string;
   /**
    * Bump to show the tour again to users who completed or dismissed an
@@ -97,12 +99,14 @@ export interface GuidedTour {
   version?: number;
   /** Ordering in the onboarding queue and on the overview page. Default 100. */
   order?: number;
+  /** When the tour starts on its own. Default `false`. */
   autoStart?: GuidedTourAutoStart;
   /**
    * App-relative path to navigate to when the tour is finished with Done
    * (or by clicking through its last step), e.g. back to the start page.
    */
   completeRoute?: string;
+  /** The steps in the order they are shown. */
   steps: GuidedTourStep[];
 }
 

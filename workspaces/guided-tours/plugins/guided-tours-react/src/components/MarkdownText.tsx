@@ -24,7 +24,9 @@ import { Fragment, ReactNode, useMemo } from 'react';
  * @public
  */
 export interface MarkdownTextProps {
+  /** The markdown source. */
   content: string;
+  /** Class name of the wrapping element. */
   className?: string;
 }
 
