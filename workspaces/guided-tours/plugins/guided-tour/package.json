@@ -30,7 +30,7 @@
     "@backstage/types": "^1.2.2",
     "@backstage/ui": "^0.17.1",
     "@internal/backstage-plugin-guided-tour-react": "workspace:^",
-    "@remixicon/react": "^4.6.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "react-aria-components": "~1.17.0",
     "zod": "^4.0.0"
   },
