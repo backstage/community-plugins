@@ -23,6 +23,7 @@ import {
 import { useEffect, useMemo } from 'react';
 import { Dialog as AriaDialog } from 'react-aria-components';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { isOnRoute } from './isOnRoute';
 import { Spotlight } from './Spotlight';
 import { StepCard } from './StepCard';
 import { useElementRect, useTargetElement } from './useTargetElement';
@@ -43,7 +44,7 @@ export function ActiveStep(props: ActiveStepProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const onRoute = !step.route || location.pathname === step.route;
+  const onRoute = !step.route || isOnRoute(step.route, location.pathname);
   useEffect(() => {
     if (!onRoute && step.route) {
       navigate(step.route);
