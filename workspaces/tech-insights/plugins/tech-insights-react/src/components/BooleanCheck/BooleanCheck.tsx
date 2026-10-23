@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import { RiCheckboxCircleLine, RiErrorWarningLine } from '@remixicon/react';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 
 /**
@@ -24,9 +23,17 @@ import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
  */
 export const BooleanCheck = (props: { checkResult: CheckResult }) => {
   return !!props.checkResult.result ? (
-    <CheckCircleOutline color="primary" />
+    <RiCheckboxCircleLine
+      size={24}
+      color="var(--bui-fg-positive)"
+      aria-label="Passed"
+    />
   ) : (
-    <ErrorOutlineIcon color="error" />
+    <RiErrorWarningLine
+      size={24}
+      color="var(--bui-fg-negative)"
+      aria-label="Failed"
+    />
   );
 };
 

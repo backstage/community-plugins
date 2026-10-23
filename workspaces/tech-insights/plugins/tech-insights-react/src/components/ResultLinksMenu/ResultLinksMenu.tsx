@@ -20,13 +20,15 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
 } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import { MenuItem, Popover } from '@backstage/ui';
+import { Menu } from 'react-aria-components';
 import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import styles from './ResultLinksMenu.module.css';
 
 /**
  * ResultLinksMenu setMenu receiver.
@@ -74,7 +76,8 @@ export const ResultLinksMenu = (
     entity ? stringifyEntityRef(entity) : 'unknown'
   }`;
 
-  const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined);
+  const anchorRef = useRef<Element | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (links.length === 0) {
@@ -83,39 +86,48 @@ export const ResultLinksMenu = (
     }
     setMenu({
       open: (elem: Element) => {
-        setAnchorEl(elem);
+        anchorRef.current = elem;
+        setIsOpen(true);
       },
     });
   }, [setMenu, links]);
 
   const handleClose = useCallback(() => {
-    setAnchorEl(undefined);
-  }, [setAnchorEl]);
+    setIsOpen(false);
+  }, [setIsOpen]);
 
   if (links.length === 0) {
     return null;
   }
 
+  /*
+   * The anchor is only known when `open(element)` is called, so the menu
+   * cannot be a child of a BUI `MenuTrigger`. BUI's `Menu` only opens inside
+   * one, hence the react-aria `Menu` directly within a controlled `Popover`.
+   */
   return (
-    <Menu
-      id={menuId}
-      anchorEl={anchorEl ?? null}
-      keepMounted
-      open={Boolean(anchorEl)}
-      onClose={handleClose}
+    <Popover
+      triggerRef={anchorRef}
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      placement="bottom end"
+      hideArrow
     >
-      {links.map((link, i) => (
-        <MenuItem
-          key={`${i}-${link.url}`}
-          button
-          component="a"
-          href={link.url}
-          target={link.url.startsWith('/') ? undefined : '_blank'}
-          onClick={handleClose}
-        >
-          {link.title}
-        </MenuItem>
-      ))}
-    </Menu>
+      <Menu
+        id={menuId}
+        aria-label={`Links for ${result.check.name}`}
+        className={styles.menu}
+        // react-aria focus strategy, not the DOM attribute: menus move focus to the first item on open
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus="first"
+        onClose={handleClose}
+      >
+        {links.map((link, i) => (
+          <MenuItem key={`${i}-${link.url}`} href={link.url}>
+            {link.title}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Popover>
   );
 };
