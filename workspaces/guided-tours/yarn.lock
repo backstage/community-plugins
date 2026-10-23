@@ -443,6 +443,63 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-guided-tours-react@workspace:^, @backstage-community/plugin-guided-tours-react@workspace:plugins/guided-tours-react":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-guided-tours-react@workspace:plugins/guided-tours-react"
+  dependencies:
+    "@backstage/cli": "npm:^0.36.5"
+    "@backstage/frontend-plugin-api": "npm:^0.18.0"
+    "@backstage/frontend-test-utils": "npm:^0.6.3"
+    "@backstage/ui": "npm:^0.17.1"
+    "@braintree/sanitize-url": "npm:^7.1.2"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
+    "@testing-library/jest-dom": "npm:^6.0.0"
+    "@testing-library/react": "npm:^14.0.0"
+    marked: "npm:^15.0.12"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-router-dom: "npm:^6.30.2"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.30.2
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-guided-tours@workspace:plugins/guided-tours":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-guided-tours@workspace:plugins/guided-tours"
+  dependencies:
+    "@backstage-community/plugin-guided-tours-react": "workspace:^"
+    "@backstage/catalog-model": "npm:^1.10.0"
+    "@backstage/cli": "npm:^0.36.5"
+    "@backstage/frontend-defaults": "npm:^0.5.5"
+    "@backstage/frontend-dev-utils": "npm:^0.1.5"
+    "@backstage/frontend-plugin-api": "npm:^0.18.0"
+    "@backstage/frontend-test-utils": "npm:^0.6.3"
+    "@backstage/plugin-catalog": "npm:^2.0.8"
+    "@backstage/plugin-catalog-react": "npm:^3.2.2"
+    "@backstage/plugin-home": "npm:^0.9.9"
+    "@backstage/plugin-home-react": "npm:^0.1.41"
+    "@backstage/plugin-notifications": "npm:^0.5.20"
+    "@backstage/plugin-notifications-common": "npm:^0.2.3"
+    "@backstage/plugin-scaffolder": "npm:^1.38.2"
+    "@backstage/plugin-scaffolder-react": "npm:^2.0.3"
+    "@backstage/plugin-user-settings": "npm:^0.9.6"
+    "@backstage/types": "npm:^1.2.2"
+    "@backstage/ui": "npm:^0.17.1"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
+    "@testing-library/jest-dom": "npm:^6.0.0"
+    "@testing-library/react": "npm:^14.0.0"
+    "@testing-library/user-event": "npm:^14.0.0"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-aria-components: "npm:~1.17.0"
+    react-router-dom: "npm:^6.30.2"
+    zod: "npm:^4.0.0"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.30.2
+  languageName: unknown
+  linkType: soft
+
 "@backstage/backend-plugin-api@npm:^1.11.0":
   version: 1.11.0
   resolution: "@backstage/backend-plugin-api@npm:1.11.0"
@@ -3192,63 +3249,6 @@ __metadata:
   checksum: 10/bd3f3d7510785af4ad599e042e99e4be6380f52f79f3db140fe6fed0a605acf27b1a0a20fb5cc688eaf7b8aa0c36dacb1d89c7bba4586f38cbf58ba9f159e7b5
   languageName: node
   linkType: hard
-
-"@internal/backstage-plugin-guided-tour-react@workspace:^, @internal/backstage-plugin-guided-tour-react@workspace:plugins/guided-tour-react":
-  version: 0.0.0-use.local
-  resolution: "@internal/backstage-plugin-guided-tour-react@workspace:plugins/guided-tour-react"
-  dependencies:
-    "@backstage/cli": "npm:^0.36.5"
-    "@backstage/frontend-plugin-api": "npm:^0.18.0"
-    "@backstage/frontend-test-utils": "npm:^0.6.3"
-    "@backstage/ui": "npm:^0.17.1"
-    "@braintree/sanitize-url": "npm:^7.1.2"
-    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
-    "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^14.0.0"
-    marked: "npm:^15.0.12"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:^6.30.2"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.30.2
-  languageName: unknown
-  linkType: soft
-
-"@internal/backstage-plugin-guided-tour@workspace:plugins/guided-tour":
-  version: 0.0.0-use.local
-  resolution: "@internal/backstage-plugin-guided-tour@workspace:plugins/guided-tour"
-  dependencies:
-    "@backstage/catalog-model": "npm:^1.10.0"
-    "@backstage/cli": "npm:^0.36.5"
-    "@backstage/frontend-defaults": "npm:^0.5.5"
-    "@backstage/frontend-dev-utils": "npm:^0.1.5"
-    "@backstage/frontend-plugin-api": "npm:^0.18.0"
-    "@backstage/frontend-test-utils": "npm:^0.6.3"
-    "@backstage/plugin-catalog": "npm:^2.0.8"
-    "@backstage/plugin-catalog-react": "npm:^3.2.2"
-    "@backstage/plugin-home": "npm:^0.9.9"
-    "@backstage/plugin-home-react": "npm:^0.1.41"
-    "@backstage/plugin-notifications": "npm:^0.5.20"
-    "@backstage/plugin-notifications-common": "npm:^0.2.3"
-    "@backstage/plugin-scaffolder": "npm:^1.38.2"
-    "@backstage/plugin-scaffolder-react": "npm:^2.0.3"
-    "@backstage/plugin-user-settings": "npm:^0.9.6"
-    "@backstage/types": "npm:^1.2.2"
-    "@backstage/ui": "npm:^0.17.1"
-    "@internal/backstage-plugin-guided-tour-react": "workspace:^"
-    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
-    "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^14.0.0"
-    "@testing-library/user-event": "npm:^14.0.0"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-aria-components: "npm:~1.17.0"
-    react-router-dom: "npm:^6.30.2"
-    zod: "npm:^4.0.0"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.30.2
-  languageName: unknown
-  linkType: soft
 
 "@internal/guided-tours@workspace:.":
   version: 0.0.0-use.local

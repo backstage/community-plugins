@@ -1,27 +1,26 @@
-# [Backstage](https://backstage.io)
-
-This is your newly scaffolded Backstage App, Good Luck!
-
-> [!IMPORTANT] > **TODO**: Consider updating your README text with relevant documentation for your plugin. See some suggested text below.
-
 # guided-tours
 
-This workspace contains plugins for \[brief description of purpose, e.g. exposing data from a service].
+This workspace contains the guided tours plugins for Backstage: spotlight
+steps on top of any page, per-user progress and automatic start on login or
+on the first visit of a route. They target the new frontend system.
 
 ## Plugins
 
-- \[plugin-backend](./plugins/plugin-backend/README): Backend plugin that provides...
+- [plugin-guided-tours](./plugins/guided-tours/README.md): the tour runner,
+  the overlay and the overview page at `/guided-tours`.
+- [plugin-guided-tours-react](./plugins/guided-tours-react/README.md): the
+  blueprint, API ref and hooks that let any frontend plugin ship a tour.
 
 ## Getting Started
 
-To start the app, run:
+To start the dev app, run:
 
 ```sh
 yarn install
-yarn start
+yarn --cwd plugins/guided-tours start
 ```
 
-To generate knip reports for this app, run:
+To generate knip reports for this workspace, run:
 
 ```sh
 yarn backstage-repo-tools knip-reports
