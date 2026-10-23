@@ -31,10 +31,17 @@ export function useTargetElement(
   options: { enabled?: boolean; timeoutMs?: number; resetKey?: string } = {},
 ): TargetResult {
   const { enabled = true, timeoutMs = 5000, resetKey } = options;
-  const [result, setResult] = useState<TargetResult>({
+  const initial = (): TargetResult & { key?: string } => ({
     element: null,
     status: selector ? 'resolving' : 'none',
+    key: resetKey,
   });
+  const [stored, setStored] = useState(initial);
+  // a result that belongs to another step (stale until the effect below runs)
+  // must not leak into the new step, e.g. a `missing` that would skip it
+  const result = stored.key === resetKey ? stored : initial();
+  const setResult = (next: TargetResult) =>
+    setStored({ ...next, key: resetKey });
 
   useEffect(() => {
     if (!selector) {
@@ -47,9 +54,9 @@ export function useTargetElement(
     }
 
     const find = () => document.querySelector<HTMLElement>(selector);
-    const initial = find();
-    if (initial) {
-      setResult({ element: initial, status: 'found' });
+    const existing = find();
+    if (existing) {
+      setResult({ element: existing, status: 'found' });
       return undefined;
     }
     setResult({ element: null, status: 'resolving' });
@@ -78,9 +85,10 @@ export function useTargetElement(
       observer.disconnect();
       clearTimeout(timer.id);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selector, enabled, timeoutMs, resetKey]);
 
-  return result;
+  return { element: result.element, status: result.status };
 }
 
 export interface Rect {

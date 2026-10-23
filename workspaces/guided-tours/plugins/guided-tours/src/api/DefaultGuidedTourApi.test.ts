@@ -159,6 +159,88 @@ describe('DefaultGuidedTourApi', () => {
     expect(api.getProgress('a')).toBeUndefined();
     expect(api.getProgress('b')).toMatchObject({ status: 'dismissed' });
   });
+
+  it('starts at a given step, saves the previous tour and notifies listeners', () => {
+    const api = new DefaultGuidedTourApi({
+      tours: [tour('a'), tour('b')],
+      storageApi: mockApis.storage(),
+      autoStart: false,
+    });
+    expect(api.isAutoStartEnabled()).toBe(false);
+    expect(api.getTour('a')?.id).toBe('a');
+    expect(api.getTour('nope')).toBeUndefined();
+    expect(api.getProgress('nope')).toBeUndefined();
+
+    const listener = jest.fn();
+    const unsubscribe = api.subscribe(listener);
+    api.start('a', { stepId: 's3' });
+    expect(api.getSnapshot().state).toMatchObject({
+      activeTourId: 'a',
+      stepIndex: 2,
+    });
+    expect(listener).toHaveBeenCalled();
+    api.start('a', { stepId: 'unknown', force: true });
+    expect(api.getSnapshot().state.stepIndex).toBe(0);
+
+    // switching to another tour keeps the first one resumable
+    api.next();
+    api.start('b');
+    expect(api.getProgress('a')).toMatchObject({
+      status: 'in-progress',
+      stepIndex: 1,
+    });
+    expect(api.getSnapshot().state.activeTourId).toBe('b');
+
+    listener.mockClear();
+    unsubscribe();
+    api.next();
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it('ignores moves while no tour runs and empty tours', () => {
+    const api = new DefaultGuidedTourApi({
+      tours: [tour('empty', { steps: [] })],
+      storageApi: mockApis.storage(),
+    });
+    api.start('empty');
+    api.next();
+    api.previous();
+    api.dismiss();
+    api.complete();
+    expect(api.getSnapshot().state.activeTourId).toBeUndefined();
+    expect(api.getProgress('empty')).toBeUndefined();
+  });
+
+  it('marks onboarded when a queue has nothing to play', async () => {
+    const api = new DefaultGuidedTourApi({
+      tours: [tour('a')],
+      storageApi: mockApis.storage(),
+    });
+    api.startQueue(['unknown']);
+    expect(api.getSnapshot().onboarded).toBe(false);
+    api.startQueue(['unknown'], { onboarding: true });
+    await flush();
+    expect(api.getSnapshot().onboarded).toBe(true);
+    expect(api.getSnapshot().state.activeTourId).toBeUndefined();
+  });
+
+  it('keeps the onboarding flag across a queue that is dismissed late', async () => {
+    const api = new DefaultGuidedTourApi({
+      tours: [tour('a'), tour('b'), tour('c')],
+      storageApi: mockApis.storage(),
+    });
+    api.startQueue(['a', 'b', 'c'], { onboarding: true });
+    api.complete();
+    expect(api.getSnapshot().state).toMatchObject({
+      activeTourId: 'b',
+      queue: ['c'],
+    });
+    api.complete();
+    api.complete();
+    await flush();
+    expect(api.getSnapshot().onboarded).toBe(true);
+    expect(api.getSnapshot().state.activeTourId).toBeUndefined();
+  });
 });
 
 describe('selectLoginTours', () => {

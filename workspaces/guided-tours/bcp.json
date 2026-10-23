@@ -2,6 +2,6 @@
   "autoVersionBump": true,
   "knipReports": true,
   "listDeprecations": true,
-  "playwrightTests": false,
+  "playwrightTests": true,
   "codecov": true
 }

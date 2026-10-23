@@ -1,6 +1,7 @@
 {
   "extends": "@backstage/cli/config/tsconfig.json",
   "include": [
+    "e2e-tests",
     "packages/*/src",
     "plugins/*/src",
     "plugins/*/dev",

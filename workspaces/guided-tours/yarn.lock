@@ -455,6 +455,7 @@ __metadata:
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
+    "@testing-library/user-event": "npm:^14.0.0"
     marked: "npm:^15.0.12"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -490,6 +491,7 @@ __metadata:
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
+    "@testing-library/user-event": "npm:^14.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-aria-components: "npm:~1.17.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -3260,6 +3262,7 @@ __metadata:
     "@backstage/e2e-test-utils": "npm:^0.1.2"
     "@backstage/repo-tools": "npm:^0.19.2"
     "@changesets/cli": "npm:^2.27.1"
+    "@playwright/test": "npm:^1.63.0"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^10.0.0"
     prettier: "npm:^2.3.2"
@@ -5200,6 +5203,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@playwright/test@npm:^1.63.0":
+  version: 1.64.1
+  resolution: "@playwright/test@npm:1.64.1"
+  dependencies:
+    playwright: "npm:1.64.1"
+  bin:
+    playwright: cli.js
+  checksum: 10/589855c5fbc9ebbfb072e77e4b24a646f302ca9823d56ac3ff08a8e4ecf7ee13a390fe19236f4f9737e9a736194324f244f90c409a10edeb480c5f99ce77d10e
+  languageName: node
+  linkType: hard
+
 "@pmmmwh/react-refresh-webpack-plugin@npm:^0.6.0":
   version: 0.6.3
   resolution: "@pmmmwh/react-refresh-webpack-plugin@npm:0.6.3"
@@ -6516,6 +6530,15 @@ __metadata:
     "@types/react-dom":
       optional: true
   checksum: 10/c330e2d8158fd0f4b059cb1cd30f74265c6e80b204cf7245c9b2c4117582d6deb985d51edb62bd1b94e79ef48a2eaba4d002278d06caf725830a8b0f475e0118
+  languageName: node
+  linkType: hard
+
+"@testing-library/user-event@npm:^14.0.0":
+  version: 14.6.8
+  resolution: "@testing-library/user-event@npm:14.6.8"
+  peerDependencies:
+    "@testing-library/dom": ">=7.21.4"
+  checksum: 10/674190e5d592d5f1478af26c08c13ee197dbbc03885da3b99312c9cd810e4dc9c0ffbd4df91c51f39d467c1866a0c28f451df56d3fd535a5260d7660c24d9f42
   languageName: node
   linkType: hard
 
@@ -16839,6 +16862,26 @@ __metadata:
     pvutils: "npm:^1.1.3"
     tslib: "npm:^2.8.1"
   checksum: 10/1d3c6d74326572e8ecd9b0d57d51fa86ff48b9977d1a51ae4bb0a63ed77eb97c5807286be17d9b0eae0c4ccfa82488f32a328eb66af47c7888c2c8d0a07c6236
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:1.64.1":
+  version: 1.64.1
+  resolution: "playwright-core@npm:1.64.1"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/4a173590bc784d8d5bfe2cace53ccc31316dac11475660b59cea24a2e833875d87183d41a957a20355301ac2b339a17940faaf0b42217156fa9c0c3cfdd4633c
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.64.1":
+  version: 1.64.1
+  resolution: "playwright@npm:1.64.1"
+  dependencies:
+    playwright-core: "npm:1.64.1"
+  bin:
+    playwright: cli.js
+  checksum: 10/1096fa91e433f84c8677433a26052aa4f269bf0811aa793fe667d7053feb1c2852e9f10f9f0cced77fa2678f8580ed47192f29adbc9c027efa5ba87b38e23e50
   languageName: node
   linkType: hard
 

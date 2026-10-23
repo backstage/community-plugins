@@ -60,4 +60,29 @@ describe('MarkdownText', () => {
     expect(container.querySelector('img')).toBeNull();
     expect(container).toHaveTextContent('<img src=x onerror=alert(1)>');
   });
+
+  it('renders the remaining block and inline tokens', () => {
+    const { container } = renderMd(
+      '~~gone~~ line  \nbreak \\* escaped [t](/x "Title")\n\n```\nconst a = 1;\n```\n\n> quoted\n\n---\n\n- item with `code`\n\n  nested paragraph',
+    );
+    expect(container.querySelector('del')).toHaveTextContent('gone');
+    expect(container.querySelector('br')).not.toBeNull();
+    expect(container).toHaveTextContent('* escaped');
+    expect(screen.getByRole('link', { name: 't' })).toHaveAttribute(
+      'title',
+      'Title',
+    );
+    expect(container.querySelector('pre code')).toHaveTextContent(
+      'const a = 1;',
+    );
+    expect(container.querySelector('blockquote')).toHaveTextContent('quoted');
+    expect(container.querySelector('hr')).toBeNull();
+    expect(container.querySelector('li code')).toHaveTextContent('code');
+    expect(container.querySelector('li')).toHaveTextContent('nested paragraph');
+  });
+
+  it('renders nothing for empty content', () => {
+    const { container } = renderMd('');
+    expect(container).toHaveTextContent('');
+  });
 });

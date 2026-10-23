@@ -114,4 +114,55 @@ describe('ProgressStore', () => {
       status: 'dismissed',
     });
   });
+
+  it('ignores malformed values, swallows write errors and can be destroyed', async () => {
+    const { api, flush } = slowStorage();
+    await Promise.all([
+      (() => {
+        const w = api.set('tour/a', { bogus: true } as any);
+        flush();
+        return w;
+      })(),
+      (() => {
+        const w = api.set('onboarded', true);
+        flush();
+        return w;
+      })(),
+    ]);
+    const store = new ProgressStore({ storage: api, tourIds: ['a', 'b'] });
+    expect(store.getSnapshot()).toMatchObject({
+      ready: true,
+      onboarded: true,
+      progress: {},
+    });
+
+    const listener = jest.fn();
+    store.subscribe(listener);
+    const originalSet = api.set;
+    api.set = () => Promise.reject(new Error('offline'));
+    await expect(
+      store.setProgress('b', progress('in-progress')),
+    ).resolves.toBeUndefined();
+    expect(store.getSnapshot().progress.b).toMatchObject({
+      status: 'in-progress',
+    });
+    expect(listener).toHaveBeenCalled();
+
+    const cleared = store.clearAll();
+    await tick();
+    flush();
+    await cleared;
+    expect(store.getSnapshot()).toMatchObject({
+      onboarded: false,
+      progress: {},
+    });
+
+    api.set = originalSet;
+    listener.mockClear();
+    store.destroy();
+    const external = api.set('onboarded', true);
+    flush();
+    await external;
+    expect(listener).not.toHaveBeenCalled();
+  });
 });
