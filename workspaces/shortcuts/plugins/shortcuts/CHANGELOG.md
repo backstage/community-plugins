@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.25.1
+
+### Patch Changes
+
+- ee8ea6e: Fixed an internal circular dependency
+
 ## 0.25.0
 
 ### Minor Changes
