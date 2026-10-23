@@ -66,7 +66,13 @@ export interface Config {
     /**
      * Opt-in to ingesting per-user and team membership metrics (users-1-day and
      * user-teams-1-day reports). Required for team-level filtering in the UI.
-     * Increases storage and ingestion time.
+     * Organization team data requires the GitHub App's Copilot metrics: read
+     * permission. A 403/404 for its user-team report is logged as an error
+     * and skipped; organization memberships are not used as a fallback.
+     * Membership snapshots fetched during ingestion are also applied to
+     * backfilled days.
+     * With cost-center filtering, the dashboard shows a Cost center | Team
+     * toggle button group. Increases storage and ingestion time.
      * @default false
      */
     ingestTeams?: boolean;
@@ -75,11 +81,12 @@ export interface Config {
      * Copilot metrics by cost center. Organization metrics are included when
      * both copilot.enterprise and copilot.organization are configured. This
      * ingests the users-1-day report even when ingestTeams is disabled;
-     * ingestTeams independently controls team-level filtering. Enterprise
-     * App installations need Enterprise billing: read, Enterprise Copilot
-     * metrics: read, and Enterprise teams: read permissions. Org resources
-     * also require Members: read on each referenced organization. Classic
-     * PATs require read:enterprise and read:org.
+     * ingestTeams independently controls team-level filtering. With team
+     * filtering, the dashboard shows a Cost center | Team toggle button
+     * group. Enterprise App installations need Enterprise billing: read,
+     * Enterprise Copilot metrics: read, and Enterprise teams: read
+     * permissions. Org resources also require Members: read on each referenced
+     * organization. Classic PATs require read:enterprise and read:org.
      *
      * @default false
      */
