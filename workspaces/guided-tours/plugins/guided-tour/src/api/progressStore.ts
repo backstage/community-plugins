@@ -39,6 +39,8 @@ export class ProgressStore {
   private readonly tourIds: string[];
   private readonly listeners = new Set<() => void>();
   private readonly pending = new Map<string, Promise<void>>();
+  /** Number of our own writes in flight per key. */
+  private readonly inflight = new Map<string, number>();
   private readonly loaded = new Set<string>();
   private readonly subscriptions: Array<{ unsubscribe(): void }> = [];
   private snapshot: ProgressStoreSnapshot = {
@@ -128,6 +130,12 @@ export class ProgressStore {
       if (s.presence === 'unknown') {
         return;
       }
+      // While our own writes are pending, the storage echoes older values
+      // (e.g. the "dismissed" written just before a reset). The optimistic
+      // local state is the truth until the queue has drained.
+      if ((this.inflight.get(key) ?? 0) > 0) {
+        return;
+      }
       apply(s);
       this.loaded.add(key);
       const ready = this.loaded.size >= this.tourIds.length + 1;
@@ -143,8 +151,14 @@ export class ProgressStore {
   }
 
   private write(key: string, op: () => Promise<void>): Promise<void> {
+    this.inflight.set(key, (this.inflight.get(key) ?? 0) + 1);
     const previous = this.pending.get(key) ?? Promise.resolve();
-    const next = previous.then(op, op).catch(() => undefined);
+    const next = previous
+      .then(op, op)
+      .catch(() => undefined)
+      .finally(() => {
+        this.inflight.set(key, (this.inflight.get(key) ?? 1) - 1);
+      });
     this.pending.set(key, next);
     return next;
   }

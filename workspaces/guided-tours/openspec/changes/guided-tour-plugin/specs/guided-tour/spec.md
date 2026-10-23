@@ -143,6 +143,11 @@ A step MAY set `route` to navigate before being shown, and MAY set `advanceOn: '
 - **WHEN** a step with `route: '/catalog'` becomes active while the user is on `/`
 - **THEN** the app navigates to `/catalog` and waits for the step target before showing the popover
 
+#### Scenario: Finishing a tour with a completeRoute
+
+- **WHEN** a tour sets `completeRoute: '/'` and the user presses Done on its last step
+- **THEN** the tour is saved as completed and the app navigates to `/`
+
 #### Scenario: Click-through step keeps Next
 
 - **WHEN** a step has `advanceOn: 'click'`

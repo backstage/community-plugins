@@ -92,6 +92,11 @@ export interface GuidedTour {
   /** Ordering in the onboarding queue and on the overview page. Default 100. */
   order?: number;
   autoStart?: GuidedTourAutoStart;
+  /**
+   * App-relative path to navigate to when the tour is finished with Done
+   * (or by clicking through its last step), e.g. back to the start page.
+   */
+  completeRoute?: string;
   steps: GuidedTourStep[];
 }
 

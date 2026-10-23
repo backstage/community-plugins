@@ -28,6 +28,7 @@ export const welcomeTour = GuidedTourBlueprint.make({
       'A quick walk through the catalog, templates and your settings.',
     autoStart: 'login',
     order: 1,
+    completeRoute: '/',
     steps: [
       {
         id: 'intro',
@@ -47,17 +48,6 @@ export const welcomeTour = GuidedTourBlueprint.make({
           'components, APIs, systems and the people behind them.',
       },
       {
-        id: 'catalog-page',
-        title: 'Browse and filter',
-        route: '/catalog',
-        target: { selector: '[data-testid="user-picker-all"]' },
-        placement: 'right',
-        onMissingTarget: 'center',
-        content:
-          'Filter by _kind_, _type_, _owner_ or _tags_. Star the entities you ' +
-          'care about to find them again quickly.',
-      },
-      {
         id: 'create-nav',
         title: 'Create something new',
         route: '/create',
@@ -68,14 +58,32 @@ export const welcomeTour = GuidedTourBlueprint.make({
           "your organization's best practices.",
       },
       {
+        id: 'notifications-nav',
+        title: 'Notifications',
+        route: '/notifications',
+        target: { selector: 'nav a[href="/notifications"]' },
+        placement: 'right',
+        content:
+          'Plugins and people reach you here: finished template runs, ' +
+          'ownership changes, announcements.',
+      },
+      {
         id: 'settings-nav',
         title: 'Your settings',
         route: '/settings',
         target: { selector: 'nav a[href="/settings"]' },
         placement: 'right',
+        content: 'Switch themes, manage your identity and more.',
+      },
+      {
+        id: 'guided-tours-nav',
+        title: 'Guided tours',
+        route: '/guided-tours',
+        target: { selector: 'nav a[href="/guided-tours"]' },
+        placement: 'right',
         content:
-          'Switch themes, manage your identity and more. ' +
-          'Replay any tour from [Guided tours](/guided-tours) at any time.',
+          'Every tour, including this one, can be replayed from here at any ' +
+          'time. Done takes you back to the start page.',
       },
     ],
   },

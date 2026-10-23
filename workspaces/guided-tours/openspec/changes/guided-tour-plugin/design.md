@@ -107,6 +107,7 @@ export interface GuidedTour {
   description?: string;
   version?: number; // bump to show the tour again to users who completed/dismissed an older version
   order?: number; // ordering in the queue and on the page, default 100
+  completeRoute?: string; // navigate here when the last step is finished
   autoStart?: GuidedTourAutoStart;
   steps: GuidedTourStep[];
 }

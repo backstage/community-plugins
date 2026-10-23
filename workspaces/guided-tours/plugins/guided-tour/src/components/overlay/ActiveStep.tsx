@@ -70,14 +70,25 @@ export function ActiveStep(props: ActiveStepProps) {
     }
   }, [status, step.onMissingTarget, api]);
 
+  const isLast = stepIndex >= tour.steps.length - 1;
+  // Done (or a click through the last step) may send the user somewhere else
+  const advance = () => {
+    if (isLast && tour.completeRoute) {
+      navigate(tour.completeRoute);
+    }
+    api.next();
+  };
+
   // click-to-advance: let the click reach the element, then move on
   useEffect(() => {
     if (!element || step.advanceOn !== 'click') return undefined;
-    const onClick = () => api.next();
+    const onClick = () => advance();
     element.addEventListener('click', onClick, { capture: true });
     return () =>
       element.removeEventListener('click', onClick, { capture: true });
-  }, [element, step.advanceOn, api]);
+    // advance only changes with the step
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [element, step.advanceOn, api, tour.id, stepIndex]);
 
   // Escape closes the tour. The overlays' own open state is never used for
   // that: react-aria also reports "closed" when focus leaves a popover, which
@@ -102,7 +113,7 @@ export function ActiveStep(props: ActiveStepProps) {
       stepIndex={stepIndex}
       stepCount={tour.steps.length}
       onPrevious={() => api.previous()}
-      onNext={() => api.next()}
+      onNext={advance}
       onDismiss={() => api.dismiss()}
     />
   );
