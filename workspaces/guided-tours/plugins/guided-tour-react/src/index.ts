@@ -20,3 +20,4 @@ export * from './blueprint';
 export * from './hooks/useGuidedTour';
 export * from './components/GuidedTourTarget';
 export * from './components/MarkdownText';
+export * from './components/RestartTourAction';

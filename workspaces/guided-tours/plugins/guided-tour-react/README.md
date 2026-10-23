@@ -45,6 +45,20 @@ Add it to your plugin's `extensions` and mark the targets in your UI:
 <div {...guidedTourTargetProps('example.todos')}>...</div>
 ```
 
+## Add a "restart tour" button to your plugin header
+
+```tsx
+PluginHeaderActionBlueprint.make({
+  name: 'restart-tour',
+  params: {
+    loader: () =>
+      import('@internal/backstage-plugin-guided-tour-react').then(m => (
+        <m.RestartTourAction tourId="example/intro" />
+      )),
+  },
+});
+```
+
 ## Start a tour from code
 
 ```tsx

@@ -29,6 +29,7 @@
     "@backstage/frontend-plugin-api": "^0.18.0",
     "@backstage/ui": "^0.17.1",
     "@braintree/sanitize-url": "^7.1.2",
+    "@remixicon/react": "^4.6.0",
     "marked": "^15.0.12"
   },
   "peerDependencies": {
