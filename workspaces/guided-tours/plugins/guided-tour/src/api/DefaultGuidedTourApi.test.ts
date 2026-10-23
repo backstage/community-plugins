@@ -140,9 +140,24 @@ describe('DefaultGuidedTourApi', () => {
     api.dismiss();
     await flush();
     expect(api.getSnapshot().onboarded).toBe(true);
-    await api.resetProgress();
+    await api.resetAllProgress();
     expect(api.getSnapshot().onboarded).toBe(false);
     expect(api.getProgress('a')).toBeUndefined();
+  });
+
+  it('resets a single tour and stops it when it is running', async () => {
+    const api = new DefaultGuidedTourApi({
+      tours: [tour('a'), tour('b')],
+      storageApi: mockApis.storage(),
+    });
+    api.start('b');
+    api.dismiss();
+    api.start('a');
+    api.next();
+    await api.resetProgress('a');
+    expect(api.getSnapshot().state.activeTourId).toBeUndefined();
+    expect(api.getProgress('a')).toBeUndefined();
+    expect(api.getProgress('b')).toMatchObject({ status: 'dismissed' });
   });
 });
 

@@ -156,7 +156,8 @@ export interface GuidedTourApi {
   getSnapshot(): GuidedTourSnapshot; // { ready, onboarded, state, progress }, immutable
   subscribe(listener: () => void): () => void; // for useSyncExternalStore
   getProgress(id: string): GuidedTourProgress | undefined; // undefined when version differs
-  resetProgress(id?: string): Promise<void>; // undefined = all + onboarded flag
+  resetProgress(id: string): Promise<void>; // one tour
+  resetAllProgress(): Promise<void>; // every tour + onboarded flag
   markOnboarded(): Promise<void>;
 }
 export const guidedTourApiRef = createApiRef<GuidedTourApi>({
@@ -289,7 +290,7 @@ nothing on normal pages.
 (or `Card` list on narrow screens) with columns Title, Description, Steps,
 Status (New / In progress / Completed / Dismissed with BUI `Badge`), and
 actions Start / Restart. Header actions: "Reset all tours" (confirm with BUI
-`Dialog`, then `resetProgress()`), and a note explaining auto-start.
+`Dialog`, then `resetAllProgress()`), and a note explaining auto-start.
 Starting a tour from the page navigates to the first step's `route` if set.
 Sidebar: `nav.take('page:guided-tour')` inside the Settings group.
 

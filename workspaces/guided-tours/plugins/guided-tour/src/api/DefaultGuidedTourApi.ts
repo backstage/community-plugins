@@ -198,16 +198,16 @@ export class DefaultGuidedTourApi implements GuidedTourApi {
     this.finishRun();
   }
 
-  async resetProgress(id?: string): Promise<void> {
-    if (id === undefined) {
-      this.setState(IDLE);
-      await this.store.clearAll();
-      return;
-    }
+  async resetProgress(id: string): Promise<void> {
     if (this.state.activeTourId === id) {
       this.setState(IDLE);
     }
     await this.store.clearProgress(id);
+  }
+
+  async resetAllProgress(): Promise<void> {
+    this.setState(IDLE);
+    await this.store.clearAll();
   }
 
   markOnboarded(): Promise<void> {

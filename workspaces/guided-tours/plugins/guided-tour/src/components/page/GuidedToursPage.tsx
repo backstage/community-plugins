@@ -166,7 +166,7 @@ export function GuidedToursPage() {
             variant="primary"
             destructive
             onPress={async () => {
-              await api.resetProgress();
+              await api.resetAllProgress();
               setConfirmOpen(false);
             }}
           >

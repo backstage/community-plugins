@@ -14,7 +14,7 @@
 
 - [x] 2.1 Scaffold `@internal/backstage-plugin-guided-tour` (role `frontend-plugin`, pluginId `guided-tour`); deps: `-react` lib, `@backstage/frontend-plugin-api`, `@backstage/ui`, `react-aria-components`, `react-router-dom`.
 - [x] 2.2 Implement `progressStore.ts` over `storageApiRef.forBucket('guided-tour')` (per-tour keys, `onboarded`, serialized writes, `observe$`).
-- [x] 2.3 Implement `DefaultGuidedTourApi` (registry sorted by `order`, runner state machine, `state$`, `progress$`, `resetProgress`), with table-driven unit tests using `MockStorageApi`.
+- [x] 2.3 Implement `DefaultGuidedTourApi` (registry sorted by `order`, runner state machine, `getSnapshot`, `subscribe`, `resetProgress`, `resetAllProgress`), with table-driven unit tests using `MockStorageApi`.
 - [x] 2.4 Add `api:guided-tour` via `ApiBlueprint.makeWithOverrides` with `tours` input and `autoStart` config schema.
 - [x] 2.5 Add `translation.ts` with all user-facing strings.
 

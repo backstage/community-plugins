@@ -101,8 +101,10 @@ export interface GuidedTourApi {
    * or it belongs to an older version of the tour.
    */
   getProgress(id: string): GuidedTourProgress | undefined;
-  /** Clears progress for one tour, or for all tours and the onboarded flag. */
-  resetProgress(id?: string): Promise<void>;
+  /** Clears the progress of one tour; stops it if it is running. */
+  resetProgress(id: string): Promise<void>;
+  /** Clears the progress of every tour and the onboarded flag; stops any running tour. */
+  resetAllProgress(): Promise<void>;
   /** Marks the login sequence as handled for this user. */
   markOnboarded(): Promise<void>;
 }
