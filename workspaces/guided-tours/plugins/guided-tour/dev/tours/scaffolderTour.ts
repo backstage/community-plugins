@@ -66,6 +66,8 @@ export const scaffolderTour = GuidedTourBlueprint.make({
         id: 'tasks',
         title: 'Follow your runs',
         route: '/create/tasks',
+        target: { selector: '[role="tab"][href="/create/tasks"]' },
+        placement: 'bottom',
         content:
           'Every template run becomes a task with live logs. ' +
           'This list is empty in the dev app.',
