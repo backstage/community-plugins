@@ -16,7 +16,6 @@
 import { createDevApp } from '@backstage/frontend-dev-utils';
 import {
   createFrontendModule,
-  PageBlueprint,
   PluginHeaderActionBlueprint,
 } from '@backstage/frontend-plugin-api';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
@@ -25,13 +24,10 @@ import { HomePageWidgetBlueprint } from '@backstage/plugin-home-react/alpha';
 import notificationsPlugin from '@backstage/plugin-notifications/alpha';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import { Button, Container, Flex, Header, Text } from '@backstage/ui';
 import {
   MarkdownText,
   RestartTourAction,
-  useGuidedTour,
 } from '@internal/backstage-plugin-guided-tour-react';
-import { Link } from 'react-router-dom';
 import plugin from '../src';
 import {
   catalogMockModule,
@@ -40,73 +36,14 @@ import {
 } from './mockApis';
 import { devTours } from './tours';
 
-const DemoPage = () => {
-  const replay = useGuidedTour('guided-tour/demo-login');
-  return (
-    <>
-      <Header title="Demo" />
-      <Container>
-        <Flex direction="column" gap="4" align="start">
-          <Text data-guided-tour="demo.intro">
-            This paragraph is the first target.
-          </Text>
-          <Link to="/second" data-guided-tour="demo.link">
-            Click me to continue the tour on the next page
-          </Link>
-          <Button onPress={() => replay.start({ force: true })}>
-            Replay login tour
-          </Button>
-          <MarkdownText
-            content={
-              'Other pages in this dev app: [Home](/home), [Catalog](/catalog), ' +
-              '[Create](/create), [Notifications](/notifications), [Settings](/settings) ' +
-              'and [Guided tours](/guided-tours).'
-            }
-          />
-        </Flex>
-      </Container>
-    </>
-  );
-};
-
-const SecondPage = () => (
-  <>
-    <Header title="Second" />
-    <Container>
-      <Flex direction="column" gap="4" align="start">
-        <Text data-guided-tour="second.text">
-          You arrived on the second page.
-        </Text>
-        <Link to="/">Back to the demo page</Link>
-      </Flex>
-    </Container>
-  </>
-);
-
 const demoModule = createFrontendModule({
   pluginId: 'guided-tour',
   extensions: [
-    PageBlueprint.make({
-      name: 'demo',
-      // no routeRef: route refs can only be declared by the plugin itself, so
-      // the demo pages get no sidebar entry and are linked from the pages
-      params: { path: '/', title: 'Demo', loader: async () => <DemoPage /> },
-    }),
-    PageBlueprint.make({
-      name: 'second',
-      params: {
-        path: '/second',
-        title: 'Second',
-        loader: async () => <SecondPage />,
-      },
-    }),
-    // the header action from the react library, shown on all guided-tour pages
+    // the header action from the react library, shown on the guided tours page
     PluginHeaderActionBlueprint.make({
-      name: 'restart-demo-tour',
+      name: 'restart-welcome-tour',
       params: {
-        loader: async () => (
-          <RestartTourAction tourId="guided-tour/demo-login" />
-        ),
+        loader: async () => <RestartTourAction tourId="guided-tour/welcome" />,
       },
     }),
     ...devTours,

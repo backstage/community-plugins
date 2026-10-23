@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import { catalogTour } from './catalogTour';
-import { demoLoginTour } from './demoLoginTour';
-import { demoRouteTour } from './demoRouteTour';
 import { notificationsTour } from './notificationsTour';
 import { scaffolderTour } from './scaffolderTour';
 import { settingsTour } from './settingsTour';
@@ -23,9 +21,7 @@ import { welcomeTour } from './welcomeTour';
 
 /** All tours of the dev app. */
 export const devTours = [
-  demoLoginTour,
   welcomeTour,
-  demoRouteTour,
   catalogTour,
   scaffolderTour,
   notificationsTour,

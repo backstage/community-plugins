@@ -27,7 +27,7 @@ export const welcomeTour = GuidedTourBlueprint.make({
     description:
       'A quick walk through the catalog, templates and your settings.',
     autoStart: 'login',
-    order: 2,
+    order: 1,
     steps: [
       {
         id: 'intro',

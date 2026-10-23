@@ -19,6 +19,8 @@ app:
               icon: docs
     - page:home:
         config:
+          # the home page is the landing page of the dev app
+          path: /
           defaultConfig:
             - component: GuidedTourWelcome
               column: 0
