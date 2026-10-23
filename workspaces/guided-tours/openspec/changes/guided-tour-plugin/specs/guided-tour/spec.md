@@ -143,6 +143,11 @@ A step MAY set `route` to navigate before being shown, and MAY set `advanceOn: '
 - **WHEN** a step with `route: '/catalog'` becomes active while the user is on `/`
 - **THEN** the app navigates to `/catalog` and waits for the step target before showing the popover
 
+#### Scenario: Click-through step keeps Next
+
+- **WHEN** a step has `advanceOn: 'click'`
+- **THEN** the popover shows the hint to click the element and still offers the Next button, which advances without the click
+
 #### Scenario: Click-through step
 
 - **WHEN** a step has `advanceOn: 'click'` and the user clicks the highlighted element

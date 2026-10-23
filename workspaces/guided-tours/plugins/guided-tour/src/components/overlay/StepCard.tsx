@@ -91,11 +91,9 @@ export function StepCard(props: StepCardProps) {
           >
             {t('overlay.previous')}
           </Button>
-          {!clickToAdvance && (
-            <Button size="small" variant="primary" onPress={onNext}>
-              {isLast ? t('overlay.done') : t('overlay.next')}
-            </Button>
-          )}
+          <Button size="small" variant="primary" onPress={onNext}>
+            {isLast ? t('overlay.done') : t('overlay.next')}
+          </Button>
         </Flex>
       </Flex>
     </Flex>

@@ -259,8 +259,8 @@ For the active step the overlay:
 5. `advanceOn: 'click'`: the mask hole has `pointer-events: none`, a
    capture-phase `click` listener on the target calls `next()`. If the click
    navigates, the next step's `useTargetElement` waits for the new page. The
-   popover hides its Next button in this mode and shows "Click the
-   highlighted element to continue".
+   popover keeps its Next button in this mode (it advances without the
+   click) and adds the hint "Click the highlighted element to continue".
 
 Spotlight = `position: fixed; inset: 0` SVG with a `fill-rule="evenodd"`
 path (full rect minus rounded target rect, padding 6px). Mask rects are
