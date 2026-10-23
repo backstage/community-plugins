@@ -16,12 +16,12 @@
 
 import { Entity, ANNOTATION_SOURCE_LOCATION } from '@backstage/catalog-model';
 import {
-  AZURE_DEVOPS_PROJECT_ANNOTATION,
   AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION,
+  AZURE_DEVOPS_HOST_ORG_ANNOTATION,
+  AZURE_DEVOPS_PROJECT_ANNOTATION,
   AZURE_DEVOPS_README_ANNOTATION,
   AZURE_DEVOPS_REPO_ANNOTATION,
-  AZURE_DEVOPS_HOST_ORG_ANNOTATION,
-} from '@backstage-community/plugin-azure-devops-common';
+} from '../constants';
 
 /** @public **/
 export function getAnnotationValuesFromEntity(entity: Entity): {
