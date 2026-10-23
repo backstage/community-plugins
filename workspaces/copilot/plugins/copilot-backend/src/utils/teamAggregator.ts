@@ -19,9 +19,11 @@ import {
   V2DailyTotal,
   V2MetricsByFeatureRow,
   V2MetricsByIdeRow,
+  V2MetricsByCliRow,
   V2MetricsByLanguageFeatureRow,
   V2MetricsByModelFeatureRow,
   V2MetricsByLanguageModelRow,
+  V2MetricsByVscodeAgentRow,
   V2UserMetricRow,
   V2UserTeamRow,
   MetricsScope,
@@ -36,6 +38,8 @@ export interface TeamAggregates {
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
   customizationMetrics: V2CustomizationMetricRow[];
+  byCli?: V2MetricsByCliRow[];
+  byVscodeAgent?: V2MetricsByVscodeAgentRow[];
 }
 
 /**
