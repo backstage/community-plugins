@@ -77,6 +77,7 @@
     "@backstage/plugin-notifications": "^0.5.20",
     "@backstage/plugin-notifications-common": "^0.2.3",
     "@backstage/plugin-scaffolder": "^1.38.2",
+    "@backstage/plugin-scaffolder-common": "^2.3.1",
     "@backstage/plugin-scaffolder-react": "^2.0.3",
     "@backstage/plugin-user-settings": "^0.9.6",
     "@testing-library/jest-dom": "^6.0.0",

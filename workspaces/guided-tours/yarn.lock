@@ -482,6 +482,7 @@ __metadata:
     "@backstage/plugin-notifications": "npm:^0.5.20"
     "@backstage/plugin-notifications-common": "npm:^0.2.3"
     "@backstage/plugin-scaffolder": "npm:^1.38.2"
+    "@backstage/plugin-scaffolder-common": "npm:^2.3.1"
     "@backstage/plugin-scaffolder-react": "npm:^2.0.3"
     "@backstage/plugin-user-settings": "npm:^0.9.6"
     "@backstage/types": "npm:^1.2.2"

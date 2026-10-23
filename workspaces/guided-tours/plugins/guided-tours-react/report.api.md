@@ -59,7 +59,10 @@ export interface GuidedTourApi {
 }
 
 // @public
-export const guidedTourApiRef: ApiRef<GuidedTourApi> & {
+export const guidedTourApiRef: ApiRef<
+  GuidedTourApi,
+  'plugin.guided-tours.api'
+> & {
   readonly $$type: '@backstage/ApiRef';
 };
 

@@ -115,6 +115,6 @@ export interface GuidedTourApi {
  *
  * @public
  */
-export const guidedTourApiRef = createApiRef<GuidedTourApi>({
+export const guidedTourApiRef = createApiRef<GuidedTourApi>().with({
   id: 'plugin.guided-tours.api',
 });

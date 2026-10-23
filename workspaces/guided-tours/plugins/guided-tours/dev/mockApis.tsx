@@ -29,10 +29,8 @@ import {
   NotificationSettings,
   NotificationStatus,
 } from '@backstage/plugin-notifications-common';
-import {
-  ScaffolderApi,
-  scaffolderApiRef,
-} from '@backstage/plugin-scaffolder-react';
+import { ScaffolderApi } from '@backstage/plugin-scaffolder-common';
+import { scaffolderApiRef } from '@backstage/plugin-scaffolder-react';
 import { mockEntities, mockNotifications } from './mockData';
 
 /** Replaces `api:catalog` with an in-memory catalog. */
