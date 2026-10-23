@@ -26,7 +26,7 @@ import { useGuidedTour } from '../hooks/useGuidedTour';
 export interface RestartTourActionProps {
   /** Id of the tour to (re)start, e.g. `example/intro`. */
   tourId: string;
-  /** Accessible name and tooltip. Default "Restart the tour". */
+  /** Accessible name and tooltip. Default "Restart the guided tour". */
   label?: string;
   /** Icon of the button. Defaults to a compass. */
   icon?: ReactElement;
@@ -56,7 +56,7 @@ export interface RestartTourActionProps {
 export function RestartTourAction(props: RestartTourActionProps) {
   const {
     tourId,
-    label = 'Restart the tour',
+    label = 'Restart the guided tour',
     icon = <RiCompass3Line />,
   } = props;
   const tour = useGuidedTour(tourId);
