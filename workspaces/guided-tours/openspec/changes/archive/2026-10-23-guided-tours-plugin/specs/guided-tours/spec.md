@@ -97,9 +97,9 @@ Tours with `autoStart: 'login'` SHALL start automatically after the user's ident
 - **WHEN** `api:guided-tours` is configured with `autoStart: false`
 - **THEN** no tour starts automatically; manual start and the page still work
 
-### Requirement: Auto-start on first visit of a route
+### Requirement: Auto-start on first visit of a path
 
-A tour with `autoStart: { route }` SHALL start the first time the location matches `route` for a user who has no progress entry for it, provided no other tour is running.
+A tour with `autoStart: { path }` SHALL start the first time the location matches `path` for a user who has no progress entry for it, provided no other tour is running.
 
 #### Scenario: First navigation to a plugin
 

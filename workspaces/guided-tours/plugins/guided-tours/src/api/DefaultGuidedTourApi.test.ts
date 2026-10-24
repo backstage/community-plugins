@@ -248,7 +248,7 @@ describe('selectLoginTours', () => {
     tour('manual'),
     tour('login-b', { autoStart: 'login', order: 2 }),
     tour('login-a', { autoStart: 'login', order: 1 }),
-    tour('route', { autoStart: { route: '/x' } }),
+    tour('route', { autoStart: { path: '/x' } }),
   ];
   const progress = (id: string, status: 'completed' | 'dismissed') => ({
     [id]: { status, stepIndex: 0, version: 1, updatedAt: '' },

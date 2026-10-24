@@ -21,7 +21,7 @@ export const notificationsTour = GuidedTourBlueprint.make({
   params: {
     title: 'Your notifications',
     description: 'Reading, filtering and clearing notifications.',
-    autoStart: { route: '/notifications' },
+    autoStart: { path: '/notifications' },
     order: 12,
     steps: [
       {

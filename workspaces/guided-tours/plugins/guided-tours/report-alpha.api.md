@@ -26,7 +26,7 @@ export const guidedTourTranslationRef: TranslationRef<
     readonly 'page.resetAllTitle': 'Reset all tours?';
     readonly 'page.resetAllBody': 'Progress of every tour is cleared and the welcome tours play again on your next visit.';
     readonly 'page.autoStartLogin': 'Starts on login';
-    readonly 'page.autoStartRoute': 'Starts on first visit of {{route}}';
+    readonly 'page.autoStartPath': 'Starts on first visit of {{path}}';
     readonly 'overlay.loading': 'Looking for the next step…';
     readonly 'overlay.close': 'Close tour';
     readonly 'overlay.next': 'Next';

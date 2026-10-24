@@ -74,11 +74,11 @@ export interface GuidedTourStep {
  * - `false`: manual only (default).
  * - `'login'`: part of the onboarding sequence; a login tour that shows up
  *   after the user has been onboarded is played alone.
- * - `{ route }`: the first time the current location matches the path.
+ * - `{ path }`: the first time the current location matches the path.
  *
  * @public
  */
-export type GuidedTourAutoStart = false | 'login' | { route: string };
+export type GuidedTourAutoStart = false | 'login' | { path: string };
 
 /**
  * A guided tour: an ordered list of steps plus metadata.

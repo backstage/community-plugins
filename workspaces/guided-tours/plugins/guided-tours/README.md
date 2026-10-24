@@ -2,7 +2,7 @@
 
 Guided tours for the Backstage new frontend system: spotlight steps with
 markdown, per-user progress in user settings, auto-start on login or on the
-first visit of a route, and an overview page at `/guided-tours`.
+first visit of a path, and an overview page at `/guided-tours`.
 
 Install the package in `packages/app` (it is discovered through
 `app.packages: all`) and add the page to your sidebar:

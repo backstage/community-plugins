@@ -17,7 +17,7 @@ export const introTour = GuidedTourBlueprint.make({
   params: {
     title: 'Welcome to Example',
     description: 'A two minute walk through the example plugin.',
-    autoStart: { route: '/example' }, // first visit of /example
+    autoStart: { path: '/example' }, // first visit of /example
     steps: [
       {
         id: 'todos',

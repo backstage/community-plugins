@@ -39,7 +39,7 @@ export const guidedTourDataRef = createExtensionDataRef<GuidedTour>().with({
  *   name: 'intro',
  *   params: {
  *     title: 'Welcome to Example',
- *     autoStart: { route: '/example' },
+ *     autoStart: { path: '/example' },
  *     steps: [{ id: 'todos', target: 'example.todos', content: 'Your **todos**.' }],
  *   },
  * });

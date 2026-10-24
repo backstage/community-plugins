@@ -21,7 +21,7 @@ export const catalogTour = GuidedTourBlueprint.make({
   params: {
     title: 'The software catalog',
     description: 'Filters, the entity table and search on the catalog page.',
-    autoStart: { route: '/catalog' },
+    autoStart: { path: '/catalog' },
     order: 10,
     steps: [
       {

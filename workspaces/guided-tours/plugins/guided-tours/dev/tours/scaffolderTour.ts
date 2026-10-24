@@ -21,7 +21,7 @@ export const scaffolderTour = GuidedTourBlueprint.make({
   params: {
     title: 'Create from a template',
     description: 'Finding a template, starting it and following its tasks.',
-    autoStart: { route: '/create' },
+    autoStart: { path: '/create' },
     order: 11,
     steps: [
       {

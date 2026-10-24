@@ -96,8 +96,8 @@ function TourRow(props: { tour: GuidedTour; progress?: GuidedTourProgress }) {
               {tour.autoStart === 'login' && ` · ${t('page.autoStartLogin')}`}
               {typeof tour.autoStart === 'object' &&
                 tour.autoStart !== null &&
-                ` · ${t('page.autoStartRoute', {
-                  route: tour.autoStart.route,
+                ` · ${t('page.autoStartPath', {
+                  path: tour.autoStart.path,
                 })}`}
             </Text>
           </Flex>

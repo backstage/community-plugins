@@ -60,7 +60,7 @@ export type GuidedTourAutoStart =
   | false
   | 'login'
   | {
-      route: string;
+      path: string;
     };
 
 // @public

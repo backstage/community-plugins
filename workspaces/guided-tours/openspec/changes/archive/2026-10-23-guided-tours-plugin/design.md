@@ -29,7 +29,7 @@
 3. Steps spotlight a DOM element and show markdown text in a popover with
    Previous / Next / Close.
 4. Progress (current step, dismissed, completed) is saved per user.
-5. Auto-start modes: on login, on first visit of a route, or manual only.
+5. Auto-start modes: on login, on first visit of a path, or manual only.
 6. A tour that appears after the user has already been onboarded is played
    on its own, not merged into the welcome sequence.
 7. `/guided-tours` page lists all tours, allows replay and reset.
@@ -99,7 +99,7 @@ export interface GuidedTourStep {
 export type GuidedTourAutoStart =
   | false // manual only (default)
   | 'login' // part of onboarding / shown alone when new
-  | { route: string }; // first time the location matches this path (matchPath semantics)
+  | { path: string }; // first time the location matches this path (matchPath semantics)
 
 export interface GuidedTour {
   id: string; // defaults to the extension node id without the kind prefix, e.g. "example/intro"
@@ -233,7 +233,7 @@ seen".
 5. If `onboarded` is set: queue only `loginTours` that have **no** progress
    entry (new plugin enabled later, or bumped `version`). They are played
    alone, i.e. not re-attached to tours the user already handled.
-6. Route tours: a `useLocation` effect matches `autoStart.route` against the
+6. Path tours: a `useLocation` effect matches `autoStart.path` against the
    pathname. First match with no progress entry and nothing running starts
    the tour. Matching tours while another tour runs wait for the next
    navigation, they do not interrupt.

@@ -17,7 +17,7 @@ This change adds a first-class, extension-driven guided tour system that:
   dependency only on a small `-react` library, never on the tour plugin itself;
 - remembers per user, in user settings, what has been seen, dismissed and
   completed;
-- can auto-start tours on login or on first visit of a route, shows a tour
+- can auto-start tours on login or on first visit of a path, shows a tour
   that arrives later (new plugin installed) on its own, and lets users replay
   everything from a dedicated page.
 

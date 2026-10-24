@@ -44,7 +44,7 @@ export const guidedTourTranslationRef = createTranslationRef({
       cancel: 'Cancel',
       confirm: 'Reset',
       autoStartLogin: 'Starts on login',
-      autoStartRoute: 'Starts on first visit of {{route}}',
+      autoStartPath: 'Starts on first visit of {{path}}',
       status: {
         new: 'New',
         inProgress: 'In progress',

@@ -40,7 +40,7 @@ const tours = [
   {
     id: 'catalog/intro',
     title: 'Catalog',
-    autoStart: { route: '/catalog' },
+    autoStart: { path: '/catalog' },
     steps: [{ id: 'a', content: 'one' }],
   },
 ];

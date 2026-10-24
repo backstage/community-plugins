@@ -21,7 +21,7 @@ export const settingsTour = GuidedTourBlueprint.make({
   params: {
     title: 'Your settings',
     description: 'Profile, theme and the sidebar.',
-    autoStart: { route: '/settings' },
+    autoStart: { path: '/settings' },
     order: 13,
     steps: [
       {

@@ -4,7 +4,7 @@
 
 Guided tours for the Backstage new frontend system: plugins register tours
 through an extension, steps spotlight elements and show markdown, progress
-is saved per user, tours start on login or on the first visit of a route,
+is saved per user, tours start on login or on the first visit of a path,
 and a dedicated page lists and replays them.
 
 ## Requirements
@@ -104,9 +104,9 @@ Tours with `autoStart: 'login'` SHALL start automatically after the user's ident
 - **WHEN** `api:guided-tours` is configured with `autoStart: false`
 - **THEN** no tour starts automatically; manual start and the page still work
 
-### Requirement: Auto-start on first visit of a route
+### Requirement: Auto-start on first visit of a path
 
-A tour with `autoStart: { route }` SHALL start the first time the location matches `route` for a user who has no progress entry for it, provided no other tour is running.
+A tour with `autoStart: { path }` SHALL start the first time the location matches `path` for a user who has no progress entry for it, provided no other tour is running.
 
 #### Scenario: First navigation to a plugin
 

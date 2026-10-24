@@ -2,7 +2,7 @@
 
 This workspace contains the guided tours plugins for Backstage: spotlight
 steps on top of any page, per-user progress and automatic start on login or
-on the first visit of a route. They target the new frontend system.
+on the first visit of a path. They target the new frontend system.
 
 ## Plugins
 

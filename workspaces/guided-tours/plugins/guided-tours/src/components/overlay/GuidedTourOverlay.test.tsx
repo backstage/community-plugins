@@ -57,7 +57,7 @@ const welcome: GuidedTour = {
 const catalog: GuidedTour = {
   id: 'catalog/intro',
   title: 'Catalog',
-  autoStart: { route: '/catalog' },
+  autoStart: { path: '/catalog' },
   steps: [
     {
       id: 'gone',
