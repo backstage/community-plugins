@@ -23,7 +23,8 @@ import {
   GuidedTour,
   guidedTourApiRef,
 } from '@backstage-community/plugin-guided-tours-react';
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { act } from 'react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { DefaultGuidedTourApi } from '../../api/DefaultGuidedTourApi';

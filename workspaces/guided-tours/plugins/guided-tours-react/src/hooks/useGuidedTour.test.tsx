@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { TestApiProvider } from '@backstage/frontend-test-utils';
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { act } from 'react';
 import userEvent from '@testing-library/user-event';
 import { ReactNode } from 'react';
 import {
