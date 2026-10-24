@@ -199,6 +199,56 @@ describe('createRouter', () => {
         'Failed to parse .gitkeep: ADR has no content',
       );
     });
+
+    it('returns parsed category when present in front matter', async () => {
+      const customUrlReader: UrlReaderService = {
+        ...mockUrlReader,
+        readTree() {
+          return Promise.resolve({
+            files: async () => [
+              {
+                path: '0001-cloud-budget.md',
+                content: makeBufferFromString(
+                  '---\ntitle: Cloud Budget\ncategory: finance\nstatus: approved\n---\n# Cloud Budget',
+                ),
+              },
+            ],
+            archive() {
+              throw new Error('Not implemented');
+            },
+            dir() {
+              throw new Error('Not implemented');
+            },
+            etag: '',
+          });
+        },
+      };
+
+      const customApp = express();
+      const customRouter = await createRouter({
+        reader: customUrlReader,
+        cacheClient: new MockCacheClient(),
+        logger: {
+          error: routerErrorLoggerMock as unknown,
+        } as LoggerService,
+      });
+      customApp.use(customRouter);
+
+      const result = await request(customApp).get(
+        `${listEndpointName}?url=testing-category`,
+      );
+      expect(result.status).toBe(200);
+      expect(result.body.data).toEqual([
+        {
+          type: 'file',
+          name: '0001-cloud-budget.md',
+          path: '0001-cloud-budget.md',
+          title: 'Cloud Budget',
+          status: 'approved',
+          category: 'finance',
+        },
+      ]);
+    });
   });
 
   describe(`GET ${fileEndpointName}`, () => {

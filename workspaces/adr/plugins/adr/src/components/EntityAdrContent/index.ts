@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 export { EntityAdrContent } from './EntityAdrContent';
+export type { AdrCategoryConfig } from './EntityAdrContent';
 export type { EntityAdrListItemContextType } from './EntityAdrListItemContext';
 export { EntityAdrListItemContext } from './EntityAdrListItemContext';

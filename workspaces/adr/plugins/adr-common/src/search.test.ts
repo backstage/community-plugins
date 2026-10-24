@@ -137,4 +137,32 @@ describe('parseMadrWithFrontmatter', () => {
     expect(result.status).toBeUndefined();
     expect(result.content).toBe(content);
   });
+
+  it('extracts category from front matter when category is specified', () => {
+    const content = [
+      '---',
+      'title: Legal Review',
+      'status: approved',
+      'category: legal',
+      '---',
+      '# Legal Review',
+    ].join('\n');
+
+    const result = parseMadrWithFrontmatter(content);
+    expect(result.category).toBe('legal');
+  });
+
+  it('extracts category from type when type is specified in front matter', () => {
+    const content = [
+      '---',
+      'title: Cloud Migration Budget',
+      'status: approved',
+      'type: finance',
+      '---',
+      '# Cloud Migration Budget',
+    ].join('\n');
+
+    const result = parseMadrWithFrontmatter(content);
+    expect(result.category).toBe('finance');
+  });
 });
