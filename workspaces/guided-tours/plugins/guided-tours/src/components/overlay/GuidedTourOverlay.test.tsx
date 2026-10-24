@@ -211,4 +211,39 @@ describe('GuidedTourOverlay', () => {
       status: 'dismissed',
     });
   });
+
+  it('matches the auto-start path exactly unless exact is false', async () => {
+    const step = { id: 'one', content: 'Hello' };
+    const exact: GuidedTour = {
+      id: 'catalog/exact',
+      title: 'Exact',
+      autoStart: { path: '/catalog' },
+      steps: [step],
+    };
+    const prefix: GuidedTour = {
+      id: 'catalog/prefix',
+      title: 'Prefix',
+      autoStart: { path: '/catalog', exact: false },
+      steps: [step],
+    };
+    const api = new DefaultGuidedTourApi({
+      tours: [exact, prefix],
+      storageApi: mockApis.storage(),
+    });
+
+    // below the path only the prefix tour starts
+    const below = await renderOverlay({
+      api,
+      path: '/catalog/default/component/foo',
+    });
+    expect(await screen.findByRole('dialog', { name: 'Prefix' })).toBeVisible();
+    await userEvent.click(screen.getByRole('button', { name: 'Close tour' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(api.getProgress('catalog/exact')).toBeUndefined();
+    below.unmount();
+
+    // on the path itself the exact tour starts
+    await renderOverlay({ api, path: '/catalog' });
+    expect(await screen.findByRole('dialog', { name: 'Exact' })).toBeVisible();
+  });
 });

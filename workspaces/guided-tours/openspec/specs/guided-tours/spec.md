@@ -106,12 +106,17 @@ Tours with `autoStart: 'login'` SHALL start automatically after the user's ident
 
 ### Requirement: Auto-start on first visit of a path
 
-A tour with `autoStart: { path }` SHALL start the first time the location matches `path` for a user who has no progress entry for it, provided no other tour is running.
+A tour with `autoStart: { path }` SHALL start the first time the location is `path` for a user who has no progress entry for it, provided no other tour is running. With `exact: false` any location below `path` SHALL match as well.
 
 #### Scenario: First navigation to a plugin
 
 - **WHEN** a user without progress for `example/intro` navigates to `/example`
 - **THEN** `example/intro` starts
+
+#### Scenario: Entity page below the path
+
+- **WHEN** a user without progress for `example/intro` navigates to `/example/details`
+- **THEN** nothing starts, unless the tour sets `exact: false`
 
 #### Scenario: Already seen
 

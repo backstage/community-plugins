@@ -74,11 +74,23 @@ export interface GuidedTourStep {
  * - `false`: manual only (default).
  * - `'login'`: part of the onboarding sequence; a login tour that shows up
  *   after the user has been onboarded is played alone.
- * - `{ path }`: the first time the current location matches the path.
+ * - `{ path }`: the first time the current location is the path. With
+ *   `exact: false` any location below the path matches as well.
  *
  * @public
  */
-export type GuidedTourAutoStart = false | 'login' | { path: string };
+export type GuidedTourAutoStart =
+  | false
+  | 'login'
+  | {
+      /** App-relative path, e.g. `/catalog`. */
+      path: string;
+      /**
+       * Match the path exactly (default `true`), or also any location
+       * below it such as `/catalog/default/component/foo` (`false`).
+       */
+      exact?: boolean;
+    };
 
 /**
  * A guided tour: an ordered list of steps plus metadata.

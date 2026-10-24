@@ -61,6 +61,7 @@ export type GuidedTourAutoStart =
   | 'login'
   | {
       path: string;
+      exact?: boolean;
     };
 
 // @public

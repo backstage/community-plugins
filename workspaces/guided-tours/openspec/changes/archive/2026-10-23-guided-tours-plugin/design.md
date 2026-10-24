@@ -99,7 +99,7 @@ export interface GuidedTourStep {
 export type GuidedTourAutoStart =
   | false // manual only (default)
   | 'login' // part of onboarding / shown alone when new
-  | { path: string }; // first time the location matches this path (matchPath semantics)
+  | { path: string; exact?: boolean }; // first time the location is this path; exact: false also matches below it
 
 export interface GuidedTour {
   id: string; // defaults to the extension node id without the kind prefix, e.g. "example/intro"

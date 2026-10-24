@@ -97,7 +97,7 @@ export function GuidedTourOverlay() {
           typeof t.autoStart === 'object' &&
           t.autoStart !== null &&
           matchPath(
-            { path: t.autoStart.path, end: false },
+            { path: t.autoStart.path, end: t.autoStart.exact !== false },
             location.pathname,
           ) &&
           api.getProgress(t.id) === undefined,
