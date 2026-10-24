@@ -26,7 +26,7 @@ export type Ring = {
   description?: string;
 };
 
-// Parameters for a quadrant (there should be exactly 4 of course)
+// Parameters for a quadrant. The radar supports up to four configured quadrants.
 export type Quadrant = {
   id: string;
   index?: number;
