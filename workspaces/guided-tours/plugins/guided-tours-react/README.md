@@ -1,4 +1,4 @@
-# @backstage-community/plugin-guided-tours-react
+# Guided Tours React Package for Plugin Authors
 
 Ship a guided tour from any Backstage frontend plugin (new frontend system).
 This package only holds the contract: the `GuidedTourBlueprint`, the

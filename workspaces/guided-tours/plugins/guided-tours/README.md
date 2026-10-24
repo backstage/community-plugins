@@ -1,4 +1,4 @@
-# @backstage-community/plugin-guided-tours
+# Guided Tours for Backstage
 
 Guided tours for the Backstage new frontend system: spotlight steps with
 markdown, per-user progress in user settings, auto-start on login or on the
