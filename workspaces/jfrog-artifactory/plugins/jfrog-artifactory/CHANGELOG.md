@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 2.0.4
+
+### Patch Changes
+
+- 7fee512: Updated dependency `@playwright/test` to `1.64.0`.
+
 ## 2.0.3
 
 ### Patch Changes
