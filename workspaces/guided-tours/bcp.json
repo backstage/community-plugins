@@ -1,0 +1,7 @@
+{
+  "autoVersionBump": true,
+  "knipReports": true,
+  "listDeprecations": true,
+  "playwrightTests": true,
+  "codecov": true
+}
