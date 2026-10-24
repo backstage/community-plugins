@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 2.0.1
+
+### Patch Changes
+
+- 15fe557: Updated dependency `@testing-library/user-event` to `14.6.8`.
+
 ## 2.0.0
 
 ### Major Changes
