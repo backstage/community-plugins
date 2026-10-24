@@ -7,12 +7,28 @@ The engine lives in `@backstage-community/plugin-guided-tours`; when that
 plugin is not installed, your tour extension stays unattached and nothing
 breaks.
 
+![Anchored step with spotlight (light)](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/guided-tours/docs/anchored-light.png)
+
+More screenshots, including the dark theme and the overview page, are in the
+[workspace README](https://github.com/backstage/community-plugins/tree/main/workspaces/guided-tours#readme).
+
+## Installation
+
+```sh
+yarn --cwd plugins/<your-plugin> add @backstage-community/plugin-guided-tours-react
+```
+
+The app also needs
+[`@backstage-community/plugin-guided-tours`](https://github.com/backstage/community-plugins/tree/main/workspaces/guided-tours/plugins/guided-tours#readme)
+installed, see its README.
+
 ## Ship a tour
 
 ```ts
 import { GuidedTourBlueprint } from '@backstage-community/plugin-guided-tours-react';
 
 export const introTour = GuidedTourBlueprint.make({
+  // in the plugin "example": extension guided-tour:example/intro, tour id example/intro
   name: 'intro',
   params: {
     title: 'Welcome to Example',
@@ -21,8 +37,15 @@ export const introTour = GuidedTourBlueprint.make({
     steps: [
       {
         id: 'todos',
+        // looks up [data-guided-tour="example.todos"], see guidedTourTargetProps below
         target: 'example.todos',
         content: 'These are your **todos**.',
+      },
+      {
+        id: 'search',
+        // any CSS selector, e.g. for elements of other plugins
+        target: { selector: 'input[name="search"]' },
+        content: 'Filter the list here.',
       },
       {
         id: 'go',
@@ -39,6 +62,8 @@ export const introTour = GuidedTourBlueprint.make({
 });
 ```
 
+### Translated texts
+
 The tour title and description and the step titles and contents can also
 come from a translation ref through `translated(ref, key)`. The key is
 checked against the ref's messages at compile time, and only `translated`
@@ -54,6 +79,8 @@ can create such a text:
 
 `useGuidedTourText(text)` resolves such a text in your own components.
 
+### Custom components as content
+
 A step's content can also be a React element loaded on demand, like the
 `loader` of `PageBlueprint`; the chunk is fetched when the step is shown:
 
@@ -65,11 +92,19 @@ A step's content can also be a React element loaded on demand, like the
 }
 ```
 
-Add it to your plugin's `extensions` and mark the targets in your UI:
+### Mark the targets
+
+Add it to your plugin's `extensions` and mark the targets in your UI. A
+string target is resolved to the element with the matching
+`data-guided-tour` attribute, which `guidedTourTargetProps` creates:
 
 ```tsx
 <div {...guidedTourTargetProps('example.todos')}>...</div>
 ```
+
+The [tours of the dev app](https://github.com/backstage/community-plugins/tree/main/workspaces/guided-tours/plugins/guided-tours/dev/tours) are complete
+examples of login tours, page tours, click-through steps, translated texts
+and lazily loaded content.
 
 ## Add a "restart tour" button to your plugin header
 
