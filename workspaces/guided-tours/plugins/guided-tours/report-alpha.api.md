@@ -34,6 +34,7 @@ export const guidedTourTranslationRef: TranslationRef<
     readonly 'overlay.previous': 'Previous';
     readonly 'overlay.counter': 'Step {{current}} of {{total}}';
     readonly 'overlay.clickToContinue': 'Click the highlighted element to continue.';
+    readonly 'overlay.contentError': 'This step could not be shown.';
   }
 >;
 

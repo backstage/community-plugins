@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { renderInTestApp } from '@backstage/frontend-test-utils';
+import { errorApiRef } from '@backstage/frontend-plugin-api';
+import {
+  mockApis,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StepCard } from './StepCard';
+
+const Throwing = () => {
+  throw new Error('boom');
+};
 
 describe('StepCard', () => {
   const handlers = () => ({
@@ -76,5 +85,67 @@ describe('StepCard', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Done' }));
     expect(h.onPrevious).toHaveBeenCalledTimes(1);
     expect(h.onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders a resolved element instead of markdown', async () => {
+    await renderInTestApp(
+      <StepCard
+        tourTitle="Tour"
+        step={{
+          id: 'a',
+          content: { loader: async () => <div>unused: resolved below</div> },
+        }}
+        element={<div data-testid="lazy">from a chunk</div>}
+        stepIndex={1}
+        stepCount={2}
+        {...handlers()}
+      />,
+    );
+    expect(await screen.findByTestId('lazy')).toHaveTextContent('from a chunk');
+    expect(screen.queryByText('unused: resolved below')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
+  });
+
+  it('shows an error instead of content that throws, and keeps the buttons', async () => {
+    const errorApi = mockApis.error.mock();
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    await renderInTestApp(
+      <TestApiProvider apis={[[errorApiRef, errorApi]]}>
+        <StepCard
+          tourTitle="Tour"
+          step={{ id: 'a', content: { loader: async () => <Throwing /> } }}
+          element={<Throwing />}
+          stepIndex={0}
+          stepCount={2}
+          {...handlers()}
+        />
+      </TestApiProvider>,
+    );
+    expect(
+      screen.getByText('This step could not be shown.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('boom')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
+    expect(errorApi.post).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'boom' }),
+    );
+  });
+
+  it('shows the loader error', async () => {
+    await renderInTestApp(
+      <StepCard
+        tourTitle="Tour"
+        step={{ id: 'a', content: { loader: async () => <div /> } }}
+        error={new Error('chunk failed')}
+        stepIndex={0}
+        stepCount={1}
+        {...handlers()}
+      />,
+    );
+    expect(
+      screen.getByText('This step could not be shown.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('chunk failed')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
   });
 });

@@ -26,10 +26,15 @@ import { ProgressStore } from './progressStore';
 
 const IDLE: GuidedTourRunnerState = { stepIndex: 0, queue: [] };
 
+/** Plain titles sort by their text, translated ones by their key. */
+const titleSortKey = (tour: GuidedTour) =>
+  typeof tour.title === 'string' ? tour.title : tour.title.key;
+
 export function sortTours(tours: GuidedTour[]): GuidedTour[] {
   return [...tours].sort(
     (a, b) =>
-      (a.order ?? 100) - (b.order ?? 100) || a.title.localeCompare(b.title),
+      (a.order ?? 100) - (b.order ?? 100) ||
+      titleSortKey(a).localeCompare(titleSortKey(b)),
   );
 }
 

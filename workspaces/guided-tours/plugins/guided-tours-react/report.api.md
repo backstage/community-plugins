@@ -10,16 +10,25 @@ import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { ReactElement } from 'react';
 import { ReactNode } from 'react';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+
+// @public
+export type AnyTranslationRef = TranslationRef<
+  string,
+  {
+    [key in string]: string;
+  }
+>;
 
 // @public
 export interface GuidedTour {
   autoStart?: GuidedTourAutoStart;
   completeRoute?: string;
-  description?: string;
+  description?: GuidedTourText;
   id: string;
   order?: number;
   steps: GuidedTourStep[];
-  title: string;
+  title: GuidedTourText;
   version?: number;
 }
 
@@ -85,6 +94,11 @@ export const guidedTourDataRef: ConfigurableExtensionDataRef<
 >;
 
 // @public
+export interface GuidedTourElementLoader {
+  loader: () => Promise<JSX_2.Element>;
+}
+
+// @public
 export type GuidedTourParams = Omit<GuidedTour, 'id'> & {
   id?: string;
 };
@@ -130,7 +144,7 @@ export interface GuidedTourStartOptions {
 // @public
 export interface GuidedTourStep {
   advanceOn?: 'next' | 'click';
-  content: string;
+  content: GuidedTourText | GuidedTourElementLoader;
   id: string;
   onMissingTarget?: 'center' | 'skip';
   placement?: GuidedTourPlacement;
@@ -141,7 +155,7 @@ export interface GuidedTourStep {
         selector: string;
       };
   targetTimeoutMs?: number;
-  title?: string;
+  title?: GuidedTourText;
 }
 
 // @public
@@ -149,7 +163,7 @@ export function GuidedTourTarget(props: {
   id: string;
   children: ReactNode;
   as?: 'span' | 'div';
-}): JSX_2.Element;
+}): JSX_2;
 
 // @public
 export function guidedTourTargetProps(id: string): {
@@ -162,7 +176,28 @@ export function guidedTourTargetSelector(
 ): string;
 
 // @public
-export function MarkdownText(props: MarkdownTextProps): JSX_2.Element;
+export type GuidedTourText = string | GuidedTourTranslatedText;
+
+// @public
+export interface GuidedTourTranslatedText {
+  readonly $$type: '@backstage-community/plugin-guided-tours-react/TranslatedText';
+  readonly [translatedTextBrand]: true;
+  readonly key: string;
+  readonly translationRef: AnyTranslationRef;
+}
+
+// @public
+export function isGuidedTourElementLoader(
+  content: unknown,
+): content is GuidedTourElementLoader;
+
+// @public
+export function isGuidedTourTranslatedText(
+  value: unknown,
+): value is GuidedTourTranslatedText;
+
+// @public
+export function MarkdownText(props: MarkdownTextProps): JSX_2;
 
 // @public
 export interface MarkdownTextProps {
@@ -171,9 +206,7 @@ export interface MarkdownTextProps {
 }
 
 // @public
-export function RestartTourAction(
-  props: RestartTourActionProps,
-): JSX_2.Element | null;
+export function RestartTourAction(props: RestartTourActionProps): JSX_2 | null;
 
 // @public
 export interface RestartTourActionProps {
@@ -181,6 +214,26 @@ export interface RestartTourActionProps {
   label?: string;
   tourId: string;
 }
+
+// @public
+export function translated<TRef extends AnyTranslationRef>(
+  translationRef: TRef,
+  key: TranslationKeyOf<TRef>,
+): GuidedTourTranslatedText;
+
+// @public
+export type TranslationKeyOf<TRef extends AnyTranslationRef> = {
+  [K in keyof TRef['T']]: K extends `${infer Base}_${
+    | 'zero'
+    | 'one'
+    | 'two'
+    | 'few'
+    | 'many'
+    | 'other'}`
+    ? Base
+    : K;
+}[keyof TRef['T']] &
+  string;
 
 // @public
 export function useGuidedTour(id: string): UseGuidedTourResult;
@@ -192,4 +245,12 @@ export interface UseGuidedTourResult {
   progress?: GuidedTourProgress;
   start(options?: GuidedTourStartOptions): void;
 }
+
+// @public
+export function useGuidedTourText(text: GuidedTourText): string;
+
+// @public
+export function useGuidedTourText(
+  text: GuidedTourText | undefined,
+): string | undefined;
 ```

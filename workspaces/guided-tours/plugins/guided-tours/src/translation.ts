@@ -27,6 +27,7 @@ export const guidedTourTranslationRef = createTranslationRef({
       counter: 'Step {{current}} of {{total}}',
       clickToContinue: 'Click the highlighted element to continue.',
       loading: 'Looking for the next step…',
+      contentError: 'This step could not be shown.',
     },
     page: {
       title: 'Guided tours',

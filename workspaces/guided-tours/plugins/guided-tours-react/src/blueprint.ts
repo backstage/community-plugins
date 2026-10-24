@@ -33,6 +33,9 @@ export const guidedTourDataRef = createExtensionDataRef<GuidedTour>().with({
  * tour plugin. When that plugin is not installed the extension stays
  * unattached and nothing happens.
  *
+ * Titles, descriptions and contents are strings or texts created with
+ * `translated(ref, key)`, whose key is checked against the ref's messages.
+ *
  * @example
  * ```ts
  * const introTour = GuidedTourBlueprint.make({
@@ -40,7 +43,14 @@ export const guidedTourDataRef = createExtensionDataRef<GuidedTour>().with({
  *   params: {
  *     title: 'Welcome to Example',
  *     autoStart: { path: '/example' },
- *     steps: [{ id: 'todos', target: 'example.todos', content: 'Your **todos**.' }],
+ *     steps: [
+ *       { id: 'todos', target: 'example.todos', content: 'Your **todos**.' },
+ *       {
+ *         id: 'done',
+ *         title: translated(exampleTranslationRef, 'tour.done.title'),
+ *         content: translated(exampleTranslationRef, 'tour.done.content'),
+ *       },
+ *     ],
  *   },
  * });
  * ```
@@ -56,11 +66,10 @@ export const GuidedTourBlueprint = createExtensionBlueprint({
   dataRefs: { tour: guidedTourDataRef },
   factory(params: GuidedTourParams, { node }) {
     const { id, ...rest } = params;
-    return [
-      guidedTourDataRef({
-        id: id ?? node.spec.id.replace(/^guided-tour:/, ''),
-        ...rest,
-      }),
-    ];
+    const tour: GuidedTour = {
+      id: id ?? node.spec.id.replace(/^guided-tour:/, ''),
+      ...rest,
+    };
+    return [guidedTourDataRef(tour)];
   },
 });

@@ -17,15 +17,23 @@ import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { Button, ButtonIcon, Flex, Text } from '@backstage/ui';
 import {
   GuidedTourStep,
+  isGuidedTourElementLoader,
   MarkdownText,
+  useGuidedTourText,
 } from '@backstage-community/plugin-guided-tours-react';
 import { RiCloseLine } from '@remixicon/react';
+import { JSX } from 'react';
 import { Heading } from 'react-aria-components';
 import { guidedTourTranslationRef } from '../../translation';
+import { StepContentBoundary, StepContentError } from './StepContentBoundary';
 
 export interface StepCardProps {
   tourTitle: string;
   step: GuidedTourStep;
+  /** The resolved element of a step whose content is a loader. */
+  element?: JSX.Element;
+  /** Why the content could not be loaded; shown instead of the content. */
+  error?: Error;
   stepIndex: number;
   stepCount: number;
   onPrevious(): void;
@@ -38,6 +46,8 @@ export function StepCard(props: StepCardProps) {
   const {
     tourTitle,
     step,
+    element,
+    error,
     stepIndex,
     stepCount,
     onPrevious,
@@ -47,6 +57,12 @@ export function StepCard(props: StepCardProps) {
   const { t } = useTranslationRef(guidedTourTranslationRef);
   const isLast = stepIndex >= stepCount - 1;
   const clickToAdvance = step.advanceOn === 'click';
+  const title = useGuidedTourText(step.title);
+  // narrow with the type guard so the hook only sees text content
+  const textContent = isGuidedTourElementLoader(step.content)
+    ? undefined
+    : step.content;
+  const text = useGuidedTourText(textContent);
 
   return (
     <Flex direction="column" gap="3" style={{ width: '100%' }}>
@@ -57,7 +73,7 @@ export function StepCard(props: StepCardProps) {
           </Text>
           <Heading slot="title" style={{ margin: 0 }}>
             <Text as="span" variant="title-small">
-              {step.title ?? tourTitle}
+              {title ?? tourTitle}
             </Text>
           </Heading>
         </Flex>
@@ -69,7 +85,13 @@ export function StepCard(props: StepCardProps) {
           onPress={onDismiss}
         />
       </Flex>
-      <MarkdownText content={step.content} />
+      {error ? (
+        <StepContentError error={error} />
+      ) : (
+        <StepContentBoundary key={step.id}>
+          {element ?? <MarkdownText content={text ?? ''} />}
+        </StepContentBoundary>
+      )}
       {clickToAdvance && (
         <Text variant="body-small" color="secondary">
           {t('overlay.clickToContinue')}

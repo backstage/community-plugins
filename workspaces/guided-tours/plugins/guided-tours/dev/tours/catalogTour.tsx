@@ -13,45 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GuidedTourBlueprint } from '@backstage-community/plugin-guided-tours-react';
+import {
+  GuidedTourBlueprint,
+  translated,
+} from '@backstage-community/plugin-guided-tours-react';
+import { devTranslationRef } from '../translation';
 
-/** Starts on the first visit of the catalog. */
+/**
+ * Starts on the first visit of the catalog. Its title, description and
+ * first two steps take their texts from a translation ref; the keys are
+ * type checked.
+ */
 export const catalogTour = GuidedTourBlueprint.make({
   name: 'catalog',
   params: {
-    title: 'The software catalog',
-    description: 'Filters, the entity table and search on the catalog page.',
+    title: translated(devTranslationRef, 'catalogTour.title'),
+    description: translated(devTranslationRef, 'catalogTour.description'),
     autoStart: { path: '/catalog' },
     order: 10,
     steps: [
       {
         id: 'kind',
-        title: 'Pick a kind',
+        title: translated(devTranslationRef, 'catalogTour.kind.title'),
         route: '/catalog',
         target: { selector: '[data-testid="select"]' },
         placement: 'right',
-        content:
-          'The catalog holds more than components: switch the **kind** to see ' +
-          'APIs, systems, users, groups or templates.',
+        content: translated(devTranslationRef, 'catalogTour.kind.content'),
       },
       {
         id: 'personal',
-        title: 'Yours, starred, or everything',
+        title: translated(devTranslationRef, 'catalogTour.personal.title'),
         // the Personal + Company block of the user list picker
         target: { selector: '[class*="CatalogReactUserListPicker-root"]' },
         placement: 'right',
-        content:
-          '_Owned_ shows what your groups own, _Starred_ your favourites and ' +
-          '_All_ the whole company.',
+        content: translated(devTranslationRef, 'catalogTour.personal.content'),
       },
       {
         id: 'table',
         title: 'The entity table',
         target: { selector: 'table' },
         placement: 'top',
-        content:
-          'Each row is an entity. Click a name to open its page, or star it ' +
-          'with the icon in front of the name.',
+        // a lazily loaded React component instead of markdown
+        content: {
+          loader: () =>
+            import('../components/CatalogHint').then(m => <m.CatalogHint />),
+        },
       },
     ],
   },

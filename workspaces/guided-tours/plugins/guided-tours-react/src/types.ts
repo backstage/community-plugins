@@ -13,6 +13,139 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { JSX } from 'react';
+
+/**
+ * Any translation ref, used as the default type parameter of tours.
+ *
+ * @public
+ */
+export type AnyTranslationRef = TranslationRef<
+  string,
+  { [key in string]: string }
+>;
+
+/**
+ * The message keys of a translation ref, e.g. `'steps.intro.title'`. Plural
+ * forms (`key_one`, `key_other`) collapse to their base key, like the `t`
+ * function of `useTranslationRef` does.
+ *
+ * @public
+ */
+export type TranslationKeyOf<TRef extends AnyTranslationRef> = {
+  [K in keyof TRef['T']]: K extends `${infer Base}_${
+    | 'zero'
+    | 'one'
+    | 'two'
+    | 'few'
+    | 'many'
+    | 'other'}`
+    ? Base
+    : K;
+}[keyof TRef['T']] &
+  string;
+
+declare const translatedTextBrand: unique symbol;
+
+/**
+ * A text taken from a translation ref, created with {@link translated}.
+ * The type is opaque: a plain `{ translationRef, key }` object is not
+ * accepted, because only the `translated` call can check that the key is
+ * part of the ref's messages.
+ *
+ * @public
+ */
+export interface GuidedTourTranslatedText {
+  /** Discriminator, see {@link isGuidedTourTranslatedText}. */
+  readonly $$type: '@backstage-community/plugin-guided-tours-react/TranslatedText';
+  /** The translation ref the message is taken from. */
+  readonly translationRef: AnyTranslationRef;
+  /** The message key inside the translation ref. */
+  readonly key: string;
+  /** Type-only brand; nothing outside `translated` can supply it. */
+  readonly [translatedTextBrand]: true;
+}
+
+/**
+ * Marks a text as translated. The key is checked against the messages of
+ * the translation ref at compile time.
+ *
+ * @example
+ * ```ts
+ * title: translated(exampleTranslationRef, 'tour.done.title')
+ * ```
+ *
+ * @public
+ */
+export function translated<TRef extends AnyTranslationRef>(
+  translationRef: TRef,
+  key: TranslationKeyOf<TRef>,
+): GuidedTourTranslatedText {
+  return {
+    $$type: '@backstage-community/plugin-guided-tours-react/TranslatedText',
+    translationRef,
+    key,
+  } as unknown as GuidedTourTranslatedText;
+}
+
+/**
+ * Whether a value is a text created with {@link translated}.
+ *
+ * @public
+ */
+export function isGuidedTourTranslatedText(
+  value: unknown,
+): value is GuidedTourTranslatedText {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as GuidedTourTranslatedText).$$type ===
+      '@backstage-community/plugin-guided-tours-react/TranslatedText'
+  );
+}
+
+/**
+ * A plain string or a text created with {@link translated}.
+ *
+ * @public
+ */
+export type GuidedTourText = string | GuidedTourTranslatedText;
+
+/**
+ * Step content rendered by a React element that is loaded on demand, like
+ * the `loader` of `PageBlueprint`. The chunk is fetched when the step is
+ * shown, so a tour may embed rich content without growing the plugin's
+ * main bundle.
+ *
+ * @example
+ * ```ts
+ * content: {
+ *   loader: () => import('./TourHint').then(m => <m.TourHint />),
+ * }
+ * ```
+ *
+ * @public
+ */
+export interface GuidedTourElementLoader {
+  /** Loads the element, typically through a dynamic `import()`. */
+  loader: () => Promise<JSX.Element>;
+}
+
+/**
+ * Whether a step content is an element loader.
+ *
+ * @public
+ */
+export function isGuidedTourElementLoader(
+  content: unknown,
+): content is GuidedTourElementLoader {
+  return (
+    typeof content === 'object' &&
+    content !== null &&
+    typeof (content as GuidedTourElementLoader).loader === 'function'
+  );
+}
 
 /**
  * Placement of the step card relative to the highlighted element.
@@ -36,13 +169,14 @@ export type GuidedTourPlacement =
 export interface GuidedTourStep {
   /** Unique id of the step inside its tour. */
   id: string;
-  /** Optional title shown above the content. */
-  title?: string;
+  /** Optional title shown above the content; a string or a translated text. */
+  title?: GuidedTourText;
   /**
-   * Content shown in the step card. Supports minimal markdown: paragraphs,
-   * bold, italic, inline code, links, bullet and numbered lists.
+   * Content shown in the step card: a string or a translated text with
+   * minimal markdown (paragraphs, bold, italic, inline code, links, bullet
+   * and numbered lists), or a lazily loaded React element.
    */
-  content: string;
+  content: GuidedTourText | GuidedTourElementLoader;
   /**
    * Element to spotlight. A bare id is resolved to
    * `[data-guided-tour="<id>"]`; use `{ selector }` for an arbitrary CSS
@@ -100,10 +234,10 @@ export type GuidedTourAutoStart =
 export interface GuidedTour {
   /** Unique id, e.g. `example/intro`. */
   id: string;
-  /** Shown above every step and on the overview page. */
-  title: string;
-  /** One or two sentences for the overview page. */
-  description?: string;
+  /** Shown above every step and on the overview page; a string or a translated text. */
+  title: GuidedTourText;
+  /** One or two sentences for the overview page; a string or a translated text. */
+  description?: GuidedTourText;
   /**
    * Bump to show the tour again to users who completed or dismissed an
    * older version. Default 1.

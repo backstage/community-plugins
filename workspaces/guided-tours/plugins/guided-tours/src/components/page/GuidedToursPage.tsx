@@ -32,6 +32,7 @@ import {
   GuidedTour,
   GuidedTourProgress,
   guidedTourApiRef,
+  useGuidedTourText,
 } from '@backstage-community/plugin-guided-tours-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -53,6 +54,8 @@ function TourRow(props: { tour: GuidedTour; progress?: GuidedTourProgress }) {
   const navigate = useNavigate();
   const { t } = useTranslationRef(guidedTourTranslationRef);
   const status = statusOf(progress);
+  const title = useGuidedTourText(tour.title);
+  const description = useGuidedTourText(tour.description);
 
   const onStart = () => {
     const resume = status === 'inProgress';
@@ -84,13 +87,11 @@ function TourRow(props: { tour: GuidedTour; progress?: GuidedTourProgress }) {
           <Flex direction="column" gap="1">
             <Flex align="center" gap="2">
               <Text variant="title-x-small" as="h3">
-                {tour.title}
+                {title}
               </Text>
               <Badge size="small">{t(`page.status.${status}`)}</Badge>
             </Flex>
-            {tour.description && (
-              <Text color="secondary">{tour.description}</Text>
-            )}
+            {description && <Text color="secondary">{description}</Text>}
             <Text variant="body-x-small" color="secondary">
               {t('page.steps', { n: String(tour.steps.length) })}
               {tour.autoStart === 'login' && ` · ${t('page.autoStartLogin')}`}

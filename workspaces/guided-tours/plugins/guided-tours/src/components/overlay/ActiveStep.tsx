@@ -19,6 +19,8 @@ import {
   GuidedTour,
   guidedTourApiRef,
   guidedTourTargetSelector,
+  isGuidedTourElementLoader,
+  useGuidedTourText,
 } from '@backstage-community/plugin-guided-tours-react';
 import { useEffect, useMemo } from 'react';
 import { Dialog as AriaDialog } from 'react-aria-components';
@@ -26,6 +28,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { isOnRoute } from './isOnRoute';
 import { Spotlight } from './Spotlight';
 import { StepCard } from './StepCard';
+import { useLoadedElement } from './useLoadedElement';
 import { useElementRect, useTargetElement } from './useTargetElement';
 
 export interface ActiveStepProps {
@@ -43,6 +46,8 @@ export function ActiveStep(props: ActiveStepProps) {
   const api = useApi(guidedTourApiRef);
   const navigate = useNavigate();
   const location = useLocation();
+  const stepTitle = useGuidedTourText(step.title);
+  const tourTitle = useGuidedTourText(tour.title);
 
   const onRoute = !step.route || isOnRoute(step.route, location.pathname);
   useEffect(() => {
@@ -106,10 +111,17 @@ export function ActiveStep(props: ActiveStepProps) {
 
   const triggerRef = useMemo(() => ({ current: element }), [element]);
 
+  // element content is loaded before the card shows, so it never grows later
+  const loaded = useLoadedElement(
+    isGuidedTourElementLoader(step.content) ? step.content.loader : undefined,
+  );
+
   const card = (
     <StepCard
-      tourTitle={tour.title}
+      tourTitle={tourTitle}
       step={step}
+      element={loaded.element}
+      error={loaded.error}
       stepIndex={stepIndex}
       stepCount={tour.steps.length}
       onPrevious={() => api.previous()}
@@ -120,7 +132,7 @@ export function ActiveStep(props: ActiveStepProps) {
 
   // The BUI Dialog brings its own backdrop, so the spotlight is only used
   // for anchored steps.
-  if (status === 'resolving') {
+  if (status === 'resolving' || loaded.status === 'loading') {
     return (
       <Dialog key="resolving" isOpen isDismissable={false} width={360}>
         <DialogBody>
@@ -146,7 +158,7 @@ export function ActiveStep(props: ActiveStepProps) {
           isKeyboardDismissDisabled
         >
           <AriaDialog
-            aria-label={step.title ?? tour.title}
+            aria-label={stepTitle ?? tourTitle}
             style={{ outline: 'none', width: 360, maxWidth: '80vw' }}
           >
             {card}

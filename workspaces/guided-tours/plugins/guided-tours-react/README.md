@@ -39,6 +39,32 @@ export const introTour = GuidedTourBlueprint.make({
 });
 ```
 
+The tour title and description and the step titles and contents can also
+come from a translation ref through `translated(ref, key)`. The key is
+checked against the ref's messages at compile time, and only `translated`
+can create such a text:
+
+```ts
+{
+  id: 'done',
+  title: translated(exampleTranslationRef, 'tour.done.title'),
+  content: translated(exampleTranslationRef, 'tour.done.content'),
+}
+```
+
+`useGuidedTourText(text)` resolves such a text in your own components.
+
+A step's content can also be a React element loaded on demand, like the
+`loader` of `PageBlueprint`; the chunk is fetched when the step is shown:
+
+```tsx
+{
+  id: 'hint',
+  target: 'example.todos',
+  content: { loader: () => import('./TourHint').then(m => <m.TourHint />) },
+}
+```
+
 Add it to your plugin's `extensions` and mark the targets in your UI:
 
 ```tsx

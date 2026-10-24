@@ -28,6 +28,20 @@ The system SHALL expose a `GuidedTourBlueprint` (kind `guided-tour`) that attach
 - **WHEN** `app.extensions` contains `guided-tour:example/intro: false`
 - **THEN** the tour is absent from the list, the page, and auto-start
 
+### Requirement: Tour and step texts can be translated
+
+A tour's `title` and `description` and a step's `title` and `content` SHALL accept either a string or a text created with `translated(translationRef, key)`. The key SHALL be checked at compile time against the messages of the translation ref, a plain `{ translationRef, key }` object SHALL be rejected by the type checker, and the overlay SHALL resolve the text through the translation API so it follows the app language.
+
+#### Scenario: Translated step
+
+- **WHEN** a step has `content: translated(myRef, 'tour.intro.content')` and `myRef` defines that message
+- **THEN** the step card shows the message of the current language
+
+#### Scenario: Unknown key
+
+- **WHEN** `translated` is called with a key that is not part of the translation ref
+- **THEN** the TypeScript build fails on that key
+
 ### Requirement: Steps spotlight an element and show markdown content
 
 Each step SHALL highlight its target element with a dimmed mask and a cut-out and SHALL show title and content in a popover anchored to that element. Content SHALL support minimal markdown: paragraphs, bold, italic, inline code, links, bullet and numbered lists. HTML SHALL be rendered as text.
@@ -36,6 +50,16 @@ Each step SHALL highlight its target element with a dimmed mask and a cut-out an
 
 - **WHEN** a step with `target: 'catalog.create'` becomes active and an element with `data-guided-tour="catalog.create"` exists
 - **THEN** the element is scrolled into view, the mask cuts it out, and the popover is positioned next to it with role `dialog` and the step title as accessible name
+
+#### Scenario: Step with element content
+
+- **WHEN** a step's `content` is `{ loader }` returning a promise of a React element
+- **THEN** the chunk is loaded when the step is shown, a placeholder is displayed meanwhile, and the element replaces the markdown body
+
+#### Scenario: Element content fails
+
+- **WHEN** a step's loader rejects, or its element throws while rendering
+- **THEN** the card body shows an error with the message, the error is posted to the error API, and Previous, Next and Close keep working
 
 #### Scenario: Step without target
 
