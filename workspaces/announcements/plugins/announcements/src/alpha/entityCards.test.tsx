@@ -44,6 +44,8 @@ jest.mock('@backstage/plugin-permission-react', () => {
 describe('Entity card extensions', () => {
   const mockAnnouncementsApi = {
     lastSeenDate: () => DateTime.now(),
+    dismissAnnouncement: jest.fn(),
+    isAnnouncementDismissed: jest.fn().mockReturnValue(false),
     announcements: async () => ({
       count: 1,
       results: [
