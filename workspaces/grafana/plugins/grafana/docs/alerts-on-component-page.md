@@ -100,3 +100,18 @@ app:
         config:
           filter: kind:component,api,group
 ```
+
+The table options the legacy `EntityGrafanaAlertsCard` component takes as props are available as extension config too. All are optional; leaving one out keeps the component's default.
+
+```yaml
+app:
+  extensions:
+    - entity-card:grafana/alerts:
+        config:
+          title: Grafana alerts # default: Alerts
+          showState: true # adds the State column; default: false
+          paged: true # default: false
+          pageSize: 10 # default: 5
+          searchable: true # default: false
+          sortable: true # default: false
+```
