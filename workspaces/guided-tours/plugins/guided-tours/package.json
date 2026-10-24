@@ -55,6 +55,7 @@
   "dependencies": {
     "@backstage-community/plugin-guided-tours-react": "workspace:^",
     "@backstage/frontend-plugin-api": "^0.18.0",
+    "@backstage/plugin-app-react": "^0.2.8",
     "@backstage/types": "^1.2.2",
     "@backstage/ui": "^0.17.1",
     "@remixicon/react": ">=4.6.0 <4.9.0",

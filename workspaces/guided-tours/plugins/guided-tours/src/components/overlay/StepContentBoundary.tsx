@@ -20,7 +20,7 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { Alert } from '@backstage/ui';
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { guidedTourTranslationRef } from '../../translation';
+import { guidedTourTranslationRef } from '../../translations';
 
 /** The inline error shown in place of a step's content. */
 export function StepContentError({ error }: { error: Error }) {

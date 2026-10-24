@@ -38,7 +38,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { routeForStep } from '../overlay/isOnRoute';
 import { useGuidedTourSnapshot } from '../overlay/useGuidedTourSnapshot';
-import { guidedTourTranslationRef } from '../../translation';
+import { guidedTourTranslationRef } from '../../translations';
 
 type StatusKey = 'new' | 'inProgress' | 'completed' | 'dismissed';
 

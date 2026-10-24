@@ -17,7 +17,7 @@ import {
   GuidedTourBlueprint,
   translated,
 } from '@backstage-community/plugin-guided-tours-react';
-import { devTranslationRef } from '../translation';
+import { devTranslationRef } from '../translations';
 
 /**
  * Starts on the first visit of the catalog. Its title, description and

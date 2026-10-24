@@ -5,6 +5,12 @@ app:
   title: Guided tour dev app
   baseUrl: http://localhost:3000
   extensions:
+    # the languages the plugin ships translations for, selectable in the
+    # user settings
+    - api:app/app-language:
+        config:
+          availableLanguages: ['en', 'de', 'es', 'fr', 'it', 'ja']
+          defaultLanguage: 'en'
     # fetches an external API that is blocked by CORS in local development
     - home-page-widget:home/random-joke: false
     # a default home page layout, otherwise the home page starts empty

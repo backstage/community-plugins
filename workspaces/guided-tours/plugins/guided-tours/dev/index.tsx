@@ -30,6 +30,8 @@ import {
 } from './mockApis';
 import { headerActionModules } from './headerActions';
 import { devTours } from './tours';
+import { devTranslationsModule } from './translations';
+import { guidedToursTranslationsModule } from '../src/alpha';
 
 const demoModule = createFrontendModule({
   pluginId: 'guided-tours',
@@ -73,6 +75,10 @@ createDevApp({
     notificationsPlugin,
     notificationsMockModule,
     userSettingsPlugin,
+    // the plugin's and the dev app's translations, see app-config.yaml for
+    // the languages offered in the settings
+    guidedToursTranslationsModule,
+    devTranslationsModule,
     // "restart the guided tour" header buttons on catalog, create,
     // notifications and settings
     ...headerActionModules,

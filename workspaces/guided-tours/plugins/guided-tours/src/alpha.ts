@@ -14,4 +14,8 @@
  * limitations under the License.
  */
 
-export { guidedTourTranslationRef } from './translation';
+export {
+  guidedTourTranslationRef,
+  guidedToursTranslations,
+  guidedToursTranslationsModule,
+} from './translations';

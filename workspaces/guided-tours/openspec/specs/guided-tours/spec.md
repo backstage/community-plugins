@@ -147,6 +147,15 @@ A tour with `autoStart: { path }` SHALL start the first time the location is `pa
 - **WHEN** the user has `completed` or `dismissed` progress for `example/intro` and navigates to `/example`
 - **THEN** nothing starts
 
+### Requirement: Translations
+
+The plugin's own texts (step card buttons, counter, hints and the tours page) SHALL come from a translation ref, and the plugin SHALL ship German, Spanish, French, Italian and Japanese translations as an app module that adopters register.
+
+#### Scenario: Language switched in the settings
+
+- **WHEN** the translations module is registered and the user selects German in the user settings
+- **THEN** the step card buttons, the tours page and any tour texts defined through a translation ref with a German resource are shown in German
+
 ### Requirement: Manual start from any plugin
 
 The `-react` library SHALL provide `useGuidedTour(id)` returning `{ available, start, progress }`; `start` SHALL be a no-op and `available` false when the guided tour plugin is not installed.

@@ -24,7 +24,7 @@ import {
 import { RiCloseLine } from '@remixicon/react';
 import { JSX } from 'react';
 import { Heading } from 'react-aria-components';
-import { guidedTourTranslationRef } from '../../translation';
+import { guidedTourTranslationRef } from '../../translations';
 import { StepContentBoundary, StepContentError } from './StepContentBoundary';
 
 export interface StepCardProps {

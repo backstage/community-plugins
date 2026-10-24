@@ -27,6 +27,25 @@ app:
           autoStart: false # never start tours on their own
 ```
 
+## Translations
+
+The plugin ships German, Spanish, French, Italian and Japanese translations.
+Register them in your app and offer the languages in the user settings:
+
+```ts
+import { guidedToursTranslationsModule } from '@backstage-community/plugin-guided-tours/alpha';
+
+createApp({ features: [guidedToursTranslationsModule] });
+```
+
+```yaml
+app:
+  extensions:
+    - api:app/app-language:
+        config:
+          availableLanguages: ['en', 'de', 'es', 'fr', 'it', 'ja']
+```
+
 ## Extensions
 
 | Extension                               | Purpose                                             |
