@@ -1185,9 +1185,9 @@ __metadata:
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.25"
     "@backstage/plugin-catalog-node": "npm:^2.2.4"
     "@backstage/types": "npm:^1.2.2"
-    "@keycloak/keycloak-admin-client": "npm:26.7.4"
+    "@keycloak/keycloak-admin-client": "npm:26.8.1"
     "@opentelemetry/api": "npm:^1.9.0"
-    "@types/lodash": "npm:4.17.25"
+    "@types/lodash": "npm:4.17.26"
     deepmerge: "npm:4.3.1"
     jsonwebtoken: "npm:^9.0.0"
     lodash: "npm:^4.17.21"
@@ -3672,9 +3672,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keycloak/keycloak-admin-client@npm:26.7.4":
-  version: 26.7.4
-  resolution: "@keycloak/keycloak-admin-client@npm:26.7.4"
+"@keycloak/keycloak-admin-client@npm:26.8.1":
+  version: 26.8.1
+  resolution: "@keycloak/keycloak-admin-client@npm:26.8.1"
   dependencies:
     "@microsoft/kiota-abstractions": "npm:1.0.0-preview.103"
     "@microsoft/kiota-http-fetchlibrary": "npm:1.0.0-preview.103"
@@ -3684,7 +3684,7 @@ __metadata:
     "@microsoft/kiota-serialization-text": "npm:1.0.0-preview.103"
     camelize-ts: "npm:^3.0.0"
     url-template: "npm:^3.1.1"
-  checksum: 10/50a06869d4a6f18631bd84e5d7932b5f9897c1ee9a2887b1af2e5efbc88cbf78ba176e2e299139e1c3aae98f526ef66d50c6fa7c8aa56d4fe3bfa3ac125c6fc2
+  checksum: 10/6fdd4d789c90f05052f4de91f190a03a97486166b86b63911e220d7513edc1d822e9f50c86deaecbe14e8c29c9a825e95c74090e3f97add2edc555779e8a8d3e
   languageName: node
   linkType: hard
 
@@ -6593,10 +6593,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.17.25":
-  version: 4.17.25
-  resolution: "@types/lodash@npm:4.17.25"
-  checksum: 10/f786e05664439cc8d327fd97c62c060d81b3c4ed52127d01fbc926139e1a669c1554bf3cd0dbb43f8fcc7d9b5c6c23c543cc36de8dc815c9f289ea852b26ebd6
+"@types/lodash@npm:4.17.26":
+  version: 4.17.26
+  resolution: "@types/lodash@npm:4.17.26"
+  checksum: 10/49620ccc6e8c03e0f7589be3d21ead40409fb6a2c4808170e57f35cd4523d146ebf6ecbd97a266d767a71e98417fce215740690f4f131be060d1a534cac09b84
   languageName: node
   linkType: hard
 
