@@ -116,7 +116,7 @@
     "cross-fetch": "4.1.0",
     "glob": "^13.0.0",
     "react": "^18.3.1",
-    "react-aria-components": "~1.21.0",
+    "react-aria-components": "~1.22.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
