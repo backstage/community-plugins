@@ -26,8 +26,9 @@ import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
 import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
 import Box from '@mui/material/Box';
 import { MaturityCheckTable } from './maturityTableRows';
+import { MaturityDisplayProps } from '../../types';
 
-export const MaturityScorePage = () => {
+export const MaturityScorePage = ({ title }: MaturityDisplayProps) => {
   const { entity } = useEntity();
   const api = useApi(maturityApiRef);
 
@@ -57,7 +58,7 @@ export const MaturityScorePage = () => {
   return (
     <Grid container spacing={1}>
       <Grid item md={3}>
-        <MaturityRankInfoCard summary={value.summary} />
+        <MaturityRankInfoCard summary={value.summary} title={title} />
       </Grid>
       <Grid item md={9}>
         <InfoCard title="Checks" variant="fullHeight">
