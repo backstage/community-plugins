@@ -1,8 +1,8 @@
 {
   "name": "@backstage-community/plugin-guided-tours",
+  "description": "Guided tours for Backstage: spotlight steps, per-user progress, auto-start on login or route",
   "version": "0.0.0",
   "license": "Apache-2.0",
-  "description": "Guided tours for Backstage: spotlight steps, per-user progress, auto-start on login or route",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {
@@ -23,7 +23,8 @@
       ]
     }
   },
-  "homepage": "https://backstage.io",
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/guided-tours/plugins/guided-tours",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",

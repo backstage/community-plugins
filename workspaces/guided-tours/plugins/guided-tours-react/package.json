@@ -1,8 +1,8 @@
 {
   "name": "@backstage-community/plugin-guided-tours-react",
+  "description": "Web library for shipping guided tours from any Backstage frontend plugin",
   "version": "0.0.0",
   "license": "Apache-2.0",
-  "description": "Web library for shipping guided tours from any Backstage frontend plugin",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {
@@ -19,7 +19,8 @@
       ]
     }
   },
-  "homepage": "https://backstage.io",
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/guided-tours/plugins/guided-tours-react",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
