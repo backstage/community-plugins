@@ -15,7 +15,7 @@
  */
 import { useParams } from 'react-router-dom';
 
-import { Header, Page, TabbedLayout } from '@backstage/core-components';
+import { TabbedLayout } from '@backstage/core-components';
 
 import Grid from '@mui/material/Grid';
 
@@ -29,8 +29,13 @@ import { PermissionsCard } from './PermissionsCard';
 import { useTranslation } from '../../hooks/useTranslation';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { policyEntityReadPermission } from '@backstage-community/plugin-rbac-common';
+import { HeaderVariant, RolePageLayout } from '../RolePageLayout';
 
-export const RoleOverviewPage = () => {
+export const RoleOverviewPage = ({
+  headerVariant = 'legacy',
+}: {
+  headerVariant?: HeaderVariant;
+}) => {
   const { t } = useTranslation();
   const { roleName, roleNamespace, roleKind } = useParams();
   const { toastMessage, setToastMessage } = useToast();
@@ -48,12 +53,10 @@ export const RoleOverviewPage = () => {
       resourceRef={`${roleKind}:${roleNamespace}/${roleName}`}
     >
       <SnackbarAlert toastMessage={toastMessage} onAlertClose={onAlertClose} />
-      <Page themeId="tool">
-        <Header
-          title={`${roleKind}:${roleNamespace}/${roleName}`}
-          type="RBAC"
-          typeLink=".."
-        />
+      <RolePageLayout
+        headerVariant={headerVariant}
+        title={`${roleKind}:${roleNamespace}/${roleName}`}
+      >
         <TabbedLayout>
           <TabbedLayout.Route path="" title={t('common.overview')}>
             <Grid container direction="row" spacing={2}>
@@ -78,7 +81,7 @@ export const RoleOverviewPage = () => {
             </Grid>
           </TabbedLayout.Route>
         </TabbedLayout>
-      </Page>
+      </RolePageLayout>
     </RequirePermission>
   );
 };
