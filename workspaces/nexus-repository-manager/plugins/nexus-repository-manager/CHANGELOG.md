@@ -1,5 +1,16 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.5
+
+### Patch Changes
+
+- ed23859: Fix the artifact table's "Modified" column to sort chronologically and search by the displayed date, instead of sorting/searching the raw unformatted value. Also fixed column sorting so clicking any other column (e.g. Size, Checksum) for the first time sorts ascending, rather than inheriting the Modified column's descending order.
+- 79c8900: Updated dependency `@playwright/test` to `1.64.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.8`.
+- 3a51ce0: Updated dependency `@types/node` to `22.20.4`.
+- 569c1a6: Updated dependency `@types/node` to `22.20.5`.
+- f636552: Updated dependency `@playwright/test` to `1.64.0`.
+
 ## 1.27.4
 
 ### Patch Changes
