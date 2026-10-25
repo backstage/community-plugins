@@ -4,6 +4,7 @@ import { TestApiProvider, MockErrorApi, mockApis } from '@backstage/test-utils';
 import { errorApiRef } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { ArtifactRowData, ArtifactTable } from './ArtifactTable';
+import { formatDate } from '../../utils/format-date/format-date';
 
 // Get the text at row[columnName]
 function getCellText(table: HTMLElement, row: number, columnName: string) {
@@ -37,7 +38,7 @@ describe('ArtifactTable', () => {
         algorithm: 'sha256',
         value: 'sha256-test-hash',
       },
-      lastModified: 'Sep 26, 2023, 10:35 PM',
+      lastModified: '2023-09-26T22:35:00.000Z',
       sizeBytes: 140000,
     },
     {
@@ -49,7 +50,7 @@ describe('ArtifactTable', () => {
         algorithm: 'sha1',
         value: 'test-hash-sha1',
       },
-      lastModified: 'Sep 29, 2023, 10:35 PM',
+      lastModified: '2023-09-29T22:35:00.000Z',
       sizeBytes: 130000,
     },
   ];
@@ -68,18 +69,20 @@ describe('ArtifactTable', () => {
 
     const table = screen.getAllByRole('table')[0];
 
-    expect(getCellText(table, 0, 'Version')).toBe('1.0.0');
-    expect(getCellText(table, 0, 'Artifact')).toBe(
-      'test-artifact' + 'test-variant',
-    );
+    // Table defaults to sorting by Modified descending, so the more
+    // recently modified sampleRows[1] renders first.
+    expect(getCellText(table, 0, 'Version')).toBe('1.0.1');
+    expect(getCellText(table, 0, 'Artifact')).toBe('test-artifact');
     // Not full hash, just first 12 chars
-    expect(getCellText(table, 0, 'Checksum')).toBe('sha256' + 'sha256-test-');
+    expect(getCellText(table, 0, 'Checksum')).toBe('sha1' + 'test-hash-sh');
     expect(getCellText(table, 0, 'Repository Type')).toBe('test-repo');
-    expect(getCellText(table, 0, 'Size')).toBe('140 kB');
-    expect(getCellText(table, 0, 'Modified')).toBe('Sep 26, 2023, 10:35 PM');
+    expect(getCellText(table, 0, 'Size')).toBe('130 kB');
+    expect(getCellText(table, 0, 'Modified')).toBe(
+      formatDate(sampleRows[1].lastModified),
+    );
 
     // Check second row rendered
-    expect(getCellText(table, 1, 'Version')).toBe('1.0.1');
+    expect(getCellText(table, 1, 'Version')).toBe('1.0.0');
   });
 
   it('renders empty state', async () => {
@@ -179,6 +182,146 @@ describe('ArtifactTable', () => {
 
     await user.click(header);
     expect(getCellText(table, 0, 'Version')).toBe('larger');
+  });
+
+  it('defaults to sorting by modified descending', async () => {
+    const rowData = [
+      {
+        ...sampleRows[0],
+        version: 'older',
+        lastModified: '2023-01-01T00:00:00.000Z',
+      },
+      {
+        ...sampleRows[0],
+        version: 'newer',
+        lastModified: '2023-12-01T00:00:00.000Z',
+      },
+    ];
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
+
+    const table = screen.getAllByRole('table')[0];
+    expect(getCellText(table, 0, 'Version')).toBe('newer');
+  });
+
+  it('sorts by modified chronologically, not alphabetically on the formatted date', async () => {
+    const rowData = [
+      {
+        ...sampleRows[0],
+        version: 'january',
+        lastModified: '2023-01-15T00:00:00.000Z',
+      },
+      {
+        ...sampleRows[0],
+        version: 'june',
+        lastModified: '2023-06-15T00:00:00.000Z',
+      },
+    ];
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
+
+    const user = userEvent.setup();
+    const table = screen.getAllByRole('table')[0];
+    const header = screen.getByText('Modified');
+
+    // Column defaults to descending, so the first click switches to ascending.
+    await user.click(header);
+    expect(getCellText(table, 0, 'Version')).toBe('january');
+
+    await user.click(header);
+    expect(getCellText(table, 0, 'Version')).toBe('june');
+  });
+
+  it('sorts rows with a missing modified date to the front, ahead of dated rows', async () => {
+    const rowData = [
+      {
+        ...sampleRows[0],
+        version: 'nodate1',
+        lastModified: undefined,
+      },
+      {
+        ...sampleRows[0],
+        version: 'dated',
+        lastModified: '2023-01-15T00:00:00.000Z',
+      },
+      {
+        ...sampleRows[0],
+        version: 'nodate2',
+        lastModified: undefined,
+      },
+    ];
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
+
+    const user = userEvent.setup();
+    const table = screen.getAllByRole('table')[0];
+    const header = screen.getByText('Modified');
+
+    // Column defaults to descending, so the first click switches to ascending.
+    await user.click(header);
+    expect(getCellText(table, 0, 'Version')).toBe('nodate1');
+    expect(getCellText(table, 1, 'Version')).toBe('nodate2');
+    expect(getCellText(table, 2, 'Version')).toBe('dated');
+  });
+
+  it('filters by modified date using the displayed text', async () => {
+    const rowData = [
+      {
+        ...sampleRows[0],
+        version: 'january',
+        lastModified: '2023-01-15T00:00:00.000Z',
+      },
+      {
+        ...sampleRows[0],
+        version: 'june',
+        lastModified: '2023-06-15T00:00:00.000Z',
+      },
+    ];
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
+
+    const user = userEvent.setup();
+    const table = screen.getAllByRole('table')[0];
+
+    const filterInput = screen.getByPlaceholderText('Filter');
+    await user.type(filterInput, 'Jan');
+    await waitFor(() => {
+      expect(getCellText(table, 0, 'Version')).toBe('january');
+      const rows = table.querySelectorAll('tbody tr');
+      expect(rows[1].textContent).toBe('');
+    });
   });
 
   it('sorts by checksum correctly', async () => {
