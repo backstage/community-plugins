@@ -212,6 +212,56 @@ describe('Linguist backend API', () => {
     expect(store.deleteEntity).not.toHaveBeenCalled();
   });
 
+  it('should insert new entities sequentially with max concurrency of 1', async () => {
+    const catalogEntities = [
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-one' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-two' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-three' },
+        kind: 'Component',
+      },
+    ];
+
+    catalogApi.getEntities.mockResolvedValue({ items: catalogEntities });
+    store.getAllEntities.mockResolvedValue([]);
+
+    let inFlight = 0;
+    let maxInFlight = 0;
+    store.insertNewEntity.mockImplementation(async () => {
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      // Yield to the event loop so overlapping inserts would be observed here
+      await Promise.resolve();
+      inFlight -= 1;
+    });
+
+    await api.synchronizeEntitiesWithCatalog();
+
+    // Sequential inserts never overlap, so only one is ever in flight
+    expect(maxInFlight).toEqual(1);
+
+    // Each of the three new entities is inserted exactly once
+    expect(store.insertNewEntity).toHaveBeenCalledTimes(3);
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-one',
+    );
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-two',
+    );
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-three',
+    );
+  });
+
   it('should synchronize entities with catalog - only additions needed', async () => {
     // Mock catalog having more entities than store
     const catalogEntities = [
@@ -355,9 +405,11 @@ describe('Linguist backend API', () => {
       'component:default/fake-service',
       'https://some.fake/service/',
     );
-    expect(api.getLinguistResults).toHaveBeenCalled();
+    // Analysis runs exactly once per attempt (Requirement 4.2)
+    expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
     expect(store.insertEntityResults).toHaveBeenCalled();
-    expect(fs.remove).toHaveBeenCalled();
+    // The resolved temp directory is cleaned up on success (Requirement 4.3)
+    expect(fs.remove).toHaveBeenCalledWith('/temp/my-code');
     spy.mockClear();
     fsSpy.mockClear();
   });
@@ -419,7 +471,11 @@ describe('Linguist backend API', () => {
       .mockResolvedValueOnce(readTreeResponse);
 
     await api.generateEntityLanguages(entityRef, url);
+    // The source fetch is retried once, but analysis runs only on the
+    // successful attempt: the retry wraps readTree, so a transient readTree
+    // failure never reaches getLinguistResults (Requirement 4.1)
     expect(urlReader.readTree).toHaveBeenCalledTimes(2);
+    expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
     expect(api.delay).toHaveBeenCalledTimes(1);
     expect(store.insertEntityResults).toHaveBeenCalled();
     expect(store.markEntityProcessed).not.toHaveBeenCalled();

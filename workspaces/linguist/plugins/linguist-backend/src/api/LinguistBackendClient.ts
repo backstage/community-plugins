@@ -141,9 +141,9 @@ export class LinguistBackendClient implements LinguistBackendApi {
 
     if (entitiesToAdd.length > 0) {
       this.logger?.info(`Adding ${entitiesToAdd.length} new entities`);
-      await Promise.all(
-        entitiesToAdd.map(entityRef => this.store.insertNewEntity(entityRef)),
-      );
+      for (const entityRef of entitiesToAdd) {
+        await this.store.insertNewEntity(entityRef);
+      }
     }
 
     if (entitiesToRemove.length > 0) {
