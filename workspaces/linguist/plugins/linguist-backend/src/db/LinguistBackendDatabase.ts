@@ -92,23 +92,13 @@ export class LinguistBackendDatabase implements LinguistBackendStore {
     entityRef: string,
     processedDate: Date,
   ): Promise<void> {
-    // Keep any previous results; entities that were never analysed get empty
-    // results so they leave the unprocessed queue until they become stale.
-    const emptyLanguages: Languages = {
-      languageCount: 0,
-      totalBytes: 0,
-      processedDate: processedDate.toISOString(),
-      breakdown: [],
-    };
-
+    // Record only that an attempt happened. Leave `languages` untouched:
+    // a previously analysed entity keeps its result, and a failed/never-analysed
+    // entity keeps null languages so it stays in the unprocessed queue (ordered
+    // last) until it is retried.
     await this.db<RawDbEntityResultRow>('entity_result')
       .where({ entity_ref: entityRef })
-      .update({
-        processed_date: processedDate,
-        languages: this.db.raw('COALESCE(languages, ?)', [
-          JSON.stringify(emptyLanguages),
-        ]),
-      });
+      .update({ processed_date: processedDate });
   }
 
   async getEntityResults(entityRef: string): Promise<Languages> {
@@ -168,11 +158,15 @@ export class LinguistBackendDatabase implements LinguistBackendStore {
 
   async getUnprocessedEntities(): Promise<string[]> {
     const rawEntities = await this.db<RawDbEntityResultRow>('entity_result')
-      // TODO(ahhhndre) processed_date should always be null as well but it had a default to the current date
-      // once the default has been removed and released, we can then come back an enable this check
-      // .whereNull('processed_date')
+      // Only entities without a language breakdown are still pending.
       .whereNull('languages')
-      .orderBy('created_at', 'asc');
+      // Never-processed entities (null processed_date) first, then previously
+      // failed ones ordered by when they were last attempted. Two explicit
+      // order terms are used instead of knex's `orderBy(col, 'asc', 'first')`
+      // nulls option, which on SQLite collapses to only the null-position
+      // expression and drops the ascending date sort.
+      .orderByRaw('?? is not null asc', ['processed_date'])
+      .orderBy('processed_date', 'asc');
 
     if (!rawEntities) {
       return [];
