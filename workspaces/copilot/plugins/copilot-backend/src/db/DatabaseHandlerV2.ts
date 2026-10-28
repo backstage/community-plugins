@@ -242,7 +242,12 @@ export class DatabaseHandlerV2 {
   ): Promise<void> {
     if (!rows.length) return;
 
-    await batchInsertInChunks(rows, 100, async chunk => {
+    const normalizedRows = rows.map(row => ({
+      ...row,
+      user_login: row.user_login.toLowerCase(),
+    }));
+
+    await batchInsertInChunks(normalizedRows, 100, async chunk => {
       await this.db<V2CustomizationMetricRow>('copilot_customization_metrics')
         .insert(chunk)
         .onConflict([
@@ -264,7 +269,12 @@ export class DatabaseHandlerV2 {
   ): Promise<void> {
     if (!rows.length) return;
 
-    await batchInsertInChunks(rows, 100, async chunk => {
+    const normalizedRows = rows.map(row => ({
+      ...row,
+      user_login: row.user_login.toLowerCase(),
+    }));
+
+    await batchInsertInChunks(normalizedRows, 100, async chunk => {
       await this.db<V2CustomizationSummaryRow>(
         'copilot_customization_summaries',
       )
@@ -1094,7 +1104,7 @@ export class DatabaseHandlerV2 {
       .where('metrics_type', metricsType)
       .where('entity_id', entityId)
       .where('scope', 'user')
-      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .where('user_login', userLogin.toLowerCase())
       .whereBetween('day', [from, to])
       .orderBy('day', 'asc')
       .select('*');
@@ -1118,7 +1128,7 @@ export class DatabaseHandlerV2 {
       .where('metrics_type', metricsType)
       .where('entity_id', entityId)
       .where('scope', 'user')
-      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .where('user_login', userLogin.toLowerCase())
       .whereBetween('day', [from, to])
       .orderBy('day', 'asc')
       .select('*');
