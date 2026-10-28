@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,15 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-
-const useStyles = makeStyles({
-  text: {
-    fontStyle: 'italic',
-  },
-});
+import { Text } from '@backstage/ui';
+import styles from './ILertCardOnCallEmptyState.module.css';
 
 export const ILertCardOnCallEmptyState = () => {
-  const classes = useStyles();
-
   return (
-    <ListItem>
-      <ListItemText>
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          className={classes.text}
-        >
-          Nobody
-        </Typography>
-      </ListItemText>
-    </ListItem>
+    <div className={styles.root}>
+      <Text variant="body-small" className={styles.text}>
+        Nobody
+      </Text>
+    </div>
   );
 };
