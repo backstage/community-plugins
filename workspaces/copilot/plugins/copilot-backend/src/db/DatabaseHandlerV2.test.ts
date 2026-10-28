@@ -669,6 +669,33 @@ describe('DatabaseHandlerV2', () => {
         buildDailyTotal({ day: '2026-05-01', team_slug: '' }),
         buildDailyTotal({ day: '2026-05-02', team_slug: '' }),
       ]);
+      await handler.insertCustomizationMetrics([
+        {
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          scope: 'aggregate',
+          team_slug: '',
+          user_id: 0,
+          user_login: '',
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+        },
+      ]);
+      await handler.insertCustomizationSummaries([
+        {
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          scope: 'aggregate',
+          team_slug: '',
+          user_id: 0,
+          user_login: '',
+          category: 'skill',
+          distinct_item_count: 1,
+        },
+      ]);
 
       const result = await handler.getDashboardData(
         'organization',
@@ -684,6 +711,19 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toHaveProperty('byLanguageModel');
       expect(result).toHaveProperty('prMetrics');
       expect(result.daily).toHaveLength(2);
+      expect(result.customizationMetrics).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+        }),
+      ]);
+      expect(result.customizationSummaries).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          distinct_item_count: 1,
+        }),
+      ]);
     });
 
     it('getUserMetrics only returns rows for the requested user login', async () => {

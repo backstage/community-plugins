@@ -467,6 +467,8 @@ function createDbMock() {
     insertByLanguageModel: jest.fn().mockResolvedValue(undefined),
     insertByCli: jest.fn().mockResolvedValue(undefined),
     insertByVscodeAgent: jest.fn().mockResolvedValue(undefined),
+    insertCustomizationMetrics: jest.fn().mockResolvedValue(undefined),
+    insertCustomizationSummaries: jest.fn().mockResolvedValue(undefined),
     insertUserMetrics: jest.fn().mockResolvedValue(undefined),
     insertUserTeams: jest.fn().mockResolvedValue(undefined),
     insertUserMetricsByFeature: jest.fn().mockResolvedValue(undefined),

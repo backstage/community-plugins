@@ -16,6 +16,8 @@
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import {
   PeriodRange,
+  V2CustomizationMetricRow,
+  V2CustomizationSummaryRow,
   V2DailyTotal,
   V2DashboardData,
   V2IngestionLogRow,
@@ -232,6 +234,51 @@ export class DatabaseHandlerV2 {
         // updates any stale/zeroed row already stored for that key, mirroring
         // insertByCli above.
         .merge(['session_count', 'total_user_messages']);
+    });
+  }
+
+  async insertCustomizationMetrics(
+    rows: V2CustomizationMetricRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2CustomizationMetricRow>('copilot_customization_metrics')
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'scope',
+          'team_slug',
+          'user_id',
+          'category',
+          'item_name',
+        ])
+        .merge(['interaction_count', 'user_login']);
+    });
+  }
+
+  async insertCustomizationSummaries(
+    rows: V2CustomizationSummaryRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2CustomizationSummaryRow>(
+        'copilot_customization_summaries',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'scope',
+          'team_slug',
+          'user_id',
+          'category',
+        ])
+        .merge(['distinct_item_count', 'user_login']);
     });
   }
 
@@ -799,6 +846,58 @@ export class DatabaseHandlerV2 {
     }));
   }
 
+  async getCustomizationMetrics(
+    metricsType: MetricsScope,
+    entityId: string,
+    from: string,
+    to: string,
+    teamSlug?: string,
+  ): Promise<V2CustomizationMetricRow[]> {
+    const query = this.db<V2CustomizationMetricRow>(
+      'copilot_customization_metrics',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereBetween('day', [from, to])
+      .where('scope', teamSlug ? 'team' : 'aggregate')
+      .where('team_slug', teamSlug ?? '')
+      .orderBy('day', 'asc');
+
+    const rows = await query.select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getCustomizationSummaries(
+    metricsType: MetricsScope,
+    entityId: string,
+    from: string,
+    to: string,
+    teamSlug?: string,
+  ): Promise<V2CustomizationSummaryRow[]> {
+    if (teamSlug) {
+      return [];
+    }
+
+    const rows = await this.db<V2CustomizationSummaryRow>(
+      'copilot_customization_summaries',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereBetween('day', [from, to])
+      .where('scope', 'aggregate')
+      .where('team_slug', '')
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
   async getDashboardData(
     metricsType: MetricsScope,
     entityId: string,
@@ -813,6 +912,8 @@ export class DatabaseHandlerV2 {
       byModelFeature,
       byLanguageModel,
       prMetrics,
+      customizationMetrics,
+      customizationSummaries,
     ] = await Promise.all([
       this.getDailyTotals(metricsType, entityId, from, to, teamSlug),
       this.getByFeature(metricsType, entityId, from, to, teamSlug),
@@ -820,6 +921,8 @@ export class DatabaseHandlerV2 {
       this.getByModelFeature(metricsType, entityId, from, to, teamSlug),
       this.getByLanguageModel(metricsType, entityId, from, to, teamSlug),
       this.getPrMetrics(metricsType, entityId, from, to, teamSlug),
+      this.getCustomizationMetrics(metricsType, entityId, from, to, teamSlug),
+      this.getCustomizationSummaries(metricsType, entityId, from, to, teamSlug),
     ]);
 
     return {
@@ -829,6 +932,8 @@ export class DatabaseHandlerV2 {
       byModelFeature,
       byLanguageModel,
       prMetrics,
+      customizationMetrics,
+      customizationSummaries,
     };
   }
 
@@ -976,6 +1081,54 @@ export class DatabaseHandlerV2 {
     }));
   }
 
+  private async getUserCustomizationMetrics(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2CustomizationMetricRow[]> {
+    const rows = await this.db<V2CustomizationMetricRow>(
+      'copilot_customization_metrics',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .where('scope', 'user')
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  private async getUserCustomizationSummaries(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2CustomizationSummaryRow[]> {
+    const rows = await this.db<V2CustomizationSummaryRow>(
+      'copilot_customization_summaries',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .where('scope', 'user')
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
   /**
    * Fetch the full set of chart data needed to render an individual user's
    * "my metrics" dashboard, scoped strictly to `userLogin`. Backs the
@@ -998,6 +1151,8 @@ export class DatabaseHandlerV2 {
       byLanguage,
       byModelFeature,
       byLanguageModel,
+      customizationMetrics,
+      customizationSummaries,
     ] = await Promise.all([
       this.getUserMetrics(metricsType, entityId, userLogin, from, to),
       this.getUserMetricsByFeature(metricsType, entityId, userLogin, from, to),
@@ -1023,6 +1178,20 @@ export class DatabaseHandlerV2 {
         from,
         to,
       ),
+      this.getUserCustomizationMetrics(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+      this.getUserCustomizationSummaries(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
     ]);
 
     return {
@@ -1033,6 +1202,8 @@ export class DatabaseHandlerV2 {
       byLanguage,
       byModelFeature,
       byLanguageModel,
+      customizationMetrics,
+      customizationSummaries,
     };
   }
 

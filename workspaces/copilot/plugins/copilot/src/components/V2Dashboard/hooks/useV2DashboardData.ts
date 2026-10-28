@@ -26,6 +26,8 @@ const EMPTY_DASHBOARD: V2DashboardData = {
   byModelFeature: [],
   byLanguageModel: [],
   prMetrics: [],
+  customizationMetrics: [],
+  customizationSummaries: [],
 };
 
 export function useV2DashboardData(params: V2MetricsParams) {

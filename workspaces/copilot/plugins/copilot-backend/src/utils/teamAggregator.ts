@@ -15,6 +15,7 @@
  */
 
 import {
+  V2CustomizationMetricRow,
   V2DailyTotal,
   V2MetricsByFeatureRow,
   V2MetricsByIdeRow,
@@ -34,6 +35,7 @@ export interface TeamAggregates {
   byLanguageFeature: V2MetricsByLanguageFeatureRow[];
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
 }
 
 /**
@@ -64,6 +66,7 @@ export function aggregateTeamMetrics(
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
+      customizationMetrics: [],
     };
   }
 
@@ -99,6 +102,7 @@ export function aggregateTeamMetrics(
   const byLanguageFeature: V2MetricsByLanguageFeatureRow[] = [];
   const byModelFeature: V2MetricsByModelFeatureRow[] = [];
   const byLanguageModel: V2MetricsByLanguageModelRow[] = [];
+  const customizationMetrics: V2CustomizationMetricRow[] = [];
 
   for (const [teamSlug, userIds] of [...usersByTeam.entries()].sort((a, b) =>
     a[0].localeCompare(b[0]),
@@ -123,6 +127,7 @@ export function aggregateTeamMetrics(
     const langFeatureMap = new Map<string, V2MetricsByLanguageFeatureRow>();
     const modelFeatureMap = new Map<string, V2MetricsByModelFeatureRow>();
     const langModelMap = new Map<string, V2MetricsByLanguageModelRow>();
+    const customizationMap = new Map<string, V2CustomizationMetricRow>();
 
     for (const userId of userIds) {
       const metric = metricsByUserId.get(userId);
@@ -308,6 +313,28 @@ export function aggregateTeamMetrics(
           });
         }
       }
+
+      for (const customization of bd.customizations) {
+        const customizationKey = `${customization.category}\u0000${customization.item_name}`;
+        const existingCustomization = customizationMap.get(customizationKey);
+        if (existingCustomization) {
+          existingCustomization.interaction_count +=
+            customization.interaction_count;
+        } else {
+          customizationMap.set(customizationKey, {
+            day,
+            metrics_type: metricsType,
+            entity_id: entityId,
+            scope: 'team',
+            team_slug: teamSlug,
+            user_id: 0,
+            user_login: '',
+            category: customization.category,
+            item_name: customization.item_name,
+            interaction_count: customization.interaction_count,
+          });
+        }
+      }
     }
 
     if (!activeUsers.size) {
@@ -345,6 +372,7 @@ export function aggregateTeamMetrics(
     byLanguageFeature.push(...langFeatureMap.values());
     byModelFeature.push(...modelFeatureMap.values());
     byLanguageModel.push(...langModelMap.values());
+    customizationMetrics.push(...customizationMap.values());
   }
 
   return {
@@ -354,5 +382,6 @@ export function aggregateTeamMetrics(
     byLanguageFeature,
     byModelFeature,
     byLanguageModel,
+    customizationMetrics,
   };
 }

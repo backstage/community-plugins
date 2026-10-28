@@ -107,6 +107,14 @@ describe('router v2 endpoints', () => {
       byModelFeature: [],
       byLanguageModel: [],
       prMetrics: [],
+      customizationMetrics: [
+        {
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+        },
+      ],
+      customizationSummaries: [{ category: 'skill', distinct_item_count: 1 }],
     });
     mockDbV2.getUserDashboardData.mockResolvedValue({
       userLogin: 'octocat',
@@ -369,6 +377,14 @@ describe('router v2 endpoints', () => {
       byModelFeature: [],
       byLanguageModel: [],
       prMetrics: [],
+      customizationMetrics: [
+        {
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+        },
+      ],
+      customizationSummaries: [{ category: 'skill', distinct_item_count: 1 }],
     });
 
     const app = await createTestApp();
@@ -379,6 +395,16 @@ describe('router v2 endpoints', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('daily');
     expect(response.body.daily).toHaveLength(1);
+    expect(response.body.customizationMetrics).toEqual([
+      {
+        category: 'skill',
+        item_name: 'release-checks',
+        interaction_count: 7,
+      },
+    ]);
+    expect(response.body.customizationSummaries).toEqual([
+      { category: 'skill', distinct_item_count: 1 },
+    ]);
     expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
       'organization',
       'org-1',
@@ -442,6 +468,8 @@ describe('router v2 endpoints', () => {
         byLanguage: [],
         byModelFeature: [],
         byLanguageModel: [],
+        customizationMetrics: [],
+        customizationSummaries: [],
       });
 
       const app = await createMeTestApp();
@@ -461,6 +489,8 @@ describe('router v2 endpoints', () => {
         byLanguage: [],
         byModelFeature: [],
         byLanguageModel: [],
+        customizationMetrics: [],
+        customizationSummaries: [],
       });
       expect(mockDbV2.getUserDashboardData).toHaveBeenCalledWith(
         'organization',
