@@ -233,7 +233,9 @@ export const EntityAdrContent = (props: {
               </InfoCard>
             </Grid.Item>
             <Grid.Item colSpan={{ sm: '9' }}>
-              <AdrReader adr={selectedAdr} decorators={contentDecorators} />
+              {selectedAdr && (
+                <AdrReader adr={selectedAdr} decorators={contentDecorators} />
+              )}
             </Grid.Item>
           </Grid.Root>
         ) : (
