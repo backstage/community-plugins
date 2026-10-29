@@ -55,7 +55,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
               label: string;
             }[]
           | undefined;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
@@ -69,7 +69,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
               label: string;
             }[]
           | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -109,14 +109,14 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         title: string | undefined;
         allEntities: boolean | undefined;
         variant: 'starred' | 'like-dislike';
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         title?: string | undefined;
         allEntities?: boolean | undefined;
         variant?: 'starred' | 'like-dislike' | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -157,14 +157,14 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
       config: {
         path: string | undefined;
         title: string | undefined;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         group: string | false | undefined;
         icon: string | undefined;
       };
       configInput: {
         path?: string | undefined;
         title?: string | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         group?: string | false | undefined;
         icon?: string | undefined;
       };
