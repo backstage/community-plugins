@@ -88,6 +88,10 @@ export interface AdrDocument extends IndexableDocument {
    * ADR date
    */
   date?: string;
+  /**
+   * ADR category or document type
+   */
+  category?: string;
 }
 
 /**
@@ -107,6 +111,10 @@ export interface ParsedMadr {
    * ADR date
    */
   date?: string;
+  /**
+   * ADR category or document type
+   */
+  category?: string;
   /**
    * All attributes parsed from front matter
    */
@@ -138,12 +146,15 @@ export const parseMadrWithFrontmatter = (content: string): ParsedMadr => {
 
   const status = attributes.status;
   const date = attributes.date;
+  const rawCategory = attributes.category ?? attributes.type;
+  const category = rawCategory ? String(rawCategory) : undefined;
   const luxdate = DateTime.fromJSDate(new Date(`${date}`));
   const formattedDate = luxdate.toISODate();
   return {
     content: body,
     status: status ? String(status) : undefined,
     date: date ? String(formattedDate) : undefined,
+    category,
     attributes,
   };
 };
@@ -166,6 +177,7 @@ export const madrParser = (
     title: getTitle(tokens),
     status: getStatus(tokens, preparsed.status),
     date: getDate(tokens, dateFormat, preparsed.date),
+    category: preparsed.category,
   };
 };
 
@@ -248,6 +260,7 @@ export const createMadrParser = (
       text: content,
       status: madr.status,
       date: madr.date,
+      category: madr.category,
       entityRef: stringifyEntityRef(entity),
       entityTitle: entity.metadata.title,
       location: applyArgsToFormat(locationTemplate, {
@@ -268,6 +281,7 @@ export interface AdrInfo {
   title?: string;
   status?: string;
   date?: string;
+  category?: string;
 }
 
 /**

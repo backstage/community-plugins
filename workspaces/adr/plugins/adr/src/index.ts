@@ -28,8 +28,13 @@ export type {
   AdrListResult,
   AdrReadResult,
 } from './api';
-export { isAdrAvailable } from '@backstage-community/plugin-adr-common';
+export {
+  isAdrAvailable,
+  ANNOTATION_ADR_LOCATION,
+  ANNOTATION_ASSESSMENT_LOCATION,
+} from '@backstage-community/plugin-adr-common';
 export * from './components/AdrReader';
+export type { AdrCategoryConfig } from './components/EntityAdrContent';
 export type { EntityAdrListItemContextType } from './components/EntityAdrContent/EntityAdrListItemContext';
 export { EntityAdrListItemContext } from './components/EntityAdrContent/EntityAdrListItemContext';
 export { adrPlugin, AdrSearchResultListItem, EntityAdrContent } from './plugin';

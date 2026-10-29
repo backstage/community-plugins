@@ -1,4 +1,8 @@
 @layer components {
+  .categoryTabs {
+    margin-bottom: var(--bui-space-4, 16px);
+  }
+
   .adrMenu {
     background-color: var(--bui-bg-neutral-1);
   }
