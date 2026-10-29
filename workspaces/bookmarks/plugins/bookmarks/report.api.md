@@ -42,14 +42,14 @@ const bookmarksPlugin_2: OverridableFrontendPlugin<
       config: {
         path: string | undefined;
         title: string | undefined;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         group: string | false | undefined;
         icon: string | undefined;
       };
       configInput: {
         path?: string | undefined;
         title?: string | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         group?: string | false | undefined;
         icon?: string | undefined;
       };
