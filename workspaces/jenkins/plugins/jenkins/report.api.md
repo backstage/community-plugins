@@ -49,12 +49,14 @@ export interface JenkinsApi {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<Build>;
   // Warning: (ae-forgotten-export) The symbol "BuildConsoleText" needs to be exported by the entry point index.d.ts
   getBuildConsoleText(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<BuildConsoleText>;
   // Warning: (ae-forgotten-export) The symbol "Job" needs to be exported by the entry point index.d.ts
   //
@@ -62,6 +64,7 @@ export interface JenkinsApi {
   getJobBuilds(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
+    instanceName?: string;
   }): Promise<Job>;
   getProjects(options: {
     entity: CompoundEntityRef;
@@ -69,11 +72,18 @@ export interface JenkinsApi {
       branch?: string;
     };
   }): Promise<Project[]>;
+  getProjectsWithErrors?(options: {
+    entity: CompoundEntityRef;
+    filter: {
+      branch?: string;
+    };
+  }): Promise<JenkinsProjectsResult>;
   // (undocumented)
   retry(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<void>;
 }
 
@@ -92,17 +102,20 @@ export class JenkinsClient implements JenkinsApi {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<Build>;
   // (undocumented)
   getBuildConsoleText(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<BuildConsoleText>;
   // (undocumented)
   getJobBuilds(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
+    instanceName?: string;
   }): Promise<Job>;
   // (undocumented)
   getProjects(options: {
@@ -112,11 +125,25 @@ export class JenkinsClient implements JenkinsApi {
     };
   }): Promise<Project[]>;
   // (undocumented)
+  getProjectsWithErrors(options: {
+    entity: CompoundEntityRef;
+    filter: {
+      branch?: string;
+    };
+  }): Promise<JenkinsProjectsResult>;
+  // (undocumented)
   retry(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<void>;
+}
+
+// @public
+export interface JenkinsInstanceError {
+  instanceName: string;
+  message: string;
 }
 
 // @public (undocumented)
@@ -129,6 +156,12 @@ const jenkinsPlugin: BackstagePlugin<
 >;
 export { jenkinsPlugin };
 export { jenkinsPlugin as plugin };
+
+// @public
+export interface JenkinsProjectsResult {
+  errors: JenkinsInstanceError[];
+  projects: Project[];
+}
 
 // Warning: (ae-missing-release-tag) "LatestRunCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -154,6 +187,8 @@ export interface Project {
   fullName: string;
   // (undocumented)
   inQueue: string;
+  // (undocumented)
+  instanceName?: string;
   // (undocumented)
   lastBuild: Build;
   // (undocumented)

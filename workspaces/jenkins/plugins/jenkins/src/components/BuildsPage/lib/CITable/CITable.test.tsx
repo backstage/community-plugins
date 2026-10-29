@@ -39,7 +39,14 @@ const entity = {
 const jenkinsApi: Partial<JenkinsApi> = {
   getProjects: () =>
     Promise.resolve([
-      { lastBuild: { timestamp: 0, status: 'success', url: 'foo' } },
+      {
+        instanceName: 'dev',
+        fullName: 'folder/shared-job',
+        fullDisplayName: 'folder » shared-job',
+        displayName: 'shared-job',
+        status: 'success',
+        lastBuild: { timestamp: 0, status: 'success', url: 'foo', number: 12 },
+      },
     ] as Project[]),
 };
 
@@ -86,5 +93,99 @@ describe('<CITable />', () => {
       );
       expect(getByText('My custom title!')).toBeVisible();
     });
+  });
+
+  async function renderTable(api: Partial<JenkinsApi>) {
+    return renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [jenkinsApiRef, api],
+          [toastApiRef, {}],
+        ]}
+      >
+        <EntityProvider entity={entity}>
+          <CITable />
+        </EntityProvider>
+      </TestApiProvider>,
+      mountedRoutes,
+    );
+  }
+
+  it('hides the instance column when every job is on the same instance', async () => {
+    const { findByText, queryByText } = await renderTable(jenkinsApi);
+
+    expect(await findByText('folder » shared-job')).toBeInTheDocument();
+    expect(queryByText('Instance')).not.toBeInTheDocument();
+  });
+
+  it('shows the instance column when jobs come from several instances', async () => {
+    const project = {
+      fullName: 'folder/shared-job',
+      fullDisplayName: 'folder » shared-job',
+      displayName: 'shared-job',
+      status: 'success',
+      lastBuild: { timestamp: 0, status: 'success', url: 'foo', number: 12 },
+    };
+    const { findByText, getByText } = await renderTable({
+      getProjects: async () =>
+        [
+          { ...project, instanceName: 'prod' },
+          { ...project, instanceName: 'dev' },
+        ] as Project[],
+    });
+
+    expect(await findByText('Instance')).toBeInTheDocument();
+    expect(getByText('prod')).toBeInTheDocument();
+    expect(getByText('dev')).toBeInTheDocument();
+  });
+
+  it('warns about the instances that could not be loaded', async () => {
+    const { findByText, getByText } = await renderTable({
+      getProjectsWithErrors: async () => ({
+        projects: [],
+        errors: [{ instanceName: 'prod', message: 'prod is down' }],
+      }),
+    });
+
+    expect(
+      await findByText(
+        "Warning: Couldn't load projects from Jenkins instance(s): prod",
+      ),
+    ).toBeInTheDocument();
+    expect(getByText('prod is down')).toBeInTheDocument();
+  });
+
+  it('shows the error when no project can be loaded', async () => {
+    const { findByText, getByText } = await renderTable({
+      getProjects: () => Promise.reject(new Error('every instance is down')),
+    });
+
+    expect(
+      await findByText("Error: Can't load Jenkins projects"),
+    ).toBeInTheDocument();
+    expect(getByText('every instance is down')).toBeInTheDocument();
+  });
+
+  it('keeps the Jenkins instance in build detail links', async () => {
+    const { findByRole } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [jenkinsApiRef, jenkinsApi],
+          [toastApiRef, {}],
+        ]}
+      >
+        <EntityProvider entity={entity}>
+          <CITable />
+        </EntityProvider>
+      </TestApiProvider>,
+      mountedRoutes,
+    );
+
+    expect(
+      await findByRole('link', { name: 'folder » shared-job' }),
+    ).toHaveAttribute(
+      'href',
+      '/builds/folder%2Fshared-job/12?instanceName=dev',
+    );
   });
 });
