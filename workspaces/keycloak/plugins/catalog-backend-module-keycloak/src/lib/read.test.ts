@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
+import { DEFAULT_NAMESPACE } from '@backstage/catalog-model';
 
 import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { LimitFunction } from 'p-limit';
@@ -136,6 +137,131 @@ describe('readKeycloakRealm', () => {
     );
     expect(users).toHaveLength(3);
     expect(groups).toHaveLength(3);
+  });
+
+  it('uses the default namespace when namespaces are not configured', async () => {
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+    );
+
+    expect(users[0].metadata.namespace).toBeUndefined();
+    expect(groups[0].metadata.namespace).toBeUndefined();
+    // References remain unqualified since namespaces are the same
+    expect(users[0].spec.memberOf).toEqual(['biggroup']);
+    expect(groups[0].spec.members).toEqual(['jamesdoe']);
+  });
+
+  it('uses the configured user namespace and correct references', async () => {
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      { ...config, userNamespace: 'keycloak-users' },
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+    );
+
+    expect(users[0].metadata.namespace).toBe('keycloak-users');
+    expect(groups[0].metadata.namespace).toBeUndefined();
+    // References include the target namespace when namespaces differ
+    expect(users[0].spec.memberOf).toEqual(['default/biggroup']);
+    expect(groups[0].spec.members).toEqual(['keycloak-users/jamesdoe']);
+  });
+
+  it('uses the configured group namespace and correct references', async () => {
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      { ...config, groupNamespace: 'keycloak-groups' },
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+    );
+
+    expect(users[0].metadata.namespace).toBeUndefined();
+    expect(groups[0].metadata.namespace).toBe('keycloak-groups');
+    // References include the target namespace when namespaces differ
+    expect(users[0].spec.memberOf).toEqual(['keycloak-groups/biggroup']);
+    expect(groups[0].spec.members).toEqual(['default/jamesdoe']);
+    // References remain unqualified when namespaces are the same
+    expect(groups[0].spec.children).toEqual(['subgroup']);
+    expect(groups[1].spec.parent).toEqual('biggroup');
+  });
+
+  it('preserves namespaces set by transformers when namespaces are not configured', async () => {
+    const groupTransformer: GroupTransformer = async entity => {
+      entity.metadata.namespace = 'transformed-groups';
+      return entity;
+    };
+    const userTransformer: UserTransformer = async entity => {
+      entity.metadata.namespace = 'transformed-users';
+      entity.spec.memberOf?.push('external/team');
+      return entity;
+    };
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+      { userTransformer, groupTransformer },
+    );
+
+    expect(users[0].metadata.namespace).toBe('transformed-users');
+    expect(groups[0].metadata.namespace).toBe('transformed-groups');
+    // References include the target namespace when namespaces differ
+    // Transformer-provided references to groups outside this provider are preserved
+    expect(users[0].spec.memberOf).toEqual([
+      'transformed-groups/biggroup',
+      'external/team',
+    ]);
+    expect(groups[0].spec.members).toEqual(['transformed-users/jamesdoe']);
+  });
+
+  it('applies explicitly configured namespaces after transformers', async () => {
+    const groupTransformer: GroupTransformer = async entity => {
+      entity.metadata.namespace = 'transformed-groups';
+      return entity;
+    };
+    const userTransformer: UserTransformer = async entity => {
+      entity.metadata.namespace = 'transformed-users';
+      return entity;
+    };
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      {
+        ...config,
+        userNamespace: DEFAULT_NAMESPACE,
+        groupNamespace: 'configured-groups',
+      },
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+      { userTransformer, groupTransformer },
+    );
+
+    expect(users[0].metadata.namespace).toBe(DEFAULT_NAMESPACE);
+    expect(groups[0].metadata.namespace).toBe('configured-groups');
+    // References include the target namespace when namespaces differ
+    expect(users[0].spec.memberOf).toEqual(['configured-groups/biggroup']);
+    expect(groups[0].spec.members).toEqual(['default/jamesdoe']);
   });
 
   it(`should not contain undefined members when a group member is not found in the fetched user list`, async () => {

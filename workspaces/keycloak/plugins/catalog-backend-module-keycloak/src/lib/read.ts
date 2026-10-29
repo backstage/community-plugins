@@ -15,7 +15,11 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import type { GroupEntity, UserEntity } from '@backstage/catalog-model';
+import {
+  DEFAULT_NAMESPACE,
+  type GroupEntity,
+  type UserEntity,
+} from '@backstage/catalog-model';
 
 import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import type GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation';
@@ -378,6 +382,9 @@ export const readKeycloakRealm = async (
         options?.groupTransformer,
       );
       if (entity) {
+        if (config.groupNamespace !== undefined) {
+          entity.metadata.namespace = config.groupNamespace;
+        }
         return { ...g, entity } as GroupRepresentationWithParentAndEntity;
       }
       return null;
@@ -414,6 +421,9 @@ export const readKeycloakRealm = async (
         options?.userTransformer,
       );
       if (entity) {
+        if (config.userNamespace !== undefined) {
+          entity.metadata.namespace = config.userNamespace;
+        }
         return { ...u, entity } as UserRepresentationWithEntity;
       }
       return null;
@@ -426,20 +436,41 @@ export const readKeycloakRealm = async (
   logger.debug(`Set up group members and children information`);
 
   const userMap = new Map(
-    filteredParsedUsers.map(user => [user.username, user.entity.metadata.name]),
+    filteredParsedUsers.map(user => [user.username, user.entity]),
   );
 
   const groupMap = new Map(
-    filteredParsedGroups.map(group => [group.name, group.entity.metadata.name]),
+    filteredParsedGroups.flatMap(group => [
+      [group.name, group.entity],
+      [group.entity.metadata.name, group.entity],
+    ]),
   );
 
   const groups = filteredParsedGroups.map(g => {
     const entity = g.entity;
     entity.spec.members =
-      g.entity.spec.members?.flatMap(m => userMap.get(m) ?? []) ?? [];
+      g.entity.spec.members?.flatMap(m => {
+        const user = userMap.get(m);
+        return user ? toRelativeEntityRef(user, g.entity) : [];
+      }) ?? [];
     entity.spec.children =
-      g.entity.spec.children?.flatMap(c => groupMap.get(c) ?? []) ?? [];
-    entity.spec.parent = groupMap.get(entity.spec.parent);
+      g.entity.spec.children?.flatMap(c => {
+        const group = groupMap.get(c);
+        return group ? toRelativeEntityRef(group, g.entity) : [];
+      }) ?? [];
+    const parent = groupMap.get(entity.spec.parent);
+    entity.spec.parent = parent
+      ? toRelativeEntityRef(parent, entity)
+      : undefined;
+    return entity;
+  });
+
+  const users = filteredParsedUsers.map(user => {
+    const entity = user.entity;
+    entity.spec.memberOf = entity.spec.memberOf?.map(memberOf => {
+      const group = groupMap.get(memberOf);
+      return group ? toRelativeEntityRef(group, entity) : memberOf;
+    });
     return entity;
   });
 
@@ -447,5 +478,19 @@ export const readKeycloakRealm = async (
     `Prepared to ingest  ${parsedUsers.length} users and ${groups.length} groups into the catalog from Keycloak`,
   );
 
-  return { users: filteredParsedUsers.map(u => u.entity), groups };
+  return { users, groups };
 };
+
+/**
+ * Preserves short names within a namespace and fully qualifies references across namespaces.
+ */
+function toRelativeEntityRef(
+  targetEntity: UserEntity | GroupEntity,
+  sourceEntity: UserEntity | GroupEntity,
+): string {
+  const sourceNamespace = sourceEntity.metadata.namespace ?? DEFAULT_NAMESPACE;
+  const targetNamespace = targetEntity.metadata.namespace ?? DEFAULT_NAMESPACE;
+  return sourceNamespace === targetNamespace
+    ? targetEntity.metadata.name
+    : `${targetNamespace}/${targetEntity.metadata.name}`;
+}

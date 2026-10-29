@@ -52,6 +52,16 @@ export interface Config {
            */
           groupQuerySize?: number;
           /**
+           * Namespace used for users ingested from this Keycloak provider.
+           * @defaultValue default
+           */
+          userNamespace?: string;
+          /**
+           * Namespace used for groups ingested from this Keycloak provider.
+           * @defaultValue default
+           */
+          groupNamespace?: string;
+          /**
            * Maximum request concurrency to prevent DoS attacks on the Keycloak server.
            */
           maxConcurrency?: number;
