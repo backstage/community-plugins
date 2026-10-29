@@ -205,14 +205,14 @@ export function getAdminConditions(adminRef: string): SeedCondition[] {
               {
                 anyOf: [
                   {
-                    rule: 'HAS_TAG',
+                    rule: 'HAS_ANNOTATION',
                     resourceType: 'catalog-entity',
-                    params: { tag: 'dev' },
+                    params: { annotation: 'dev' },
                   },
                   {
-                    rule: 'HAS_TAG',
+                    rule: 'HAS_ANNOTATION',
                     resourceType: 'catalog-entity',
-                    params: { tag: 'test' },
+                    params: { annotation: 'test' },
                   },
                 ],
               },
