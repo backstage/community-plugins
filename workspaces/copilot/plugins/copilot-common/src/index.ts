@@ -1223,6 +1223,48 @@ export interface V2UserMetricsByLanguageModelRow {
 }
 
 /**
+ * A named Copilot customization usage metric. Categories are derived from
+ * GitHub report fields such as `totals_by_skill` rather than a fixed enum so
+ * newly introduced customization categories can be stored without a schema
+ * change.
+ *
+ * @public
+ */
+export interface V2CustomizationMetricRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  scope: 'aggregate' | 'team' | 'user';
+  team_slug: string;
+  user_id: number;
+  user_login: string;
+  category: string;
+  item_name: string;
+  interaction_count: number;
+}
+
+/**
+ * A distinct-item count reported by GitHub for a customization category.
+ * Team-level distinct counts are omitted because capped per-user item lists
+ * cannot be combined into an exact team-wide distinct count.
+ *
+ * @public
+ */
+export interface V2CustomizationSummaryRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  scope: 'aggregate' | 'team' | 'user';
+  team_slug: string;
+  user_id: number;
+  user_login: string;
+  category: string;
+  distinct_item_count: number;
+}
+
+/**
  * Aggregated dashboard data returned by the privacy-scoped `/v2/me/dashboard`
  * BFF endpoint. Contains all chart data needed to render an individual
  * user's own Copilot usage, restricted server-side to the caller's own
@@ -1244,6 +1286,8 @@ export interface V2UserDashboardData {
   byLanguage: V2UserMetricsByLanguageFeatureRow[];
   byModelFeature: V2UserMetricsByModelFeatureRow[];
   byLanguageModel: V2UserMetricsByLanguageModelRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 /**
@@ -1307,6 +1351,8 @@ export interface V2DashboardData {
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
   prMetrics: V2PrMetricsRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 /**

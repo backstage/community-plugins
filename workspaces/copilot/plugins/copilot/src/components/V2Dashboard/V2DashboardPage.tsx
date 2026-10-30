@@ -61,6 +61,7 @@ import {
   AiCreditsConsumptionChart,
 } from './charts';
 import { ConsumptionSummary } from './ConsumptionSummary';
+import { CustomizationMetrics } from './CustomizationMetrics';
 import { MetricsScope } from '@backstage-community/plugin-copilot-common';
 
 function ChartCard({
@@ -181,6 +182,7 @@ export const V2DashboardPage = () => {
             <TabList>
               <Tab id="copilot-usage">Copilot Usage</Tab>
               <Tab id="code-generation">Code Generation</Tab>
+              <Tab id="customizations">Customizations</Tab>
               {selectedTeam && <Tab id="consumption">Consumption</Tab>}
             </TabList>
 
@@ -303,6 +305,25 @@ export const V2DashboardPage = () => {
                     </ChartCard>
                   </Grid.Item>
                 </Grid.Root>
+              </Flex>
+            </TabPanel>
+
+            <TabPanel id="customizations">
+              <Flex
+                direction="column"
+                style={{
+                  gap: 'var(--bui-space-6, 24px)',
+                  paddingTop: '16px',
+                }}
+              >
+                <Text variant="body-small" color="secondary">
+                  Named skills, agents, MCP servers, commands, plugins, and
+                  future customization categories reported by GitHub.
+                </Text>
+                <CustomizationMetrics
+                  metrics={data.customizationMetrics}
+                  summaries={data.customizationSummaries}
+                />
               </Flex>
             </TabPanel>
 

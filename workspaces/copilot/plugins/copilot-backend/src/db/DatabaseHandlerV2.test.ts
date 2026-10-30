@@ -18,6 +18,8 @@ import { TestDatabaseId, TestDatabases } from '@backstage/backend-test-utils';
 import { Knex } from 'knex';
 import {
   V2DailyTotal,
+  V2CustomizationMetricRow,
+  V2CustomizationSummaryRow,
   V2IngestionLogRow,
   V2UserMetricRow,
   V2UserMetricsByFeatureRow,
@@ -669,6 +671,33 @@ describe('DatabaseHandlerV2', () => {
         buildDailyTotal({ day: '2026-05-01', team_slug: '' }),
         buildDailyTotal({ day: '2026-05-02', team_slug: '' }),
       ]);
+      await handler.insertCustomizationMetrics([
+        {
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          scope: 'aggregate',
+          team_slug: '',
+          user_id: 0,
+          user_login: '',
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+        },
+      ]);
+      await handler.insertCustomizationSummaries([
+        {
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          scope: 'aggregate',
+          team_slug: '',
+          user_id: 0,
+          user_login: '',
+          category: 'skill',
+          distinct_item_count: 1,
+        },
+      ]);
 
       const result = await handler.getDashboardData(
         'organization',
@@ -684,6 +713,19 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toHaveProperty('byLanguageModel');
       expect(result).toHaveProperty('prMetrics');
       expect(result.daily).toHaveLength(2);
+      expect(result.customizationMetrics).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+        }),
+      ]);
+      expect(result.customizationSummaries).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          distinct_item_count: 1,
+        }),
+      ]);
     });
 
     it('getUserMetrics only returns rows for the requested user login', async () => {
@@ -776,16 +818,51 @@ describe('DatabaseHandlerV2', () => {
       await handler.insertUserMetricsByLanguageModel([
         buildUserMetricsByLanguageModel({ user_login: 'octocat', user_id: 1 }),
       ]);
+      await handler.insertCustomizationMetrics([
+        buildCustomizationMetric({ user_login: 'OctoCat', user_id: 1 }),
+        buildCustomizationMetric({
+          user_login: 'someone-else',
+          user_id: 2,
+          item_name: 'other-skill',
+        }),
+        buildCustomizationMetric({
+          scope: 'aggregate',
+          user_id: 0,
+          user_login: '',
+          item_name: 'aggregate-skill',
+        }),
+        buildCustomizationMetric({
+          scope: 'team',
+          team_slug: 'alpha',
+          user_id: 0,
+          user_login: '',
+          item_name: 'team-skill',
+        }),
+      ]);
+      await handler.insertCustomizationSummaries([
+        buildCustomizationSummary({ user_login: 'OctoCat', user_id: 1 }),
+        buildCustomizationSummary({
+          user_login: 'someone-else',
+          user_id: 2,
+          distinct_item_count: 2,
+        }),
+        buildCustomizationSummary({
+          scope: 'aggregate',
+          user_id: 0,
+          user_login: '',
+          distinct_item_count: 3,
+        }),
+      ]);
 
       const result = await handler.getUserDashboardData(
         'organization',
         'org-1',
-        'octocat',
+        'OCTOCAT',
         '2026-05-01',
         '2026-05-01',
       );
 
-      expect(result.userLogin).toBe('octocat');
+      expect(result.userLogin).toBe('OCTOCAT');
       expect(result.daily).toHaveLength(1);
       expect(result.daily[0].user_login).toBe('octocat');
       expect(result.byFeature).toHaveLength(1);
@@ -794,6 +871,20 @@ describe('DatabaseHandlerV2', () => {
       expect(result.byLanguage).toHaveLength(1);
       expect(result.byModelFeature).toHaveLength(1);
       expect(result.byLanguageModel).toHaveLength(1);
+      expect(result.customizationMetrics).toEqual([
+        expect.objectContaining({
+          scope: 'user',
+          user_login: 'octocat',
+          item_name: 'release-checks',
+        }),
+      ]);
+      expect(result.customizationSummaries).toEqual([
+        expect.objectContaining({
+          scope: 'user',
+          user_login: 'octocat',
+          distinct_item_count: 1,
+        }),
+      ]);
 
       // Never returns another user's rows, even though they exist in the
       // same day/entity/metrics_type scope.
@@ -806,6 +897,18 @@ describe('DatabaseHandlerV2', () => {
       );
       expect(otherUser.byFeature).toEqual([
         expect.objectContaining({ feature: 'agent' }),
+      ]);
+      expect(otherUser.customizationMetrics).toEqual([
+        expect.objectContaining({
+          user_login: 'someone-else',
+          item_name: 'other-skill',
+        }),
+      ]);
+      expect(otherUser.customizationSummaries).toEqual([
+        expect.objectContaining({
+          user_login: 'someone-else',
+          distinct_item_count: 2,
+        }),
       ]);
     });
   });
@@ -989,6 +1092,41 @@ function buildUserMetricsByLanguageModel(
     loc_deleted_sum: 2,
     loc_suggested_to_add_sum: 12,
     loc_suggested_to_delete_sum: 3,
+    ...overrides,
+  };
+}
+
+function buildCustomizationMetric(
+  overrides: Partial<V2CustomizationMetricRow> = {},
+): V2CustomizationMetricRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    scope: 'user',
+    team_slug: '',
+    user_id: 1,
+    user_login: 'octocat',
+    category: 'skill',
+    item_name: 'release-checks',
+    interaction_count: 7,
+    ...overrides,
+  };
+}
+
+function buildCustomizationSummary(
+  overrides: Partial<V2CustomizationSummaryRow> = {},
+): V2CustomizationSummaryRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    scope: 'user',
+    team_slug: '',
+    user_id: 1,
+    user_login: 'octocat',
+    category: 'skill',
+    distinct_item_count: 1,
     ...overrides,
   };
 }

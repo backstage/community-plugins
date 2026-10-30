@@ -18,6 +18,7 @@ import {
   V2UserMetricRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
+import { UserBreakdownData } from './reportParser';
 import { aggregateTeamMetrics } from './teamAggregator';
 
 describe('aggregateTeamMetrics', () => {
@@ -139,6 +140,7 @@ describe('aggregateTeamMetrics', () => {
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
+      customizationMetrics: [],
     });
   });
 
@@ -224,6 +226,52 @@ describe('aggregateTeamMetrics', () => {
       }),
     );
   });
+
+  it('aggregates customizations once per user regardless of model rows', () => {
+    const userBreakdowns: UserBreakdownData[] = [
+      makeUserBreakdown({
+        byLanguageModel: [
+          {
+            language: 'typescript',
+            model_id: 'gpt-5',
+            request_count: 1,
+            code_generation_activity_count: 1,
+            code_acceptance_activity_count: 0,
+            loc_added_sum: 1,
+            loc_deleted_sum: 0,
+            loc_suggested_to_add_sum: 1,
+            loc_suggested_to_delete_sum: 0,
+          },
+        ],
+        customizations: [
+          {
+            category: 'skill',
+            item_name: 'release-checks',
+            interaction_count: 4,
+          },
+        ],
+      }),
+    ];
+
+    const result = aggregateTeamMetrics(
+      [makeUserMetric()],
+      [makeUserTeam()],
+      userBreakdowns,
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.customizationMetrics).toEqual([
+      expect.objectContaining({
+        scope: 'team',
+        team_slug: 'platform',
+        category: 'skill',
+        item_name: 'release-checks',
+        interaction_count: 4,
+      }),
+    ]);
+  });
 });
 
 function makeUserMetric(
@@ -259,6 +307,22 @@ function makeUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {
     user_login: 'octocat',
     team_id: 100,
     team_slug: 'platform',
+    ...overrides,
+  };
+}
+
+function makeUserBreakdown(
+  overrides: Partial<UserBreakdownData> = {},
+): UserBreakdownData {
+  return {
+    user_id: 1,
+    user_login: 'octocat',
+    byFeature: [],
+    byIde: [],
+    byLanguageFeature: [],
+    byModelFeature: [],
+    byLanguageModel: [],
+    customizations: [],
     ...overrides,
   };
 }

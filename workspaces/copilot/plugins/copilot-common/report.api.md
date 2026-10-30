@@ -257,6 +257,56 @@ export interface V2CliTotals {
   };
 }
 
+// @public
+export interface V2CustomizationMetricRow {
+  // (undocumented)
+  category: string;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  interaction_count: number;
+  // (undocumented)
+  item_name: string;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  scope: 'aggregate' | 'team' | 'user';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2CustomizationSummaryRow {
+  // (undocumented)
+  category: string;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  distinct_item_count: number;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  scope: 'aggregate' | 'team' | 'user';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
 // @public (undocumented)
 export interface V2DailyTotal {
   // (undocumented)
@@ -307,6 +357,10 @@ export interface V2DashboardData {
   byLanguageModel: V2MetricsByLanguageModelRow[];
   // (undocumented)
   byModelFeature: V2MetricsByModelFeatureRow[];
+  // (undocumented)
+  customizationMetrics: V2CustomizationMetricRow[];
+  // (undocumented)
+  customizationSummaries: V2CustomizationSummaryRow[];
   // (undocumented)
   daily: V2DailyTotal[];
   // (undocumented)
@@ -746,6 +800,10 @@ export interface V2UserDashboardData {
   byLanguageModel: V2UserMetricsByLanguageModelRow[];
   // (undocumented)
   byModelFeature: V2UserMetricsByModelFeatureRow[];
+  // (undocumented)
+  customizationMetrics: V2CustomizationMetricRow[];
+  // (undocumented)
+  customizationSummaries: V2CustomizationSummaryRow[];
   // (undocumented)
   daily: V2UserMetricRow[];
   userLogin: string;
