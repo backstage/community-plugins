@@ -107,3 +107,17 @@ app:
         config:
           filter: kind:component,api,group
 ```
+
+The table options the legacy `EntityGrafanaDashboardsCard` component takes as props are available as extension config too. All are optional; leaving one out keeps the component's default. `additionalDashboards` is a function and cannot be expressed in config, so it remains a prop of the legacy component only.
+
+```yaml
+app:
+  extensions:
+    - entity-card:grafana/dashboards:
+        config:
+          title: Grafana dashboards # default: Dashboards
+          paged: true # default: false
+          pageSize: 10 # default: 5
+          searchable: true # default: false
+          sortable: true # default: false
+```
