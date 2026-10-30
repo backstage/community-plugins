@@ -279,4 +279,75 @@ describe('OpenAIProvider', () => {
       expect((provider as any).parseResponse(response)).toEqual(response);
     });
   });
+
+  describe('pathOverrides', () => {
+    it('should use pathOverrides for inference and models if present', async () => {
+      const customPathProvider = new OpenAIProvider({
+        ...config,
+        pathOverrides: {
+          inference: '/custom-inference',
+          models: '/custom-models',
+        },
+      });
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      const mockResponse = {
+        choices: [{ message: { role: 'assistant', content: 'Hi there!' } }],
+      };
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      await customPathProvider.sendMessage(messages);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.openai.com/v1/custom-inference',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: [{ id: 'gpt-4o' }] }),
+      });
+
+      await customPathProvider.testConnection();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.openai.com/v1/custom-models',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('should fallback to default paths if pathOverrides are not provided', async () => {
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { role: 'assistant', content: 'Hi there!' } }],
+        }),
+      });
+
+      await provider.sendMessage(messages);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.openai.com/v1/chat/completions',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: [{ id: 'gpt-4' }] }),
+      });
+
+      await provider.testConnection();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.openai.com/v1/models',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+  });
 });

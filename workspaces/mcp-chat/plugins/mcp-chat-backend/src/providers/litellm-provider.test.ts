@@ -336,4 +336,73 @@ describe('LiteLLMProvider', () => {
       expect(parsed).toEqual(mockResponse);
     });
   });
+
+  describe('pathOverrides', () => {
+    it('should use pathOverrides for inference and models if present', async () => {
+      const customPathProvider = new LiteLLMProvider({
+        ...config,
+        pathOverrides: {
+          inference: '/custom-chat/completions',
+          models: '/custom-models',
+        },
+      });
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { role: 'assistant', content: 'Hi there!' } }],
+        }),
+      });
+
+      await customPathProvider.sendMessage(messages);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:4000/custom-chat/completions',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: [{ id: 'gpt-4' }] }),
+      });
+
+      await customPathProvider.testConnection();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:4000/custom-models',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('should fallback to default paths if pathOverrides are not provided', async () => {
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello!' }];
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { role: 'assistant', content: 'Hi there!' } }],
+        }),
+      });
+
+      await provider.sendMessage(messages);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:4000/chat/completions',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ data: [{ id: 'gpt-4' }] }),
+      });
+
+      await provider.testConnection();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:4000/models',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+  });
 });
