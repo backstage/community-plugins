@@ -15,6 +15,7 @@ import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
@@ -228,6 +229,20 @@ export const techRadarPage: OverridableExtensionDefinition<{
     noHeader?: boolean;
   };
 }>;
+
+// @alpha
+export const techRadarTranslationRef: TranslationRef<
+  'tech-radar',
+  {
+    readonly 'radarDescription.learnMore': 'LEARN MORE';
+    readonly 'radarTimeline.title': 'History';
+    readonly 'radarTimeline.noTimeline': 'No Timeline';
+    readonly 'radarTimeline.tableHeader.description': 'Description';
+    readonly 'radarTimeline.tableHeader.movedInDirection': 'Moved in direction';
+    readonly 'radarTimeline.tableHeader.movedToRing': 'Moved to ring';
+    readonly 'radarTimeline.tableHeader.movedOnDate': 'Moved on date';
+  }
+>;
 
 // (No @packageDocumentation comment for this package)
 ```
