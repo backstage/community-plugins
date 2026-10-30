@@ -36,7 +36,28 @@ export type PersistenceContextOptions = {
 };
 
 /**
+ * Cache of `PersistenceContext` promises keyed by `DatabaseService`.
+ *
+ * Two service factories in this package — `techInsightsPlugin` and
+ * `techInsightsFactInsertServiceFactory` — both initialize a persistence
+ * context for the same plugin-scoped `DatabaseService`. Without this
+ * cache they would each open their own Knex pool and race to run the
+ * same migrations. Keying on the `DatabaseService` instance (which is
+ * itself plugin-scoped) means the cache is implicitly scoped per-plugin
+ * and is garbage collected when the backend shuts down.
+ */
+const persistenceContextCache = new WeakMap<
+  DatabaseService,
+  Promise<PersistenceContext>
+>();
+
+/**
  * A factory function to construct persistence context for running implementation.
+ *
+ * Memoized per `DatabaseService` instance: repeated calls with the same
+ * database return the same `PersistenceContext` and run migrations
+ * exactly once. A rejected initialization is purged from the cache so
+ * the next caller can retry.
  *
  * @public
  */
@@ -44,15 +65,32 @@ export const initializePersistenceContext = async (
   database: DatabaseService,
   options: PersistenceContextOptions,
 ): Promise<PersistenceContext> => {
-  const client = await database.getClient();
-
-  if (!database.migrations?.skip) {
-    await client.migrate.latest({
-      directory: migrationsDir,
-    });
+  const cached = persistenceContextCache.get(database);
+  if (cached) {
+    return cached;
   }
 
-  return {
-    techInsightsStore: new TechInsightsDatabase(client, options.logger),
-  };
+  const created = (async () => {
+    const client = await database.getClient();
+
+    if (!database.migrations?.skip) {
+      await client.migrate.latest({
+        directory: migrationsDir,
+      });
+    }
+
+    return {
+      techInsightsStore: new TechInsightsDatabase(client, options.logger),
+    };
+  })();
+
+  persistenceContextCache.set(database, created);
+
+  try {
+    return await created;
+  } catch (error) {
+    // Don't keep a rejected promise in the cache — let the next caller retry.
+    persistenceContextCache.delete(database);
+    throw error;
+  }
 };
