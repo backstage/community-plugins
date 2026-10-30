@@ -22,7 +22,7 @@ import {
   QueryResponse,
   ServerTool,
 } from '../types';
-
+import type { BackstageCredentials } from '@backstage/backend-plugin-api';
 /**
  * Service interface for MCP (Model Context Protocol) client operations.
  * Provides methods for interacting with LLM providers and MCP tool servers.
@@ -80,6 +80,7 @@ export interface MCPClientService {
   processQuery(
     messagesInput: ChatMessage[],
     enabledTools?: string[],
+    credentials?: BackstageCredentials,
   ): Promise<QueryResponse>;
 
   /**

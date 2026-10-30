@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 import {
+  AuthService,
+  BackstageCredentials,
+  BackstageUserPrincipal,
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import {
+  StreamableHTTPClientTransport,
+  StreamableHTTPClientTransportOptions,
+} from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import * as path from 'path';
 import {
@@ -29,6 +35,7 @@ import {
 import {
   executeToolCall,
   findNpxPath,
+  loadInternalMCPServerConfigs,
   loadServerConfigs,
   DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
 } from '../utils';
@@ -56,6 +63,7 @@ import {
 export type Options = {
   logger: LoggerService;
   config: RootConfigService;
+  auth: AuthService;
 };
 
 /**
@@ -67,6 +75,7 @@ export type Options = {
 export class MCPClientServiceImpl implements MCPClientService {
   private readonly logger: LoggerService;
   private readonly config: RootConfigService;
+  private readonly auth: AuthService;
   private llmProvider: LLMProvider;
   private readonly mcpClients: Map<string, Client> = new Map();
   private tools: ServerTool[] = [];
@@ -80,6 +89,7 @@ export class MCPClientServiceImpl implements MCPClientService {
   constructor(options: Options) {
     this.logger = options.logger;
     this.config = options.config;
+    this.auth = options.auth;
     this.toolCallTimeout =
       this.config.getOptionalNumber('mcpChat.toolCallTimeout') ??
       DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS;
@@ -131,6 +141,17 @@ export class MCPClientServiceImpl implements MCPClientService {
     const serverResults: MCPServer[] = [];
     const serverConfigs = loadServerConfigs(this.config);
 
+    if (this.config.getOptionalBoolean('mcpChat.includeBackstageMcpServers')) {
+      const internal = await loadInternalMCPServerConfigs(
+        this.config,
+        this.auth,
+      );
+      this.logger.info(
+        `Including ${internal.length} internal Backstage MCP servers for tool discovery`,
+      );
+      serverConfigs.unshift(...internal);
+    }
+
     // Store server configs for Responses API provider
     this.serverConfigs = serverConfigs;
 
@@ -156,7 +177,7 @@ export class MCPClientServiceImpl implements MCPClientService {
           });
 
           // Create transport for Streamable HTTP
-          const transportOptions: any = {};
+          const transportOptions: StreamableHTTPClientTransportOptions = {};
           if (serverConfig.headers) {
             transportOptions.requestInit = {
               headers: serverConfig.headers,
@@ -283,7 +304,7 @@ export class MCPClientServiceImpl implements MCPClientService {
             );
           }
 
-          const transportOptions: any = {};
+          const transportOptions: StreamableHTTPClientTransportOptions = {};
 
           // Add headers if provided
           if (serverConfig.headers) {
@@ -491,7 +512,8 @@ export class MCPClientServiceImpl implements MCPClientService {
 
   async processQuery(
     messagesInput: any[],
-    enabledTools?: string[],
+    enabledTools: string[] | undefined = undefined,
+    credentials: BackstageCredentials<BackstageUserPrincipal>,
   ): Promise<QueryResponse> {
     // Only add system message if one doesn't already exist
     const messages: ChatMessage[] = [...messagesInput];
@@ -517,8 +539,14 @@ export class MCPClientServiceImpl implements MCPClientService {
         ? this.tools.filter(tool => enabledTools.includes(tool.serverId))
         : this.tools;
 
-    // Remove serverId from tools when sending to LLM
-    const llmTools: Tool[] = filteredTools.map(({ serverId, ...tool }) => tool);
+    // attach serverId to tool names when sending to LLM to avoid name collisions across servers
+    const llmTools: Tool[] = filteredTools.map(({ serverId, ...tool }) => ({
+      ...tool,
+      function: {
+        ...tool.function,
+        name: `${tool.function.name}__${serverId}`,
+      },
+    }));
 
     const response = await this.llmProvider.sendMessage(messages, llmTools);
     const replyMessage = response.choices[0].message;
@@ -529,15 +557,54 @@ export class MCPClientServiceImpl implements MCPClientService {
     );
     const toolCalls = replyMessage.tool_calls || [];
 
+    const backstageAuthenticatedClients = new Map<string, Client>();
+    let token: string | undefined;
+    if (token === undefined) {
+      const { token: userToken } = await this.auth.getPluginRequestToken({
+        onBehalfOf: credentials,
+        targetPluginId: 'mcp-actions',
+      });
+      token = userToken;
+    }
+
     if (toolCalls.length > 0) {
       const toolResponses = [];
 
       for (const toolCall of toolCalls) {
         try {
+          const [functionName, serverId] = toolCall.function.name.split('__');
+          toolCall.function.name = functionName;
+          const serverConfig = this.serverConfigsById[serverId];
+
+          if (
+            Boolean(serverConfig.isLocalServer) &&
+            !backstageAuthenticatedClients.has(serverConfig.id)
+          ) {
+            const client = new Client({
+              name: `${serverConfig.name}-authed-client`,
+              version: '1.0.0',
+            });
+
+            const transport = new StreamableHTTPClientTransport(
+              new URL(serverConfig.url!),
+              {
+                requestInit: {
+                  headers: {
+                    ...(serverConfig.headers ?? {}),
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              },
+            );
+
+            await client.connect(transport);
+            backstageAuthenticatedClients.set(serverConfig.id, client);
+          }
+
           const toolResponse = await executeToolCall(
             toolCall,
             this.tools,
-            this.mcpClients,
+            new Map([...this.mcpClients, ...backstageAuthenticatedClients]),
             this.toolCallTimeout,
           );
           toolResponses.push(toolResponse);
@@ -737,5 +804,12 @@ export class MCPClientServiceImpl implements MCPClientService {
       servers,
       timestamp: new Date().toISOString(),
     };
+  }
+
+  private get serverConfigsById(): Record<string, MCPServerFullConfig> {
+    return this.serverConfigs.reduce((acc, config) => {
+      acc[config.id] = config;
+      return acc;
+    }, {} as Record<string, MCPServerFullConfig>);
   }
 }
