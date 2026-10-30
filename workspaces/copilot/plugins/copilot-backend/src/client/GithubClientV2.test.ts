@@ -18,18 +18,48 @@ import { GithubClientV2 } from './GithubClientV2';
 import { Octokit } from '@octokit/rest';
 
 const mockRequest = jest.fn();
+const mockGetOrgInstallation = jest.fn();
+const mockHookBefore = jest.fn();
+const mockOutgoingHeaders: Array<Record<string, string>> = [];
 
 // Mock Octokit
 jest.mock('@octokit/rest', () => ({
-  Octokit: jest.fn().mockImplementation(() => ({
-    request: mockRequest,
-    rest: {
-      apps: {
-        getOrgInstallation: jest.fn().mockResolvedValue({ data: { id: 999 } }),
+  Octokit: jest.fn().mockImplementation(() => {
+    const requestHooks: Array<
+      (requestOptions: { headers: Record<string, string> }) => void
+    > = [];
+    return {
+      request: (...args: any[]) => {
+        const requestOptions = {
+          headers: {
+            accept: 'application/vnd.github.v3+json',
+          } as Record<string, string>,
+        };
+        requestHooks.forEach(requestHook => requestHook(requestOptions));
+        mockOutgoingHeaders.push({ ...requestOptions.headers });
+        return mockRequest(...args);
       },
-    },
-    graphql: jest.fn(),
-  })),
+      rest: {
+        apps: {
+          getOrgInstallation: mockGetOrgInstallation,
+        },
+      },
+      graphql: jest.fn(),
+      hook: {
+        before: (
+          name: string,
+          requestHook: (requestOptions: {
+            headers: Record<string, string>;
+          }) => void,
+        ) => {
+          mockHookBefore(name, requestHook);
+          if (name === 'request') {
+            requestHooks.push(requestHook);
+          }
+        },
+      },
+    };
+  }),
 }));
 
 // Mock GithubUtils
@@ -53,6 +83,10 @@ describe('GithubClientV2', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRequest.mockReset();
+    mockGetOrgInstallation.mockReset().mockResolvedValue({ data: { id: 999 } });
+    mockHookBefore.mockReset();
+    mockOutgoingHeaders.length = 0;
     mockConfig = {} as any;
     mockLogger = {
       debug: jest.fn(),
@@ -467,11 +501,10 @@ describe('GithubClientV2', () => {
       `GET /enterprises/my-enterprise/copilot/metrics/reports/enterprise-1-day?day=2026-01-01`,
     );
 
-    // Check Octokit construction included the API version header
-    const MockedOctokit = Octokit as unknown as jest.Mock;
-    const firstCallArgs = MockedOctokit.mock.calls[0][0] as any;
-    expect(firstCallArgs.headers['X-GitHub-Api-Version']).toBe('2026-03-10');
-    expect(firstCallArgs.baseUrl).toBe('https://api.github.com');
+    expect(mockOutgoingHeaders[0]).toEqual({
+      accept: 'application/vnd.github+json',
+      'x-github-api-version': '2026-03-10',
+    });
 
     expect(res.download_links[0]).toContain('s3.amazonaws.com');
   });
