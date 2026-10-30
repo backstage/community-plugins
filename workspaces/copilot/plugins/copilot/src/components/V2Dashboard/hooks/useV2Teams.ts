@@ -19,6 +19,12 @@ import { useApi } from '@backstage/core-plugin-api';
 import { copilotApiV2Ref } from '../../../api';
 import { MetricsScope } from '@backstage-community/plugin-copilot-common';
 
+type TeamsResult = {
+  queryKey: string;
+  items: string[];
+  error?: Error;
+};
+
 export function useV2Teams(
   type: MetricsScope,
   entityId: string,
@@ -26,9 +32,26 @@ export function useV2Teams(
   to?: string,
 ) {
   const api = useApi(copilotApiV2Ref);
-  const { value, loading, error } = useAsync(
-    () => api.getTeams({ type, entityId, from, to }),
-    [api, type, entityId, from, to],
-  );
-  return { items: value ?? [], loading, error };
+  const queryKey = JSON.stringify([type, entityId, from, to]);
+  const { value, loading } = useAsync(async (): Promise<TeamsResult> => {
+    try {
+      return {
+        queryKey,
+        items: await api.getTeams({ type, entityId, from, to }),
+      };
+    } catch (error) {
+      return {
+        queryKey,
+        items: [],
+        error: error instanceof Error ? error : new Error(String(error)),
+      };
+    }
+  }, [api, type, entityId, from, to]);
+  const hasCurrentResult = value?.queryKey === queryKey;
+
+  return {
+    items: hasCurrentResult ? value.items : [],
+    loading: loading || !hasCurrentResult,
+    error: hasCurrentResult ? value.error : undefined,
+  };
 }
