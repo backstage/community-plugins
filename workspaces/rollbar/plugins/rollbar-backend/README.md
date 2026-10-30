@@ -36,7 +36,8 @@ rollbar:
 
 > [!NOTE]
 > The `ROLLBAR_ACCOUNT_TOKEN` environment variable must be set to a read
-> access account token.
+> access account token. The plugin uses this account token for project API
+> requests, so project access tokens are not required.
 
 ## Links
 
