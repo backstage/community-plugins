@@ -29,7 +29,7 @@ import {
  *
  * @public
  */
-const RadarRingParser: z.ZodSchema<RadarRing> = z.object({
+const RadarRingParser: z.ZodType<RadarRing> = z.object({
   // ID of the Ring
   id: z.string(),
   // Display name of the Ring
@@ -43,21 +43,21 @@ const RadarRingParser: z.ZodSchema<RadarRing> = z.object({
 /**
  * Parser for {@link RadarQuadrant}
  */
-const RadarQuadrantParser: z.ZodSchema<RadarQuadrant> = z.object({
+const RadarQuadrantParser: z.ZodType<RadarQuadrant> = z.object({
   // ID of the Quadrant
   id: z.string(),
   // Display name of the Quadrant
   name: z.string(),
 });
 
-const RadarEntryLinkParser: z.ZodSchema<RadarEntryLink> = z.object({
+const RadarEntryLinkParser: z.ZodType<RadarEntryLink> = z.object({
   // URL of the link
   url: z.string(),
   // Display name of the link
   title: z.string(),
 });
 
-const RadarEntrySnapshotParser: z.ZodSchema<RadarEntrySnapshot> = z.object({
+const RadarEntrySnapshotParser: z.ZodType<RadarEntrySnapshot> = z.object({
   // Point in time when change happened
   date: z.coerce.date(),
   // ID of {@link RadarRing}
@@ -65,13 +65,13 @@ const RadarEntrySnapshotParser: z.ZodSchema<RadarEntrySnapshot> = z.object({
   // Description of change
   description: z.string().optional(),
   // Indicates trend compared to previous snapshot
-  moved: z.nativeEnum(MovedState).optional(),
+  moved: z.enum(MovedState).optional(),
 });
 
 /**
  * Parser for {@link RadarEntry}
  */
-const RadarEntryParser: z.ZodSchema<RadarEntry> = z.object({
+const RadarEntryParser: z.ZodType<RadarEntry> = z.object({
   // React key to use for this Entry
   key: z.string(),
   // ID of this Radar Entry
@@ -95,7 +95,7 @@ const RadarEntryParser: z.ZodSchema<RadarEntry> = z.object({
  *
  * @public
  */
-export const TechRadarLoaderResponseParser: z.ZodSchema<TechRadarLoaderResponse> =
+export const TechRadarLoaderResponseParser: z.ZodType<TechRadarLoaderResponse> =
   z.object({
     quadrants: z.array(RadarQuadrantParser),
     rings: z.array(RadarRingParser),
