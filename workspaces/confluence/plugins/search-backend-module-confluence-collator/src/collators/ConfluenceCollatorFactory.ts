@@ -245,37 +245,34 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
   async *execute(): AsyncGenerator<IndexableConfluenceDocument> {
     const query = await this.getConfluenceQuery();
-    const documentsList = await this.getDocuments(query);
-
-    this.logger.debug(`Document list: ${JSON.stringify(documentsList)}`);
-
     const limit = pLimit(this.parallelismLimit || 15);
-    const documentsInfo = documentsList.map(document =>
-      limit(async () => {
-        try {
-          return this.getDocumentInfo(document);
-        } catch (err) {
+
+    // Dispatching a page's document-detail fetches into the shared `limit`
+    // queue as soon as that page arrives (rather than awaiting them before
+    // moving on to the next page) keeps the parallelism window full across
+    // page boundaries instead of draining to zero between pages.
+    const dispatchDocumentFetches = (documentsPage: string[]) =>
+      documentsPage.map(document =>
+        limit(() => this.getDocumentInfo(document)).catch(err => {
           this.logger.warn(
             `error while indexing document "${document}": ${err}`,
           );
-        }
 
-        return [];
-      }),
-    );
+          return [];
+        }),
+      );
 
-    const safePromises = documentsInfo.map(promise =>
-      promise.catch(error => {
-        this.logger.warn(error);
+    for await (const documentsPage of this.getDocumentPages(
+      query,
+      dispatchDocumentFetches,
+    )) {
+      this.logger.debug(`Document page: ${JSON.stringify(documentsPage)}`);
 
-        return [];
-      }),
-    );
+      const documents = (await Promise.all(documentsPage)).flat();
 
-    const documents = (await Promise.all(safePromises)).flat();
-
-    for (const document of documents) {
-      yield document;
+      for (const document of documents) {
+        yield document;
+      }
     }
   }
 
@@ -314,33 +311,73 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     return query;
   }
 
-  private async getDocuments(query: string): Promise<string[]> {
-    const documentsList = [];
-
+  private async *getDocumentPages<T>(
+    query: string,
+    dispatch: (documentUrls: string[]) => T,
+  ): AsyncGenerator<T> {
     this.logger.info(`Exploring documents using query: ${query}`);
 
-    let next = true;
-    let requestUrl = `${this.baseUrl}/rest/api/content/search?limit=1000&status=current&cql=${query}`;
-    while (next) {
-      const data = await this.get<ConfluenceDocumentList>(requestUrl);
-      if (!data.results) {
+    let requestUrl:
+      | string
+      | undefined = `${this.baseUrl}/rest/api/content/search?limit=1000&status=current&cql=${query}`;
+
+    // Fetch the next search page and dispatch its document fetches into the
+    // shared limiter *before* yielding the current page's dispatched work.
+    // This keeps pagination and document fetching running ahead of the
+    // consumer, instead of pausing pagination while the consumer processes
+    // (and the caller awaits) the previous page's document fetches.
+    //
+    // `pending` isn't awaited until the *next* loop iteration, which can be
+    // long after it settles (the consumer may still be processing the
+    // current page). If it rejects in the meantime, Node sees an unhandled
+    // rejection before `await pending` ever attaches a handler. Marking it
+    // observed immediately (without consuming the original promise, so
+    // `await pending` below still sees the real error) avoids that.
+    const startFetchingPage = (url: string) => {
+      const fetchPromise = this.fetchAndDispatchPage(url, dispatch);
+      fetchPromise.catch(() => {});
+      return fetchPromise;
+    };
+
+    let pending: Promise<{
+      dispatched: T;
+      nextRequestUrl: string | undefined;
+    } | null> = startFetchingPage(requestUrl);
+
+    while (true) {
+      const result = await pending;
+      if (!result) {
         break;
       }
 
-      documentsList.push(
-        ...data.results.map(
-          result => `${this.baseUrl}/rest/api/content/${result.id}`,
-        ),
-      );
+      requestUrl = result.nextRequestUrl;
+      pending = requestUrl
+        ? startFetchingPage(requestUrl)
+        : Promise.resolve(null);
 
-      if (data._links.next) {
-        requestUrl = `${this.baseUrl}${data._links.next}`;
-      } else {
-        next = false;
-      }
+      yield result.dispatched;
+    }
+  }
+
+  private async fetchAndDispatchPage<T>(
+    requestUrl: string,
+    dispatch: (documentUrls: string[]) => T,
+  ): Promise<{ dispatched: T; nextRequestUrl: string | undefined } | null> {
+    const data = await this.get<ConfluenceDocumentList>(requestUrl);
+    if (!data.results) {
+      return null;
     }
 
-    return documentsList;
+    const documentUrls = data.results.map(
+      result => `${this.baseUrl}/rest/api/content/${result.id}`,
+    );
+
+    return {
+      dispatched: dispatch(documentUrls),
+      nextRequestUrl: data._links.next
+        ? `${this.baseUrl}${data._links.next}`
+        : undefined,
+    };
   }
 
   private async getDocumentInfo(
