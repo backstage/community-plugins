@@ -45,14 +45,14 @@ const _default: OverridableFrontendPlugin<
       config: {
         path: string | undefined;
         title: string | undefined;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         group: string | false | undefined;
         icon: string | undefined;
       };
       configInput: {
         path?: string | undefined;
         title?: string | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         group?: string | false | undefined;
         icon?: string | undefined;
       };
@@ -129,14 +129,14 @@ export const entityServicenowContent: OverridableExtensionDefinition<{
   config: {
     path: string | undefined;
     title: string | undefined;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     group: string | false | undefined;
     icon: string | undefined;
   };
   configInput: {
     path?: string | undefined;
     title?: string | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     group?: string | false | undefined;
     icon?: string | undefined;
   };
