@@ -7,6 +7,7 @@ import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -24,6 +25,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
+import { SerializedError } from '@backstage/errors';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
@@ -46,6 +48,16 @@ export function createRouter<
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router>;
 
 // @public
+export type EntityFactsRefreshResult = {
+  entity: string;
+  results: {
+    factRetrieverId: string;
+    facts: number;
+    error?: SerializedError;
+  }[];
+};
+
+// @public
 export const entityMetadataFactRetriever: FactRetriever;
 
 // @public
@@ -54,6 +66,10 @@ export const entityOwnershipFactRetriever: FactRetriever;
 // @public
 export abstract class FactRetrieverEngine {
   abstract getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
+  refreshEntityFacts?(options: {
+    entityRef: CompoundEntityRef;
+    factRetrieverIds?: string[];
+  }): Promise<EntityFactsRefreshResult>;
   abstract schedule(): Promise<void>;
   scheduleJob(_: string): Promise<void>;
   abstract triggerJob(ref: string): Promise<void>;
@@ -92,6 +108,7 @@ export interface RouterOptions<
 > {
   config: Config;
   factChecker?: FactChecker<CheckType, CheckResultType>;
+  factRetrieverEngine?: FactRetrieverEngine;
   httpAuth: HttpAuthService;
   logger: LoggerService;
   permissions: PermissionsService;
