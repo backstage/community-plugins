@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@backstage/plugin-permission-common": "^0.9.11"
+    "@backstage/plugin-permission-common": "backstage:^"
   },
   "files": [
     "dist"
@@ -51,7 +51,7 @@
   ],
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "peerDependencies": {
-    "@backstage/plugin-permission-common": "^0.9.11"
+    "@backstage/plugin-permission-common": "^0.9.12"
   },
   "maintainers": [
     "@04kash"
