@@ -40,19 +40,19 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
-    "@mui/icons-material": "^6.5.0",
-    "@mui/material": "^5.18.0",
-    "@mui/x-charts": "^7.29.1",
-    "@mui/x-data-grid": "^8.13.1",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "@mui/x-charts": "^9.0.0",
+    "@mui/x-data-grid": "^9.0.0",
     "@react-spring/web": "^10.0.3",
     "@tanstack/react-query": "^5.90.3",
-    "react-calendar": "^4.8.0",
+    "react-calendar": "^6.0.0",
     "react-icons": "^5.5.0",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router-dom": "^6.30.1"
   },
   "devDependencies": {
@@ -62,17 +62,17 @@
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@tanstack/eslint-plugin-query": "^5.91.0",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/react": "^19.2.2",
-    "msw": "^1.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "msw": "^2.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router-dom": "^6.30.1"
   },
   "resolutions": {
-    "react-is": "^17.0.0 || ^18.0.0"
+    "react-is": "^19.0.0"
   },
   "files": [
     "dist",
