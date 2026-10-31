@@ -38,11 +38,11 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'alerts';
       config: {
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined;
       };
       output:
@@ -79,11 +79,11 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'dashboards';
       config: {
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined;
       };
       output:
@@ -120,11 +120,11 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'overview-dashboard';
       config: {
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined;
       };
       output:
