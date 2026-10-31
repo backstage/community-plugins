@@ -430,6 +430,11 @@ describe('Linguist backend API', () => {
     await expect(api.generateEntityLanguages(entityRef, url)).rejects.toThrow(
       'linguist failed',
     );
+    // A failed analysis is not retried, so the source is downloaded only once
+    expect(urlReader.readTree).toHaveBeenCalledTimes(1);
+    expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
+    expect(api.delay).not.toHaveBeenCalled();
+    expect(fsSpy).toHaveBeenCalledTimes(1);
     expect(fsSpy).toHaveBeenCalledWith('/temp/my-code');
     expect(store.markEntityProcessed).toHaveBeenCalledWith(
       entityRef,

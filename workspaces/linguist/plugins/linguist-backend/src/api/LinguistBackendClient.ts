@@ -239,16 +239,19 @@ export class LinguistBackendClient implements LinguistBackendApi {
 
     let results: Results;
     try {
-      results = await this.withRetry(entityRef, async () => {
+      // Only fetching the source is retried. The analysis runs on files that
+      // are already on disk, so a failure there is unlikely to be transient
+      // and retrying it would download the whole source tree again.
+      const dir = await this.withRetry(entityRef, async () => {
         const readTreeResponse = await this.urlReader.readTree(url);
-        const dir = await readTreeResponse.dir();
-        try {
-          return await this.getLinguistResults(dir);
-        } finally {
-          this.logger?.info(`Cleaning up files from ${dir}`);
-          await fs.remove(dir);
-        }
+        return readTreeResponse.dir();
       });
+      try {
+        results = await this.getLinguistResults(dir);
+      } finally {
+        this.logger?.info(`Cleaning up files from ${dir}`);
+        await fs.remove(dir);
+      }
     } catch (error) {
       // Mark the entity processed so it does not block the pending queue
       await this.store.markEntityProcessed(entityRef, new Date());
