@@ -31,11 +31,11 @@
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@patternfly/react-core": "6.6.1",
-    "@patternfly/react-styles": "5.4.1",
-    "react-data-table-component": "^7.6.2"
+    "@patternfly/react-styles": "6.6.1",
+    "react-data-table-component": "^8.0.0"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0"
+    "react": "^19.0.0"
   },
   "backstage": {
     "role": "frontend-plugin",
@@ -49,10 +49,10 @@
     "@backstage/dev-utils": "^1.1.26",
     "@backstage/frontend-test-utils": "^0.6.3",
     "@backstage/test-utils": "^1.7.21",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
-    "@types/jest": "^29.5.14",
-    "react": "^17.0.0 || ^18.0.0"
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/jest": "^30.0.0",
+    "react": "^19.0.0"
   },
   "configSchema": "config.d.ts",
   "files": [
