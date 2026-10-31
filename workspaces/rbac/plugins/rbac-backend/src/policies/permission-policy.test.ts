@@ -1340,10 +1340,9 @@ describe('useOwnershipEntityRefs', () => {
     );
 
     expect(getFilteredGroupingPolicySpy).toHaveBeenCalledTimes(1);
-    expect(getFilteredGroupingPolicySpy).toHaveBeenCalledWith(
-      0,
+    expect(getFilteredGroupingPolicySpy).toHaveBeenCalledWith(0, [
       'group:default/oncall',
-    );
+    ]);
   });
 });
 

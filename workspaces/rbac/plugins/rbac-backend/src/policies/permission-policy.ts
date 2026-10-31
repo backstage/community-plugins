@@ -344,17 +344,18 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   }
 
   private async collectRolesForSubjects(subjects: string[]): Promise<string[]> {
-    const policyGroups = await Promise.all(
-      subjects.map(subject =>
-        this.enforcer.getFilteredGroupingPolicy(0, subject),
-      ),
+    if (subjects.length === 0) {
+      return [];
+    }
+
+    const policies = await this.enforcer.getFilteredGroupingPolicy(
+      0,
+      ...subjects.map(subject => [subject]),
     );
 
-    return policyGroups.flatMap(policies =>
-      policies
-        .map(policy => policy[1])
-        .filter((role): role is string => !!role),
-    );
+    return policies
+      .map(policy => policy[1])
+      .filter((role): role is string => !!role);
   }
 
   private async hasImplicitPermission(
