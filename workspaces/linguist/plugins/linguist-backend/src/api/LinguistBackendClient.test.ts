@@ -78,6 +78,7 @@ describe('Linguist backend API', () => {
   const store: jest.Mocked<LinguistBackendStore> = {
     insertEntityResults: jest.fn(),
     insertNewEntity: jest.fn(),
+    markEntityProcessed: jest.fn(),
     getEntityResults: jest.fn(),
     getProcessedEntities: jest.fn(),
     getUnprocessedEntities: jest.fn(),
@@ -106,6 +107,13 @@ describe('Linguist backend API', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    // Skip the retry backoff
+    jest.spyOn(global, 'setTimeout').mockImplementation(((
+      callback: () => void,
+    ) => {
+      callback();
+      return 0;
+    }) as unknown as typeof setTimeout);
   });
 
   it('should get languages for an entity', async () => {
@@ -207,6 +215,56 @@ describe('Linguist backend API', () => {
     // Should not add or remove any entities
     expect(store.insertNewEntity).not.toHaveBeenCalled();
     expect(store.deleteEntity).not.toHaveBeenCalled();
+  });
+
+  it('should insert new entities sequentially with max concurrency of 1', async () => {
+    const catalogEntities = [
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-one' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-two' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-three' },
+        kind: 'Component',
+      },
+    ];
+
+    catalogApi.getEntities.mockResolvedValue({ items: catalogEntities });
+    store.getAllEntities.mockResolvedValue([]);
+
+    let inFlight = 0;
+    let maxInFlight = 0;
+    store.insertNewEntity.mockImplementation(async () => {
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      // Yield to the event loop so overlapping inserts would be observed here
+      await Promise.resolve();
+      inFlight -= 1;
+    });
+
+    await api.synchronizeEntitiesWithCatalog();
+
+    // Sequential inserts never overlap, so only one is ever in flight
+    expect(maxInFlight).toEqual(1);
+
+    // Each of the three new entities is inserted exactly once
+    expect(store.insertNewEntity).toHaveBeenCalledTimes(3);
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-one',
+    );
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-two',
+    );
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-three',
+    );
   });
 
   it('should synchronize entities with catalog - only additions needed', async () => {
@@ -352,11 +410,100 @@ describe('Linguist backend API', () => {
       'component:default/fake-service',
       'https://some.fake/service/',
     );
-    expect(api.getLinguistResults).toHaveBeenCalled();
+    // Analysis runs exactly once per attempt (Requirement 4.2)
+    expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
     expect(store.insertEntityResults).toHaveBeenCalled();
-    expect(fs.remove).toHaveBeenCalled();
+    // The resolved temp directory is cleaned up on success (Requirement 4.3)
+    expect(fs.remove).toHaveBeenCalledWith('/temp/my-code');
     spy.mockClear();
     fsSpy.mockClear();
+  });
+
+  it('should clean up and mark an entity processed when it cannot be analysed', async () => {
+    const entityRef = 'component:default/fake-service';
+    const url = 'https://some.fake/service/';
+    const fsSpy = jest.spyOn(fs, 'remove');
+
+    // Linguist fails after the source tree was downloaded
+    const spy = jest
+      .spyOn(api, 'getLinguistResults')
+      .mockRejectedValue(new Error('linguist failed'));
+    urlReader.readTree.mockResolvedValue({
+      dir: async () => '/temp/my-code',
+    } as UrlReaderServiceReadTreeResponse);
+
+    await expect(api.generateEntityLanguages(entityRef, url)).rejects.toThrow(
+      'linguist failed',
+    );
+    // A failed analysis is not retried, so the source is downloaded only once
+    expect(urlReader.readTree).toHaveBeenCalledTimes(1);
+    expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
+    expect(setTimeout).not.toHaveBeenCalled();
+    expect(fsSpy).toHaveBeenCalledTimes(1);
+    expect(fsSpy).toHaveBeenCalledWith('/temp/my-code');
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      entityRef,
+      expect.any(Date),
+    );
+    expect(store.insertEntityResults).not.toHaveBeenCalled();
+
+    // Reading the source tree fails, so there is nothing to clean up
+    fsSpy.mockClear();
+    store.markEntityProcessed.mockClear();
+    urlReader.readTree.mockRejectedValue(new Error('read failed'));
+
+    await expect(api.generateEntityLanguages(entityRef, url)).rejects.toThrow(
+      'read failed',
+    );
+    expect(fsSpy).not.toHaveBeenCalled();
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      entityRef,
+      expect.any(Date),
+    );
+
+    spy.mockRestore();
+    fsSpy.mockClear();
+  });
+
+  it('should retry transient failures before marking an entity processed', async () => {
+    const entityRef = 'component:default/fake-service';
+    const url = 'https://some.fake/service/';
+    const spy = jest
+      .spyOn(api, 'getLinguistResults')
+      .mockImplementation(() => linguistResultMock);
+    const readTreeResponse = {
+      dir: async () => '/temp/my-code',
+    } as UrlReaderServiceReadTreeResponse;
+
+    // A single transient failure is retried and the entity is analysed
+    urlReader.readTree
+      .mockRejectedValueOnce(new Error('temporary failure'))
+      .mockResolvedValueOnce(readTreeResponse);
+
+    await api.generateEntityLanguages(entityRef, url);
+    // The source fetch is retried once, but analysis runs only on the
+    // successful attempt: the retry wraps readTree, so a transient readTree
+    // failure never reaches getLinguistResults (Requirement 4.1)
+    expect(urlReader.readTree).toHaveBeenCalledTimes(2);
+    expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(store.insertEntityResults).toHaveBeenCalled();
+    expect(store.markEntityProcessed).not.toHaveBeenCalled();
+
+    // Persistent failures are given up on after the last attempt
+    urlReader.readTree.mockReset();
+    urlReader.readTree.mockRejectedValue(new Error('read failed'));
+
+    await expect(api.generateEntityLanguages(entityRef, url)).rejects.toThrow(
+      'read failed',
+    );
+    expect(urlReader.readTree).toHaveBeenCalledTimes(3);
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      entityRef,
+      expect.any(Date),
+    );
+
+    spy.mockRestore();
   });
 
   it('should generate languages for entities using default', async () => {
