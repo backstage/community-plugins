@@ -24,6 +24,8 @@ import { Link, MarkdownContent } from '@backstage/core-components';
 import { isValidUrl } from '../../utils/components';
 import type { EntrySnapshot } from '../../utils/types';
 import { RadarTimeline } from '../RadarTimeline';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { techRadarTranslationRef } from '../../translations';
 
 export type Props = {
   open: boolean;
@@ -44,6 +46,7 @@ const RadarDescription = (props: Props): React.JSX.Element => {
   }
 
   const { open, onClose, title, description, timeline, url, links } = props;
+  const { t } = useTranslationRef(techRadarTranslationRef);
 
   return (
     <Dialog
@@ -83,7 +86,7 @@ const RadarDescription = (props: Props): React.JSX.Element => {
               startIcon={<LinkIcon />}
               key={url}
             >
-              LEARN MORE
+              {t('radarDescription.learnMore')}
             </Button>
           )}
         </DialogActions>
