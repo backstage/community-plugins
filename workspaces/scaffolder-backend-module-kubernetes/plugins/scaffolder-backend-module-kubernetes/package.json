@@ -45,7 +45,7 @@
     "yaml": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.17.7",
+    "@backstage/backend-defaults": "^0.17.8",
     "@backstage/backend-test-utils": "^1.11.6",
     "@backstage/catalog-model": "^1.10.0",
     "@backstage/cli": "^0.36.5",
