@@ -108,7 +108,12 @@ describe('Linguist backend API', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     // Skip the retry backoff
-    jest.spyOn(api, 'delay').mockResolvedValue();
+    jest.spyOn(global, 'setTimeout').mockImplementation(((
+      callback: () => void,
+    ) => {
+      callback();
+      return 0;
+    }) as unknown as typeof setTimeout);
   });
 
   it('should get languages for an entity', async () => {
@@ -433,7 +438,7 @@ describe('Linguist backend API', () => {
     // A failed analysis is not retried, so the source is downloaded only once
     expect(urlReader.readTree).toHaveBeenCalledTimes(1);
     expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
-    expect(api.delay).not.toHaveBeenCalled();
+    expect(setTimeout).not.toHaveBeenCalled();
     expect(fsSpy).toHaveBeenCalledTimes(1);
     expect(fsSpy).toHaveBeenCalledWith('/temp/my-code');
     expect(store.markEntityProcessed).toHaveBeenCalledWith(
@@ -481,7 +486,7 @@ describe('Linguist backend API', () => {
     // failure never reaches getLinguistResults (Requirement 4.1)
     expect(urlReader.readTree).toHaveBeenCalledTimes(2);
     expect(api.getLinguistResults).toHaveBeenCalledTimes(1);
-    expect(api.delay).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(store.insertEntityResults).toHaveBeenCalled();
     expect(store.markEntityProcessed).not.toHaveBeenCalled();
 

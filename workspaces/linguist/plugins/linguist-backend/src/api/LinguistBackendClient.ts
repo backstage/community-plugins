@@ -44,6 +44,34 @@ import { type AuthService, LoggerService } from '@backstage/backend-plugin-api';
 const MAX_ATTEMPTS = 3;
 const RETRY_BASE_DELAY_MS = 1000;
 
+async function delay(ms: number): Promise<void> {
+  await new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Runs the operation, retrying transient failures with exponential backoff.
+ */
+async function withRetry<T>(
+  entityRef: string,
+  logger: LoggerService | undefined,
+  operation: () => Promise<T>,
+): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt >= MAX_ATTEMPTS) {
+        throw error;
+      }
+      const delayMs = RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
+      logger?.warn(
+        `Attempt ${attempt} of ${MAX_ATTEMPTS} to process "${entityRef}" failed, retrying in ${delayMs}ms: ${error}`,
+      );
+      await delay(delayMs);
+    }
+  }
+}
+
 /** @public */
 export interface LinguistBackendApi {
   getEntityLanguages(entityRef: string): Promise<Languages>;
@@ -242,7 +270,7 @@ export class LinguistBackendClient implements LinguistBackendApi {
       // Only fetching the source is retried. The analysis runs on files that
       // are already on disk, so a failure there is unlikely to be transient
       // and retrying it would download the whole source tree again.
-      const dir = await this.withRetry(entityRef, async () => {
+      const dir = await withRetry(entityRef, this.logger, async () => {
         const readTreeResponse = await this.urlReader.readTree(url);
         return readTreeResponse.dir();
       });
@@ -288,36 +316,6 @@ export class LinguistBackendClient implements LinguistBackendApi {
     };
 
     return await this.store.insertEntityResults(entityResults);
-  }
-
-  /**
-   * Runs the operation, retrying transient failures with exponential backoff.
-   *
-   * @internal
-   */
-  async withRetry<T>(
-    entityRef: string,
-    operation: () => Promise<T>,
-  ): Promise<T> {
-    for (let attempt = 1; ; attempt++) {
-      try {
-        return await operation();
-      } catch (error) {
-        if (attempt >= MAX_ATTEMPTS) {
-          throw error;
-        }
-        const delayMs = RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
-        this.logger?.warn(
-          `Attempt ${attempt} of ${MAX_ATTEMPTS} to process "${entityRef}" failed, retrying in ${delayMs}ms: ${error}`,
-        );
-        await this.delay(delayMs);
-      }
-    }
-  }
-
-  /** @internal */
-  async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /** @internal */
