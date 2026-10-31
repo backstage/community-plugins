@@ -19,12 +19,21 @@ import {
   FetchApi,
 } from '@backstage/core-plugin-api';
 
-import type { FlagRow } from '@backstage-community/plugin-growthbook-common';
+import type {
+  ExperimentResultSummary,
+  ExperimentRow,
+  FlagDetail,
+  FlagRow,
+} from '@backstage-community/plugin-growthbook-common';
 
 /** @public */
 export interface GrowthbookFlagsApi {
   getFlags(env: string, project?: string): Promise<FlagRow[]>;
   getProjects(): Promise<string[]>;
+  /** Experiments for a GrowthBook project. Resolves to `[]` in SDK-only mode. */
+  getExperiments(project?: string): Promise<ExperimentRow[]>;
+  getExperimentResults(id: string): Promise<ExperimentResultSummary>;
+  getFlagDetail(key: string): Promise<FlagDetail>;
 }
 
 /** @public */
@@ -43,31 +52,54 @@ export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   }
 
   async getFlags(env: string, project?: string): Promise<FlagRow[]> {
-    const baseUrl = await this.discoveryApi.getBaseUrl(
-      'backstage-community-growthbook',
-    );
     const params = new URLSearchParams({ env });
     if (project) params.set('project', project);
-    const response = await this.fetchApi.fetch(`${baseUrl}/flags?${params}`);
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`GrowthBook flags API error ${response.status}: ${body}`);
-    }
-    return response.json();
+    const response = await this.get(`/flags?${params}`);
+    return this.parse(response, 'flags');
   }
 
   async getProjects(): Promise<string[]> {
+    const response = await this.get('/projects');
+    const body = await this.parse<{ projects?: string[] }>(
+      response,
+      'projects',
+    );
+    return body.projects ?? [];
+  }
+
+  async getExperiments(project?: string): Promise<ExperimentRow[]> {
+    const query = project ? `?${new URLSearchParams({ project })}` : '';
+    const response = await this.get(`/experiments${query}`);
+    if (response.status === 501) return [];
+    return this.parse(response, 'experiments');
+  }
+
+  async getExperimentResults(id: string): Promise<ExperimentResultSummary> {
+    const response = await this.get(
+      `/experiments/${encodeURIComponent(id)}/results`,
+    );
+    return this.parse(response, 'experiment results');
+  }
+
+  async getFlagDetail(key: string): Promise<FlagDetail> {
+    const response = await this.get(`/flags/${encodeURIComponent(key)}`);
+    return this.parse(response, 'flag detail');
+  }
+
+  private async get(path: string): Promise<Response> {
     const baseUrl = await this.discoveryApi.getBaseUrl(
       'backstage-community-growthbook',
     );
-    const response = await this.fetchApi.fetch(`${baseUrl}/projects`);
+    return this.fetchApi.fetch(`${baseUrl}${path}`);
+  }
+
+  private async parse<T>(response: Response, what: string): Promise<T> {
     if (!response.ok) {
       const body = await response.text();
       throw new Error(
-        `GrowthBook projects API error ${response.status}: ${body}`,
+        `GrowthBook ${what} API error ${response.status}: ${body}`,
       );
     }
-    const body = await response.json();
-    return body.projects ?? [];
+    return response.json();
   }
 }
