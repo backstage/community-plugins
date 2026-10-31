@@ -45,7 +45,7 @@ const _default: OverridableFrontendPlugin<
         props: {
           branch?: string | undefined;
         };
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
@@ -54,7 +54,7 @@ const _default: OverridableFrontendPlugin<
               branch?: string | undefined;
             }
           | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -94,7 +94,7 @@ const _default: OverridableFrontendPlugin<
         props: {
           branch?: string | undefined;
         };
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
@@ -103,7 +103,7 @@ const _default: OverridableFrontendPlugin<
               branch?: string | undefined;
             }
           | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -145,7 +145,7 @@ const _default: OverridableFrontendPlugin<
           branch?: string | undefined;
           limit?: number | undefined;
         };
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
@@ -156,7 +156,7 @@ const _default: OverridableFrontendPlugin<
               limit?: number | undefined;
             }
           | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -196,7 +196,7 @@ const _default: OverridableFrontendPlugin<
         layout: 'table' | 'cards';
         path: string | undefined;
         title: string | undefined;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         group: string | false | undefined;
         icon: string | undefined;
       };
@@ -204,7 +204,7 @@ const _default: OverridableFrontendPlugin<
         layout?: 'table' | 'cards' | undefined;
         path?: string | undefined | undefined;
         title?: string | undefined | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         group?: string | false | undefined | undefined;
         icon?: string | undefined | undefined;
       };
