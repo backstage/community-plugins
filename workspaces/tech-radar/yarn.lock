@@ -2287,7 +2287,7 @@ __metadata:
     msw: "npm:^2.3.1"
     node-fetch: "npm:^2.6.7"
     supertest: "npm:^7.0.0"
-    zod: "npm:^3.20.0"
+    zod: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -2296,7 +2296,7 @@ __metadata:
   resolution: "@backstage-community/plugin-tech-radar-common@workspace:plugins/tech-radar-common"
   dependencies:
     "@backstage/cli": "backstage:^"
-    zod: "npm:^3.20.0"
+    zod: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -34429,7 +34429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.20.0, zod@npm:^3.22.4, zod@npm:^3.25.76":
+"zod@npm:^3.22.4, zod@npm:^3.25.76":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
@@ -34437,9 +34437,9 @@ __metadata:
   linkType: hard
 
 "zod@npm:^3.25.76 || ^4.0.0, zod@npm:^4.0.0":
-  version: 4.3.6
-  resolution: "zod@npm:4.3.6"
-  checksum: 10/25fc0f62e01b557b4644bf0b393bbaf47542ab30877c37837ea8caf314a8713d220c7d7fe51f68ffa72f0e1018ddfa34d96f1973d23033f5a2a5a9b6b9d9da01
+  version: 4.6.7
+  resolution: "zod@npm:4.6.7"
+  checksum: 10/3ca8b8d6bb401538e59504c543db629ea7beaa775e504c3f22269b406fdffbf1431c856d59a597bf66d8487e4d2be12b03a55d76fc2c63d9f046eae1ca173bca
   languageName: node
   linkType: hard
 
