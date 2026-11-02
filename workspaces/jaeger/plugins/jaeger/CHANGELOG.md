@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jaeger
 
+## 0.19.1
+
+### Patch Changes
+
+- b62e74a: Removed unused dependencies.
+
 ## 0.19.0
 
 ### Minor Changes

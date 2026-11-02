@@ -15,6 +15,7 @@
  */
 
 import {
+  V2CustomizationMetricRow,
   V2DailyTotal,
   V2MetricsByFeatureRow,
   V2MetricsByIdeRow,
@@ -34,6 +35,7 @@ export interface TeamAggregates {
   byLanguageFeature: V2MetricsByLanguageFeatureRow[];
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
 }
 
 /**
@@ -64,6 +66,7 @@ export function aggregateTeamMetrics(
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
+      customizationMetrics: [],
     };
   }
 
@@ -99,6 +102,7 @@ export function aggregateTeamMetrics(
   const byLanguageFeature: V2MetricsByLanguageFeatureRow[] = [];
   const byModelFeature: V2MetricsByModelFeatureRow[] = [];
   const byLanguageModel: V2MetricsByLanguageModelRow[] = [];
+  const customizationMetrics: V2CustomizationMetricRow[] = [];
 
   for (const [teamSlug, userIds] of [...usersByTeam.entries()].sort((a, b) =>
     a[0].localeCompare(b[0]),
@@ -114,6 +118,8 @@ export function aggregateTeamMetrics(
     const activeUsers = new Set<number>();
     let agentUsers = 0;
     let chatUsers = 0;
+    let vscodeAgentUsers = 0;
+    let aiCreditsUsedSum = 0;
 
     // Aggregation maps for breakdown dimensions
     const featureMap = new Map<string, V2MetricsByFeatureRow>();
@@ -121,6 +127,7 @@ export function aggregateTeamMetrics(
     const langFeatureMap = new Map<string, V2MetricsByLanguageFeatureRow>();
     const modelFeatureMap = new Map<string, V2MetricsByModelFeatureRow>();
     const langModelMap = new Map<string, V2MetricsByLanguageModelRow>();
+    const customizationMap = new Map<string, V2CustomizationMetricRow>();
 
     for (const userId of userIds) {
       const metric = metricsByUserId.get(userId);
@@ -131,6 +138,7 @@ export function aggregateTeamMetrics(
       activeUsers.add(userId);
       if (metric.used_agent) agentUsers++;
       if (metric.used_chat) chatUsers++;
+      if (metric.used_vscode_agent) vscodeAgentUsers++;
       locAddedSum += metric.loc_added_sum;
       locDeletedSum += metric.loc_deleted_sum;
       locSuggestedToAddSum += metric.loc_suggested_to_add_sum;
@@ -138,6 +146,7 @@ export function aggregateTeamMetrics(
       codeAcceptanceActivityCount += metric.code_acceptance_activity_count;
       codeGenerationActivityCount += metric.code_generation_activity_count;
       userInitiatedInteractionCount += metric.user_initiated_interaction_count;
+      aiCreditsUsedSum += metric.ai_credits_used ?? 0;
 
       const bd = breakdownsByUserId.get(userId);
       if (!bd) continue;
@@ -304,6 +313,28 @@ export function aggregateTeamMetrics(
           });
         }
       }
+
+      for (const customization of bd.customizations) {
+        const customizationKey = `${customization.category}\u0000${customization.item_name}`;
+        const existingCustomization = customizationMap.get(customizationKey);
+        if (existingCustomization) {
+          existingCustomization.interaction_count +=
+            customization.interaction_count;
+        } else {
+          customizationMap.set(customizationKey, {
+            day,
+            metrics_type: metricsType,
+            entity_id: entityId,
+            scope: 'team',
+            team_slug: teamSlug,
+            user_id: 0,
+            user_login: '',
+            category: customization.category,
+            item_name: customization.item_name,
+            interaction_count: customization.interaction_count,
+          });
+        }
+      }
     }
 
     if (!activeUsers.size) {
@@ -325,6 +356,7 @@ export function aggregateTeamMetrics(
       monthly_active_users: undefined,
       monthly_active_agent_users: agentUsers,
       monthly_active_chat_users: chatUsers,
+      daily_active_vscode_agent_users: vscodeAgentUsers,
       code_acceptance_activity_count: codeAcceptanceActivityCount,
       code_generation_activity_count: codeGenerationActivityCount,
       loc_added_sum: locAddedSum,
@@ -332,6 +364,7 @@ export function aggregateTeamMetrics(
       loc_suggested_to_add_sum: locSuggestedToAddSum,
       loc_suggested_to_delete_sum: locSuggestedToDeleteSum,
       user_initiated_interaction_count: userInitiatedInteractionCount,
+      total_ai_credits_used: aiCreditsUsedSum,
     });
 
     byFeature.push(...featureMap.values());
@@ -339,6 +372,7 @@ export function aggregateTeamMetrics(
     byLanguageFeature.push(...langFeatureMap.values());
     byModelFeature.push(...modelFeatureMap.values());
     byLanguageModel.push(...langModelMap.values());
+    customizationMetrics.push(...customizationMap.values());
   }
 
   return {
@@ -348,5 +382,6 @@ export function aggregateTeamMetrics(
     byLanguageFeature,
     byModelFeature,
     byLanguageModel,
+    customizationMetrics,
   };
 }

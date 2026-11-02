@@ -25,11 +25,13 @@ import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisf
 import SentimentVerySatisfied from '@material-ui/icons/SentimentVerySatisfied';
 import Security from '@material-ui/icons/Security';
 import { DateTime } from 'luxon';
+import { formatTechnicalDebt, resolveHoursInDay } from './formatTechnicalDebt';
 import { Percentage } from './Percentage';
 import { Rating } from './Rating';
 import { RatingCard } from './RatingCard';
 import { Value } from './Value';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { sonarqubeTranslationRef } from '../../translation';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -40,6 +42,7 @@ type MetricInsightsProps = {
   compact?: boolean;
   title?: string;
   sonarQubeComponentKey?: string;
+  projectInstance?: string;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -134,7 +137,13 @@ export const VulnerabilitiesRatingCard = (props: MetricInsightsProps) => {
 };
 
 export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
-  const { value, title } = props;
+  const { value, title, projectInstance } = props;
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
+  const configApi = useApi(configApiRef);
+  const technicalDebt = formatTechnicalDebt(
+    value.metrics.sqale_index,
+    resolveHoursInDay(configApi, projectInstance),
+  );
   return (
     <RatingCard
       compact={props.compact}
@@ -146,6 +155,11 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
         )
       }
       title={title}
+      caption={
+        technicalDebt
+          ? t('sonarQubeCard.technicalDebtCaption', { debt: technicalDebt })
+          : undefined
+      }
       link={value.getIssuesUrl('CODE_SMELL')}
       leftSlot={
         <Value value={value.metrics.code_smells} compact={props.compact} />
@@ -157,12 +171,20 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
 
 export const HotspotsReviewed = (props: MetricInsightsProps) => {
   const { value, title } = props;
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
   return (
     value.metrics.security_review_rating && (
       <RatingCard
         compact={props.compact}
         titleIcon={<Security />}
         title={title}
+        caption={
+          value.metrics.security_hotspots
+            ? t('sonarQubeCard.hotspotsCountCaption', {
+                hotspots: value.metrics.security_hotspots,
+              })
+            : undefined
+        }
         link={value.getSecurityHotspotsUrl()}
         leftSlot={
           <Value

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.35.1
+
+### Patch Changes
+
+- 86b367b: README card feature now properly respect branch version
+
 ## 0.35.0
 
 ### Minor Changes

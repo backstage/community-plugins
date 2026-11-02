@@ -37,6 +37,8 @@ import {
   ManageEntityContentWidgetBlueprint,
 } from '@backstage-community/plugin-manage-react';
 
+import { RiPulseAiLine } from '@remixicon/react';
+
 import { rootRouteRef } from '../../routes';
 import type { Setting } from '../../components/Settings/types';
 import type {
@@ -87,6 +89,8 @@ export const managePage = PageBlueprint.makeWithOverrides({
   factory(originalFactory, { inputs, apis, node: pluginNode }) {
     return originalFactory({
       path: '/manage',
+      title: 'Manage',
+      icon: <RiPulseAiLine />,
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () => {
         const { ManagePageProviders, ManagePage } = await import(

@@ -274,6 +274,8 @@ To utilize this condition to the RBAC REST api you need to wrap it with more inf
 }
 ```
 
+POST and PUT requests to `api/permission/roles/conditions` check every `rule` in `conditions` against the rules the plugin named in `pluginId` declares (the list returned by `api/permission/plugins/condition-rules` above). An undeclared rule returns `400`; if that plugin's metadata cannot be retrieved, the request returns `503`. See the [README](../README.md#policy-validation-and-compatibility-hardening) for details.
+
 ## Conditional Policy Aliases
 
 The RBAC-backend plugin allows for the use of aliases in the conditional policy rule parameters. These aliases are dynamically replaced with corresponding values during the policy evaluation process. Each alias is prefixed with a `$` sign to denote its special function.

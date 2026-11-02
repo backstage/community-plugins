@@ -38,11 +38,11 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'EntityFirehydrantCard';
       config: {
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined;
       };
       output:

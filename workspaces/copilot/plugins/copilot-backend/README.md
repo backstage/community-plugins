@@ -70,6 +70,7 @@ To install the plugin using the legacy backend system:
 Configure the following `app-config.yaml` values:
 
 - `copilot.host`: GitHub host for the integration, such as `github.com`.
+- `copilot.apiBaseUrl`: Optional override for the base URL of the GitHub REST API. Falls back to `apiBaseUrl` on the matching `integrations.github` entry, then to `https://api.github.com`.
 - `copilot.enterprise`: Optional GitHub enterprise slug.
 - `copilot.organization`: Optional GitHub organization slug.
 - `copilot.schedule`: Optional Backstage scheduler configuration for recurring ingestion.
@@ -102,6 +103,44 @@ copilot:
 
 `defaultView` and `showLegacyView` are consumed by the frontend plugin, but they commonly live in the same `copilot` config block.
 
+### GitHub Enterprise Cloud With Data Residency (GHE.com)
+
+If your enterprise is hosted on a dedicated GHE.com subdomain, point the integration at that subdomain and set its `apiBaseUrl` to the tenant's API host:
+
+```yaml
+integrations:
+  github:
+    - host: octocorp.ghe.com
+      apiBaseUrl: https://api.octocorp.ghe.com
+      token: ${GITHUB_TOKEN}
+
+copilot:
+  host: octocorp.ghe.com
+  enterprise: octocorp
+```
+
+`copilot.apiBaseUrl` is only needed if you want the plugin to use a different API host than the rest of Backstage. Note that Backstage only defaults `apiBaseUrl` for `github.com`, so on any other host you must set it in one place or the other — otherwise the plugin falls back to the public `https://api.github.com`.
+
+To keep a token with enterprise scopes away from the rest of Backstage, for example when everything else authenticates as a GitHub App, put it on a separate integration entry for the API host and point `copilot.host` at that entry:
+
+```yaml
+integrations:
+  github:
+    - host: octocorp.ghe.com
+      apiBaseUrl: https://api.octocorp.ghe.com
+      apps:
+        - $include: github-app-credentials.yaml
+    - host: api.octocorp.ghe.com
+      apiBaseUrl: https://api.octocorp.ghe.com
+      token: ${COPILOT_TOKEN}
+
+copilot:
+  host: api.octocorp.ghe.com
+  enterprise: octocorp
+```
+
+Report documents are downloaded from signed URLs. GitHub serves those from `copilot-reports.github.com`, or `copilot-reports.SUBDOMAIN.ghe.com` on GHE.com, and documents a fallback to Azure Blob Storage. The plugin only follows such links over HTTPS, and only to the configured `copilot.host` and its subdomains, to `githubusercontent.com` and its subdomains, or to the documented object storage hosts. When the API base URL is `https://api.SUBDOMAIN.ghe.com`, `SUBDOMAIN.ghe.com` and its subdomains are allowed too. Redirects are re-checked against the same rules on every hop.
+
 ### Why V2 Exists
 
 GitHub replaced the older direct Copilot metrics endpoints with a report-envelope API based on signed download URLs and GitHub API version `2026-03-10`.
@@ -130,8 +169,26 @@ New V2 data is stored in plugin-owned tables aligned with the new GitHub report 
 - `copilot_user_metrics`
 - `copilot_user_teams`
 - `copilot_ingestion_log`
+- `copilot_customization_metrics`
+- `copilot_customization_summaries`
 
 The older schema and legacy read paths remain available during migration, but new data is written to the V2 tables.
+
+### Named Customization Metrics
+
+The V2 dashboard includes a **Customizations** tab for named Copilot skills,
+custom agents, MCP servers, slash commands, plugins, and compatible future
+categories returned by GitHub. The backend discovers compatible
+`totals_by_*` report arrays dynamically, so newly added categories do not
+need a plugin database migration.
+
+Named values are shown as GitHub reports them. GitHub may retain `other` or
+`custom` buckets for unavailable names, and it only provides configured names
+for reports processed from 2026-10-22 onward. Review customization names
+before granting dashboard access outside the organization. Team and individual
+customization views require `copilot.ingestTeams: true`; team views omit
+distinct-item counts because capped per-user report entries cannot be combined
+into an exact team-wide distinct count.
 
 ### Historical Backfill
 
@@ -140,6 +197,10 @@ The V2 task runner performs gap-fill ingestion for missing days from `copilot.ba
 GitHub's report API currently exposes historical data back to `2025-10-10`, which means existing users can backfill V2 data covering October 2025 onward.
 
 Use `copilot.backfillDelayMs` to slow down day-by-day requests if you encounter rate pressure during historical ingestion.
+
+When upgrading to a version with customization metrics, the database migration
+automatically re-ingests successful report days from 2026-10-22 onward so
+named values are populated without a manual backfill.
 
 ### Manual Backfill Endpoints
 
@@ -160,6 +221,58 @@ Example backfill request:
 ```
 
 The backfill request returns `202 Accepted` and starts processing asynchronously.
+
+### Individual ("Me") Metrics
+
+The backend also exposes a privacy-scoped endpoint for an individual, signed-in
+user's own Copilot metrics, consumed by the individual ("me") metrics view
+mounted by the `@backstage-community/plugin-copilot` frontend plugin:
+
+- `GET /api/copilot/v2/me/dashboard`
+
+This endpoint **never accepts a user or team identifier** — the caller's
+GitHub login is always resolved server-side from their own request
+credentials, so it is impossible to request another user's data through this
+route. If the caller cannot be matched to any ingested Copilot data, the
+endpoint returns `{ "matched": false }` (HTTP 200) rather than an error.
+
+Requires `copilot.ingestTeams: true` (per-user breakdown data is only
+ingested when that flag is enabled).
+
+By default, the backend reads the caller's `github.com/user-login` annotation
+from their catalog entity and uses that value as their GitHub login. This
+avoids incorrectly matching users with the same entity name in different
+namespaces. If the entity is inaccessible or does not have this annotation,
+the endpoint returns `{ "matched": false }`.
+
+To use another trusted identity source, register a custom resolver via the
+`copilotUserResolverExtensionPoint`:
+
+```typescript
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { copilotUserResolverExtensionPoint } from '@backstage-community/plugin-copilot-backend';
+
+export const copilotCustomUserResolverModule = createBackendModule({
+  pluginId: 'copilot',
+  moduleId: 'custom-user-resolver',
+  register(reg) {
+    reg.registerInit({
+      deps: { userResolver: copilotUserResolverExtensionPoint },
+      async init({ userResolver }) {
+        userResolver.setUserResolver({
+          async resolveUserLogin({ userEntityRef, credentials, services }) {
+            const entity = await services.catalog.getEntityByRef(
+              userEntityRef,
+              { credentials },
+            );
+            return entity?.metadata.annotations?.['github.com/user-login'];
+          },
+        });
+      },
+    });
+  },
+});
+```
 
 ### Legacy Endpoints
 

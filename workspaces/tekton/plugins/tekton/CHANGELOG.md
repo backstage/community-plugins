@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton
 
+## 4.0.5
+
+### Patch Changes
+
+- de3d66f: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 4.0.4
 
 ### Patch Changes

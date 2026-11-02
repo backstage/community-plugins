@@ -16,12 +16,15 @@
 
 import {
   V2DailyTotal,
+  V2CustomizationMetricRow,
+  V2CustomizationSummaryRow,
   V2MetricsByCliRow,
   V2MetricsByFeatureRow,
   V2MetricsByIdeRow,
   V2MetricsByLanguageFeatureRow,
   V2MetricsByModelFeatureRow,
   V2MetricsByLanguageModelRow,
+  V2MetricsByVscodeAgentRow,
   V2PrMetricsRow,
   V2UserMetric,
   V2UserMetricRow,
@@ -39,6 +42,9 @@ export interface ParsedEnterpriseDocument {
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
   byCli: V2MetricsByCliRow[];
+  byVscodeAgent: V2MetricsByVscodeAgentRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 /**
@@ -46,6 +52,7 @@ export interface ParsedEnterpriseDocument {
  */
 export interface UserBreakdownData {
   user_id: number;
+  user_login: string;
   byFeature: Array<{
     feature: string;
     user_initiated_interaction_count: number;
@@ -98,11 +105,18 @@ export interface UserBreakdownData {
     loc_suggested_to_add_sum: number;
     loc_suggested_to_delete_sum: number;
   }>;
+  customizations: Array<{
+    category: string;
+    item_name: string;
+    interaction_count: number;
+  }>;
 }
 
 export interface ParsedUserDocument {
   userMetrics: V2UserMetricRow[];
   userBreakdowns: UserBreakdownData[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 function logWarn(message: string): void {
@@ -120,6 +134,122 @@ function toNumber(value: unknown): number {
 
 function toStringValue(value: unknown): string | null {
   return typeof value === 'string' ? value : null;
+}
+
+type CustomizationContext = {
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  scope: 'aggregate' | 'user';
+  user_id?: number;
+  user_login?: string;
+};
+
+const TYPED_BREAKDOWN_CATEGORIES = new Set([
+  'feature',
+  'ide',
+  'language_feature',
+  'model_feature',
+  'language_model',
+]);
+
+function isCustomizationCategory(category: string): boolean {
+  return /^[a-z][a-z0-9_]{0,63}$/.test(category);
+}
+
+/**
+ * Parses GitHub's extensible named-customization arrays. A category is
+ * recognized only when entries follow the `totals_by_<category>` convention
+ * and provide both the matching name field and interaction_count. This keeps
+ * the generic path separate from existing typed report dimensions.
+ */
+function parseCustomizationData(
+  record: Record<string, unknown>,
+  context: CustomizationContext,
+): {
+  metrics: V2CustomizationMetricRow[];
+  summaries: V2CustomizationSummaryRow[];
+} {
+  const metrics: V2CustomizationMetricRow[] = [];
+  const summaries: V2CustomizationSummaryRow[] = [];
+  const categories = new Set<string>();
+
+  for (const [field, value] of Object.entries(record)) {
+    if (!field.startsWith('totals_by_') || !Array.isArray(value)) {
+      continue;
+    }
+
+    const category = field.slice('totals_by_'.length);
+    if (
+      !isCustomizationCategory(category) ||
+      TYPED_BREAKDOWN_CATEGORIES.has(category)
+    ) {
+      continue;
+    }
+
+    for (const row of value) {
+      if (!isRecord(row)) {
+        continue;
+      }
+
+      const itemName = toStringValue(row[category])?.trim();
+      const interactionCount = row.interaction_count;
+      if (
+        !itemName ||
+        itemName.length > 128 ||
+        typeof interactionCount !== 'number' ||
+        !Number.isFinite(interactionCount)
+      ) {
+        continue;
+      }
+
+      categories.add(category);
+      metrics.push({
+        day: context.day,
+        metrics_type: context.metrics_type,
+        entity_id: context.entity_id,
+        scope: context.scope,
+        team_slug: '',
+        user_id: context.user_id ?? 0,
+        user_login: context.user_login ?? '',
+        category,
+        item_name: itemName,
+        interaction_count: interactionCount,
+      });
+    }
+  }
+
+  for (const [field, value] of Object.entries(record)) {
+    const match = /^distinct_([a-z][a-z0-9_]*)_use_count$/.exec(field);
+    if (
+      !match ||
+      typeof value !== 'number' ||
+      !Number.isFinite(value) ||
+      !isCustomizationCategory(match[1])
+    ) {
+      continue;
+    }
+
+    // Keep summary and item data aligned. An absent item list means GitHub
+    // did not make that customization category available for this record.
+    if (!categories.has(match[1])) {
+      continue;
+    }
+
+    summaries.push({
+      day: context.day,
+      metrics_type: context.metrics_type,
+      entity_id: context.entity_id,
+      scope: context.scope,
+      team_slug: '',
+      user_id: context.user_id ?? 0,
+      user_login: context.user_login ?? '',
+      category: match[1],
+      distinct_item_count: value,
+    });
+  }
+
+  return { metrics, summaries };
 }
 
 /**
@@ -142,16 +272,22 @@ export function parseEnterpriseDocument(
     byModelFeature: [],
     byLanguageModel: [],
     byCli: [],
+    byVscodeAgent: [],
+    customizationMetrics: [],
+    customizationSummaries: [],
   };
 
   // Normalize: the GitHub report API (2026-03-10) downloads a single flat
   // V2EnterpriseDayTotal object per file — not a V2EnterpriseDocument with a
   // day_totals wrapper. Accept both shapes for robustness.
-  const rawDocs: unknown[] = Array.isArray(doc)
-    ? doc
-    : isRecord(doc)
-    ? [doc]
-    : [];
+  let rawDocs: unknown[];
+  if (Array.isArray(doc)) {
+    rawDocs = doc;
+  } else if (isRecord(doc)) {
+    rawDocs = [doc];
+  } else {
+    rawDocs = [];
+  }
 
   if (rawDocs.length === 0) {
     logWarn(
@@ -195,6 +331,9 @@ export function parseEnterpriseDocument(
         weekly_active_users: toNumber(dayTotal.weekly_active_users),
         monthly_active_users: toNumber(dayTotal.monthly_active_users),
         daily_active_cli_users: toNumber(dayTotal.daily_active_cli_users),
+        daily_active_vscode_agent_users: toNumber(
+          dayTotal.daily_active_vscode_agent_users,
+        ),
         monthly_active_agent_users: toNumber(
           dayTotal.monthly_active_agent_users,
         ),
@@ -215,6 +354,15 @@ export function parseEnterpriseDocument(
           dayTotal.user_initiated_interaction_count,
         ),
       });
+
+      const customizationData = parseCustomizationData(dayTotal, {
+        day,
+        metrics_type: metricsType,
+        entity_id: entityId,
+        scope: 'aggregate',
+      });
+      parsed.customizationMetrics.push(...customizationData.metrics);
+      parsed.customizationSummaries.push(...customizationData.summaries);
 
       if (isRecord(dayTotal.pull_requests)) {
         parsed.prMetrics.push({
@@ -462,6 +610,18 @@ export function parseEnterpriseDocument(
           ),
         });
       }
+
+      if (isRecord(dayTotal.totals_by_vscode_agent)) {
+        const vscodeAgent = dayTotal.totals_by_vscode_agent;
+        parsed.byVscodeAgent.push({
+          day,
+          metrics_type: metricsType,
+          entity_id: entityId,
+          team_slug: '',
+          session_count: toNumber(vscodeAgent.session_count),
+          total_user_messages: toNumber(vscodeAgent.total_user_messages),
+        });
+      }
     }
   }
 
@@ -488,6 +648,9 @@ export function parseOrganizationDocument(
     byModelFeature: [],
     byLanguageModel: [],
     byCli: [],
+    byVscodeAgent: [],
+    customizationMetrics: [],
+    customizationSummaries: [],
   };
 
   // Normalize: the API downloads a single flat object per file, but accept arrays too.
@@ -556,6 +719,9 @@ export function parseOrganizationDocument(
       weekly_active_users: toNumber(orgDoc.weekly_active_users),
       monthly_active_users: toNumber(orgDoc.monthly_active_users),
       daily_active_cli_users: toNumber(orgDoc.daily_active_cli_users),
+      daily_active_vscode_agent_users: toNumber(
+        orgDoc.daily_active_vscode_agent_users,
+      ),
       monthly_active_agent_users: toNumber(orgDoc.monthly_active_agent_users),
       monthly_active_chat_users: toNumber(orgDoc.monthly_active_chat_users),
       code_acceptance_activity_count: toNumber(
@@ -572,6 +738,15 @@ export function parseOrganizationDocument(
         orgDoc.user_initiated_interaction_count,
       ),
     });
+
+    const customizationData = parseCustomizationData(orgDoc, {
+      day,
+      metrics_type: metricsType,
+      entity_id: entityId,
+      scope: 'aggregate',
+    });
+    parsed.customizationMetrics.push(...customizationData.metrics);
+    parsed.customizationSummaries.push(...customizationData.summaries);
 
     // No pull_requests field at the org level.
 
@@ -774,6 +949,18 @@ export function parseOrganizationDocument(
         ),
       });
     }
+
+    if (isRecord(orgDoc.totals_by_vscode_agent)) {
+      const vscodeAgent = orgDoc.totals_by_vscode_agent;
+      parsed.byVscodeAgent.push({
+        day,
+        metrics_type: metricsType,
+        entity_id: entityId,
+        team_slug: '',
+        session_count: toNumber(vscodeAgent.session_count),
+        total_user_messages: toNumber(vscodeAgent.total_user_messages),
+      });
+    }
   }
 
   return parsed;
@@ -791,11 +978,18 @@ export function parseUserDocument(
     logWarn(
       'Expected user metrics document array, received non-array payload.',
     );
-    return { userMetrics: [], userBreakdowns: [] };
+    return {
+      userMetrics: [],
+      userBreakdowns: [],
+      customizationMetrics: [],
+      customizationSummaries: [],
+    };
   }
 
   const userMetrics: V2UserMetricRow[] = [];
   const userBreakdowns: UserBreakdownData[] = [];
+  const customizationMetrics: V2CustomizationMetricRow[] = [];
+  const customizationSummaries: V2CustomizationSummaryRow[] = [];
 
   for (const metric of doc as V2UserMetric[]) {
     if (!isRecord(metric)) {
@@ -821,6 +1015,7 @@ export function parseUserDocument(
       used_agent: Boolean(metric.used_agent),
       used_chat: Boolean(metric.used_chat),
       used_cli: Boolean(metric.used_cli),
+      used_vscode_agent: Boolean(metric.used_vscode_agent),
       code_acceptance_activity_count: toNumber(
         metric.code_acceptance_activity_count,
       ),
@@ -834,15 +1029,33 @@ export function parseUserDocument(
       user_initiated_interaction_count: toNumber(
         metric.user_initiated_interaction_count,
       ),
+      ai_credits_used: toNumber(metric.ai_credits_used),
     });
+
+    const customizationData = parseCustomizationData(metric, {
+      day,
+      metrics_type: metricsType,
+      entity_id: entityId,
+      scope: 'user',
+      user_id: userId,
+      user_login: userLogin,
+    });
+    customizationMetrics.push(...customizationData.metrics);
+    customizationSummaries.push(...customizationData.summaries);
 
     const breakdown: UserBreakdownData = {
       user_id: userId,
+      user_login: userLogin,
       byFeature: [],
       byIde: [],
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
+      customizations: customizationData.metrics.map(row => ({
+        category: row.category,
+        item_name: row.item_name,
+        interaction_count: row.interaction_count,
+      })),
     };
 
     if (Array.isArray(metric.totals_by_feature)) {
@@ -983,7 +1196,12 @@ export function parseUserDocument(
     userBreakdowns.push(breakdown);
   }
 
-  return { userMetrics, userBreakdowns };
+  return {
+    userMetrics,
+    userBreakdowns,
+    customizationMetrics,
+    customizationSummaries,
+  };
 }
 
 /**

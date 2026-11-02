@@ -39,6 +39,17 @@ export interface Config {
      */
     host: string;
     /**
+     * Base URL of the GitHub REST API to call.
+     *
+     * Set this when the host is not `github.com`, for example a GitHub
+     * Enterprise Cloud with data residency tenant on GHE.com, where the API
+     * lives at `https://api.SUBDOMAIN.ghe.com`.
+     *
+     * Falls back to `apiBaseUrl` from the matching `integrations.github` entry.
+     * @default 'https://api.github.com'
+     */
+    apiBaseUrl?: string;
+    /**
      * Earliest date to ingest for v2. Must be >= '2025-10-10' (GitHub API limit).
      * On first run the task backfills every calendar day from this date to yesterday.
      * @default '2025-10-10'

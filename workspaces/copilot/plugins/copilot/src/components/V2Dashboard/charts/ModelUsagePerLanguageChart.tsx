@@ -85,6 +85,7 @@ export function ModelUsagePerLanguageChart({ data }: Props) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: sortedLangs,

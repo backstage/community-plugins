@@ -21,4 +21,14 @@
  */
 
 export * from './service/router';
+export {
+  copilotUserResolverExtensionPoint,
+  DefaultCopilotUserResolver,
+} from './userResolver';
+export type {
+  CopilotUserResolver,
+  CopilotUserResolverContext,
+  CopilotUserResolverExtensionPoint,
+  CopilotUserResolverServices,
+} from './userResolver';
 export { copilotPlugin as default } from './plugin';

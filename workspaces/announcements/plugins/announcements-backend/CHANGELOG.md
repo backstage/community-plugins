@@ -1,5 +1,28 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.31.0
+
+### Minor Changes
+
+- 7f450a0: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7f450a0]
+  - @backstage-community/plugin-announcements-common@0.26.0
+
+## 0.30.0
+
+### Minor Changes
+
+- 7931d39: Fixed the `list-announcements` and `get-announcement` actions (for example when used through MCP) failing when an announcement has no "on behalf of" value. Announcements created without "on behalf of" are now returned with the field omitted instead of set to `null`. This also applies to the announcements REST API responses.
+
+## 0.29.1
+
+### Patch Changes
+
+- 54daf5a: Fixed the audit log recording category deletion as an update action instead of a delete action.
+
 ## 0.29.0
 
 ### Minor Changes

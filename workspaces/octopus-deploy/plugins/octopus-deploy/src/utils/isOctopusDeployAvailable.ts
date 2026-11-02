@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION } from '../constants';
+import {
+  OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION,
+  OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION,
+} from '../constants';
 
 /** @public */
 export const isOctopusDeployAvailable = (entity: Entity) =>
-  Boolean(entity.metadata.annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION]);
+  Boolean(
+    entity.metadata.annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION] ||
+      entity.metadata.annotations?.[OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION],
+  );

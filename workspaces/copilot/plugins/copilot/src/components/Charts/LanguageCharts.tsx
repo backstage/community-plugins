@@ -55,6 +55,7 @@ const renderPieCharts = (promptsData: any[], rateData: any[]) => (
   <RowBox>
     <Chart title="Top 5 Languages By Accepted Prompts">
       <PieChart
+        enableKeyboardNavigation
         margin={{ right: 200 }}
         series={[
           {
@@ -72,6 +73,7 @@ const renderPieCharts = (promptsData: any[], rateData: any[]) => (
     </Chart>
     <Chart title="Top 5 Languages By Acceptance Rate">
       <PieChart
+        enableKeyboardNavigation
         margin={{ right: 200 }}
         series={[
           {

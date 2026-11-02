@@ -17,17 +17,15 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(theme => {
-  return {
-    value: {
-      fontSize: '1.5rem',
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-    compact: {
-      lineHeight: '1.0',
-    },
-  };
-});
+const useStyles = makeStyles(theme => ({
+  value: {
+    fontSize: '1.5rem',
+    fontWeight: theme.typography.fontWeightMedium as number,
+  },
+  compact: {
+    lineHeight: '1.0',
+  },
+}));
 
 export const Value = (props: { value?: string; compact?: boolean }) => {
   const classes = useStyles();

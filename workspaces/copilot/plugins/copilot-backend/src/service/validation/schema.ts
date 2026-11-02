@@ -91,6 +91,20 @@ export const v2PeriodRangeQuerySchema = z.object({
 });
 export type V2PeriodRangeQuery = z.infer<typeof v2PeriodRangeQuerySchema>;
 
+// The "me" schema intentionally has no `team` or `user` parameter — the
+// caller's own login is always resolved server-side from their credentials,
+// never taken from client input, so this endpoint can never be used to
+// request another user's data.
+export const v2MeDashboardQuerySchema = z
+  .object({
+    type: z.enum(['enterprise', 'organization']),
+    entityId: z.string().min(1),
+    from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+    to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  })
+  .strict();
+export type V2MeDashboardQuery = z.infer<typeof v2MeDashboardQuerySchema>;
+
 export const v2BackfillStatusQuerySchema = z.object({
   type: z.enum(['enterprise', 'organization']),
   entityId: z.string().min(1),

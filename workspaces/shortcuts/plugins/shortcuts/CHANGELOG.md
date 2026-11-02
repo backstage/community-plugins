@@ -1,5 +1,17 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.26.0
+
+### Minor Changes
+
+- dec8b91: Backstage version bump to v1.56.2
+
+## 0.25.1
+
+### Patch Changes
+
+- ee8ea6e: Fixed an internal circular dependency
+
 ## 0.25.0
 
 ### Minor Changes
