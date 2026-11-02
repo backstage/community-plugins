@@ -409,10 +409,49 @@ export class DatabaseHandlerV2 {
   }
 
   async upsertIngestionLog(row: V2IngestionLogRow): Promise<void> {
-    await this.db<V2IngestionLogRow>('copilot_ingestion_log')
-      .insert(row)
-      .onConflict(['day', 'metrics_type', 'entity_id'])
-      .merge();
+    await this.db.transaction(async transaction => {
+      const scope = {
+        day: row.day,
+        metrics_type: row.metrics_type,
+        entity_id: row.entity_id,
+      };
+      await transaction<V2IngestionLogRow>('copilot_ingestion_log')
+        .insert(row)
+        .onConflict(['day', 'metrics_type', 'entity_id'])
+        .ignore();
+
+      const existing = await transaction<V2IngestionLogRow>(
+        'copilot_ingestion_log',
+      )
+        .where(scope)
+        .forUpdate()
+        .first();
+      if (!existing) {
+        throw new Error('Ingestion log row could not be initialized.');
+      }
+
+      const componentsLoaded = [
+        ...new Set([
+          ...this.parseComponentsLoaded(existing.components_loaded),
+          ...this.parseComponentsLoaded(row.components_loaded),
+        ]),
+      ];
+      const preserveSuccessfulStatus =
+        existing.status === 'success' && row.status !== 'success';
+      let errorMessage = row.error_message;
+      if (errorMessage === undefined) {
+        errorMessage = preserveSuccessfulStatus ? existing.error_message : null;
+      }
+
+      await transaction('copilot_ingestion_log')
+        .where(scope)
+        .update({
+          status: preserveSuccessfulStatus ? 'success' : row.status,
+          components_loaded: JSON.stringify(componentsLoaded),
+          error_message: errorMessage,
+          source: row.source,
+        });
+    });
   }
 
   async getMissingDays(
@@ -422,15 +461,14 @@ export class DatabaseHandlerV2 {
     to: string,
     requiredComponents: string[] = ['totals'],
   ): Promise<string[]> {
-    const successfulRows = await this.db('copilot_ingestion_log')
+    const ingestionRows = await this.db('copilot_ingestion_log')
       .where('metrics_type', metricsType)
       .where('entity_id', entityId)
-      .where('status', 'success')
       .whereBetween('day', [from, to])
       .select('day', 'components_loaded');
 
-    const successfulDays = new Set(
-      successfulRows
+    const completeDays = new Set(
+      ingestionRows
         .filter(row =>
           this.hasRequiredComponents(row.components_loaded, requiredComponents),
         )
@@ -448,7 +486,7 @@ export class DatabaseHandlerV2 {
     const missingDays: string[] = [];
     for (let cursor = start; cursor <= end; cursor = cursor.plus({ days: 1 })) {
       const day = cursor.toISODate();
-      if (day && !successfulDays.has(day)) {
+      if (day && !completeDays.has(day)) {
         missingDays.push(day);
       }
     }
