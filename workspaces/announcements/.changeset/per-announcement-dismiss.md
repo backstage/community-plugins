@@ -1,6 +1,6 @@
 ---
-'@backstage-community/plugin-announcements-react': major
-'@backstage-community/plugin-announcements': major
+'@backstage-community/plugin-announcements-react': minor
+'@backstage-community/plugin-announcements': minor
 ---
 
 Announcement banners can now be dismissed individually. Previously, dismissing one banner could also hide older announcements the user had not yet seen; each announcement is now tracked separately so dismissing one no longer affects the others.
