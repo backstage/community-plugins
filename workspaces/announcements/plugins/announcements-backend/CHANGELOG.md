@@ -1,5 +1,68 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.31.0
+
+### Minor Changes
+
+- 7f450a0: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7f450a0]
+  - @backstage-community/plugin-announcements-common@0.26.0
+
+## 0.30.0
+
+### Minor Changes
+
+- 7931d39: Fixed the `list-announcements` and `get-announcement` actions (for example when used through MCP) failing when an announcement has no "on behalf of" value. Announcements created without "on behalf of" are now returned with the field omitted instead of set to `null`. This also applies to the announcements REST API responses.
+
+## 0.29.1
+
+### Patch Changes
+
+- 54daf5a: Fixed the audit log recording category deletion as an update action instead of a delete action.
+
+## 0.29.0
+
+### Minor Changes
+
+- 215ed63: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [215ed63]
+  - @backstage-community/plugin-announcements-common@0.25.0
+
+## 0.28.1
+
+### Patch Changes
+
+- 54ae77b: Moved `@backstage/backend-test-utils` from `dependencies` to `devDependencies`, as it is only used in tests and the local dev harness. This stops it, and its `better-sqlite3` dependency, from being installed into consumers' production dependency trees.
+
+## 0.28.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [bae4489]
+  - @backstage-community/plugin-announcements-common@0.24.0
+
+## 0.27.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 0d0a521: Fixed the audit log recording tag creation as an update action instead of a create action.
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+
 ## 0.26.0
 
 ### Minor Changes

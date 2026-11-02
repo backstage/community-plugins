@@ -25,7 +25,8 @@ import {
   memo,
 } from 'react';
 
-import { InfoCard, Progress } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -75,7 +76,7 @@ const WrapperInfoCard = ({
 }: PropsWithChildren<WrapperInfoCardProps>) => (
   <>
     {allErrors && allErrors.length > 0 && <ErrorPanel allErrors={allErrors} />}
-    <InfoCard
+    <EntityInfoCard
       {...(showClusterSelector && {
         title: (
           <Box sx={titleSx}>
@@ -87,7 +88,7 @@ const WrapperInfoCard = ({
       })}
     >
       {children}
-    </InfoCard>
+    </EntityInfoCard>
   </>
 );
 
@@ -265,7 +266,23 @@ const PipelineRunList = () => {
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-                    labelRowsPerPage={null}
+                    labelRowsPerPage={
+                      <span
+                        style={{
+                          position: 'absolute',
+                          width: '1px',
+                          height: '1px',
+                          padding: 0,
+                          margin: '-1px',
+                          overflow: 'hidden',
+                          clip: 'rect(0, 0, 0, 0)',
+                          whiteSpace: 'nowrap',
+                          border: 0,
+                        }}
+                      >
+                        {t('pipelineRunList.tablePagination.rowsPerPage')}
+                      </span>
+                    }
                   />
                 </TableRow>
               </TableBody>

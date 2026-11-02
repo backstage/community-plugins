@@ -20,6 +20,7 @@ import {
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
+import { Header } from '@backstage/ui';
 import { CatalogFilterLayout } from '@backstage/plugin-catalog-react';
 
 import { CreatePlaylistButton } from '../CreatePlaylistButton';
@@ -30,6 +31,27 @@ import { PlaylistSearchBar } from '../PlaylistSearchBar';
 import { PlaylistSortPicker } from '../PlaylistSortPicker';
 import { PlaylistListProvider } from '../../hooks/PlaylistListProvider';
 import { useTitle } from '../../hooks/useTitle';
+
+const DefaultPlaylistIndexPageContent = () => (
+  <CatalogFilterLayout>
+    <CatalogFilterLayout.Filters>
+      <PlaylistSearchBar />
+      <PersonalListPicker />
+      <PlaylistOwnerPicker />
+    </CatalogFilterLayout.Filters>
+    <CatalogFilterLayout.Content>
+      <PlaylistList />
+    </CatalogFilterLayout.Content>
+  </CatalogFilterLayout>
+);
+
+const DefaultPlaylistIndexPageActions = () => (
+  <>
+    <PlaylistSortPicker />
+    <CreatePlaylistButton />
+    <SupportButton />
+  </>
+);
 
 /**
  * @public
@@ -45,22 +67,20 @@ export const DefaultPlaylistIndexPage = () => {
       <PlaylistListProvider>
         <Content>
           <ContentHeader title="">
-            <PlaylistSortPicker />
-            <CreatePlaylistButton />
-            <SupportButton />
+            <DefaultPlaylistIndexPageActions />
           </ContentHeader>
-          <CatalogFilterLayout>
-            <CatalogFilterLayout.Filters>
-              <PlaylistSearchBar />
-              <PersonalListPicker />
-              <PlaylistOwnerPicker />
-            </CatalogFilterLayout.Filters>
-            <CatalogFilterLayout.Content>
-              <PlaylistList />
-            </CatalogFilterLayout.Content>
-          </CatalogFilterLayout>
+          <DefaultPlaylistIndexPageContent />
         </Content>
       </PlaylistListProvider>
     </PageWithHeader>
   );
 };
+
+export const NfsDefaultPlaylistIndexPage = () => (
+  <PlaylistListProvider>
+    <Header title="" customActions={<DefaultPlaylistIndexPageActions />} />
+    <Content>
+      <DefaultPlaylistIndexPageContent />
+    </Content>
+  </PlaylistListProvider>
+);

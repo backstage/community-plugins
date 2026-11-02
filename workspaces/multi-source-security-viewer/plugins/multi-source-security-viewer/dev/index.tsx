@@ -13,129 +13,103 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line
+
+import ReactDOM from 'react-dom/client';
+
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
-import { createDevApp } from '@backstage/dev-utils';
+import { createApp } from '@backstage/frontend-defaults';
 import {
-  EntityMultiCIPipelinesContent,
-  multiSourceSecurityViewerPlugin,
-} from '../src/plugin';
-import { Header, Page, TabbedLayout } from '@backstage/core-components';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { mockApis, TestApiProvider } from '@backstage/test-utils';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+
+import mssvPlugin from '../src/plugin';
 import { mockEntity } from '../src/__fixtures__/entity';
 import { mssvJenkinsApiRef } from '../src/api/jenkins';
-import { mockPipelineRuns } from '../src/__fixtures__/pipelineruns';
-import { mockRawLogs } from '../src/__fixtures__/rawlogs';
-import { MssvApi, MssvApiResponse } from '../src/api/mssv';
-import { PipelineRunResult } from '../src/models/pipelineRunResult';
 import { mssvGithubActionsApiRef } from '../src/api/github';
 import { mssvGitlabCIApiRef } from '../src/api/gitlab';
 import { mssvAzureDevopsApiRef } from '../src/api/azure';
+import {
+  MockMssvAzureDevopsClient,
+  MockMssvGithubActionsApiClient,
+  MockMssvGitlabCIApiClient,
+  MockMssvJenkinsApiClient,
+} from './fixtures/mockClients';
 
-class MockMssvJenkinsApiClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-jenkins`,
-          logs: mockRawLogs,
+const mssvDevModule = createFrontendModule({
+  pluginId: 'multi-source-security-viewer',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'mssv-jenkins-mock',
+      params: defineParams =>
+        defineParams({
+          api: mssvJenkinsApiRef,
+          deps: {},
+          factory: () => new MockMssvJenkinsApiClient(),
         }),
-    );
-
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
-class MockMssvGithubActionsApiClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-github`,
-          logs: mockRawLogs,
+    }),
+    ApiBlueprint.make({
+      name: 'mssv-github-actions-mock',
+      params: defineParams =>
+        defineParams({
+          api: mssvGithubActionsApiRef,
+          deps: {},
+          factory: () => new MockMssvGithubActionsApiClient(),
         }),
-    );
-
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
-
-class MockMssvGitlabCIApiClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-gitlab`,
-          logs: mockRawLogs,
+    }),
+    ApiBlueprint.make({
+      name: 'mssv-gitlab-ci-mock',
+      params: defineParams =>
+        defineParams({
+          api: mssvGitlabCIApiRef,
+          deps: {},
+          factory: () => new MockMssvGitlabCIApiClient(),
         }),
-    );
-
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
-
-class MockMssvAzureDevopsClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-azure`,
-          logs: mockRawLogs,
+    }),
+    ApiBlueprint.make({
+      name: 'mssv-azure-devops-mock',
+      params: defineParams =>
+        defineParams({
+          api: mssvAzureDevopsApiRef,
+          deps: {},
+          factory: () => new MockMssvAzureDevopsClient(),
         }),
-    );
+    }),
+  ],
+});
 
-    return { results, totalCount: results.length };
-  }
+const catalogDevModule = createFrontendModule({
+  pluginId: 'catalog',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'catalog-mock',
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () =>
+            catalogApiMock({
+              entities: [mockEntity],
+            }),
+        }),
+    }),
+  ],
+});
 
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
+const app = createApp({
+  features: [
+    catalogPlugin,
+    userSettingsPlugin,
+    mssvPlugin,
+    mssvDevModule,
+    catalogDevModule,
+  ],
+});
 
-createDevApp()
-  .addPage({
-    element: (
-      <TestApiProvider
-        apis={[
-          [mssvJenkinsApiRef, new MockMssvJenkinsApiClient()],
-          [mssvGithubActionsApiRef, new MockMssvGithubActionsApiClient()],
-          [mssvGitlabCIApiRef, new MockMssvGitlabCIApiClient()],
-          [mssvAzureDevopsApiRef, new MockMssvAzureDevopsClient()],
-          [permissionApiRef, mockApis.permission()],
-        ]}
-      >
-        <EntityProvider entity={mockEntity}>
-          <Page themeId="service">
-            <Header type="component — service" title="demo-sevice" />
-            <TabbedLayout>
-              <TabbedLayout.Route path="/" title="CI/CD">
-                <EntityMultiCIPipelinesContent />
-              </TabbedLayout.Route>
-            </TabbedLayout>
-          </Page>
-        </EntityProvider>
-      </TestApiProvider>
-    ),
-    title: 'Multi Source Security Viewer',
-    path: '/mssv',
-  })
-  .registerPlugin(multiSourceSecurityViewerPlugin)
-  .render();
+ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());

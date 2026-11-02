@@ -15,7 +15,7 @@
  */
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { Progress } from '@backstage/core-components';
+import { ButtonIcon, Skeleton } from '@backstage/ui';
 import {
   ErrorApiError,
   errorApiRef,
@@ -23,9 +23,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import IconButton from '@material-ui/core/IconButton';
-import StarOutlineIcon from '@material-ui/icons/StarOutline';
-import StarIcon from '@material-ui/icons/Star';
+import { RiStarFill, RiStarLine } from '@remixicon/react';
 import { ReactNode, useCallback, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
@@ -36,7 +34,10 @@ import {
   FeedbackResponseDialog,
 } from '../FeedbackResponseDialog';
 
-export enum FeedbackRatings {
+/**
+ * @public
+ */
+export enum StarredFeedbackRatings {
   one = 1,
   two = 2,
   three = 3,
@@ -51,20 +52,23 @@ export interface StarredRatingButtonsProps {
   feedbackDialogResponses?: EntityFeedbackResponse[];
   feedbackDialogTitle?: ReactNode;
   requestResponse?: boolean;
-  requestResponseThreshold?: number;
+  requestResponseThreshold?: StarredFeedbackRatings;
 }
 
+/**
+ * @public
+ */
 export const StarredRatingButtons = (props: StarredRatingButtonsProps) => {
   const {
     feedbackDialogResponses,
     feedbackDialogTitle,
     requestResponse = true,
-    requestResponseThreshold = FeedbackRatings.two,
+    requestResponseThreshold = StarredFeedbackRatings.two,
   } = props;
   const errorApi = useApi(errorApiRef);
   const feedbackApi = useApi(entityFeedbackApiRef);
   const identityApi = useApi(identityApiRef);
-  const [rating, setRating] = useState<FeedbackRatings>();
+  const [rating, setRating] = useState<StarredFeedbackRatings>();
   const [openFeedbackDialog, setOpenFeedbackDialog] = useState(false);
   const { entity, loading: loadingEntity } = useAsyncEntity();
 
@@ -92,7 +96,7 @@ export const StarredRatingButtons = (props: StarredRatingButtonsProps) => {
   }, [entity, feedbackApi, setRating]);
 
   const [{ loading: savingFeedback }, saveFeedback] = useAsyncFn(
-    async (feedback: FeedbackRatings) => {
+    async (feedback: StarredFeedbackRatings) => {
       try {
         await feedbackApi.recordRating(
           stringifyEntityRef(entity!),
@@ -107,7 +111,7 @@ export const StarredRatingButtons = (props: StarredRatingButtonsProps) => {
   );
 
   const applyRating = useCallback(
-    (feedback: FeedbackRatings) => {
+    (feedback: StarredFeedbackRatings) => {
       // Ignore rating if feedback is same as current
       if (feedback === rating) {
         return;
@@ -128,25 +132,30 @@ export const StarredRatingButtons = (props: StarredRatingButtonsProps) => {
   );
 
   if (loadingEntity || loadingFeedback || savingFeedback) {
-    return <Progress />;
+    return <Skeleton width={180} height={32} aria-label="Loading feedback" />;
   }
 
   return (
     <>
-      {Object.values(FeedbackRatings)
+      {Object.values(StarredFeedbackRatings)
         .filter((o): o is number => typeof o === 'number')
         .map(starRating => (
-          <IconButton
+          <ButtonIcon
             key={starRating}
             data-testid={`entity-feedback-star-button-${starRating}`}
-            onClick={() => applyRating(starRating as FeedbackRatings)}
-          >
-            {rating && rating >= starRating ? (
-              <StarIcon fontSize="small" />
-            ) : (
-              <StarOutlineIcon fontSize="small" />
-            )}
-          </IconButton>
+            aria-label={`Rate ${starRating} ${
+              starRating === 1 ? 'star' : 'stars'
+            }`}
+            variant="tertiary"
+            icon={
+              rating && rating >= starRating ? (
+                <RiStarFill size={20} />
+              ) : (
+                <RiStarLine size={20} />
+              )
+            }
+            onPress={() => applyRating(starRating as StarredFeedbackRatings)}
+          />
         ))}
       <FeedbackResponseDialog
         entity={entity!}

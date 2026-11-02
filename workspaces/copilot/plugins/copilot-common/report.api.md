@@ -257,6 +257,56 @@ export interface V2CliTotals {
   };
 }
 
+// @public
+export interface V2CustomizationMetricRow {
+  // (undocumented)
+  category: string;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  interaction_count: number;
+  // (undocumented)
+  item_name: string;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  scope: 'aggregate' | 'team' | 'user';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2CustomizationSummaryRow {
+  // (undocumented)
+  category: string;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  distinct_item_count: number;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  scope: 'aggregate' | 'team' | 'user';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
 // @public (undocumented)
 export interface V2DailyTotal {
   // (undocumented)
@@ -267,6 +317,7 @@ export interface V2DailyTotal {
   daily_active_cli_users?: number;
   // (undocumented)
   daily_active_users: number;
+  daily_active_vscode_agent_users?: number;
   // (undocumented)
   day: string;
   // (undocumented)
@@ -290,6 +341,7 @@ export interface V2DailyTotal {
   monthly_active_users?: number;
   // (undocumented)
   team_slug: string;
+  total_ai_credits_used?: number;
   // (undocumented)
   user_initiated_interaction_count: number;
   weekly_active_users?: number;
@@ -306,6 +358,10 @@ export interface V2DashboardData {
   // (undocumented)
   byModelFeature: V2MetricsByModelFeatureRow[];
   // (undocumented)
+  customizationMetrics: V2CustomizationMetricRow[];
+  // (undocumented)
+  customizationSummaries: V2CustomizationSummaryRow[];
+  // (undocumented)
   daily: V2DailyTotal[];
   // (undocumented)
   prMetrics: V2PrMetricsRow[];
@@ -321,6 +377,7 @@ export interface V2EnterpriseDayTotal {
   daily_active_cli_users?: number;
   // (undocumented)
   daily_active_users: number;
+  daily_active_vscode_agent_users?: number;
   // (undocumented)
   day: string;
   // (undocumented)
@@ -349,6 +406,7 @@ export interface V2EnterpriseDayTotal {
   totals_by_ide?: V2MetricsByIde[];
   // (undocumented)
   totals_by_language_feature?: V2MetricsByLanguageFeature[];
+  totals_by_vscode_agent?: V2VscodeAgentTotals;
   // (undocumented)
   user_initiated_interaction_count: number;
   // (undocumented)
@@ -629,6 +687,33 @@ export interface V2MetricsByModelFeatureRow {
   user_initiated_interaction_count: number;
 }
 
+// @public
+export interface V2MetricsByVscodeAgentRow {
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  session_count: number;
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  total_user_messages: number;
+}
+
+// @public
+export type V2MyDashboardResponse =
+  | ({
+      matched: true;
+    } & V2UserDashboardData)
+  | {
+      matched: false;
+    };
+
 // @public (undocumented)
 export interface V2PrMetrics {
   // (undocumented)
@@ -703,8 +788,30 @@ export interface V2PrMetricsRow {
   total_suggestions: number;
 }
 
+// @public
+export interface V2UserDashboardData {
+  // (undocumented)
+  byFeature: V2UserMetricsByFeatureRow[];
+  // (undocumented)
+  byIde: V2UserMetricsByIdeRow[];
+  // (undocumented)
+  byLanguage: V2UserMetricsByLanguageFeatureRow[];
+  // (undocumented)
+  byLanguageModel: V2UserMetricsByLanguageModelRow[];
+  // (undocumented)
+  byModelFeature: V2UserMetricsByModelFeatureRow[];
+  // (undocumented)
+  customizationMetrics: V2CustomizationMetricRow[];
+  // (undocumented)
+  customizationSummaries: V2CustomizationSummaryRow[];
+  // (undocumented)
+  daily: V2UserMetricRow[];
+  userLogin: string;
+}
+
 // @public (undocumented)
 export interface V2UserMetric {
+  ai_credits_used?: number;
   // (undocumented)
   code_acceptance_activity_count: number;
   // (undocumented)
@@ -752,12 +859,14 @@ export interface V2UserMetric {
     loc_added_sum: number;
     loc_deleted_sum: number;
   }>;
+  totals_by_vscode_agent?: V2VscodeAgentTotals;
   // (undocumented)
   used_agent: boolean;
   // (undocumented)
   used_chat: boolean;
   // (undocumented)
   used_cli: boolean;
+  used_vscode_agent?: boolean;
   // (undocumented)
   user_id: number;
   // (undocumented)
@@ -768,6 +877,7 @@ export interface V2UserMetric {
 
 // @public (undocumented)
 export interface V2UserMetricRow {
+  ai_credits_used?: number;
   // (undocumented)
   code_acceptance_activity_count: number;
   // (undocumented)
@@ -794,6 +904,171 @@ export interface V2UserMetricRow {
   used_chat: boolean;
   // (undocumented)
   used_cli: boolean;
+  used_vscode_agent: boolean;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2UserMetricsByFeatureRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2UserMetricsByIdeRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  ide: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2UserMetricsByLanguageFeatureRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2UserMetricsByLanguageModelRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  model_id: string;
+  // (undocumented)
+  request_count: number;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public
+export interface V2UserMetricsByModelFeatureRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: MetricsScope;
+  // (undocumented)
+  model_id: string;
   // (undocumented)
   user_id: number;
   // (undocumented)
@@ -838,5 +1113,13 @@ export interface V2UserTeamRow {
   user_id: number;
   // (undocumented)
   user_login: string;
+}
+
+// @public
+export interface V2VscodeAgentTotals {
+  // (undocumented)
+  session_count: number;
+  // (undocumented)
+  total_user_messages: number;
 }
 ```

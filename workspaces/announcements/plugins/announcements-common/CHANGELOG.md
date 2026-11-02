@@ -1,5 +1,29 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.26.0
+
+### Minor Changes
+
+- 7f450a0: Backstage version bump to v1.56.2
+
+## 0.25.0
+
+### Minor Changes
+
+- 215ed63: Backstage version bump to v1.55.1
+
+## 0.24.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+## 0.23.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
 ## 0.22.0
 
 ### Minor Changes

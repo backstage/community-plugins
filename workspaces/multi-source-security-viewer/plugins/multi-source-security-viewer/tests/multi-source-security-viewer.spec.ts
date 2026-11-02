@@ -18,32 +18,20 @@ import { runAccessibilityTests } from './accessibility';
 
 test.describe('Multi-Source Security Viewer', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate and login as guest
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Enter' }).click();
+    page.on('dialog', async dialog => {
+      await dialog.accept();
+    });
+    // Navigate to entity page — sign-in page appears at this URL
+    await page.goto('/catalog/default/component/backstage-multi-ci');
+    await page.getByRole('button', { name: 'Enter' }).click({ timeout: 30000 });
+    await page.waitForLoadState('networkidle', { timeout: 60000 });
+    // Open the CI/CD Security entity content (link in the new frontend system)
+    await page.getByRole('link', { name: 'CI/CD Security' }).click();
   });
 
   test('Should display basic UI elements and CI/CD tabs', async ({
     page,
   }, testInfo) => {
-    // Navigate to Multi Source Security Viewer
-    await expect(page.getByLabel('Multi Source Security Viewer')).toContainText(
-      'Multi Source Security Viewer',
-    );
-
-    await runAccessibilityTests(
-      page,
-      testInfo,
-      'accessibility-scan-results.json',
-      {
-        skipViolationsAssert: true,
-      },
-    );
-    await page
-      .getByRole('link', { name: 'Multi Source Security Viewer' })
-      .click();
-    await expect(page.locator('h1')).toContainText('demo-sevice');
-    await expect(page.getByTestId('header-tab-0')).toContainText('CI/CD');
     await expect(page.locator('h4')).toContainText('Security Information');
 
     // Verify CI/CD tool tabs are visible
@@ -60,6 +48,15 @@ test.describe('Multi-Source Security Viewer', () => {
     await expect(page.getByTestId('FilterAltIcon')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Name' })).toBeVisible();
     await expect(page.getByTestId('SearchIcon')).toBeVisible();
+
+    await runAccessibilityTests(
+      page,
+      testInfo,
+      'accessibility-scan-results.json',
+      {
+        skipViolationsAssert: true,
+      },
+    );
   });
 
   test('Should search and display pipeline runs table', async ({ page }) => {

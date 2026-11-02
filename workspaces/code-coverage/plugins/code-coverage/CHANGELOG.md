@@ -1,5 +1,18 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.15.1
+
+### Patch Changes
+
+- cf85f5f: The coverage history card now shows the difference between the oldest and latest coverage (for example `+9.29%`) instead of the relative change rounded down, uses a single 0–100% axis, and labels the series Line and Branch.
+- cf85f5f: Folder coverage in the file explorer is now covered lines divided by tracked lines, matching the overall line coverage. It was the unweighted average of the folder's files, so small, well-covered files inflated it. File coverage is no longer rounded down.
+
+## 0.15.0
+
+### Minor Changes
+
+- 3fe8247: Backstage version bump to v1.54.5
+
 ## 0.14.1
 
 ### Patch Changes

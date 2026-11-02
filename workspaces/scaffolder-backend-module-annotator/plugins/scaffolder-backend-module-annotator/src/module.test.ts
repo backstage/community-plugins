@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
-import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
+import {
+  scaffolderActionsExtensionPoint,
+  TemplateAction,
+} from '@backstage/plugin-scaffolder-node';
 
 import { scaffolderCustomActionsScaffolderModule } from './module';
 
 describe('scaffolderCustomActionsScaffolderModule', () => {
-  it('registers all four actions via the scaffolder extension point', async () => {
-    const registeredIds: string[] = [];
+  const registerActions = async () => {
+    const registered: TemplateAction[] = [];
     const extensionPoint = {
-      addActions: (...actions: { id: string }[]) => {
-        registeredIds.push(...actions.map(action => action.id));
+      addActions: (...actions: TemplateAction[]) => {
+        registered.push(...actions);
       },
     };
 
@@ -35,6 +38,13 @@ describe('scaffolderCustomActionsScaffolderModule', () => {
       ],
     });
 
+    return registered;
+  };
+
+  it('registers all four actions via the scaffolder extension point', async () => {
+    const registered = await registerActions();
+    const registeredIds = registered.map(action => action.id);
+
     expect(registeredIds).toHaveLength(4);
     expect(registeredIds).toEqual(
       expect.arrayContaining([
@@ -44,5 +54,31 @@ describe('scaffolderCustomActionsScaffolderModule', () => {
         'catalog:template:version',
       ]),
     );
+  });
+
+  it('exposes action-oriented descriptions and examples for Installed Actions', async () => {
+    const registered = await registerActions();
+
+    expect(registered).toHaveLength(4);
+
+    const factoryWording = /Creates a new .*[Ss]caffolder action/;
+    const issues = registered.map(action => ({
+      id: action.id,
+      description: action.description,
+      awkwardDescription: factoryWording.test(action.description ?? ''),
+      exampleCount: action.examples?.length ?? 0,
+    }));
+
+    expect({
+      awkwardDescriptions: issues
+        .filter(issue => issue.awkwardDescription)
+        .map(issue => issue.id),
+      missingExamples: issues
+        .filter(issue => issue.exampleCount === 0)
+        .map(issue => issue.id),
+    }).toEqual({
+      awkwardDescriptions: [],
+      missingExamples: [],
+    });
   });
 });

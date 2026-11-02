@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { parseKialiValidations } from '@backstage-community/plugin-kiali-common/func';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import {
+  AceValidations,
+  DRAWER,
   IstioConfigDetails,
   ValidationTypes,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
+import jsYaml from 'js-yaml';
 import { default as React } from 'react';
+import AceEditor from 'react-ace';
+import 'ace-builds/src-noconflict/ace';
+import 'ace-builds/src-noconflict/mode-yaml';
+import 'ace-builds/src-noconflict/theme-eclipse';
+import 'ace-builds/src-noconflict/theme-twilight';
 import { HistoryManager } from '../../app/History';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
@@ -50,6 +61,16 @@ const healthIconStyle = kialiStyle({
   verticalAlign: '-0.075rem',
 });
 
+const safeDumpOptions = {
+  styles: {
+    '!!null': 'canonical', // dump null as ~
+  },
+};
+
+const yamlEditorStyle = {
+  border: `1px solid ${PFColors.BorderColor200}`,
+};
+
 export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
   props: IstioConfigDescriptionProps,
 ) => {
@@ -59,6 +80,16 @@ export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
   const istioValidations = props.istioConfig?.validation;
   const statusMessages = istioObject?.status?.validationMessages;
   const cluster = HistoryManager.getClusterName();
+  const muiTheme = useTheme();
+  const editorTheme =
+    muiTheme.palette.type === 'light' ? 'eclipse' : 'twilight';
+  const yamlSource = istioObject
+    ? jsYaml.dump(istioObject, safeDumpOptions)
+    : '';
+  const editorValidations: AceValidations = parseKialiValidations(
+    yamlSource,
+    props.istioConfig?.validation,
+  );
 
   const objectReferences = (): any[] => {
     const details: IstioConfigDetails =
@@ -88,7 +119,7 @@ export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
     <Card
       id="IstioConfigDescriptionCard"
       data-test="istio-config-description-card"
-      style={{ height: cardsHeight }}
+      style={{ height: props.view === DRAWER ? 'auto' : cardsHeight }}
     >
       <CardHeader
         title={
@@ -173,6 +204,26 @@ export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
             cluster={cluster}
             view={props.view}
           />
+        )}
+
+        {props.view === DRAWER && yamlSource && (
+          <div style={{ marginTop: '1rem' }}>
+            <AceEditor
+              mode="yaml"
+              setOptions={{ useWorker: false }}
+              theme={editorTheme}
+              fontSize={14}
+              width="100%"
+              height="320px"
+              showGutter
+              readOnly
+              wrapEnabled
+              value={yamlSource}
+              annotations={editorValidations.annotations}
+              markers={editorValidations.markers}
+              style={yamlEditorStyle}
+            />
+          </div>
         )}
       </CardContent>
     </Card>

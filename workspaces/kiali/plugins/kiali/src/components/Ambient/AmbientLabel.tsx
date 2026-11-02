@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 import { Chip, Tooltip } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 import { default as React } from 'react';
+import { getChipStyle } from '../../styles/StyleUtils';
 
 type AmbientLabelProps = {
   tooltip: boolean;
@@ -24,60 +26,48 @@ type AmbientLabelProps = {
 
 const AmbientComponent = 'ztunnel';
 
-export class AmbientLabel extends React.Component<AmbientLabelProps, {}> {
-  render() {
-    const msg = 'Component is labeled as part of the Istio Ambient Mesh';
+export const AmbientLabel = (props: AmbientLabelProps) => {
+  const theme = useTheme();
+  const chipStyle = getChipStyle(theme);
+  const msg = 'Component is labeled as part of the Istio Ambient Mesh';
 
-    const tooltipContent = (
-      <div style={{ textAlign: 'left' }}>
-        <div>
-          {msg}
-          <br />
-        </div>
+  const tooltipContent = (
+    <div style={{ textAlign: 'left' }}>
+      <div>
+        {msg}
+        <br />
       </div>
-    );
-    const iconComponent = (
-      <span style={this.props.style}>
-        <Chip
-          style={{ marginLeft: 5, backgroundColor: '#e7f1fa' }}
-          size="small"
-          label={AmbientComponent}
-        />
-        {this.props.waypoint && (
-          <Chip
-            style={{ marginLeft: 5, backgroundColor: '#e7f1fa' }}
-            size="small"
-            label="Waypoint"
-          />
-        )}
-        {!this.props.tooltip && (
-          <span style={{ marginLeft: '8px' }}>
-            {msg}
-            <Tooltip
-              key="tooltip_ambient_label"
-              placement="top"
-              title={tooltipContent}
-            >
-              <Chip
-                style={{ marginLeft: 5, backgroundColor: '#e7f1fa' }}
-                size="small"
-                label={AmbientComponent}
-              />
-            </Tooltip>
-          </span>
-        )}
-      </span>
-    );
-    return this.props.tooltip ? (
-      <Tooltip
-        key="tooltip_ambient_label"
-        placement="right"
-        title={tooltipContent}
-      >
-        <span>{iconComponent}</span>
-      </Tooltip>
-    ) : (
-      iconComponent
-    );
-  }
-}
+    </div>
+  );
+  const iconComponent = (
+    <span style={props.style}>
+      <Chip style={chipStyle} size="small" label={AmbientComponent} />
+      {props.waypoint && (
+        <Chip style={chipStyle} size="small" label="Waypoint" />
+      )}
+      {!props.tooltip && (
+        <span style={{ marginLeft: '8px' }}>
+          {msg}
+          <Tooltip
+            key="tooltip_ambient_label"
+            placement="top"
+            title={tooltipContent}
+          >
+            <Chip style={chipStyle} size="small" label={AmbientComponent} />
+          </Tooltip>
+        </span>
+      )}
+    </span>
+  );
+  return props.tooltip ? (
+    <Tooltip
+      key="tooltip_ambient_label"
+      placement="right"
+      title={tooltipContent}
+    >
+      <span>{iconComponent}</span>
+    </Tooltip>
+  ) : (
+    iconComponent
+  );
+};

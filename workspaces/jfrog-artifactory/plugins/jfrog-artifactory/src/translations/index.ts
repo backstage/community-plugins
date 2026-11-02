@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import {
+  createFrontendModule,
+  createTranslationResource,
+} from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { jfrogArtifactoryTranslationRef } from './ref';
 
 /**
@@ -32,3 +36,22 @@ export const jfrogArtifactoryTranslations = createTranslationResource({
 });
 
 export { jfrogArtifactoryTranslationRef };
+
+/**
+ * App module that automatically registers the JFrog Artifactory plugin translations.
+ *
+ * @public
+ */
+export const jfrogArtifactoryTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'jfrog-artifactory-translations',
+      params: {
+        resource: jfrogArtifactoryTranslations,
+      },
+    }),
+  ],
+});
+
+export default jfrogArtifactoryTranslationsModule;

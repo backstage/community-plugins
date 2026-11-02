@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  Entity,
+  parseEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import {
@@ -76,14 +80,16 @@ const useStyles = makeStyles({
 export type EntityPlaylistDialogProps = {
   open: boolean;
   onClose: () => void;
+  entity?: Entity;
 };
 
-export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
-  const { open, onClose } = props;
+const EntityPlaylistDialogInner = (
+  props: Omit<EntityPlaylistDialogProps, 'entity'> & { entity: Entity },
+) => {
+  const { open, onClose, entity } = props;
 
   const classes = useStyles();
   const navigate = useNavigate();
-  const { entity } = useAsyncEntity();
   const alertApi = useApi(alertApiRef);
   const playlistApi = useApi(playlistApiRef);
   const playlistRoute = useRouteRef(playlistRouteRef);
@@ -128,8 +134,9 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
       try {
         const playlistId = await playlistApi.createPlaylist(playlist);
         await playlistApi.addPlaylistEntities(playlistId, [
-          stringifyEntityRef(entity!),
+          stringifyEntityRef(entity),
         ]);
+        closeDialog();
         navigate(playlistRoute({ playlistId }));
         alertApi.post({
           message: `Added playlist '${playlist.name}'`,
@@ -145,6 +152,7 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
     },
     [
       alertApi,
+      closeDialog,
       entity,
       navigate,
       playlistApi,
@@ -157,7 +165,7 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
     async (playlist: Playlist) => {
       try {
         await playlistApi.addPlaylistEntities(playlist.id, [
-          stringifyEntityRef(entity!),
+          stringifyEntityRef(entity),
         ]);
         closeDialog();
         alertApi.post({
@@ -222,7 +230,7 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
               error={error}
             />
           )}
-          {playlists && entity && (
+          {playlists && (
             <List>
               {createAllowed && (
                 <ListItem
@@ -291,4 +299,22 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
       />
     </>
   );
+};
+
+const EntityPlaylistDialogFromContext = (
+  props: Omit<EntityPlaylistDialogProps, 'entity'>,
+) => {
+  const { entity } = useAsyncEntity();
+  if (!entity) {
+    return null;
+  }
+
+  return <EntityPlaylistDialogInner {...props} entity={entity} />;
+};
+
+export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
+  if (props.entity !== undefined) {
+    return <EntityPlaylistDialogInner {...props} entity={props.entity} />;
+  }
+  return <EntityPlaylistDialogFromContext {...props} />;
 };

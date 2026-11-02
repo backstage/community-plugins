@@ -15,16 +15,20 @@ Day-to-day changes do **not** require the full workspace Backstage app (`package
 ```console
 cd workspaces/3scale
 yarn install
-yarn workspace @backstage-community/plugin-3scale-backend start
+cp plugins/3scale-backend/app-config.example.yaml plugins/3scale-backend/app-config.local.yaml
+yarn workspace @backstage-community/plugin-3scale-backend start \
+  --config app-config.local.yaml
 ```
+
+(`--config` paths are resolved from the plugin package directory.)
 
 The harness starts a minimal backend with `@backstage/plugin-catalog-backend` and this module (`dev/index.ts`).
 
-### Configuration
+Copy [app-config.example.yaml](./app-config.example.yaml) to `app-config.local.yaml` in this package before starting. That file is gitignored (`*.local.yaml`) so local tokens and overrides are not committed.
 
-Copy [app-config.example.yaml](./app-config.example.yaml) to `app-config.local.yaml` in this package before starting the plugin harness. That file is gitignored (`*.local.yaml`) so local tokens and overrides are not committed.
+[`app-config.example.yaml`](./app-config.example.yaml) is the **minimal** config required to run the dev harness (listen port, static auth, and 3scale provider settings). Prefer starting with `--config app-config.local.yaml` as shown above.
 
-For `yarn workspace @backstage-community/plugin-3scale-backend start`, config in this package is enough. If you use the full workspace app (`yarn start` from `workspaces/3scale`), put overlapping overrides in the workspace root `app-config.local.yaml` instead.
+By default (without `--config`), `yarn start` loads the fuller [`../../app-config.yaml`](../../app-config.yaml) from the workspace root instead. That file is for the optional full Backstage app (`packages/app`, `packages/backend`) and is not required for this harness. Optional overrides can go in an untracked `app-config.local.yaml` next to whichever config file you pass (or at the workspace root when relying on the default).
 
 Set environment variables before starting:
 
@@ -52,7 +56,7 @@ When reviewing dependency updates, read the relevant upstream release notes and 
 
 ## Manual smoke checklist
 
-After `yarn workspace @backstage-community/plugin-3scale-backend start` with valid `THREESCALE_*` env vars, expect log lines similar to:
+After starting the harness with `--config app-config.local.yaml` and valid `THREESCALE_*` env vars, expect log lines similar to:
 
 ```log
 catalog info Discovering ApiEntities from 3scale <baseUrl> type=plugin target=ThreeScaleApiEntityProvider:dev

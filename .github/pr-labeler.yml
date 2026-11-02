@@ -414,6 +414,10 @@ workspace/vault:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/vault/**']
 
+workspace/akeyless:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/akeyless/**']
+
 workspace/wheel-of-names:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/wheel-of-names/**']

@@ -40,6 +40,7 @@ const titleContainerSx = {
   display: 'flex',
   alignItems: 'center',
   gap: 1,
+  color: 'text.primary',
 };
 
 const closeButtonSx: SxProps<Theme> = {

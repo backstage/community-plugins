@@ -1,5 +1,12 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.14.0
+
+### Minor Changes
+
+- 89a4ec4: Add support for the new frontend system through the package's default export.
+- b873661: Backstage version bump to v1.55.3
+
 ## 0.13.2
 
 ### Patch Changes

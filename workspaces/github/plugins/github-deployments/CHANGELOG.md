@@ -1,5 +1,29 @@
 # @backstage-community/plugin-github-deployments
 
+## 1.5.1
+
+### Patch Changes
+
+- cb2c31b: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 1.5.0
+
+### Minor Changes
+
+- 5956bca: Backstage version bump to v1.55.1
+
+## 1.4.0
+
+### Minor Changes
+
+- 00f747c: Backstage version bump to v1.54.5
+
+## 1.3.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filters to use the modern object form.
+
 ## 1.3.0
 
 ### Minor Changes

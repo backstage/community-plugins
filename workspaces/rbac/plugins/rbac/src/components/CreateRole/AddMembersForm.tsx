@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useDebounce } from 'react-use';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
+import { useApi } from '@backstage/core-plugin-api';
 
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete, {
+  AutocompleteRenderOptionState,
+} from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
@@ -25,8 +29,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
+import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity } from '../../types';
-import { useLanguage } from '../../hooks/useLanguage';
 import {
   getChildGroupsCount,
   getMembersCount,
@@ -74,14 +78,33 @@ const getDescription = (
     : undefined;
 };
 
+const toSelectedMember = (
+  member: MemberEntity,
+  index: number,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+): SelectedMember => {
+  const tag =
+    member.metadata.etag ?? `${member.metadata.name}-${member.kind}-${index}`;
+  return {
+    id: tag,
+    label: member.spec?.profile?.displayName ?? member.metadata.name,
+    description: getDescription(member, t),
+    etag: tag,
+    type: member.kind,
+    namespace: member.metadata.namespace,
+    members: getMembersCount(member),
+    ref: stringifyEntityRef(member),
+  };
+};
+
 export const AddMembersForm = ({
   selectedMembers,
   selectedMembersError,
   setFieldValue,
   membersData,
 }: AddMembersFormProps) => {
-  const locale = useLanguage();
   const { t } = useTranslation();
+  const rbacApi = useApi(rbacApiRef);
   const [search, setSearch] = useState<string>('');
   const [selectedMember, setSelectedMember] =
     useState<SelectedMember[]>(selectedMembers);
@@ -89,47 +112,100 @@ export const AddMembersForm = ({
     setSelectedMember(selectedMembers);
   }, [selectedMembers]);
 
+  const [searchResults, setSearchResults] = useState<MemberEntity[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  const performSearch = useCallback(
+    async (term: string) => {
+      setSearchLoading(true);
+      setSearchError(null);
+      try {
+        const result = await rbacApi.searchMembers(term);
+        if (Array.isArray(result)) {
+          setSearchResults(result);
+        } else {
+          setSearchError(
+            t('common.errorFetchingUserGroups' as any, { error: '' }),
+          );
+        }
+      } catch (err) {
+        setSearchError(err instanceof Error ? err.message : String(err));
+      } finally {
+        setSearchLoading(false);
+      }
+    },
+    [rbacApi, t],
+  );
+
+  useDebounce(
+    () => {
+      performSearch(search);
+    },
+    300,
+    [search],
+  );
+
   const membersOptions: SelectedMember[] = useMemo(() => {
-    return membersData.members
-      ? membersData.members.map((member: MemberEntity, index: number) => {
-          const tag =
-            member.metadata.etag ??
-            `${member.metadata.name}-${member.kind}-${index}`;
-          return {
-            id: tag,
-            label: member.spec?.profile?.displayName ?? member.metadata.name,
-            description: getDescription(member, t),
-            etag: tag,
-            type: member.kind,
-            namespace: member.metadata.namespace,
-            members: getMembersCount(member),
-            ref: stringifyEntityRef(member),
-          };
-        })
-      : ([] as SelectedMember[]);
-  }, [membersData.members, t]);
-
-  const filteredMembers = useMemo(() => {
-    if (search) {
-      return membersOptions
-        .filter(m =>
-          m.label
-            .toLocaleLowerCase(locale)
-            .includes(search.toLocaleLowerCase(locale)),
-        )
-        .slice(0, 99);
+    const searchEntities = Array.isArray(searchResults) ? searchResults : [];
+    const initialEntities = membersData.members ?? [];
+    const primary = search ? searchEntities : initialEntities;
+    const secondary = search ? initialEntities : searchEntities;
+    const seen = new Set<string>();
+    const unique: MemberEntity[] = [];
+    for (const entity of primary) {
+      const ref = stringifyEntityRef(entity);
+      if (!seen.has(ref)) {
+        seen.add(ref);
+        unique.push(entity);
+      }
     }
+    for (const entity of secondary) {
+      const ref = stringifyEntityRef(entity);
+      if (!seen.has(ref)) {
+        seen.add(ref);
+        unique.push(entity);
+      }
+    }
+    return unique.map((member, index) => toSelectedMember(member, index, t));
+  }, [searchResults, membersData.members, search, t]);
 
-    return membersOptions.slice(0, 99);
-  }, [membersOptions, search, locale]);
+  const handleIsOptionEqualToValue = useCallback(
+    (option: SelectedMember, value: SelectedMember) =>
+      option.etag === value.etag,
+    [],
+  );
 
-  const handleIsOptionEqualToValue = (
-    option: SelectedMember,
-    value: SelectedMember,
-  ) =>
-    value.etag
-      ? option.etag === value.etag
-      : selectedMember?.[0].etag === value.etag;
+  const handleGetOptionLabel = useCallback(
+    (option: SelectedMember) => option.label ?? '',
+    [],
+  );
+
+  const handleChange = useCallback(
+    (_e: React.SyntheticEvent, value: SelectedMember[]) => {
+      setSelectedMember(value);
+      setFieldValue('selectedMembers', value, false);
+    },
+    [setFieldValue],
+  );
+
+  const handleInputChange = useCallback(
+    (_e: React.SyntheticEvent, newSearch: string, reason: string) => {
+      if (reason === 'input') setSearch(newSearch);
+    },
+    [],
+  );
+
+  const handleFilterOptions = useCallback((x: SelectedMember[]) => x, []);
+
+  const handleRenderOption = useCallback(
+    (
+      props: React.HTMLAttributes<HTMLLIElement>,
+      option: SelectedMember,
+      state: AutocompleteRenderOptionState,
+    ) => <MembersDropdownOption props={props} option={option} state={state} />,
+    [],
+  );
 
   return (
     <>
@@ -140,25 +216,19 @@ export const AddMembersForm = ({
         data-testid="users-and-groups-autocomplete"
         sx={{ width: '30%' }}
         multiple
-        options={filteredMembers || []}
-        getOptionLabel={(option: SelectedMember) => option.label ?? ''}
+        options={membersOptions}
+        getOptionLabel={handleGetOptionLabel}
         isOptionEqualToValue={handleIsOptionEqualToValue}
-        loading={membersData.loading}
+        loading={searchLoading}
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}
-        onChange={(_e, value: SelectedMember[]) => {
-          setSelectedMember(value);
-          setFieldValue('selectedMembers', value);
-        }}
+        onChange={handleChange}
         renderTags={() => ''}
         inputValue={search}
-        onInputChange={(_e, newSearch: string, reason) =>
-          reason === 'input' && setSearch(newSearch)
-        }
-        renderOption={(props, option: SelectedMember, state) => (
-          <MembersDropdownOption props={props} option={option} state={state} />
-        )}
+        onInputChange={handleInputChange}
+        filterOptions={handleFilterOptions}
+        renderOption={handleRenderOption}
         noOptionsText={t('common.noUsersAndGroupsFound')}
         clearOnEscape
         renderInput={params => (
@@ -199,6 +269,7 @@ export const AddMembersForm = ({
         )}
       />
       <br />
+      {searchError && <FormHelperText error>{searchError}</FormHelperText>}
       {membersData.error?.message && (
         <FormHelperText error={!!membersData.error}>
           {t('common.errorFetchingUserGroups' as any, {

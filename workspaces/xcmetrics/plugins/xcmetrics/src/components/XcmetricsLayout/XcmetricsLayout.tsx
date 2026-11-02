@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactChild } from 'react';
+import type { ReactNode } from 'react';
 import {
   Content,
   Header,
@@ -28,7 +28,7 @@ import { BuildList } from '../BuildList';
 export interface TabConfig {
   path: string;
   title: string;
-  component: ReactChild;
+  component: ReactNode;
 }
 
 const TABS: TabConfig[] = [
@@ -44,18 +44,27 @@ const TABS: TabConfig[] = [
   },
 ];
 
+const XcmetricsTabs = () => (
+  <TabbedLayout>
+    {TABS.map(tab => (
+      <TabbedLayout.Route key={tab.path} path={tab.path} title={tab.title}>
+        <Content>{tab.component}</Content>
+      </TabbedLayout.Route>
+    ))}
+  </TabbedLayout>
+);
+
+// Used by the old frontend system — includes the full page shell
 export const XcmetricsLayout = () => (
   <Page themeId="tool">
     <Header title="XCMetrics" subtitle="Dashboard">
       <HeaderLabel label="Owner" value="Spotify" />
       <HeaderLabel label="Lifecycle" value="Alpha" />
     </Header>
-    <TabbedLayout>
-      {TABS.map(tab => (
-        <TabbedLayout.Route key={tab.path} path={tab.path} title={tab.title}>
-          <Content>{tab.component}</Content>
-        </TabbedLayout.Route>
-      ))}
-    </TabbedLayout>
+    <XcmetricsTabs />
   </Page>
 );
+
+// Used by the new frontend system — no page shell, just content.
+// The framework's PageLayout/PluginHeader provides the outer page shell.
+export const NfsXcmetricsLayout = () => <XcmetricsTabs />;

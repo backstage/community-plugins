@@ -68,25 +68,34 @@ export function CopilotUsageSummary({
         )
       : 0;
 
+  const vscodeAgentActiveUsers = latest?.daily_active_vscode_agent_users ?? 0;
+
   const mostUsedModel = getMostUsedChatModel(modelFeature);
 
   return (
     <Grid.Root columns="12" gap="4">
-      <Grid.Item colSpan={{ initial: '12', md: '4' }}>
+      <Grid.Item colSpan={{ initial: '12', md: '3' }}>
         <StatCard
           title="IDE Active Users"
           value={ideActiveUsers.toLocaleString()}
           subtitle="Monthly active"
         />
       </Grid.Item>
-      <Grid.Item colSpan={{ initial: '12', md: '4' }}>
+      <Grid.Item colSpan={{ initial: '12', md: '3' }}>
         <StatCard
           title="Agent Adoption"
           value={`${agentAdoption}%`}
           subtitle="of active users"
         />
       </Grid.Item>
-      <Grid.Item colSpan={{ initial: '12', md: '4' }}>
+      <Grid.Item colSpan={{ initial: '12', md: '3' }}>
+        <StatCard
+          title="VS Code Agent Users"
+          value={vscodeAgentActiveUsers.toLocaleString()}
+          subtitle="Daily active"
+        />
+      </Grid.Item>
+      <Grid.Item colSpan={{ initial: '12', md: '3' }}>
         <StatCard title="Most Used Chat Model" value={mostUsedModel} />
       </Grid.Item>
     </Grid.Root>

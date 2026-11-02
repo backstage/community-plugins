@@ -1,0 +1,24 @@
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          subject: user:default/guest
+  actions:
+    pluginSources:
+      - backstage-community-argocd
+
+argocd:
+  localDevelopment: true
+  username: ${ARGOCD_USERNAME}
+  password: ${ARGOCD_PASSWORD}
+  appLocatorMethods:
+    - type: 'config'
+      instances:
+        - name: primary
+          url: ${ARGOCD_URL}
+          token: ${ARGOCD_AUTH_TOKEN}

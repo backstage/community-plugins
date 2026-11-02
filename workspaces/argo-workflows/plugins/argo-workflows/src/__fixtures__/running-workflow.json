@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "name": "integration-tests-v43",
+    "namespace": "default",
+    "uid": "wf-uid-002",
+    "labels": { "app": "my-service", "env": "staging" },
+    "creationTimestamp": "2026-04-29T14:30:00Z"
+  },
+  "status": {
+    "phase": "Running",
+    "startedAt": "2026-04-29T14:30:05Z",
+    "nodes": {
+      "integration-tests-v43": {
+        "id": "integration-tests-v43",
+        "name": "integration-tests-v43",
+        "displayName": "integration-tests-v43",
+        "type": "Steps",
+        "phase": "Running",
+        "startedAt": "2026-04-29T14:30:05Z",
+        "children": ["setup-step", "test-api-step"]
+      },
+      "setup-step": {
+        "id": "setup-step",
+        "name": "integration-tests-v43.setup",
+        "displayName": "Setup Environment",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-29T14:30:10Z",
+        "finishedAt": "2026-04-29T14:31:00Z",
+        "children": ["test-api-step", "test-ui-step"],
+        "templateName": "setup-env"
+      },
+      "test-api-step": {
+        "id": "test-api-step",
+        "name": "integration-tests-v43.test-api",
+        "displayName": "API Tests",
+        "type": "Pod",
+        "phase": "Running",
+        "startedAt": "2026-04-29T14:31:05Z",
+        "templateName": "run-api-tests",
+        "message": "Running test suite..."
+      },
+      "test-ui-step": {
+        "id": "test-ui-step",
+        "name": "integration-tests-v43.test-ui",
+        "displayName": "UI Tests",
+        "type": "Pod",
+        "phase": "Pending",
+        "templateName": "run-ui-tests"
+      }
+    }
+  }
+}

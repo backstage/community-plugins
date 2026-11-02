@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 export { TopologyComponent } from './TopologyComponent';
+export { TopologyEntityContent } from './TopologyEntityContent';
 export { TopologyWorkloadView } from './TopologyWorkloadView';
 export { TopologyEmptyState } from './TopologyEmptyState';

@@ -43,7 +43,6 @@ import {
   csvPermFile,
   mockAuthService,
   mockClientKnex,
-  pluginMetadataCollectorMock,
   roleMetadataStorageMock,
   catalogMock,
   mockUserInfoService,
@@ -54,7 +53,6 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
-import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import {
   clearAuditorMock,
@@ -65,7 +63,7 @@ type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
 /**
  * Group, user, role, and permission information can be found under `__fixtures__/data/hierarchy/`
- * More information can be found at `examples/manual-tests/rbac` at the root of the workspace
+ * More information can be found at `__fixtures__/rbac` in the rbac-backend plugin
  * Included is a txt file with charts for the hierarchy levels for visualization
  */
 describe('Policy checks for users and groups', () => {
@@ -1112,7 +1110,6 @@ async function newPermissionPolicy(
     enfDelegate,
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
-    pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockUserInfoService,
     mockAuthService,
   );

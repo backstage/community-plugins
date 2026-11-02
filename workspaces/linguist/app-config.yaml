@@ -18,6 +18,18 @@ backend:
   database:
     client: better-sqlite3
     connection: ':memory:'
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${MCP_TOKEN}
+          subject: mcp-clients
+        accessRestrictions:
+          - plugin: mcp-actions
+          - plugin: linguist
+  actions:
+    pluginSources:
+      - linguist
 
 integrations:
   github:

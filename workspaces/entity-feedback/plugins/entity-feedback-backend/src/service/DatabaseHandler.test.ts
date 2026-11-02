@@ -219,6 +219,43 @@ describe('DatabaseHandler', () => {
         );
       });
 
+      it('getRatings replaces rather than stacks when a user re-votes within the same timestamp', async () => {
+        // Same entity, same user, same timestamp (down to the second) -- this
+        // is what happens when a user casts a vote and immediately changes
+        // their mind, since SQLite's CURRENT_TIMESTAMP only has 1-second
+        // resolution.
+        await knex('ratings').insert([
+          {
+            entity_ref: 'component:default/service',
+            user_ref: 'user:default/foo',
+            rating: 'LIKE',
+            timestamp: '2004-11-19 08:23:54',
+          },
+          {
+            entity_ref: 'component:default/service',
+            user_ref: 'user:default/foo',
+            rating: 'DISLIKE',
+            timestamp: '2004-11-19 08:23:54',
+          },
+        ]);
+
+        const ratings = await dbHandler.getRatings('component:default/service');
+        expect(ratings).toEqual([
+          { userRef: 'user:default/foo', rating: 'DISLIKE' },
+        ]);
+
+        const aggregates = await dbHandler.getRatingsAggregates([
+          'component:default/service',
+        ]);
+        expect(aggregates).toEqual([
+          {
+            entityRef: 'component:default/service',
+            rating: 'DISLIKE',
+            count: 1,
+          },
+        ]);
+      });
+
       it('recordResponse', async () => {
         const newResponse = {
           userRef: 'user:default/me',

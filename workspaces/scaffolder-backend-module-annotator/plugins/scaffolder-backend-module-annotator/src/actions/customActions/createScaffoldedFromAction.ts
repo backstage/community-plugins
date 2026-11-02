@@ -22,7 +22,7 @@ import { examples } from './createScaffoldedFromAction.examples';
 export const createScaffoldedFromAction = () => {
   return createAnnotatorAction(
     'catalog:scaffolded-from',
-    'Creates a new `catalog:scaffolded-from` scaffolder action to update a catalog-info.yaml with the entityRef of the template that created it.',
+    'Adds `scaffoldedFrom` spec containing the template entityRef to your entity object',
     'Annotating catalog-info.yaml with template entityRef',
     () => {
       return {

@@ -23,7 +23,9 @@ import { mockServices } from '@backstage/backend-test-utils';
 // Mock dependencies
 jest.mock('@backstage/integration');
 jest.mock('git-url-parse');
-jest.mock('@gitbeaker/rest');
+jest.mock('@gitbeaker/rest', () => ({
+  Gitlab: jest.fn(() => ({})),
+}));
 
 describe('GitLabProvider', () => {
   const mockLogger = mockServices.logger.mock();
@@ -478,36 +480,15 @@ describe('GitLabProvider', () => {
   });
 
   describe('createPullRequest', () => {
-    it('should throw error when client creation fails', async () => {
-      // Mock integration that will cause issues downstream
-      const mockIntegration = {
-        gitlab: {
-          byHost: jest.fn().mockReturnValue(undefined),
-        },
-      };
-      (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue(
-        mockIntegration,
-      );
-
-      const filesToUpdate = new Map([['README.md', 'content']]);
-      const templateInfo = {
-        owner: 'test-owner',
-        repo: 'test-repo',
-        name: 'test-template',
-        previousVersion: '1.0.0',
-        currentVersion: '2.0.0',
-        componentName: 'test-component',
-      };
-
-      await expect(
-        provider.createPullRequest(
-          'https://gitlab.com/org/repo',
-          filesToUpdate,
-          templateInfo,
-          null,
-        ),
-      ).rejects.toThrow('GitLab authentication failed');
-    });
+    const filesToUpdate = new Map([['README.md', 'content']]);
+    const templateInfo = {
+      owner: 'test-owner',
+      repo: 'test-repo',
+      name: 'test-template',
+      previousVersion: '1.0.0',
+      currentVersion: '2.0.0',
+      componentName: 'test-component',
+    };
 
     it('should throw error when no integration is configured', async () => {
       const mockIntegration = {
@@ -519,15 +500,24 @@ describe('GitLabProvider', () => {
         mockIntegration,
       );
 
-      const filesToUpdate = new Map([['README.md', 'content']]);
-      const templateInfo = {
-        owner: 'test-owner',
-        repo: 'test-repo',
-        name: 'test-template',
-        previousVersion: '1.0.0',
-        currentVersion: '2.0.0',
-        componentName: 'test-component',
-      };
+      await expect(
+        provider.createPullRequest(
+          'https://gitlab.com/org/repo',
+          filesToUpdate,
+          templateInfo,
+          null,
+        ),
+      ).rejects.toThrow('GitLab authentication failed');
+    });
+
+    it('should throw when the GitLab integration has no token', async () => {
+      (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue({
+        gitlab: {
+          byHost: jest.fn().mockReturnValue({
+            config: {},
+          }),
+        },
+      });
 
       await expect(
         provider.createPullRequest(
@@ -537,6 +527,31 @@ describe('GitLabProvider', () => {
           null,
         ),
       ).rejects.toThrow('GitLab authentication failed');
+    });
+
+    it('should throw when the repository URL cannot be parsed', async () => {
+      const gitUrlParse = require('git-url-parse');
+      gitUrlParse.mockReturnValue({
+        owner: null,
+        name: null,
+      });
+
+      (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue({
+        gitlab: {
+          byHost: jest.fn().mockReturnValue({
+            config: { token: 'gl-token' },
+          }),
+        },
+      });
+
+      await expect(
+        provider.createPullRequest(
+          'https://gitlab.com/org/repo',
+          filesToUpdate,
+          templateInfo,
+          null,
+        ),
+      ).rejects.toThrow('Invalid repository URL');
     });
   });
 });

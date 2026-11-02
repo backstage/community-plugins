@@ -24,8 +24,19 @@ export enum StatusTypes {
 export interface ComponentStatus {
   name: string;
   status: StatusTypes;
-  is_core: boolean;
+  /**
+   * Newer Kiali APIs return camelCase `isCore`.
+   * Older APIs returned snake_case `is_core`.
+   */
+  isCore?: boolean;
+  /** @deprecated Prefer isCore */
+  is_core?: boolean;
+  cluster?: string;
+  meshId?: string;
 }
+
+export const isCoreComponent = (component: ComponentStatus): boolean =>
+  component.isCore ?? component.is_core ?? false;
 
 export interface IstiodResourceThresholds {
   memory: number;

@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 import { servicenowPlugin } from './plugin';
+import { serviceNowApiRef } from './api/ServiceNowBackendClient';
 
 describe('servicenow', () => {
   it('should export plugin', () => {
     expect(servicenowPlugin).toBeDefined();
+  });
+
+  it('should register the ServiceNow API factory', () => {
+    const apiFactories = [...servicenowPlugin.getApis()];
+    const apiIds = apiFactories.map(factory => factory.api.id);
+
+    expect(apiIds).toContain(serviceNowApiRef.id);
   });
 });

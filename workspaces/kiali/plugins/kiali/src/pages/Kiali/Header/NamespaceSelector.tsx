@@ -29,7 +29,13 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const textColor = useHeaderTextColor();
 
-  const allNamespaces = kialiState.namespaces.items || [];
+  const allNamespaces = React.useMemo(
+    () =>
+      [...(kialiState.namespaces.items || [])].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      ),
+    [kialiState.namespaces.items],
+  );
   const activeNamespaceNames = kialiState.namespaces.activeNamespaces.map(
     ns => ns.name,
   );
@@ -136,7 +142,10 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
         multiple
         onChange={handleChange}
         renderValue={selected =>
-          (selected as string[]).filter(v => v !== SELECT_ALL_VALUE).join(', ')
+          (selected as string[])
+            .filter(v => v !== SELECT_ALL_VALUE)
+            .sort((a, b) => a.localeCompare(b))
+            .join(', ')
         }
         MenuProps={MenuProps}
         data-test="namespace-selector"

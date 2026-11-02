@@ -59,14 +59,37 @@ proxy:
       target: 'https://<hostname2>'
 ```
 
-1. Enable the **JFROG ARTIFACTORY** tab on the entity view page in `packages/app/src/components/catalog/EntityPage.tsx`:
+1. Wire the plugin into your Backstage app.
+
+   ##### New frontend system
+
+   If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The JFrog Artifactory entity tab is registered automatically for entities with the `jfrog-artifactory/image-name` annotation.
+
+   ```ts
+   import jfrogArtifactoryPlugin from '@backstage-community/plugin-jfrog-artifactory';
+   import jfrogArtifactoryTranslationsModule from '@backstage-community/plugin-jfrog-artifactory/translations';
+
+   export const app = createApp({
+     features: [
+       // ...
+       jfrogArtifactoryPlugin,
+       jfrogArtifactoryTranslationsModule,
+     ],
+   });
+   ```
+
+   The NFS translations module is exported from `/translations`. `jfrogArtifactoryTranslations` and `jfrogArtifactoryTranslationRef` remain available from both `/translations` and `/alpha`.
+
+   ##### Legacy frontend system
+
+   If you are using the legacy frontend system, import the plugin from the `/legacy` subpath and enable the **JFROG ARTIFACTORY** tab in `packages/app/src/components/catalog/EntityPage.tsx`:
 
    ```ts title="packages/app/src/components/catalog/EntityPage.tsx"
    /* highlight-add-start */
    import {
      isJfrogArtifactoryAvailable,
      JfrogArtifactoryPage,
-   } from '@backstage-community/plugin-jfrog-artifactory';
+   } from '@backstage-community/plugin-jfrog-artifactory/legacy';
 
    /* highlight-add-end */
 
@@ -84,6 +107,20 @@ proxy:
        {/* highlight-add-end */}
      </EntityLayout>
    );
+   ```
+
+   Register translations in `packages/app/src/App.tsx`:
+
+   ```ts title="packages/app/src/App.tsx"
+   import { jfrogArtifactoryTranslations } from '@backstage-community/plugin-jfrog-artifactory/alpha';
+
+   const app = createApp({
+     __experimentalTranslations: {
+       availableLanguages: ['en', 'de', 'fr', 'it', 'es', 'ja'],
+       resources: [jfrogArtifactoryTranslations],
+     },
+     // ...
+   });
    ```
 
 1. Annotate your entity with the following annotations:

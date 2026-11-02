@@ -44,9 +44,9 @@ octopusdeploy:
 
 #### Annotating entities
 
-Add the `octopus.com/project-id` annotation in the catalog descriptor file.
+Add either the `octopus.com/project-id` or `octopus.com/project-slug` annotation in the catalog descriptor file. Octopus Deploy supports both project IDs and slugs in its project endpoints. If both annotations are present, the project ID takes precedence.
 
-To obtain a project's ID you will have to query the Octopus API. In the future we'll add support for using a project's slug as well.
+A project ID can be obtained by querying the Octopus API:
 
 ```yaml
 # catalog-info.yaml
@@ -60,7 +60,7 @@ spec:
   type: service
 ```
 
-If your project is not part of the default space you can add the space ID to the annotation as a prefix. For example:
+Alternatively, use the project's slug:
 
 ```yaml
 # catalog-info.yaml
@@ -69,7 +69,21 @@ kind: Component
 metadata:
   # ...
   annotations:
-    octopus.com/project-id: Spaces-2/Projects-102
+    octopus.com/project-slug: my-project
+spec:
+  type: service
+```
+
+If your project is not part of the default space, prefix the annotation value with the space ID. This works with both project IDs and project slugs:
+
+```yaml
+# catalog-info.yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  # ...
+  annotations:
+    octopus.com/project-slug: Spaces-2/my-project
 spec:
   type: service
 ```

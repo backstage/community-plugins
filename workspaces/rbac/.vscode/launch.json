@@ -15,9 +15,9 @@
       "request": "launch",
       "name": "Debug backend",
       "program": "${workspaceRoot}/node_modules/.bin/backstage-cli",
-      "args": ["repo", "start"],
+      "args": ["package", "start", "--config", "app-config.yaml"],
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}/plugins/rbac-backend"
     },
   ]
 }

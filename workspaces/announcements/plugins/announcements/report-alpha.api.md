@@ -59,10 +59,10 @@ const announcementsPlugin: OverridableFrontendPlugin<
       };
       configInput: {
         max?: number | undefined;
+        category?: string | undefined;
         active?: boolean | undefined;
         current?: boolean | undefined;
         tags?: string[] | undefined;
-        category?: string | undefined;
       };
       output: ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>;
       inputs: {};
@@ -76,11 +76,11 @@ const announcementsPlugin: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'announcements';
       config: {
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined;
       };
       output:
@@ -109,7 +109,11 @@ const announcementsPlugin: OverridableFrontendPlugin<
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
-        filter?: FilterPredicate | ((entity: Entity) => boolean) | undefined;
+        filter?:
+          | string
+          | FilterPredicate
+          | ((entity: Entity) => boolean)
+          | undefined;
         type?: EntityCardType | undefined;
       };
     }>;
@@ -124,9 +128,9 @@ const announcementsPlugin: OverridableFrontendPlugin<
       };
       configInput: {
         category?: string | undefined;
-        defaultInactive?: boolean | undefined;
         hideStartAt?: boolean | undefined;
         markdownRenderer?: 'backstage' | 'md-editor' | undefined;
+        defaultInactive?: boolean | undefined;
         path?: string | undefined;
         title?: string | undefined;
       };

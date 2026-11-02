@@ -23,12 +23,9 @@ import { useTags } from './quay';
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn().mockReturnValue({
-    getSecurityDetails: (
-      _instance: string | undefined,
-      org: string,
-      _repo: string,
-      _digest: string,
-    ) => org,
+    getSecurityDetails: jest
+      .fn()
+      .mockReturnValue({ data: null, status: 'unsupported' }),
     getTags: jest.fn().mockReturnValue({
       tags: [{ name: 'tag1', manifest_digest: 'manifestDigest' }],
     }),
@@ -41,6 +38,7 @@ describe('useTags', () => {
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.data).toHaveLength(1);
+      expect(result.current.data[0].securityStatus).toBe('unsupported');
     });
   });
 

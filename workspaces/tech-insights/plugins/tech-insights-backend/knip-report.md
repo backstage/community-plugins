@@ -4,7 +4,7 @@
 
 | Name | Location          | Severity |
 | :- | :---------------- | :------- |
-| yn | package.json:71:6 | error    |
+| yn | package.json:70:6 | error    |
 
 ## Unused devDependencies (1)
 

@@ -219,7 +219,7 @@ export const CustomADRStatusComponent = () => {
 
 ## Custom ADR formats
 
-By default, this plugin will parse ADRs according to the format specified by the [Markdown Architecture Decision Record (MADR) v2.x template](https://github.com/adr/madr/tree/2.1.2) or the [Markdown Any Decision Record (MADR) 3.x template](https://github.com/adr/madr/tree/3.0.0). If your ADRs are written using a different format, you can apply the following customizations to correctly identify and parse your documents:
+By default, this plugin will parse ADRs according to the format specified by the [Markdown Architecture Decision Record (MADR) v2.x template](https://github.com/adr/madr/tree/2.1.2) or the [Markdown Any Decision Record (MADR) 3.x template](https://github.com/adr/madr/tree/3.0.0). Front matter is only recognised in the MADR 3.x form: a `---` line at the start of the file and a closing line containing only `---`. If your ADRs are written using a different format, you can apply the following customizations to correctly identify and parse your documents:
 
 ### Custom Filename/Path Format
 

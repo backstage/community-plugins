@@ -15,9 +15,10 @@
  */
 
 import { renderInTestApp } from '@backstage/test-utils';
-import { WorkflowRunsTableView } from './WorkflowRunsTable';
-import { WorkflowRun } from '../useWorkflowRuns';
+import { fireEvent } from '@testing-library/react';
 import { rootRouteRef } from '../../routes';
+import { WorkflowRun } from '../useWorkflowRuns';
+import { WorkflowRunsTableView } from './WorkflowRunsTable';
 
 describe('<WorkflowRunsTableView />', () => {
   let runs: WorkflowRun[] = [];
@@ -44,64 +45,32 @@ describe('<WorkflowRunsTableView />', () => {
     ];
   });
 
-  it('row has a link to the run', async () => {
-    const { getByTestId } = await renderInTestApp(
+  const renderTable = () =>
+    renderInTestApp(
       <WorkflowRunsTableView
         loading={false}
-        page={1}
-        pageSize={10}
-        onChangePage={jest.fn()}
-        onChangePageSize={jest.fn()}
         projectName="Backstage"
         retry={jest.fn()}
         runs={runs}
-        total={runs.length}
       />,
       { mountedRoutes: { '/': rootRouteRef } },
     );
 
+  it('row has a link to the run', async () => {
+    const { getByTestId } = await renderTable();
     expect(getByTestId('cell-source')).toHaveAttribute('href', '/run_id_1');
   });
 
   it('row has the time it was created', async () => {
-    const { getByTestId } = await renderInTestApp(
-      <WorkflowRunsTableView
-        loading={false}
-        page={1}
-        pageSize={10}
-        onChangePage={jest.fn()}
-        onChangePageSize={jest.fn()}
-        projectName="Backstage"
-        retry={jest.fn()}
-        runs={runs}
-        total={runs.length}
-      />,
-      { mountedRoutes: { '/': rootRouteRef } },
-    );
-
+    const { getByTestId } = await renderTable();
     expect(getByTestId('cell-created')).toHaveTextContent(
       '02-10-2014 03:01:23',
     );
   });
 
-  it('row with an action to rerun', async () => {
-    const { getByTestId } = await renderInTestApp(
-      <WorkflowRunsTableView
-        loading={false}
-        page={1}
-        pageSize={10}
-        onChangePage={jest.fn()}
-        onChangePageSize={jest.fn()}
-        projectName="Backstage"
-        retry={jest.fn()}
-        runs={runs}
-        total={runs.length}
-      />,
-      { mountedRoutes: { '/': rootRouteRef } },
-    );
-
-    const rerunActionElement = getByTestId('action-rerun');
-    rerunActionElement.click();
+  it('row has an action to rerun', async () => {
+    const { getByTestId } = await renderTable();
+    fireEvent.click(getByTestId('action-rerun'));
     expect(runs[0].rerun).toHaveBeenCalled();
   });
 });

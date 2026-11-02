@@ -22,6 +22,7 @@ import type {
 import { useTheme } from '@material-ui/core/styles';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { default as React } from 'react';
+import { getChartAxisStyles } from './chartTheme';
 
 export const MIN_HEIGHT = 20;
 export const MIN_HEIGHT_YAXIS = 70;
@@ -73,23 +74,19 @@ export const ChartWithLegend = <T extends RichDataPoint>(props: Props<T>) => {
     color: s.color ?? s.legendItem.symbol.fill,
   }));
 
+  const { tickLabelStyle, axisSx } = getChartAxisStyles(theme);
+
   return (
     <div ref={containerRef} style={{ width: '100%' }}>
       <LineChart
         aria-label="Kiali chart"
         width={width}
         height={height}
-        xAxis={[{ data: xData }]}
+        xAxis={[{ data: xData, tickLabelStyle }]}
+        yAxis={[{ tickLabelStyle }]}
         series={series}
         slotProps={{ legend: { hidden: true } }}
-        sx={{
-          '& .MuiChartsAxis-tickLabel': {
-            fill: theme.palette.type === 'dark' ? '#dcdcdc' : '#000',
-          },
-          '& .MuiChartsAxis-label': {
-            fill: theme.palette.type === 'dark' ? '#dcdcdc' : '#000',
-          },
-        }}
+        sx={axisSx}
       />
     </div>
   );

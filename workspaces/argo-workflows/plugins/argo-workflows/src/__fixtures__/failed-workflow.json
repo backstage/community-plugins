@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "name": "deploy-canary-v41",
+    "namespace": "production",
+    "uid": "wf-uid-003",
+    "labels": { "app": "my-service", "env": "production" },
+    "creationTimestamp": "2026-04-27T08:15:00Z"
+  },
+  "status": {
+    "phase": "Failed",
+    "startedAt": "2026-04-27T08:15:05Z",
+    "finishedAt": "2026-04-27T08:18:42Z",
+    "message": "Step deploy-canary failed: ImagePullBackOff",
+    "nodes": {
+      "deploy-canary-v41": {
+        "id": "deploy-canary-v41",
+        "name": "deploy-canary-v41",
+        "displayName": "deploy-canary-v41",
+        "type": "DAG",
+        "phase": "Failed",
+        "startedAt": "2026-04-27T08:15:05Z",
+        "finishedAt": "2026-04-27T08:18:42Z",
+        "children": ["validate-step"]
+      },
+      "validate-step": {
+        "id": "validate-step",
+        "name": "deploy-canary-v41.validate",
+        "displayName": "Validate Config",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-27T08:15:10Z",
+        "finishedAt": "2026-04-27T08:15:55Z",
+        "children": ["deploy-canary-step"],
+        "templateName": "validate-k8s"
+      },
+      "deploy-canary-step": {
+        "id": "deploy-canary-step",
+        "name": "deploy-canary-v41.deploy-canary",
+        "displayName": "Deploy Canary",
+        "type": "Pod",
+        "phase": "Failed",
+        "startedAt": "2026-04-27T08:16:00Z",
+        "finishedAt": "2026-04-27T08:18:42Z",
+        "message": "ImagePullBackOff: registry.example.com/my-service:v41",
+        "templateName": "canary-deploy"
+      }
+    }
+  }
+}

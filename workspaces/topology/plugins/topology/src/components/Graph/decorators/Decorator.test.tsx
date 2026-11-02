@@ -18,6 +18,7 @@ import { Link, MemoryRouter } from 'react-router-dom';
 import { Decorator as PfDecorator } from '@patternfly/react-topology';
 import { render, screen } from '@testing-library/react';
 
+import { unsafeScriptUrl } from '../../../test-utils/unsafeScriptUrl';
 import Decorator from './Decorator';
 
 jest.mock('@patternfly/react-topology', () => ({
@@ -48,8 +49,29 @@ describe('Decorator', () => {
     expect(screen.getByLabelText('test')).toBeInTheDocument();
   });
 
-  it('should render anchor if external is true', () => {
-    render(<Decorator x={0} y={0} radius={0} href="test" external />);
+  it('should render anchor if external is true and href is a valid HTTP(S) URL', () => {
+    render(
+      <Decorator x={0} y={0} radius={0} href="https://example.com" external />,
+    );
     expect(screen.getByRole('button')).toHaveAttribute('target', '_blank');
+    expect(screen.getByRole('button')).toHaveAttribute(
+      'href',
+      'https://example.com',
+    );
+  });
+
+  it('should not render a clickable link for invalid external URL schemes', () => {
+    render(
+      <Decorator
+        x={0}
+        y={0}
+        radius={0}
+        href={unsafeScriptUrl()}
+        external
+        ariaLabel="edit"
+      />,
+    );
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 });

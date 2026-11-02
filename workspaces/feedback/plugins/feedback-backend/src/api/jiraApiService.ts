@@ -52,9 +52,8 @@ export class JiraApiService {
     const requestBody = {
       fields: {
         ...(reporter && {
-          reporter: {
-            name: reporter,
-          },
+          reporter:
+            this.hostType === 'SERVER' ? { name: reporter } : { id: reporter },
         }),
         project: {
           key: projectKey,
@@ -90,7 +89,18 @@ export class JiraApiService {
       );
       return resp.data;
     } catch (err: any) {
-      this.logger.error('Error:', err);
+      if (axios.isAxiosError(err)) {
+        this.logger.error(
+          `Status: ${err.response?.status}, Response: ${JSON.stringify(
+            err.response?.data,
+            null,
+            2,
+          )}`,
+        );
+      } else {
+        this.logger.error(String(err));
+      }
+
       return {};
     }
   };
@@ -111,7 +121,7 @@ export class JiraApiService {
     );
     const data = resp.data;
     if (data.length === 0) return undefined;
-    return data[0].name;
+    return this.hostType === 'SERVER' ? data[0].name : data[0].accountId;
   };
 
   getTicketDetails = async (

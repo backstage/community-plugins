@@ -94,13 +94,25 @@ export const OverviewCard = (props: OverviewCardProps) => {
       : false;
   };
 
-  const renderCharts = (): React.JSX.Element => {
-    // Don't render charts if serverConfig is not available
+  const renderCharts = (): React.JSX.Element | null => {
     if (!serverConfig || !serverConfig.durations) {
       return <div>Loading...</div>;
     }
 
-    const chart = (
+    // Control plane cards keep status details but no longer show sparkline charts.
+    if (isIstioSystem) {
+      const canaryConfigured = hasCanaryUpgradeConfigured();
+      if (!canaryConfigured) {
+        return null;
+      }
+      return (
+        <CanaryUpgradeProgress
+          canaryUpgradeStatus={props.canaryUpgradeStatus!}
+        />
+      );
+    }
+
+    return (
       <OverviewCardSparklineCharts
         key={props.namespace.name}
         name={props.namespace.name}
@@ -112,23 +124,6 @@ export const OverviewCard = (props: OverviewCardProps) => {
         errorMetrics={props.namespace.errorMetrics}
         controlPlaneMetrics={props.namespace.controlPlaneMetrics}
       />
-    );
-    const canaryConfigured = hasCanaryUpgradeConfigured();
-    return isIstioSystem ? (
-      <Grid container>
-        {canaryConfigured && (
-          <Grid item md={props.istioAPIEnabled ? 2 : 12}>
-            <CanaryUpgradeProgress
-              canaryUpgradeStatus={props.canaryUpgradeStatus!}
-            />
-          </Grid>
-        )}
-        <Grid item md={canaryConfigured ? 10 : 12}>
-          {chart}
-        </Grid>
-      </Grid>
-    ) : (
-      chart
     );
   };
 
@@ -153,10 +148,12 @@ export const OverviewCard = (props: OverviewCardProps) => {
     );
   };
 
+  const charts = renderCharts();
+
   return (
     <Card
       data-test={`overview-card-${props.namespace.name}`}
-      style={{ height: '100%' }}
+      style={{ height: '100%', width: '100%' }}
     >
       {!props.entity && <NamespaceHeader {...props} />}
       <CardContent style={compactCardContentStyle}>
@@ -167,7 +164,7 @@ export const OverviewCard = (props: OverviewCardProps) => {
           </>
         )}
         <Grid container>
-          <Grid item xs={3}>
+          <Grid item xs={12}>
             {!props.entity && (
               <div style={leftColumnStyle}>
                 <div style={inlineRowStyle}>
@@ -208,9 +205,11 @@ export const OverviewCard = (props: OverviewCardProps) => {
               </>
             )}
           </Grid>
-          <Grid item xs={12}>
-            {renderCharts()}
-          </Grid>
+          {charts && (
+            <Grid item xs={12}>
+              {charts}
+            </Grid>
+          )}
         </Grid>
       </CardContent>
     </Card>

@@ -29,7 +29,7 @@ You may also want to add configuration parameters to your app-config, for exampl
 
 ## Parsing custom ADR document formats
 
-By default, the `DefaultAdrCollatorFactory` will parse and index documents that follow [MADR v3.0.0](https://github.com/adr/madr/tree/3.0.0) and [MADR v2.x](https://github.com/adr/madr/tree/2.1.2) standard file name and template format. If you use a different ADR format and file name convention, you can configure `DefaultAdrCollatorFactory` with custom `adrFilePathFilterFn` and `parser` options (see type definitions for details):
+By default, the `DefaultAdrCollatorFactory` will parse and index documents that follow [MADR v3.0.0](https://github.com/adr/madr/tree/3.0.0) and [MADR v2.x](https://github.com/adr/madr/tree/2.1.2) standard file name and template format. Front matter is only recognised in the MADR v3 form: a `---` line at the start of the file and a closing line containing only `---`. If you use a different ADR format and file name convention, you can configure `DefaultAdrCollatorFactory` with custom `adrFilePathFilterFn` and `parser` options (see type definitions for details):
 
 ```ts
 DefaultAdrCollatorFactory.fromConfig({

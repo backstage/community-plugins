@@ -12,7 +12,7 @@ This plugin enables you to visualize pipeline security information from multiple
    The supported CI's are:
 
 - [Jenkins](../../../jenkins/plugins/jenkins-backend/README.md)
-- [Github Actions](../../../github-actions/plugins/github-actions/README.md)
+- [Github Actions](../../../github/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#setup)
 - [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
@@ -24,13 +24,29 @@ This plugin enables you to visualize pipeline security information from multiple
 yarn workspace app add @backstage-community/plugin-multi-source-security-viewer
 ```
 
+#### New frontend system
+
+Import the default export and add it to your app features. The CI/CD Security tab appears on entities that have a CI provider annotation and `mssv/enabled: 'true'`.
+
+```ts
+import multiSourceSecurityViewerPlugin from '@backstage-community/plugin-multi-source-security-viewer';
+```
+
+```yaml
+metadata:
+  annotations:
+    mssv/enabled: 'true'
+```
+
+#### Legacy frontend system
+
 To enable the PipelineRun list in the Security tab on the entity view page, add the following snippet in the packages/app/src/components/catalog/EntityPage.tsx.
 
 ```diff
 +import {
 +  isMultiCIAvailable,
 +  EntityMultiCIPipelinesContent,
-+} from '@backstage-community/plugin-multi-source-security-viewer';
++} from '@backstage-community/plugin-multi-source-security-viewer/legacy';
 +
 +import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
 +import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
@@ -62,7 +78,7 @@ If you choose to display the plugin when the annotation is present along with th
 +import {
 +  isMultiCIAvailableAndEnabled,
 +  EntityMultiCIPipelinesContent,
-+} from '@backstage-community/plugin-multi-source-security-viewer';
++} from '@backstage-community/plugin-multi-source-security-viewer/legacy';
 +
 +import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
 +import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
@@ -93,7 +109,7 @@ If you choose to display the plugin when the annotation is present along with th
 3. Ensure your CI annotations are set:
 
 - [Jenkins](../../../jenkins/plugins/jenkins/README.md)
-- [Github Actions]([../../../github-actions/plugins/github-actions/README.md)
+- [Github Actions](../../../github/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#annotations)
 - [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 

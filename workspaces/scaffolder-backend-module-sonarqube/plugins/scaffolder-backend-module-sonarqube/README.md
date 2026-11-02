@@ -2,6 +2,8 @@
 
 This module provides [Backstage](https://backstage.io/) template [actions](https://backstage.io/docs/features/software-templates/builtin-actions) for [SonarQube](https://docs.sonarqube.org/latest/).
 
+For contributor setup and local development, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 The following actions are currently supported in this module:
 
 - Create a SonarQube [project](https://docs.sonarqube.org/latest/user-guide/project-page/)

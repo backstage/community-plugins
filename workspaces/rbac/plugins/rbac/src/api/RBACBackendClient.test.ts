@@ -24,6 +24,7 @@ import { RBACAPI, RBACBackendClient } from './RBACBackendClient';
 
 const LOCAL_ADDR = 'https://localhost:7007';
 let lastRequest: any;
+let byRefsRequests: any[] = [];
 const handlers = [
   rest.get(`${LOCAL_ADDR}/api/permission`, (req, res, ctx) => {
     lastRequest = {
@@ -126,6 +127,57 @@ const handlers = [
       return res(ctx.status(404));
     },
   ),
+  rest.post(
+    `${LOCAL_ADDR}/api/catalog/entities/by-refs`,
+    async (req, res, ctx) => {
+      const authorizationHeader = req.headers.get('Authorization');
+      const body = await req.json();
+      lastRequest = {
+        url: req.url.toString(),
+        authorizationHeader: authorizationHeader,
+        body,
+      };
+      byRefsRequests.push({ body });
+      if (authorizationHeader === 'Bearer test-token') {
+        const { entityRefs } = body;
+        return res(
+          ctx.status(200),
+          ctx.json({
+            items: entityRefs.map((ref: string) => ({
+              kind: ref.startsWith('user:') ? 'User' : 'Group',
+              metadata: { name: ref.split('/').pop(), namespace: 'default' },
+              spec: { profile: {} },
+            })),
+          }),
+        );
+      }
+      return res(ctx.status(404));
+    },
+  ),
+  rest.get(`${LOCAL_ADDR}/api/catalog/entities/by-query`, (req, res, ctx) => {
+    const authorizationHeader = req.headers.get('Authorization');
+    lastRequest = {
+      url: req.url.toString(),
+      authorizationHeader: authorizationHeader,
+    };
+    if (authorizationHeader === 'Bearer test-token') {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          items: [
+            {
+              kind: 'User',
+              metadata: { name: 'john', namespace: 'default' },
+              spec: { profile: { displayName: 'John' } },
+            },
+          ],
+          totalItems: 1,
+          pageInfo: {},
+        }),
+      );
+    }
+    return res(ctx.status(404));
+  }),
   rest.get(`${LOCAL_ADDR}/api/permission/plugins/policies`, (req, res, ctx) => {
     const authorizationHeader = req.headers.get('Authorization');
     lastRequest = {
@@ -282,6 +334,7 @@ describe('RBACBackendClient', () => {
   } as IdentityApi;
 
   beforeEach(() => {
+    byRefsRequests = [];
     rbacApi = new RBACBackendClient({
       configApi: getConfigApi(() => {
         return '/api';
@@ -455,6 +508,121 @@ describe('RBACBackendClient', () => {
       );
 
       await expect(rbacApi.getMembers()).resolves.toEqual(
+        expect.objectContaining({
+          status: 404,
+        }),
+      );
+    });
+  });
+
+  describe('getMembers with pagination', () => {
+    it('should append limit and offset when page and pageSize are provided', async () => {
+      server.use(
+        rest.get(`${LOCAL_ADDR}/api/catalog/entities`, (req, res, ctx) => {
+          lastRequest = {
+            url: req.url.toString(),
+            authorizationHeader: req.headers.get('Authorization'),
+          };
+          return res(ctx.status(200), ctx.json([{ kind: 'User', spec: {} }]));
+        }),
+      );
+
+      const response = await rbacApi.getMembers(2, 50);
+
+      expect(response).toEqual([{ kind: 'User', spec: {} }]);
+      expect(lastRequest.url).toContain('limit=50');
+      expect(lastRequest.url).toContain('offset=50');
+    });
+  });
+
+  describe('getMembersByRefs', () => {
+    it('should return empty array for empty refs', async () => {
+      const response = await rbacApi.getMembersByRefs([]);
+      expect(response).toEqual([]);
+    });
+
+    it('should send a POST request with entity refs', async () => {
+      const refs = ['user:default/john', 'group:default/team-a'];
+      const response = await rbacApi.getMembersByRefs(refs);
+
+      expect(Array.isArray(response)).toBe(true);
+      expect((response as any[]).length).toBe(2);
+      expect(lastRequest.url).toBe(
+        'https://localhost:7007/api/catalog/entities/by-refs',
+      );
+      expect(lastRequest.authorizationHeader).toBe('Bearer test-token');
+      expect(lastRequest.body.entityRefs).toEqual(refs);
+      expect(lastRequest.body.fields).toBeDefined();
+    });
+
+    it('should batch large requests to avoid request entity too large', async () => {
+      const refs = Array.from(
+        { length: 5000 },
+        (_, i) => `user:default/user_${i}`,
+      );
+      const response = await rbacApi.getMembersByRefs(refs);
+
+      expect(Array.isArray(response)).toBe(true);
+      expect((response as any[]).length).toBe(5000);
+      expect(byRefsRequests.length).toBe(3);
+      expect(byRefsRequests[0].body.entityRefs.length).toBe(2000);
+      expect(byRefsRequests[1].body.entityRefs.length).toBe(2000);
+      expect(byRefsRequests[2].body.entityRefs.length).toBe(1000);
+    });
+
+    it('should handle unauthorized response', async () => {
+      server.use(
+        rest.post(
+          `${LOCAL_ADDR}/api/catalog/entities/by-refs`,
+          (_req, res, ctx) => {
+            return res(ctx.status(404));
+          },
+        ),
+      );
+
+      await expect(
+        rbacApi.getMembersByRefs(['user:default/john']),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          status: 404,
+        }),
+      );
+    });
+  });
+
+  describe('searchMembers', () => {
+    it('should search with fullTextFilterTerm when search term is provided', async () => {
+      const response = await rbacApi.searchMembers('john');
+
+      expect(Array.isArray(response)).toBe(true);
+      expect((response as any[]).length).toBe(1);
+      expect(lastRequest.url).toContain('/api/catalog/entities/by-query');
+      expect(lastRequest.url).toContain('fullTextFilterTerm=john');
+      expect(lastRequest.url).toContain('filter=kind%3Duser');
+      expect(lastRequest.url).toContain('filter=kind%3Dgroup');
+      expect(lastRequest.url).toContain('limit=100');
+    });
+
+    it('should fetch without fullTextFilterTerm when search term is empty', async () => {
+      const response = await rbacApi.searchMembers('');
+
+      expect(Array.isArray(response)).toBe(true);
+      expect(lastRequest.url).toContain('/api/catalog/entities/by-query');
+      expect(lastRequest.url).not.toContain('fullTextFilterTerm');
+      expect(lastRequest.url).not.toContain('fullTextFilterFields');
+    });
+
+    it('should handle unauthorized response', async () => {
+      server.use(
+        rest.get(
+          `${LOCAL_ADDR}/api/catalog/entities/by-query`,
+          (_req, res, ctx) => {
+            return res(ctx.status(404));
+          },
+        ),
+      );
+
+      await expect(rbacApi.searchMembers('test')).resolves.toEqual(
         expect.objectContaining({
           status: 404,
         }),

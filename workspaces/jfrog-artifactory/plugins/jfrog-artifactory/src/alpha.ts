@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,13 @@
  */
 
 /**
- * @alpha
- * Translation resources for the JFrog Artifactory plugin
+ * Alpha API surface for the JFrog Artifactory plugin. Translations remain alpha.
+ * Prefer `/translations` for the new frontend system.
+ *
+ * @packageDocumentation
  */
+
 export {
-  jfrogArtifactoryTranslations,
   jfrogArtifactoryTranslationRef,
+  jfrogArtifactoryTranslations,
 } from './translations';

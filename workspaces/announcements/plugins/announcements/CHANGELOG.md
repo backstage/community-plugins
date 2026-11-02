@@ -1,5 +1,66 @@
 # @backstage-community/plugin-announcements
 
+## 2.15.0
+
+### Minor Changes
+
+- 7f450a0: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7f450a0]
+  - @backstage-community/plugin-announcements-common@0.26.0
+  - @backstage-community/plugin-announcements-react@0.31.0
+
+## 2.14.1
+
+### Patch Changes
+
+- d0b3c42: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 2.14.0
+
+### Minor Changes
+
+- 215ed63: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [215ed63]
+  - @backstage-community/plugin-announcements-common@0.25.0
+  - @backstage-community/plugin-announcements-react@0.30.0
+
+## 2.13.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [bae4489]
+  - @backstage-community/plugin-announcements-common@0.24.0
+  - @backstage-community/plugin-announcements-react@0.29.0
+
+## 2.12.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filter to use the modern object form.
+
+## 2.12.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 900d1b9: Migrated extension config from deprecated `config.schema` to `configSchema` with zod v4 Standard Schema
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+  - @backstage-community/plugin-announcements-react@0.28.0
+
 ## 2.11.1
 
 ### Patch Changes

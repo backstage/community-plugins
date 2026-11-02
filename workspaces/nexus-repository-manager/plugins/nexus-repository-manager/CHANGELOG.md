@@ -1,5 +1,57 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.5
+
+### Patch Changes
+
+- ed23859: Fix the artifact table's "Modified" column to sort chronologically and search by the displayed date, instead of sorting/searching the raw unformatted value. Also fixed column sorting so clicking any other column (e.g. Size, Checksum) for the first time sorts ascending, rather than inheriting the Modified column's descending order.
+- 79c8900: Updated dependency `@playwright/test` to `1.64.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.8`.
+- 3a51ce0: Updated dependency `@types/node` to `22.20.4`.
+- 569c1a6: Updated dependency `@types/node` to `22.20.5`.
+- f636552: Updated dependency `@playwright/test` to `1.64.0`.
+
+## 1.27.4
+
+### Patch Changes
+
+- 97d1969: Assign the Build Artifacts entity content to the development group.
+
+## 1.27.3
+
+### Patch Changes
+
+- 5833add: Updated dependency `@types/node` to `22.20.2`.
+- 31b965e: Updated dependency `@types/node` to `22.20.3`.
+
+## 1.27.2
+
+### Patch Changes
+
+- aa39b16: Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.6`.
+- f7eb124: Updated dependency `@playwright/test` to `1.63.0`.
+- 8735687: Updated dependency `@testing-library/user-event` to `14.6.7`.
+- c031c0a: Backstage version bump to v1.54.7
+
+## 1.27.1
+
+### Patch Changes
+
+- 4a972e2: Updated dependency `react-router-dom` to `^6.30.5`.
+
+## 1.27.0
+
+### Minor Changes
+
+- 5bb7b05: Backstage version bump to v1.54.5
+
+## 1.26.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
 ## 1.25.1
 
 ### Patch Changes

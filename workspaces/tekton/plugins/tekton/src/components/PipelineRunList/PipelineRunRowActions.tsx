@@ -34,11 +34,13 @@ import {
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import {
   getTaskrunsOutputGroup,
+  getSbomLink,
   hasExternalLink,
   isSbomTaskRun,
 } from '../../utils/taskRun-utils';
 import OutputIcon from '../Icons/OutputIcon';
 import ViewLogsIcon from '../Icons/ViewLogsIcon';
+import LinkToSBomIcon from '../Icons/LinkToSbomIcon';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import PipelineRunOutputDialog from '../PipelineRunOutput/PipelineRunOutputDialog';
@@ -151,6 +153,7 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
             <IconButton
               size="small"
               data-testid="view-params-and-results-icon"
+              aria-label={t('pipelineRunList.rowActions.viewParamsAndResults')}
               onClick={() => setOpenParamsAndResults(true)}
               disabled={!hasKubernetesProxyAccess.allowed}
               style={{ pointerEvents: 'auto', padding: 0 }}
@@ -171,6 +174,7 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
             <IconButton
               size="small"
               data-testid="view-logs-icon"
+              aria-label={t('pipelineRunList.rowActions.viewLogs')}
               onClick={() => openDialog({ forSBOM: false })}
               disabled={!hasKubernetesProxyAccess.allowed}
               style={{ pointerEvents: 'auto', padding: 0 }}
@@ -188,21 +192,33 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
                 : t('pipelineRunList.rowActions.viewSBOM')
             }
           >
-            <IconButton
-              data-testid="view-sbom-icon"
-              disabled={!sbomTaskRun || !isSbomTaskRun(sbomTaskRun)}
-              size="small"
-              onClick={
-                !hasExternalLink(sbomTaskRun)
-                  ? () => {
-                      openDialog({ forSBOM: true });
-                    }
-                  : undefined
-              }
-              style={{ pointerEvents: 'auto', padding: 0 }}
-            >
-              <PipelineRunSBOMLink sbomTaskRun={sbomTaskRun} />
-            </IconButton>
+            {isSbomTaskRun(sbomTaskRun) &&
+            hasExternalLink(sbomTaskRun) &&
+            /^https?:\/\//.test(getSbomLink(sbomTaskRun) ?? '') ? (
+              <IconButton
+                component="a"
+                href={getSbomLink(sbomTaskRun)}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="view-sbom-icon"
+                aria-label={t('pipelineRunList.rowActions.viewSBOM')}
+                size="small"
+                style={{ pointerEvents: 'auto', padding: 0 }}
+              >
+                <LinkToSBomIcon dataTestId="external-sbom-link" />
+              </IconButton>
+            ) : (
+              <IconButton
+                data-testid="view-sbom-icon"
+                disabled={!sbomTaskRun || !isSbomTaskRun(sbomTaskRun)}
+                aria-label={t('pipelineRunList.rowActions.viewSBOM')}
+                size="small"
+                onClick={() => openDialog({ forSBOM: true })}
+                style={{ pointerEvents: 'auto', padding: 0 }}
+              >
+                <PipelineRunSBOMLink sbomTaskRun={sbomTaskRun} />
+              </IconButton>
+            )}
           </Tooltip>
         </FlexItem>
         <FlexItem align={{ default: 'alignLeft' }}>
@@ -216,6 +232,7 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
             <IconButton
               data-testid="view-output-icon"
               disabled={disabled}
+              aria-label={t('pipelineRunList.rowActions.viewOutput')}
               size="small"
               onClick={() => openOutputDialog()}
               style={{ pointerEvents: 'auto', padding: 0 }}

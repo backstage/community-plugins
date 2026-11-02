@@ -88,6 +88,12 @@ export class DefaultServiceNowClient implements ServiceNowClient {
       }
     }
 
+    // Predefined entity annotation field (mapped from entityId by the validator).
+    if (options.u_backstage_entity_id) {
+      queryParts.push(`u_backstage_entity_id=${options.u_backstage_entity_id}`);
+      responseFields.push('u_backstage_entity_id');
+    }
+
     if (options.userEmail) {
       const id = await this.getUserSysIdByEmail(options.userEmail);
       queryParts.push(`caller_id=${id}^ORopened_by=${id}^ORassigned_to=${id}`);

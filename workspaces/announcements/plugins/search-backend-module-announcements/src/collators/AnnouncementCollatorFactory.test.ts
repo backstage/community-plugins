@@ -22,7 +22,7 @@ import { rest } from 'msw';
 import { mockServices } from '@backstage/backend-test-utils';
 
 const mockAnnouncements = {
-  count: 3,
+  count: 4,
   results: [
     {
       id: '1',
@@ -31,6 +31,7 @@ const mockAnnouncements = {
       body: 'body',
       excerpt: 'excerpt',
       created_at: 'created_at',
+      active: true,
     },
     {
       id: '2',
@@ -39,6 +40,7 @@ const mockAnnouncements = {
       body: 'body',
       excerpt: 'excerpt',
       created_at: 'created_at',
+      active: true,
     },
     {
       id: '3',
@@ -47,6 +49,16 @@ const mockAnnouncements = {
       body: 'body',
       excerpt: 'excerpt',
       created_at: 'created_at',
+      active: true,
+    },
+    {
+      id: '4',
+      title: 'inactive title',
+      publisher: 'publisher4',
+      body: 'body',
+      excerpt: 'excerpt',
+      created_at: 'created_at',
+      active: false,
     },
   ],
 };
@@ -85,12 +97,17 @@ describe('AnnouncementCollatorFactory', () => {
       expect(collator).toBeInstanceOf(Readable);
     });
 
-    it('runs against announcements', async () => {
+    it('runs against announcements, skipping inactive ones', async () => {
       collator = await factory.getCollator();
       const pipeline = TestPipeline.fromCollator(collator);
       const { documents } = await pipeline.execute();
       expect(mockDiscovery.getBaseUrl).toHaveBeenCalledWith('announcements');
-      expect(documents).toHaveLength(mockAnnouncements.results.length);
+      expect(documents).toHaveLength(3);
+      expect(documents).toEqual(
+        expect.not.arrayContaining([
+          expect.objectContaining({ location: '/announcements/view/4' }),
+        ]),
+      );
     });
   });
 });

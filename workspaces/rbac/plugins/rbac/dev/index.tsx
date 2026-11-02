@@ -15,26 +15,102 @@
  */
 
 /**
- * Legacy dev mode for the RBAC plugin.
+ * New Frontend System dev mode for the RBAC plugin.
  */
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
+import { createApp } from '@backstage/frontend-defaults';
+import ReactDOM from 'react-dom/client';
 
-import { createDevApp } from '@backstage/dev-utils';
+import { SignInPage } from '@backstage/core-components';
+import { OAuth2 } from '@backstage/core-app-api';
+import {
+  ApiBlueprint,
+  configApiRef,
+  createApiFactory,
+  createApiRef,
+  createFrontendModule,
+  discoveryApiRef,
+  oauthRequestApiRef,
+  type BackstageIdentityApi,
+  type OAuthApi,
+  type OpenIdConnectApi,
+  type ProfileInfoApi,
+  type SessionApi,
+} from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 
-import { RbacPage, rbacPlugin } from '../src/plugin';
-import { rbacTranslations } from '../src/alpha/translations';
-import { devAppThemes } from './shared';
+import rbacPlugin, { rbacTranslationsModule } from '../src';
+import { devSidebarContent } from './shared';
 
-createDevApp()
-  .addThemes(devAppThemes)
-  .registerPlugin(rbacPlugin)
-  .addTranslationResource(rbacTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
-  .setDefaultLanguage('en')
-  .addPage({
-    element: <RbacPage />,
-    title: 'RBAC',
-    path: '/rbac',
-  })
-  .render();
+const oidcAuthApiRef = createApiRef<
+  OAuthApi &
+    OpenIdConnectApi &
+    ProfileInfoApi &
+    BackstageIdentityApi &
+    SessionApi
+>().with({ id: 'internal.auth.oidc' });
+
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    devSidebarContent,
+
+    ApiBlueprint.make({
+      name: 'oidc-auth',
+      params: defineParams =>
+        defineParams(
+          createApiFactory({
+            api: oidcAuthApiRef,
+            deps: {
+              discoveryApi: discoveryApiRef,
+              oauthRequestApi: oauthRequestApiRef,
+              configApi: configApiRef,
+            },
+            factory: ({ discoveryApi, oauthRequestApi, configApi }) =>
+              OAuth2.create({
+                configApi,
+                discoveryApi,
+                oauthRequestApi,
+                provider: { id: 'oidc', title: 'OIDC', icon: () => null },
+              }),
+          }),
+        ),
+    }),
+
+    SignInPageBlueprint.make({
+      params: {
+        loader: async () => props => (
+          <SignInPage
+            {...props}
+            providers={[
+              'guest',
+              {
+                id: 'oidc',
+                title: 'Keycloak OIDC',
+                message: 'Sign in with Keycloak (multi-user testing)',
+                apiRef: oidcAuthApiRef,
+              },
+            ]}
+            title="Select a sign-in method"
+            align="center"
+          />
+        ),
+      },
+    }),
+  ],
+});
+
+const defaultPage = '/rbac';
+
+const app = createApp({
+  features: [rbacPlugin, rbacTranslationsModule, devNavModule],
+});
+
+const root = app.createRoot();
+
+if (typeof window !== 'undefined' && window.location.pathname === '/') {
+  window.location.pathname = defaultPage;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);

@@ -19,7 +19,6 @@ import HubIcon from '@mui/icons-material/Hub';
 import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import {
-  HeaderBackgroundProvider,
   useHeaderIconColor,
   useHeaderTextColor,
 } from '../../../contexts/HeaderBackgroundContext';
@@ -29,7 +28,7 @@ import { HelpKiali } from './HelpKiali';
 import { NamespaceSelector } from './NamespaceSelector';
 import { ProviderSelector } from './ProviderSelector';
 
-const KialiHeaderContent = () => {
+export const KialiHeader = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const { serverConfig } = useServerConfig();
   const textColor = useHeaderTextColor();
@@ -88,13 +87,5 @@ const KialiHeaderContent = () => {
         </div>
       )}
     </Header>
-  );
-};
-
-export const KialiHeader = () => {
-  return (
-    <HeaderBackgroundProvider>
-      <KialiHeaderContent />
-    </HeaderBackgroundProvider>
   );
 };

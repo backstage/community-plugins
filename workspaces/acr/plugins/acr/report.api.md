@@ -5,6 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public
@@ -15,6 +16,9 @@ export const AcrPage: () => JSX_2.Element;
 
 // @public
 export const acrPlugin: BackstagePlugin<{}, {}, {}>;
+
+// @public
+export const acrTranslationsModule: FrontendModule;
 
 // @public
 export const isAcrAvailable: (entity: Entity) => boolean;

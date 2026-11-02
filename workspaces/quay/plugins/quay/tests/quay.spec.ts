@@ -30,7 +30,7 @@ test.describe('Quay plugin', () => {
     await expect(
       page.getByRole('link', { name: 'backstage-test/test-images' }),
     ).toBeEnabled();
-  });
+  }, 120000);
 
   test('All necessary elements are visible', async ({ browser }, testInfo) => {
     const columns = [

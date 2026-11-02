@@ -24,56 +24,54 @@ jest.mock('@backstage/core-plugin-api', () => ({
   useApi: jest.fn(),
 }));
 
+const podScope = {
+  podName: 'node-ex-git-er56',
+  podNamespace: 'sample-app',
+  containerName: 'node-ex-git',
+  clusterName: 'OCP',
+};
+
+const mockGetPodLogs = jest.fn();
+
 describe('usePodLogs', () => {
-  it('should return loading as true and value as undefined initially', async () => {
-    (useApi as any).mockReturnValue({
-      getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
-    });
-    const { result } = renderHook(() =>
-      usePodLogs({
-        stopPolling: true,
-        podScope: {
-          podName: 'node-ex-git-er56',
-          podNamespace: 'sample-app',
-          containerName: 'node-ex-git',
-          clusterName: 'OCP',
-        },
-        intervalMs: 500,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(result.current.loading).toEqual(true);
-    });
-
-    await waitFor(() => {
-      expect(result.current.value).toBeUndefined();
+  beforeEach(() => {
+    mockGetPodLogs.mockResolvedValue({ text: 'log data...' });
+    (useApi as jest.Mock).mockReturnValue({
+      getPodLogs: mockGetPodLogs,
     });
   });
 
-  it('should return value as log text', async () => {
-    (useApi as any).mockReturnValue({
-      getPodLogs: jest.fn().mockResolvedValueOnce({ text: 'log data...' }),
-    });
+  it('should return loading as true and value as undefined initially', () => {
     const { result } = renderHook(() =>
       usePodLogs({
         stopPolling: true,
-        podScope: {
-          podName: 'node-ex-git-er56',
-          podNamespace: 'sample-app',
-          containerName: 'node-ex-git',
-          clusterName: 'OCP',
-        },
+        podScope,
+        intervalMs: 500,
+      }),
+    );
+
+    expect(result.current.loading).toEqual(true);
+    expect(result.current.value).toBeUndefined();
+  });
+
+  it('should return value as log text', async () => {
+    const { result } = renderHook(() =>
+      usePodLogs({
+        stopPolling: true,
+        podScope,
         intervalMs: 500,
       }),
     );
 
     await waitFor(() => {
-      expect(result.current.loading).toEqual(true);
+      expect(result.current.value).toEqual({ text: 'log data...' });
     });
 
-    await waitFor(() => {
-      expect(result.current.value).toEqual({ text: 'log data...' });
+    expect(mockGetPodLogs).toHaveBeenCalledWith({
+      podName: podScope.podName,
+      namespace: podScope.podNamespace,
+      containerName: podScope.containerName,
+      clusterName: podScope.clusterName,
     });
   });
 });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../translations';
+import { argocdTranslationRef } from '../translations/ref';
 
 /**
  * Hook using translation function for ArgoCD plugin

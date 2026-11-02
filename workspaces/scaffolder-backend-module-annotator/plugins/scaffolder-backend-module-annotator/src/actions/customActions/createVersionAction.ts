@@ -22,7 +22,7 @@ import { examples } from './createVersionAction.examples';
 export const createVersionAction = () => {
   return createAnnotatorAction(
     'catalog:template:version',
-    'Creates a new `catalog:template:version` scaffolder action to update a catalog-info.yaml with the versioning information from the scaffolder template',
+    'Adds the `backstage.io/template-version` annotation containing the version of your template to your entity object',
     'Annotating catalog-info.yaml with the version of the scaffolder template',
     () => {
       return {

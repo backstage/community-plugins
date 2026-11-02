@@ -26,6 +26,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import request from 'supertest';
 
+import { NotificationService } from '@backstage/plugin-notifications-node';
 import {
   mockConfig,
   mockEntity,
@@ -34,7 +35,6 @@ import {
   mockUser,
 } from '../mocks';
 import { createRouter } from './router';
-import { NotificationService } from '@backstage/plugin-notifications-node';
 
 const handlers = [
   rest.get(
@@ -104,6 +104,8 @@ describe('Router', () => {
       database: mockServices.database.mock(),
       notifications: notificationsMock,
       httpAuth: mockServices.httpAuth(),
+      permissions: mockServices.permissions({ result: 'ALLOW' }),
+      permissionsRegistry: mockServices.permissionsRegistry.mock(),
     });
     app = express().use(router);
   });

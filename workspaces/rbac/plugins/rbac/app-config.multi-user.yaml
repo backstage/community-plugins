@@ -1,0 +1,21 @@
+# Overlay for frontend multi-user testing with Keycloak OIDC.
+# Usage: yarn workspace @backstage-community/plugin-rbac start:multi-user
+#
+# Run alongside the backend multi-user harness:
+#   Terminal 1: yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
+#   Terminal 2: yarn workspace @backstage-community/plugin-rbac-backend start:multi-user
+#   Terminal 3: yarn workspace @backstage-community/plugin-rbac start:multi-user
+
+auth:
+  session:
+    secret: ${SESSION_SECRET}
+  providers:
+    oidc:
+      development:
+        metadataUrl: ${KEYCLOAK_BASE_URL}/realms/backstage
+        clientId: ${KEYCLOAK_CLIENT_ID}
+        clientSecret: ${KEYCLOAK_CLIENT_SECRET}
+        prompt: auto
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail

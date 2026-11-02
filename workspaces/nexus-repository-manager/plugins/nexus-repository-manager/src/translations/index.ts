@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { nexusRepositoryManagerTranslationRef } from './ref';
 
 /**
@@ -32,3 +34,21 @@ export const nexusRepositoryManagerTranslations = createTranslationResource({
 });
 
 export { nexusRepositoryManagerTranslationRef };
+
+/**
+ * Translation module for the Nexus Repository Manager plugin.
+ * @public
+ */
+const nexusRepositoryManagerTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'nexus-repository-manager-translations',
+      params: {
+        resource: nexusRepositoryManagerTranslations,
+      },
+    }),
+  ],
+});
+
+export default nexusRepositoryManagerTranslationsModule;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 /**
  * Contains information about an ADR file.
@@ -77,6 +77,7 @@ export interface AdrApi {
  *
  * @public
  */
-export const adrApiRef = createApiRef<AdrApi>({
+export const adrApiRef = createApiRef<AdrApi>().with({
   id: 'plugin.adr.api',
+  pluginId: 'adr',
 });

@@ -65,6 +65,7 @@ export const tektonMessages = {
       high: 'High',
       medium: 'Medium',
       low: 'Low',
+      unknown: 'Unknown',
     },
     tableHeaderTitle: {
       name: 'NAME',
@@ -76,6 +77,7 @@ export const tektonMessages = {
       actions: 'ACTIONS',
     },
     tablePagination: {
+      rowsPerPage: 'Rows per page',
       rowsPerPageOptionLabel: '{{num}} rows',
     },
   },

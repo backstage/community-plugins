@@ -1,5 +1,39 @@
 # @backstage-community/plugin-cloudbuild
 
+## 1.2.0
+
+### Minor Changes
+
+- c5eebc7: Backstage version bump to v1.56.2
+
+## 1.1.1
+
+### Patch Changes
+
+- 97317ec: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
+## 1.1.0
+
+### Minor Changes
+
+- 7b952aa: Backstage version bump to v1.55.1
+
+## 1.0.0
+
+### Major Changes
+
+- 42ec4a3: Migrated from Material UI (MUI) to the Backstage UI (BUI) design system.
+
+### Minor Changes
+
+- df37a19: Backstage version bump to v1.54.5
+
+## 0.26.0
+
+### Minor Changes
+
+- 889c075: Added support for the new frontend system via the `/alpha` export.
+
 ## 0.25.0
 
 ### Minor Changes

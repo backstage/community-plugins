@@ -41,6 +41,7 @@ import {
   getPodsDataForResource,
 } from './pod-resource-utils';
 import { WORKLOAD_TYPES } from './topology-utils';
+import { isValidHttpUrl } from './url-utils';
 
 export const byCreationTime = (left: any, right: any): number => {
   const leftCreationTime = new Date(
@@ -155,9 +156,6 @@ export const getIngressesURL = (
   return ingressData?.url;
 };
 
-const validUrl = (url?: string | null) =>
-  url?.startsWith('http://') || url?.startsWith('https://');
-
 export const getIngressesDataForResourceServices = (
   resources: K8sResponseData,
   resource: K8sWorkloadResource,
@@ -186,7 +184,7 @@ export const getIngressesDataForResourceServices = (
       });
       acc.push({
         ingress,
-        url: validUrl(ingressURL) ? ingressURL : undefined,
+        url: isValidHttpUrl(ingressURL) ? ingressURL : undefined,
       });
     }
     return acc;

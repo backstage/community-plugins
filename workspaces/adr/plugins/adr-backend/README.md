@@ -81,7 +81,9 @@ Refer to the [search-backend-module-adr](../search-backend-module-adr/README.md)
 ## Parsing custom ADR formats
 
 By default, the plugin parses documents that follow the [MADR v3.0.0](https://github.com/adr/madr/tree/3.0.0)
-and [MADR v2.x](https://github.com/adr/madr/tree/2.1.2) template formats. If you use a different ADR format, consider
+and [MADR v2.x](https://github.com/adr/madr/tree/2.1.2) template formats. Front matter is only recognised in the
+MADR v3 form: a `---` line at the start of the file and a closing line containing only `---`. If you use a different
+ADR format, consider
 writing a [module](https://backstage.io/docs/backend-system/architecture/modules) that extends this plugin and provides
 a custom parser via
 the [extension point](https://backstage.io/docs/backend-system/architecture/extension-points/) `adrExtensionPoint`. For

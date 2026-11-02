@@ -30,11 +30,6 @@ export default defineConfig({
           port: 3000,
           reuseExistingServer: true,
         },
-        {
-          command: 'yarn start-backend',
-          port: 7007,
-          reuseExistingServer: true,
-        },
       ],
   retries: process.env.CI ? 2 : 0,
   reporter: [['html', { open: 'never', outputFolder: 'e2e-test-report' }]],

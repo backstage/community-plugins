@@ -1,0 +1,680 @@
+{
+  "realm": "backstage",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "requiredCredentials": ["password"],
+  "clients": [
+    {
+      "clientId": "backstage",
+      "name": "Backstage",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "backstage-dev-client-secret",
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:7007/*",
+        "http://backstage:7007/*",
+        "http://backstage:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:7007",
+        "http://localhost:3000",
+        "http://backstage:7007",
+        "http://backstage:3000"
+      ],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "microprofile-jwt",
+        "email"
+      ],
+      "optionalClientScopes": [],
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "ant_man",
+      "email": "ant_man@example.com",
+      "firstName": "Ant",
+      "lastName": "Man",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "hulk",
+      "email": "hulk@example.com",
+      "firstName": "Hulk",
+      "lastName": "Hulk",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "thor",
+      "email": "thor@example.com",
+      "firstName": "Thor",
+      "lastName": "Thor",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "wasp",
+      "email": "wasp@example.com",
+      "firstName": "Wasp",
+      "lastName": "Wasp",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "captain_america",
+      "email": "captain_america@example.com",
+      "firstName": "Captain",
+      "lastName": "America",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "hawkeye",
+      "email": "hawkeye@example.com",
+      "firstName": "Hawkeye",
+      "lastName": "Hawkeye",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "quicksilver",
+      "email": "quicksilver@example.com",
+      "firstName": "Quicksilver",
+      "lastName": "Quicksilver",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "scarlet_witch",
+      "email": "scarlet_witch@example.com",
+      "firstName": "Scarlet",
+      "lastName": "Witch",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "swordsman",
+      "email": "swordsman@example.com",
+      "firstName": "Swordsman",
+      "lastName": "Swordsman",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "hercules",
+      "email": "hercules@example.com",
+      "firstName": "Hercules",
+      "lastName": "Hercules",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "black_panther",
+      "email": "black_panther@example.com",
+      "firstName": "Black",
+      "lastName": "Panther",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "vision",
+      "email": "vision@example.com",
+      "firstName": "Vision",
+      "lastName": "Vision",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "black_knight",
+      "email": "black_knight@example.com",
+      "firstName": "Black",
+      "lastName": "Knight",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "black_widow",
+      "email": "black_widow@example.com",
+      "firstName": "Black",
+      "lastName": "Widow",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "mantis",
+      "email": "mantis@example.com",
+      "firstName": "Mantis",
+      "lastName": "Mantis",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "beast",
+      "email": "beast@example.com",
+      "firstName": "Beast",
+      "lastName": "Beast",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "moondragon",
+      "email": "moondragon@example.com",
+      "firstName": "Moondragon",
+      "lastName": "Moondragon",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "hellcat",
+      "email": "hellcat@example.com",
+      "firstName": "Hellcat",
+      "lastName": "Hellcat",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "captain_marvel",
+      "email": "captain_marvel@example.com",
+      "firstName": "Captain",
+      "lastName": "Marvel",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "falcon",
+      "email": "falcon@example.com",
+      "firstName": "Falcon",
+      "lastName": "Falcon",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "wonder_man",
+      "email": "wonder_man@example.com",
+      "firstName": "Wonder",
+      "lastName": "Man",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "tigra",
+      "email": "tigra@example.com",
+      "firstName": "Tigra",
+      "lastName": "Tigra",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "she_hulk",
+      "email": "she_hulk@example.com",
+      "firstName": "She",
+      "lastName": "Hulk",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "starfox",
+      "email": "starfox@example.com",
+      "firstName": "Starfox",
+      "lastName": "Starfox",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "mockingbird",
+      "email": "mockingbird@example.com",
+      "firstName": "Mockingbird",
+      "lastName": "Mockingbird",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "war_machine",
+      "email": "war_machine@example.com",
+      "firstName": "War",
+      "lastName": "Machine",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "namor",
+      "email": "namor@example.com",
+      "firstName": "Namor",
+      "lastName": "Namor",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "thing",
+      "email": "thing@example.com",
+      "firstName": "Thing",
+      "lastName": "Thing",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "doctor_druid",
+      "email": "doctor_druid@example.com",
+      "firstName": "Doctor",
+      "lastName": "Druid",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "firebird",
+      "email": "firebird@example.com",
+      "firstName": "Firebird",
+      "lastName": "Firebird",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "moon_knight",
+      "email": "moon_knight@example.com",
+      "firstName": "Moon",
+      "lastName": "Knight",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "spiderman",
+      "email": "spiderman@example.com",
+      "firstName": "Spiderman",
+      "lastName": "Spiderman",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "valkyrie",
+      "email": "valkyrie@example.com",
+      "firstName": "Valkyrie",
+      "lastName": "Valkyrie",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "nova",
+      "email": "nova@example.com",
+      "firstName": "Nova",
+      "lastName": "Nova",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "storm",
+      "email": "storm@example.com",
+      "firstName": "Storm",
+      "lastName": "Storm",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "daredevil",
+      "email": "daredevil@example.com",
+      "firstName": "Daredevil",
+      "lastName": "Daredevil",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "psylocke",
+      "email": "psylocke@example.com",
+      "firstName": "Psylocke",
+      "lastName": "Psylocke",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "penance",
+      "email": "penance@example.com",
+      "firstName": "Penance",
+      "lastName": "Penance",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "cable",
+      "email": "cable@example.com",
+      "firstName": "Cable",
+      "lastName": "Cable",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "ghost_rider",
+      "email": "ghost_rider@example.com",
+      "firstName": "Ghost",
+      "lastName": "Rider",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "admin",
+      "email": "admin@example.com",
+      "firstName": "Admin",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "super_user",
+      "email": "super_user@example.com",
+      "firstName": "Super",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "groups": []
+}

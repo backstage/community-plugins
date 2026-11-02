@@ -335,12 +335,19 @@ export class MockKialiClient implements KialiApi {
     return kialiData.meshIstioResourceThresholds;
   }
 
-  async getConfigValidations(cluster?: string): Promise<ValidationStatus> {
-    const queryParams: any = {};
-    if (cluster) {
-      queryParams.clusterName = cluster;
-    }
-    return kialiData.istioValidations;
+  async getConfigValidations(_cluster?: string): Promise<ValidationStatus[]> {
+    const validations = kialiData.istioValidations as Record<
+      string,
+      Record<string, ValidationStatus>
+    >;
+    // Convert legacy fixture map into the array shape returned by current Kiali APIs.
+    return Object.entries(validations).flatMap(([clusterName, byNamespace]) =>
+      Object.entries(byNamespace).map(([namespace, status]) => ({
+        ...status,
+        namespace,
+        cluster: clusterName,
+      })),
+    );
   }
 
   async getAllIstioConfigs(

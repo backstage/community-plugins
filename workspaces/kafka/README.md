@@ -1,10 +1,8 @@
-# [Backstage](https://backstage.io)
+# Kafka Workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for viewing [Apache Kafka](https://kafka.apache.org/) cluster, topic, and consumer group information for a service within Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [kafka](./plugins/kafka): Frontend plugin that adds a Kafka tab to entity pages.
+- [kafka-backend](./plugins/kafka-backend): Backend plugin that connects to Kafka brokers and serves the data the frontend displays.

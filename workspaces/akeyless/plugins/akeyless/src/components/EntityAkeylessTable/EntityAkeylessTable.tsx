@@ -1,0 +1,604 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Entity } from '@backstage/catalog-model';
+import { MissingAnnotationEmptyState } from '@backstage/plugin-catalog-react';
+import { Link, Table, TableColumn } from '@backstage/core-components';
+import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import OpenInNew from '@material-ui/icons/OpenInNew';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import Alert from '@material-ui/lab/Alert';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import useAsync from 'react-use/esm/useAsync';
+import { akeylessApiRef, AkeylessSecret } from '../../api';
+import {
+  AKEYLESS_ALLOW_CRUD_ANNOTATION,
+  AKEYLESS_SECRET_PATH_ANNOTATION,
+  AKEYLESS_SECRET_TYPES_ANNOTATION,
+  DEFAULT_SECRET_TYPES,
+} from '../../constants';
+import { SecretCrudDialog } from '../SecretCrudDialog';
+import {
+  normalizeAnnotatedPath,
+  resolveCreateSecretRequest,
+} from './createSecretUtils';
+
+const STATIC_SECRET_TYPE = 'static-secret';
+
+type AkeylessTableRow = {
+  path: string;
+  hidePathInCell?: boolean;
+  item: string;
+  itemRender?: ReactNode;
+  type: string;
+  viewUrl?: string;
+  editUrl?: string;
+  secret?: AkeylessSecret;
+  pathCrudEnabled?: boolean;
+  actionsKey?: string;
+};
+
+const nonInteractiveColumn = {
+  sorting: false,
+  searchable: false,
+} as const;
+
+export const isRootContextPath = (path: string): boolean => {
+  try {
+    return normalizeAnnotatedPath(path) === '/';
+  } catch {
+    // Invalid traversal (e.g. `/../`) cannot be a scoped CRUD context.
+    return true;
+  }
+};
+
+export const firstNonRootSecretPath = (paths: string[]): string | undefined =>
+  paths.find(path => !isRootContextPath(path));
+
+export const akeylessSecretConfig = (entity: Entity) => {
+  const secretPathAnnotation =
+    entity.metadata.annotations?.[AKEYLESS_SECRET_PATH_ANNOTATION];
+  const secretPaths = secretPathAnnotation
+    ? secretPathAnnotation
+        .split(',')
+        .map(path => path.trim())
+        .filter(Boolean)
+    : [];
+
+  const typesAnnotation =
+    entity.metadata.annotations?.[AKEYLESS_SECRET_TYPES_ANNOTATION];
+  const parsedItemTypes = typesAnnotation
+    ? typesAnnotation
+        .split(',')
+        .map(type => type.trim())
+        .filter(Boolean)
+    : [];
+  const itemTypes = parsedItemTypes.length
+    ? parsedItemTypes
+    : [...DEFAULT_SECRET_TYPES];
+
+  const allowCrud =
+    entity.metadata.annotations?.[AKEYLESS_ALLOW_CRUD_ANNOTATION] !== 'false';
+
+  return { secretPaths, itemTypes, allowCrud };
+};
+
+export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
+  const akeylessApi = useApi(akeylessApiRef);
+  const alertApi = useApi(alertApiRef);
+  const {
+    secretPaths,
+    itemTypes,
+    allowCrud: entityAllowCrud,
+  } = akeylessSecretConfig(entity);
+  const [reloadToken, setReloadToken] = useState(0);
+  const [selectedPath, setSelectedPath] = useState(
+    () => firstNonRootSecretPath(secretPaths) ?? secretPaths[0] ?? '/',
+  );
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editSecret, setEditSecret] = useState<AkeylessSecret>();
+  const [editInitialValue, setEditInitialValue] = useState('');
+  const [deleteSecret, setDeleteSecret] = useState<AkeylessSecret>();
+  const [viewSecret, setViewSecret] = useState<AkeylessSecret>();
+  const [viewValue, setViewValue] = useState<string>();
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewVisible, setViewVisible] = useState(false);
+  const viewRequestIdRef = useRef(0);
+
+  const reload = useCallback(() => {
+    setReloadToken(current => current + 1);
+  }, []);
+
+  const {
+    value: listResults,
+    loading,
+    error,
+  } = useAsync(async () => {
+    if (!secretPaths.length) {
+      return [];
+    }
+
+    const results = await Promise.all(
+      secretPaths.map(async path => {
+        try {
+          const response = await akeylessApi.listSecrets(path, { itemTypes });
+          return {
+            path,
+            secrets: response.secrets,
+            consoleUrl: response.consoleUrl,
+            allowCrud: response.allowCrud ?? false,
+            error: undefined as string | undefined,
+          };
+        } catch (pathError) {
+          return {
+            path,
+            secrets: [],
+            consoleUrl: undefined,
+            allowCrud: false,
+            error:
+              pathError instanceof Error
+                ? pathError.message
+                : 'Failed to load secrets',
+          };
+        }
+      }),
+    );
+    return results;
+  }, [akeylessApi, secretPaths.join(','), itemTypes.join(','), reloadToken]);
+
+  const backendAllowCrud =
+    listResults?.some(result => result.allowCrud) ?? false;
+  const crudEnabled = entityAllowCrud && backendAllowCrud;
+  const crudCreatePaths = secretPaths.filter(path => !isRootContextPath(path));
+  const crudCreateEnabled = crudEnabled && crudCreatePaths.length > 0;
+
+  const openViewDialog = useCallback(
+    async (secret: AkeylessSecret) => {
+      const requestId = ++viewRequestIdRef.current;
+      setViewSecret(secret);
+      setViewVisible(false);
+      setViewValue(undefined);
+      setViewLoading(true);
+      try {
+        const response = await akeylessApi.getStaticSecretValue(
+          secret.fullPath,
+          secret.path,
+        );
+        if (requestId !== viewRequestIdRef.current) {
+          return;
+        }
+        setViewValue(response.value);
+      } catch (viewError) {
+        if (requestId !== viewRequestIdRef.current) {
+          return;
+        }
+        alertApi.post({
+          message:
+            viewError instanceof Error
+              ? viewError.message
+              : 'Failed to load secret value',
+          severity: 'error',
+        });
+        setViewSecret(undefined);
+      } finally {
+        if (requestId === viewRequestIdRef.current) {
+          setViewLoading(false);
+        }
+      }
+    },
+    [akeylessApi, alertApi],
+  );
+
+  const columns: TableColumn<AkeylessTableRow>[] = useMemo(() => {
+    const baseColumns: TableColumn<AkeylessTableRow>[] = [
+      {
+        title: 'Path',
+        field: 'path',
+        width: '12%',
+        render: row => (row.hidePathInCell ? null : row.path),
+      },
+      {
+        title: 'Item',
+        field: 'item',
+        highlight: true,
+        width: '30%',
+        render: row => row.itemRender ?? row.item,
+      },
+      { title: 'Type', field: 'type', width: '12%' },
+      {
+        title: 'View in Akeyless',
+        field: 'viewUrl',
+        width: '10%',
+        ...nonInteractiveColumn,
+        render: row =>
+          row.viewUrl ? (
+            <Link
+              to={row.viewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${row.item} in Akeyless Console`}
+            >
+              <OpenInNew fontSize="small" />
+            </Link>
+          ) : null,
+      },
+    ];
+
+    if (crudEnabled) {
+      baseColumns.push({
+        title: 'Actions',
+        field: 'actionsKey',
+        width: '16%',
+        ...nonInteractiveColumn,
+        render: row => {
+          if (!row.secret) {
+            return null;
+          }
+          if (!row.pathCrudEnabled) {
+            return (
+              <Typography variant="caption" color="textSecondary">
+                Console only
+              </Typography>
+            );
+          }
+
+          const secret = row.secret;
+          return (
+            <Box display="flex">
+              <Tooltip title="View value">
+                <IconButton
+                  size="small"
+                  aria-label={`View value of ${secret.fullPath}`}
+                  onClick={() => openViewDialog(secret)}
+                >
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit value">
+                <IconButton
+                  size="small"
+                  aria-label={`Edit value of ${secret.fullPath}`}
+                  onClick={async () => {
+                    try {
+                      const response = await akeylessApi.getStaticSecretValue(
+                        secret.fullPath,
+                        secret.path,
+                      );
+                      setEditInitialValue(response.value);
+                      setEditSecret(secret);
+                    } catch (editError) {
+                      alertApi.post({
+                        message:
+                          editError instanceof Error
+                            ? editError.message
+                            : 'Failed to load secret value',
+                        severity: 'error',
+                      });
+                    }
+                  }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton
+                  size="small"
+                  aria-label={`Delete ${secret.fullPath}`}
+                  onClick={() => setDeleteSecret(secret)}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          );
+        },
+      });
+    } else {
+      baseColumns.push({
+        title: 'Manage',
+        field: 'editUrl',
+        width: '10%',
+        ...nonInteractiveColumn,
+        render: row =>
+          row.editUrl ? (
+            <Link
+              to={row.editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Manage ${row.item} in Akeyless Console`}
+            >
+              <OpenInNew fontSize="small" />
+            </Link>
+          ) : null,
+      });
+    }
+
+    return baseColumns;
+  }, [alertApi, akeylessApi, crudEnabled, openViewDialog]);
+
+  const data: AkeylessTableRow[] = [];
+
+  (listResults || []).forEach(
+    ({ path, secrets, consoleUrl, error: pathError }) => {
+      if (pathError) {
+        data.push({
+          path,
+          item: `Failed to load secrets from '${path}': ${pathError}`,
+          itemRender: (
+            <Alert severity="error">
+              Failed to load secrets from &apos;{path}&apos;: {pathError}
+            </Alert>
+          ),
+          type: '',
+        });
+        return;
+      }
+
+      if (secrets.length === 0) {
+        data.push({
+          path,
+          item: 'No items found',
+          itemRender: (
+            <Typography variant="body2" color="textSecondary">
+              No items found.{' '}
+              {consoleUrl ? (
+                <Link to={consoleUrl} target="_blank" rel="noopener noreferrer">
+                  Open in Akeyless Console
+                </Link>
+              ) : null}
+            </Typography>
+          ),
+          type: '',
+        });
+        return;
+      }
+
+      secrets.forEach((secret, index) => {
+        const isStaticSecret = secret.itemType === STATIC_SECRET_TYPE;
+        data.push({
+          path,
+          hidePathInCell: index > 0,
+          item: secret.fullPath,
+          type: secret.itemType,
+          viewUrl: secret.showUrl,
+          editUrl: secret.editUrl,
+          secret,
+          pathCrudEnabled: isStaticSecret && !isRootContextPath(secret.path),
+          actionsKey: secret.fullPath,
+        });
+      });
+    },
+  );
+
+  if (!secretPaths.length) {
+    return (
+      <MissingAnnotationEmptyState
+        annotation={AKEYLESS_SECRET_PATH_ANNOTATION}
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error">
+        Unexpected error while fetching secrets from path(s) &apos;
+        {secretPaths.join(', ')}&apos;: {error.message}
+      </Alert>
+    );
+  }
+
+  const subtitle =
+    secretPaths.length === 1
+      ? `Akeyless items for ${entity.metadata.name} in ${secretPaths[0]}`
+      : `Akeyless items for ${entity.metadata.name} across ${secretPaths.length} paths`;
+
+  return (
+    <Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={1}
+      >
+        <Box>
+          <Typography variant="h6">{subtitle}</Typography>
+          <Typography variant="body2" color="textSecondary">
+            {crudEnabled
+              ? 'Static secrets can be viewed, created, updated, and deleted here. Other item types link to the Akeyless Console.'
+              : 'Secret values are not shown here. Use the links to view or manage items in the Akeyless Console.'}
+          </Typography>
+        </Box>
+        {crudCreateEnabled ? (
+          <Button
+            color="primary"
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setSelectedPath(
+                firstNonRootSecretPath(secretPaths) ?? secretPaths[0] ?? '/',
+              );
+              setCreateOpen(true);
+            }}
+          >
+            Create static secret
+          </Button>
+        ) : null}
+      </Box>
+
+      <Table
+        title="Akeyless items"
+        options={{ paging: true, pageSize: 20, search: true }}
+        columns={columns}
+        data={data}
+        isLoading={loading}
+      />
+
+      <SecretCrudDialog
+        open={createOpen}
+        mode="create"
+        contextPath={selectedPath}
+        onClose={() => setCreateOpen(false)}
+        onSubmit={async ({ name, value: secretValue }) => {
+          const { absoluteName, contextPath } = resolveCreateSecretRequest({
+            name,
+            selectedPath,
+            secretPaths,
+          });
+
+          const created = await akeylessApi.createStaticSecret(
+            absoluteName,
+            secretValue,
+            contextPath,
+          );
+          alertApi.post({
+            message: `Created static secret '${created.name}'`,
+            severity: 'success',
+          });
+          reload();
+        }}
+      />
+
+      {editSecret ? (
+        <SecretCrudDialog
+          open
+          mode="edit"
+          contextPath={editSecret.path}
+          secretName={editSecret.fullPath}
+          initialValue={editInitialValue}
+          onClose={() => setEditSecret(undefined)}
+          onSubmit={async ({ name, value: secretValue }) => {
+            await akeylessApi.updateStaticSecretValue(
+              name,
+              secretValue,
+              editSecret.path,
+            );
+            alertApi.post({
+              message: `Updated static secret '${editSecret.fullPath}'`,
+              severity: 'success',
+            });
+            reload();
+          }}
+        />
+      ) : null}
+
+      <Dialog
+        open={Boolean(deleteSecret)}
+        onClose={() => setDeleteSecret(undefined)}
+      >
+        <DialogTitle>Delete static secret?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This will permanently delete{' '}
+            <strong>{deleteSecret?.fullPath}</strong> from Akeyless.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteSecret(undefined)}>Cancel</Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={async () => {
+              if (!deleteSecret) {
+                return;
+              }
+              const secretToDelete = deleteSecret;
+              setDeleteSecret(undefined);
+              try {
+                await akeylessApi.deleteStaticSecret(
+                  secretToDelete.fullPath,
+                  secretToDelete.path,
+                );
+                alertApi.post({
+                  message: `Deleted static secret '${secretToDelete.fullPath}'`,
+                  severity: 'success',
+                });
+                reload();
+              } catch (deleteError) {
+                setDeleteSecret(secretToDelete);
+                alertApi.post({
+                  message:
+                    deleteError instanceof Error
+                      ? deleteError.message
+                      : 'Failed to delete secret',
+                  severity: 'error',
+                });
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(viewSecret)}
+        onClose={() => setViewSecret(undefined)}
+      >
+        <DialogTitle>{viewSecret?.fullPath}</DialogTitle>
+        <DialogContent>
+          {viewLoading ? (
+            <Typography variant="body2">Loading secret value...</Typography>
+          ) : (
+            <Box display="flex" alignItems="center">
+              <Typography
+                variant="body2"
+                component="pre"
+                style={{
+                  fontFamily: 'monospace',
+                  whiteSpace: 'pre-wrap',
+                  flex: 1,
+                  margin: 0,
+                }}
+              >
+                {viewVisible ? viewValue : '••••••••'}
+              </Typography>
+              <IconButton
+                size="small"
+                aria-label={
+                  viewVisible ? 'Hide secret value' : 'Show secret value'
+                }
+                onClick={() => setViewVisible(current => !current)}
+              >
+                {viewVisible ? (
+                  <VisibilityOffIcon fontSize="small" />
+                ) : (
+                  <VisibilityIcon fontSize="small" />
+                )}
+              </IconButton>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setViewSecret(undefined)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+};

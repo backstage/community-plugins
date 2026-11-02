@@ -58,7 +58,14 @@ techdocs:
 
 auth:
   providers:
-    guest: {}
+    # Keep the guest identity matched to the User entity in examples/org.yaml.
+    # To test individual "my metrics" locally, update that entity's
+    # github.com/user-login annotation to your GitHub username (or a login
+    # with ingested Copilot data). The default CopilotUserResolver looks up
+    # this entity ref, then reads the annotation; it does not use the entity
+    # name as the GitHub login.
+    guest:
+      userEntityRef: user:default/guest
 
 catalog:
   import:
@@ -100,15 +107,15 @@ copilot:
   host: github.com
   # enterprise: ${ENTERPRISE}
   organization: ${ORGANIZATION}
-  backfillFromDate: '2026-05-20'
+  backfillFromDate: '2026-08-01'
   backfillDelayMs: 300
   ingestTeams: true
-  showUserMetrics: false
+  showUserMetrics: true
   showLegacyView: false
   defaultView: enterprise
   schedule:
     frequency:
-      hours: 24
+      minutes: 10
     timeout:
       minutes: 30
     initialDelay:

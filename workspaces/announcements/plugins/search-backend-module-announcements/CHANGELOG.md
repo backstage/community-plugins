@@ -1,5 +1,59 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.24.0
+
+### Minor Changes
+
+- 7f450a0: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7f450a0]
+  - @backstage-community/plugin-announcements-common@0.26.0
+  - @backstage-community/plugin-announcements-node@0.24.0
+
+## 0.23.0
+
+### Minor Changes
+
+- 215ed63: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [215ed63]
+  - @backstage-community/plugin-announcements-common@0.25.0
+  - @backstage-community/plugin-announcements-node@0.23.0
+
+## 0.22.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [bae4489]
+  - @backstage-community/plugin-announcements-common@0.24.0
+  - @backstage-community/plugin-announcements-node@0.22.0
+
+## 0.21.0
+
+### Minor Changes
+
+- 4aa61e2: Inactive announcements are no longer indexed for search. This fixes an issue where inactive announcements were still being returned in search results.
+
+## 0.20.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+  - @backstage-community/plugin-announcements-node@0.21.0
+
 ## 0.19.0
 
 ### Minor Changes

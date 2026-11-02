@@ -15,7 +15,7 @@
  */
 
 import { FeedbackRatingsTable } from '../FeedbackRatingsTable';
-import { FeedbackRatings } from '../LikeDislikeButtons';
+import { LikeDislikeFeedbackRatings } from '../LikeDislikeButtons';
 
 /**
  * @public
@@ -26,6 +26,9 @@ export interface LikeDislikeRatingsTableProps {
   title?: string;
 }
 
+/**
+ * @public
+ */
 export const LikeDislikeRatingsTable = (
   props: LikeDislikeRatingsTableProps,
 ) => {
@@ -35,8 +38,8 @@ export const LikeDislikeRatingsTable = (
     <FeedbackRatingsTable
       allEntities={allEntities}
       ownerRef={ownerRef}
-      ratingValues={Object.values(FeedbackRatings).filter(
-        r => r !== FeedbackRatings.neutral,
+      ratingValues={Object.values(LikeDislikeFeedbackRatings).filter(
+        r => r !== LikeDislikeFeedbackRatings.neutral,
       )}
       title={title}
     />

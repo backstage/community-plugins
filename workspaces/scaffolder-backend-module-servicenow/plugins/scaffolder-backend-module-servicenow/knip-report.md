@@ -11,6 +11,6 @@
 
 | Name                | Location          | Severity |
 | :------------------ | :---------------- | :------- |
-| @hey-api/openapi-ts | package.json:55:6 | error    |
-| @types/node-fetch   | package.json:56:6 | error    |
+| @hey-api/openapi-ts | package.json:58:6 | error    |
+| @types/node-fetch   | package.json:59:6 | error    |
 

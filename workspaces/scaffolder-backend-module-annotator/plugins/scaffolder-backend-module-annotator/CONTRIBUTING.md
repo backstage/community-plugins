@@ -9,11 +9,14 @@ Developer guide for `@backstage-community/plugin-scaffolder-backend-module-annot
 
 ## Development harness
 
-Start this module in isolation:
+Start this module in isolation with the package's minimal harness config:
 
 ```bash
-yarn workspace @backstage-community/plugin-scaffolder-backend-module-annotator start
+yarn workspace @backstage-community/plugin-scaffolder-backend-module-annotator start \
+  --config app-config.yaml
 ```
+
+(`--config` paths are resolved from the plugin package directory.)
 
 This runs a minimal backend with `@backstage/plugin-scaffolder-backend` and the annotator module. Use it to verify action registration and local scaffolder integration work.
 
@@ -21,13 +24,15 @@ The harness listens on port **7007**. Only one plugin `dev/` harness should run 
 
 ### Environment setup
 
-Export this variable in your shell before starting the harness. Use a local-only placeholder value for development — do not commit secrets.
+Export this variable in your shell before starting the harness. Use a local-only placeholder value for development — do not commit secrets. The token must be at least **8 characters**.
 
 | Variable                     | Purpose                                                               |
 | ---------------------------- | --------------------------------------------------------------------- |
 | `BACKSTAGE_DEV_STATIC_TOKEN` | Static bearer token for authenticated `curl` calls to the dev backend |
 
-Config keys are defined in [`app-config.yaml`](./app-config.yaml). You may override them in an untracked `app-config.local.yaml` beside the package if your local Backstage CLI setup supports it.
+[`app-config.yaml`](./app-config.yaml) in this package is the **minimal** config required to run the dev harness (listen port and static auth). Prefer starting with `--config app-config.yaml` as shown above.
+
+By default (without `--config`), `yarn start` loads the fuller [`../../app-config.yaml`](../../app-config.yaml) from the workspace root instead. That file is for a broader local Backstage app setup and is not required for this harness. Optional overrides can go in an untracked `app-config.local.yaml` next to whichever config file you pass (or at the workspace root when relying on the default).
 
 ### API authentication for `curl`
 

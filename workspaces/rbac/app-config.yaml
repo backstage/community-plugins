@@ -92,8 +92,9 @@ auth:
     # Uncomment `userEntityRef` if you wish to resolve to a proper user in Backstage
     # See https://backstage.io/docs/auth/guest/provider/#config
     guest:
-      {}
-      # userEntityRef: user:default/guest
+      # Match catalog User + permission.rbac.admin.superUsers for e2e seeding.
+      userEntityRef: user:default/guest
+      ownershipEntityRefs: [user:default/guest]
       # dangerouslyAllowOutsideDevelopment: true
     # Uncomment if using GitHub provider
     # See https://backstage.io/docs/auth/github/provider#configuration
@@ -143,6 +144,12 @@ catalog:
       rules:
         - allow: [User, Group]
 
+    # Full-stack e2e catalog entities (member picker + role members)
+    - type: file
+      target: ../rbac/tests/fixtures/catalog-org.yaml
+      rules:
+        - allow: [User, Group]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
@@ -160,6 +167,9 @@ permission:
       - catalog
       - permission
       - scaffolder
+    # Guest is a super user so e2e can seed/edit REST roles. Do not use
+    # admin.users here — that creates a read-only configuration rbac_admin.
     admin:
-      users:
+      superUsers:
         - name: user:development/guest
+        - name: user:default/guest

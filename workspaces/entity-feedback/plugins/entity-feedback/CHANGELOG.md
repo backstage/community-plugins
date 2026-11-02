@@ -1,5 +1,56 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.25.0
+
+### Minor Changes
+
+- a95d956: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [a95d956]
+  - @backstage-community/plugin-entity-feedback-common@0.22.0
+
+## 0.24.1
+
+### Patch Changes
+
+- 4511548: Limit the Remix Icon dependency to versions below 4.9.0 due to a license change.
+
+## 0.24.0
+
+### Minor Changes
+
+- f041935: Updated entity feedback controls, dialogs, and tables to use Backstage UI instead of Material UI. To upgrade, use React 18 and React Router 6.30.2 or later, install `@backstage/ui` in the app, and import `@backstage/ui/css/styles.css` in the app entry point.
+
+## 0.23.0
+
+### Minor Changes
+
+- 0a3382f: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [0a3382f]
+  - @backstage-community/plugin-entity-feedback-common@0.21.0
+
+## 0.22.0
+
+### Minor Changes
+
+- c901d96: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [c901d96]
+  - @backstage-community/plugin-entity-feedback-common@0.20.0
+
+## 0.21.1
+
+### Patch Changes
+
+- 2fd6cf6: Update new frontend system extension definitions to remove unnecessary compatibility wrappers and export components to allow creating custom extensions to achieve parity with previous customizability with exported component extensions under the old system
+
 ## 0.21.0
 
 ### Minor Changes

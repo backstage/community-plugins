@@ -15,7 +15,8 @@
  */
 import { useContext, useEffect } from 'react';
 
-import { InfoCard, Progress } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 
 import {
   BaseNode,
@@ -139,7 +140,7 @@ const TopologyViewWorkloadComponent = ({
         <TopologyErrorPanel allErrors={allErrors} />
       )}
 
-      <InfoCard className="bs-topology-wrapper" divider={false}>
+      <EntityInfoCard className="bs-topology-wrapper">
         {clusters.length < 1 ? (
           <TopologyEmptyState />
         ) : (
@@ -160,7 +161,7 @@ const TopologyViewWorkloadComponent = ({
             {getTopologyState()}
           </TopologyView>
         )}
-      </InfoCard>
+      </EntityInfoCard>
     </>
   );
 };

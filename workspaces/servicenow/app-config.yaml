@@ -114,3 +114,9 @@ kubernetes:
 permission:
   # setting this to `false` will disable permissions
   enabled: true
+
+servicenow:
+  instanceUrl: ${SERVICENOW_BASE_URL}
+  basicAuth:
+    username: ${SERVICENOW_USERNAME}
+    password: ${SERVICENOW_PASSWORD}

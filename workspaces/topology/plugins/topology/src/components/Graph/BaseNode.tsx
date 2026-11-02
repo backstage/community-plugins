@@ -24,7 +24,6 @@ import {
   NodeStatus,
   observer,
   ScaleDetailsLevel,
-  TOP_LAYER,
   useCombineRefs,
   useHover,
   WithDragNodeProps,
@@ -93,8 +92,11 @@ const BaseNode = ({
       )
     : '';
 
+  // Keep the node on a stable layer. Switching DEFAULT_LAYER → TOP_LAYER on
+  // hover portals the DOM under the cursor, which synthesizes mouseleave and
+  // cancels child tooltips (e.g. PodStatus) while the hover shadow remains.
   return (
-    <Layer id={hover ? TOP_LAYER : DEFAULT_LAYER}>
+    <Layer id={DEFAULT_LAYER}>
       <g
         ref={nodeHoverRefs as LegacyRef<SVGGElement>}
         data-test-id={element.getLabel()}

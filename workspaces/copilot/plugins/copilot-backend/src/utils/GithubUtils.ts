@@ -32,10 +32,34 @@ export type CopilotConfig = {
   apiBaseUrl: string;
 };
 
+const DEFAULT_API_BASE_URL = 'https://api.github.com';
+
+const resolveApiBaseUrl = (value: string): string => {
+  const trimmed = value.trim().replace(/\/+$/, '');
+
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    throw new Error(
+      `Invalid "copilot.apiBaseUrl" value "${value}". Expected an absolute URL such as "https://api.octocorp.ghe.com".`,
+    );
+  }
+
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+    throw new Error(
+      `Invalid "copilot.apiBaseUrl" value "${value}". Only http and https are supported.`,
+    );
+  }
+
+  return trimmed;
+};
+
 export const getCopilotConfig = (config: Config): CopilotConfig => {
   const host = config.getString('copilot.host');
   const enterprise = config.getOptionalString('copilot.enterprise');
   const organization = config.getOptionalString('copilot.organization');
+  const apiBaseUrl = config.getOptionalString('copilot.apiBaseUrl');
 
   const integrations = ScmIntegrations.fromConfig(config);
 
@@ -63,7 +87,11 @@ export const getCopilotConfig = (config: Config): CopilotConfig => {
     host,
     enterprise,
     organization,
-    apiBaseUrl: githubConfig.apiBaseUrl ?? 'https://api.github.com',
+    // Only the plugin's own key is validated; the integration's value is owned
+    // and already normalised by @backstage/integration.
+    apiBaseUrl: apiBaseUrl
+      ? resolveApiBaseUrl(apiBaseUrl)
+      : githubConfig.apiBaseUrl ?? DEFAULT_API_BASE_URL,
   };
 };
 

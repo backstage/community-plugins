@@ -23,7 +23,9 @@ export interface AdrApi {
 }
 
 // @public
-export const adrApiRef: ApiRef<AdrApi>;
+export const adrApiRef: ApiRef<AdrApi, 'plugin.adr.api'> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public
 export class AdrClient implements AdrApi {
@@ -108,7 +110,7 @@ export type AdrSearchResultListItemProps = {
 export const EntityAdrContent: (props: {
   contentDecorators?: AdrContentDecorator[];
   filePathFilterFn?: AdrFilePathFilterFn;
-  statusComponent?: React.ReactNode;
+  statusComponent?: ReactNode;
 }) => JSX_2.Element;
 
 // @public

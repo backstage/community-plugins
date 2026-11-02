@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 import { Content, Page } from '@backstage/core-components';
+import { makeStyles } from '@material-ui/core/styles';
 import { default as React } from 'react';
+import { HeaderBackgroundProvider } from '../../contexts/HeaderBackgroundContext';
 import { AppListPage } from '../AppList/AppListPage';
 import { IstioConfigListPage } from '../IstioConfigList/IstioConfigListPage';
 import { OverviewPage } from '../Overview/OverviewPage';
@@ -24,6 +26,12 @@ import { WorkloadListPage } from '../WorkloadList/WorkloadListPage';
 import { KialiHeader } from './Header/KialiHeader';
 import { KialiTabs } from './Header/KialiTabs';
 import { KialiNoPath } from './NoPath';
+
+const useStyles = makeStyles(theme => ({
+  content: {
+    backgroundColor: theme.palette.background.default,
+  },
+}));
 
 const noPath = 'noPath';
 const getPathPage = () => {
@@ -38,6 +46,7 @@ const getPathPage = () => {
 
 export const KialiPage = () => {
   const [selectedTab, _] = React.useState<string>(getPathPage());
+  const classes = useStyles();
   const renderPath = () => {
     switch (selectedTab) {
       case 'overview':
@@ -59,9 +68,11 @@ export const KialiPage = () => {
 
   return (
     <Page themeId="app">
-      <Content>
+      <HeaderBackgroundProvider>
         <KialiHeader />
         <KialiTabs />
+      </HeaderBackgroundProvider>
+      <Content stretch className={classes.content}>
         {renderPath()}
       </Content>
     </Page>

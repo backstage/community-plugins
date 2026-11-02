@@ -27,10 +27,12 @@ import {
   InputError,
   NotAllowedError,
   NotFoundError,
+  ServiceUnavailableError,
 } from '@backstage/errors';
 import {
   AuthorizeResult,
   BasicPermission,
+  MetadataResponse,
   PolicyDecision,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
@@ -63,13 +65,16 @@ import {
   deepSortedEqual,
   isPermissionAction,
   policyToString,
-  processConditionMapping,
   matches,
 } from '../helper';
 import {
   type ConditionValidationLimits,
   validateRoleCondition,
 } from '../validation/condition-validation';
+import {
+  isPermissionInfo,
+  type PermissionMapping,
+} from '@backstage-community/plugin-rbac-common';
 import {
   validateEntityReference,
   validatePolicy,
@@ -84,6 +89,57 @@ import { registerPermissionDefinitionRoutes } from './permission-definition-rout
 import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
 import { createRouter } from './router';
+
+function validateNamedPermissionMapping(
+  permissionMapping: PermissionMapping[],
+): void {
+  const actionOnlyEntry = permissionMapping.find(
+    entry => !isPermissionInfo(entry),
+  );
+  if (actionOnlyEntry) {
+    throw new InputError(
+      `REST API requires permissionMapping entries to include permission name, ` +
+        `e.g. {name: "catalog.entity.read", action: "read"}. ` +
+        `Received plain action: '${actionOnlyEntry}'. ` +
+        `Action-only (broad) format is supported in YAML conditional policies file and provider extension point.`,
+    );
+  }
+}
+
+function validateRulesAreDeclared(
+  conditions: RoleConditionalPolicyDecision['conditions'],
+  pluginId: string,
+  declaredRules: MetadataResponse['rules'],
+): void {
+  if ('not' in conditions) {
+    validateRulesAreDeclared(conditions.not, pluginId, declaredRules);
+    return;
+  }
+  if ('allOf' in conditions) {
+    for (const condition of conditions.allOf) {
+      validateRulesAreDeclared(condition, pluginId, declaredRules);
+    }
+    return;
+  }
+  if ('anyOf' in conditions) {
+    for (const condition of conditions.anyOf) {
+      validateRulesAreDeclared(condition, pluginId, declaredRules);
+    }
+    return;
+  }
+
+  const { rule, resourceType } = conditions;
+  if (
+    !declaredRules.some(
+      declared =>
+        declared.name === rule && declared.resourceType === resourceType,
+    )
+  ) {
+    throw new InputError(
+      `Rule '${rule}' with resource type '${resourceType}' is not declared by plugin '${pluginId}'`,
+    );
+  }
+}
 
 export async function authorizeConditional(
   request: Request,
@@ -153,7 +209,7 @@ export class PoliciesServer {
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
 
-    const { logger, auditor, auth, permissionsRegistry } = this.options;
+    const { logger, auditor, permissionsRegistry } = this.options;
 
     const defRoleMeta = this.roleMetadata.getCachedDefaultRoleMetadata();
     let defRole: Role | undefined;
@@ -838,19 +894,9 @@ export class PoliciesServer {
           this.getActionQueries(request.query.actions),
         );
 
-        const body: RoleConditionalPolicyDecision<PermissionAction>[] =
-          conditions
-            .map(condition => {
-              return {
-                ...condition,
-                permissionMapping: condition.permissionMapping.map(
-                  pm => pm.action,
-                ),
-              };
-            })
-            .filter(condition => {
-              return matchedRoleName.includes(condition.roleEntityRef);
-            });
+        const body = conditions.filter(condition =>
+          matchedRoleName.includes(condition.roleEntityRef),
+        );
 
         response.json(body);
       },
@@ -866,21 +912,16 @@ export class PoliciesServer {
           this.options,
         );
 
-        const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
-          request.body;
+        const roleConditionPolicy: RoleConditionalPolicyDecision = request.body;
         validateRoleCondition(
           roleConditionPolicy,
           this.conditionValidationLimits,
         );
-
-        const conditionToCreate = await processConditionMapping(
-          roleConditionPolicy,
-          this.pluginPermMetaData,
-          auth,
-        );
+        validateNamedPermissionMapping(roleConditionPolicy.permissionMapping);
+        await this.validateConditionRules(roleConditionPolicy);
 
         const id =
-          await this.conditionalStorage.createCondition(conditionToCreate);
+          await this.conditionalStorage.createCondition(roleConditionPolicy);
 
         const body = { id: id };
 
@@ -922,15 +963,8 @@ export class PoliciesServer {
           return role.roleEntityRef;
         });
 
-        const body: RoleConditionalPolicyDecision<PermissionAction> | [] =
-          matchedRoleName.includes(condition.roleEntityRef)
-            ? {
-                ...condition,
-                permissionMapping: condition.permissionMapping.map(
-                  pm => pm.action,
-                ),
-              }
-            : [];
+        const body: RoleConditionalPolicyDecision | [] =
+          matchedRoleName.includes(condition.roleEntityRef) ? condition : [];
 
         response.json(body);
       },
@@ -960,14 +994,9 @@ export class PoliciesServer {
         if (!condition) {
           throw new NotFoundError(`Condition with id ${id} was not found`);
         }
-        const conditionToDelete: RoleConditionalPolicyDecision<PermissionAction> =
-          {
-            ...condition,
-            permissionMapping: condition.permissionMapping.map(pm => pm.action),
-          };
 
         const roleMetadata = await this.roleMetadata.findRoleMetadata(
-          conditionToDelete.roleEntityRef,
+          condition.roleEntityRef,
         );
 
         if (
@@ -978,7 +1007,7 @@ export class PoliciesServer {
         }
 
         await this.conditionalStorage.deleteCondition(id);
-        response.locals.meta = { condition: conditionToDelete }; // auditor
+        response.locals.meta = { condition }; // auditor
 
         response.status(204).end();
       },
@@ -1021,21 +1050,16 @@ export class PoliciesServer {
           throw new NotAllowedError(); // 403
         }
 
-        const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
-          request.body;
+        const roleConditionPolicy: RoleConditionalPolicyDecision = request.body;
 
         validateRoleCondition(
           roleConditionPolicy,
           this.conditionValidationLimits,
         );
+        validateNamedPermissionMapping(roleConditionPolicy.permissionMapping);
+        await this.validateConditionRules(roleConditionPolicy);
 
-        const conditionToUpdate = await processConditionMapping(
-          roleConditionPolicy,
-          this.pluginPermMetaData,
-          auth,
-        );
-
-        await this.conditionalStorage.updateCondition(id, conditionToUpdate);
+        await this.conditionalStorage.updateCondition(id, roleConditionPolicy);
 
         response.locals.meta = { condition: roleConditionPolicy }; // auditor
 
@@ -1084,6 +1108,31 @@ export class PoliciesServer {
     router.use(setAuditorError());
 
     return router;
+  }
+
+  // Not part of validateRoleCondition: the YAML watcher and providers share
+  // it and must not depend on other plugins being reachable at startup.
+  private async validateConditionRules(
+    roleConditionPolicy: RoleConditionalPolicyDecision,
+  ): Promise<void> {
+    const { auth } = this.options;
+    const { pluginId, conditions } = roleConditionPolicy;
+
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await auth.getOwnServiceCredentials(),
+      targetPluginId: pluginId,
+    });
+    const metadata = await this.pluginPermMetaData.getMetadataByPluginId(
+      pluginId,
+      token,
+    );
+    if (!metadata) {
+      throw new ServiceUnavailableError( // 503
+        `Unable to verify the condition rules: permission metadata of plugin '${pluginId}' could not be retrieved`,
+      );
+    }
+
+    validateRulesAreDeclared(conditions, pluginId, metadata.rules);
   }
 
   getEntityReference(request: Request, role?: boolean): string {

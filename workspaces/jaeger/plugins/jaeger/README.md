@@ -94,3 +94,44 @@ spec:
   providesApis:
     - petstore
 ```
+
+## New Frontend System (Alpha)
+
+The Jaeger plugin supports the New Frontend System via an `/alpha` export, here's how to use it:
+
+1. Add the plugin to your app, using either auto discovery or the manual option:
+
+   For auto discovery, add the following to your `app-config.yaml` file:
+
+   ```yaml
+   app:
+     packages: all
+   ```
+
+   Alternatively, add the plugin manually in your `packages/app(-next)/src/App.tsx`, after all other imports:
+
+   ```tsx
+   import jaegerPlugin from '@backstage-community/plugin-jaeger/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       jaegerPlugin,
+       // ...
+     ],
+   });
+   ```
+
+2. Next, enable the entity content extension in your `app-config.yaml`:
+
+   ```yaml
+   app:
+     extensions:
+       - entity-content:jaeger/entity
+   ```
+
+   The `Traces` tab is shown on components annotated with `jaegertracing.io/service`, as described above.

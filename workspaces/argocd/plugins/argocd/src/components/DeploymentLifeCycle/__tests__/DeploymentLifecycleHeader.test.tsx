@@ -22,6 +22,11 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockApplication } from '../../../../dev/__data__';
 import DeploymentLifecycleHeader from '../DeploymentLifecycleHeader';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('DeploymentLifecycleCardHeader', () => {
   const wrapper = ({ children }: { children: ReactNode }) => {

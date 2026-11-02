@@ -37,6 +37,7 @@ export const EntityPlaylistDialog: (
 export type EntityPlaylistDialogProps = {
   open: boolean;
   onClose: () => void;
+  entity?: Entity;
 };
 
 // @public (undocumented)
@@ -113,7 +114,9 @@ export interface PlaylistApi {
 }
 
 // @public (undocumented)
-export const playlistApiRef: ApiRef<PlaylistApi>;
+export const playlistApiRef: ApiRef<PlaylistApi, 'plugin.playlist.service'> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export class PlaylistClient implements PlaylistApi {

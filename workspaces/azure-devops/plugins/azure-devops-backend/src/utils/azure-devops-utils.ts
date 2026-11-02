@@ -242,12 +242,15 @@ export function buildEncodedUrl(
   project: string,
   repo: string,
   path: string,
+  version?: string,
 ): string {
   const encodedOrg = encodeURIComponent(org);
   const encodedProject = encodeURIComponent(project);
   const encodedRepo = encodeURIComponent(repo);
   const encodedPath = encodeURIComponent(path);
-  return `https://${host}/${encodedOrg}/${encodedProject}/_git/${encodedRepo}?path=${encodedPath}`;
+  const versionQuery = version ? `&version=${encodeURIComponent(version)}` : '';
+
+  return `https://${host}/${encodedOrg}/${encodedProject}/_git/${encodedRepo}?path=${encodedPath}${versionQuery}`;
 }
 
 function convertReviewer(

@@ -10,9 +10,14 @@ proxy:
 dynamicPlugins:
   frontend:
     backstage-community.plugin-jfrog-artifactory:
+      translationResources:
+        - importName: jfrogArtifactoryTranslations
+          module: Alpha
+          ref: jfrogArtifactoryTranslationRef
       mountPoints:
         - mountPoint: entity.page.image-registry/cards
           importName: JfrogArtifactoryPage
+          module: Legacy
           config:
             layout:
               gridColumn: 1 / -1

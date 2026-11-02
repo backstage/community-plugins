@@ -1,5 +1,44 @@
 # @backstage-community/plugin-playlist
 
+## 0.25.0
+
+### Minor Changes
+
+- 1098991: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [1098991]
+  - @backstage-community/plugin-playlist-common@0.23.0
+
+## 0.24.0
+
+### Minor Changes
+
+- 61c9269: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [61c9269]
+  - @backstage-community/plugin-playlist-common@0.22.0
+
+## 0.23.0
+
+### Minor Changes
+
+- f298bfe: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [f298bfe]
+  - @backstage-community/plugin-playlist-common@0.21.0
+
+## 0.22.0
+
+### Minor Changes
+
+- 57bd16a: Add new frontend system support via the `/alpha` entry point
+
 ## 0.21.0
 
 ### Minor Changes

@@ -1,5 +1,43 @@
 # @backstage-community/plugin-ocm
 
+## 5.22.0
+
+### Minor Changes
+
+- aae296f: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [aae296f]
+  - @backstage-community/plugin-ocm-common@5.22.0
+
+## 5.21.2
+
+### Patch Changes
+
+- 27fcb15: Updated dependency `@testing-library/user-event` to `14.6.7`.
+- b4d71fd: Backstage version bump to v1.54.7
+- Updated dependencies [b4d71fd]
+  - @backstage-community/plugin-ocm-common@5.21.2
+
+## 5.21.1
+
+### Patch Changes
+
+- 99a88ab: Updated dependency `@testing-library/user-event` to `14.6.6`.
+  - @backstage-community/plugin-ocm-common@5.21.1
+
+## 5.20.0
+
+### Minor Changes
+
+- 2f20375: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [2f20375]
+  - @backstage-community/plugin-ocm-common@3.24.0
+
 ## 5.19.0
 
 ### Minor Changes

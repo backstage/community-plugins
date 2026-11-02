@@ -23,7 +23,7 @@ import { examples } from './createTimestampAction.examples';
 export const createTimestampAction = () => {
   return createAnnotatorAction(
     'catalog:timestamping',
-    'Creates a new `catalog:timestamping` Scaffolder action to annotate scaffolded entities with creation timestamp.',
+    'Adds the `backstage.io/createdAt` annotation containing the current timestamp to your entity object',
     'Annotating catalog-info.yaml with current timestamp',
     () => {
       return {

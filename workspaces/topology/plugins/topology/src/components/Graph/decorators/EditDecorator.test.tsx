@@ -16,6 +16,7 @@
 import { Node } from '@patternfly/react-topology';
 import { render } from '@testing-library/react';
 
+import { unsafeScriptUrl } from '../../../test-utils/unsafeScriptUrl';
 import EditDecorator from './EditDecorator';
 
 jest.mock('../../Icons/RouteDecoratorIcon', () => {
@@ -101,5 +102,64 @@ describe('EditDecorator', () => {
 
     const mockedIcon = getByTestId('mocked-icon');
     expect(mockedIcon).toBeInTheDocument();
+  });
+
+  it('ignores malicious editURL and falls back to vcsURI', () => {
+    const elementMock = {
+      getData: () => ({
+        data: {
+          editURL: unsafeScriptUrl(),
+          vcsURI: 'https://github.com/backstage/backstage',
+          vcsRef: 'master',
+          cheCluster: null,
+        },
+      }),
+    } as Node;
+
+    const { getByTestId } = render(
+      <EditDecorator element={elementMock} radius={20} x={0} y={0} />,
+    );
+
+    expect(getByTestId('mocked-decorator')).toHaveAttribute(
+      'href',
+      'https://github.com/backstage/backstage/tree/master',
+    );
+  });
+
+  it('renders nothing for unsafe editURL without a valid vcsURI', () => {
+    const elementMock = {
+      getData: () => ({
+        data: {
+          editURL: unsafeScriptUrl(),
+          vcsURI: undefined,
+          cheCluster: null,
+        },
+      }),
+    } as Node;
+
+    const { queryByTestId } = render(
+      <EditDecorator element={elementMock} radius={20} x={0} y={0} />,
+    );
+
+    expect(queryByTestId('mocked-decorator')).not.toBeInTheDocument();
+  });
+
+  it('renders nothing for an invalid or oversized git URI', () => {
+    const longUri = `https://github.com/org/${'a'.repeat(3000)}`;
+    const elementMock = {
+      getData: () => ({
+        data: {
+          editURL: undefined,
+          vcsURI: longUri,
+          cheCluster: null,
+        },
+      }),
+    } as Node;
+
+    const { queryByTestId } = render(
+      <EditDecorator element={elementMock} radius={20} x={0} y={0} />,
+    );
+
+    expect(queryByTestId('mocked-decorator')).not.toBeInTheDocument();
   });
 });

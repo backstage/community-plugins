@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from './service/router';
+export { periskopPlugin as default } from './plugin';

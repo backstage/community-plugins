@@ -1,18 +1,45 @@
-# [Backstage](https://backstage.io)
+# RBAC — Backstage community-plugins workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+Backstage community workspace for the RBAC plugin (`@backstage-community/plugin-rbac`).
 
-To start the app, run:
+Publishable packages live under `plugins/` (`rbac`, `rbac-backend`, `rbac-common`, `rbac-node`).
+
+## Local development
+
+### Full-stack (frontend + backend)
+
+From **`workspaces/rbac`** (workspace root):
 
 ```sh
 yarn install
-yarn start
+yarn start          # NFS (New Frontend System) + rbac-backend on :3000 / :7007
+yarn start:legacy   # legacy frontend + rbac-backend
 ```
 
-To generate knip reports for this app, run:
+The backend grants the guest user super-user access for local/e2e setup. Roles used by Playwright are created via the REST API in the test `beforeAll` (editable). Catalog entities for the member picker live in `plugins/rbac/tests/fixtures/catalog-org.yaml`.
+
+> **Note:** `yarn start` inside `plugins/rbac` starts **only** the frontend. Use the workspace root for full-stack.
+
+See [plugins/rbac-backend/CONTRIBUTING.md](./plugins/rbac-backend/CONTRIBUTING.md) and [plugins/rbac/CONTRIBUTING.md](./plugins/rbac/CONTRIBUTING.md).
+
+## E2e tests
+
+Playwright runs **`rbac.spec.ts` against the real frontend + backend**. Locale projects (`en`/`fr`/`it`/`ja`/`de`/`es`) share one in-memory backend; seeded and created roles use a `-${locale}` suffix so projects do not collide. Japanese still skips “View details of role” ([RHDHBUGS-2598](https://issues.redhat.com/browse/RHDHBUGS-2598)).
+
+| Command                                     | What it runs                                          |
+| ------------------------------------------- | ----------------------------------------------------- |
+| `yarn test:e2e:ci` / `yarn playwright test` | Full-stack `rbac.spec.ts`, NFS + legacy (all locales) |
+| `yarn test:nfs`                             | Full-stack, NFS only                                  |
+| `yarn test:legacy`                          | Full-stack, legacy only                               |
+| `yarn ui-test` (from `plugins/rbac`)        | Same as `test:nfs --project=en`                       |
+
+## Other commands
 
 ```sh
+yarn test           # unit tests
+yarn build:all      # build all packages
+yarn lint
 yarn backstage-repo-tools knip-reports
 ```
 
-> Notice: The guest user has admin permissions in this application for quick setup. For better control, specify more users and groups in app-config.local.yaml and define a separate admin/admins permission instead of using the guest user. Using the guest user as an admin is not recommended for permission management.
+> The guest user has admin permissions in this dev app for quick setup. For production-like setups, configure dedicated admin users in `app-config.local.yaml`.

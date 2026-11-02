@@ -18,6 +18,7 @@ import ResourceName from '../../../common/ResourceName';
 import { RouteModel } from '../../../../models';
 import { RouteData } from '../../../../types/route';
 import { useTranslation } from '../../../../hooks/useTranslation';
+import { isValidHttpUrl } from '../../../../utils/url-utils';
 import TopologyResourcesTabPanelItem from '../TopologyResourcesTabPaneltem';
 
 const RouteListSidebar = ({ routesData }: { routesData: RouteData[] }) => {
@@ -45,13 +46,17 @@ const RouteListSidebar = ({ routesData }: { routesData: RouteData[] }) => {
                 <span className="bs-topology-text-muted">
                   {t('common.location')}:
                 </span>
-                <a
-                  href={routeData.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {routeData.url}
-                </a>
+                {isValidHttpUrl(routeData.url) ? (
+                  <a
+                    href={routeData.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {routeData.url}
+                  </a>
+                ) : (
+                  <span>{routeData.url}</span>
+                )}
               </>
             )}
           </li>
