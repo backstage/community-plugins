@@ -5023,6 +5023,8 @@ __metadata:
     "@jest/environment-jsdom-abstract": "npm:^30.0.0"
     "@types/jest": "npm:^30.0.0"
     "@types/jsdom": "npm:^27.0.0"
+    "@types/react": "npm:^18.2.0"
+    "@types/react-dom": "npm:^18.2.0"
     jest: "npm:^30.0.0"
     jsdom: "npm:^27.0.0"
     node-gyp: "npm:^9.0.0"
