@@ -23,10 +23,12 @@
  */
 
 import { useState } from 'react';
-import { Alert, Box } from '@backstage/ui';
-import { ErrorBoundary } from '@backstage/core-components';
-import Form from '@rjsf/material-ui';
-import { extractSchemaFromStep } from '@backstage/plugin-scaffolder-react/alpha';
+import { Alert, Box, Text } from '@backstage/ui';
+import { ErrorBoundary, MarkdownContent } from '@backstage/core-components';
+import {
+  extractSchemaFromStep,
+  Form,
+} from '@backstage/plugin-scaffolder-react/alpha';
 import { JsonObject, JsonValue } from '@backstage/types';
 import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 import { type ErrorSchema } from '@rjsf/utils';
@@ -111,8 +113,17 @@ export const PatchForm = ({ patch, initialData, onChange }: PatchFormProps) => {
           data-testid="unknown-field-warning"
         />
       ))}
+      {patch.title && (
+        <Text as="h3" variant="title-small" weight="bold">
+          {patch.title}
+        </Text>
+      )}
+      {patch.description && (
+        <MarkdownContent content={patch.description} linkTarget="_blank" />
+      )}
       <ErrorBoundary>
         <Form
+          EXPERIMENTAL_theme="bui"
           schema={schema}
           uiSchema={{
             'ui:submitButtonOptions': { norender: true },

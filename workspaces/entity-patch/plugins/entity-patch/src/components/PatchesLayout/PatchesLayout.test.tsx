@@ -71,16 +71,29 @@ const patches: PatchDefinition[] = [
 describe('PatchesLayout', () => {
   it('should render visible text for each patch title', async () => {
     const testPatches = [
-      { name: 'p1', title: 'Step 1', properties: {} },
-      { name: 'p2', title: 'Step 2', properties: {} },
+      {
+        name: 'p1',
+        title: 'Step 1',
+        description: 'First step description',
+        properties: { a: { title: 'A', type: 'string' } },
+      },
+      {
+        name: 'p2',
+        title: 'Step 2',
+        properties: { b: { title: 'B', type: 'string' } },
+      },
     ];
 
     await renderInTestApp(
       <PatchesLayout patches={testPatches} onChange={() => {}} />,
     );
 
-    expect(screen.getByText('Step 1')).toBeInTheDocument();
-    expect(screen.getByText('Step 2')).toBeInTheDocument();
+    expect(await screen.findByText('Step 1')).toBeVisible();
+    expect(screen.getAllByText('Step 1')).toHaveLength(1);
+    expect(screen.getByText('Step 2')).toBeVisible();
+    expect(screen.getByText('First step description')).toBeVisible();
+    expect(screen.getByRole('textbox', { name: /^A/ })).toBeVisible();
+    expect(screen.getByRole('textbox', { name: /^B/ })).toBeVisible();
   });
 
   it('should call onChange with patch-keyed data when a field is changed', async () => {

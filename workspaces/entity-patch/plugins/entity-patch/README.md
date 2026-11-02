@@ -196,7 +196,7 @@ The `ui:field`, `ui:widget`, and `ui:options` keys in a patch property work **ex
 #   ui:options: ...           →   'ui:options': ...
 ```
 
-Any scaffolder field extension registered in your app — either built-in or custom — is automatically available for use in patches.
+Any scaffolder field extension registered in your app — either built-in or custom — is automatically available for use in patches. Forms render with the scaffolder's Backstage UI (BUI) form theme, so field extensions render their BUI variants.
 
 ### Common built-in `ui:field` values
 

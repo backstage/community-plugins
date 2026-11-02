@@ -1682,7 +1682,6 @@ __metadata:
     "@material-ui/icons": "npm:^4.11.3"
     "@playwright/test": "npm:^1.64.1"
     "@remixicon/react": "npm:^4.9.0"
-    "@rjsf/material-ui": "npm:^5.24.13"
     "@rjsf/utils": "npm:^5.24.13"
     "@rjsf/validator-ajv8": "npm:^5.24.13"
     "@testing-library/jest-dom": "npm:^6.10.0"
@@ -7669,7 +7668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rjsf/material-ui@npm:5.24.13, @rjsf/material-ui@npm:^5.24.13":
+"@rjsf/material-ui@npm:5.24.13":
   version: 5.24.13
   resolution: "@rjsf/material-ui@npm:5.24.13"
   peerDependencies:
