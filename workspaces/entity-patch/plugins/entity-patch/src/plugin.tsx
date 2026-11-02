@@ -23,7 +23,7 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { EntityContextMenuItemBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import EditIcon from '@material-ui/icons/Edit';
+import { RiEditLine } from '@remixicon/react';
 
 import { rootRouteRef } from './routes';
 import { PatchEditDialog } from './components/PatchEditDialog';
@@ -55,7 +55,7 @@ const entityPatchContextMenuItem =
       validatePatchConfig(patchesConfig);
 
       return originalFactory({
-        icon: <EditIcon fontSize="small" />,
+        icon: <RiEditLine />,
         filter: mergePatchesFilters(patchesConfig),
         useProps: () => {
           const { entity } = useEntity();

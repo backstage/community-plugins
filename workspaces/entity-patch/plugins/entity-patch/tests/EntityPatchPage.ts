@@ -111,9 +111,9 @@ export class EntityPatchPage {
     return this.dialog.getByRole('button', { name: /^save$/i });
   }
 
-  /** Returns the Close button inside the dialog. */
+  /** Returns the footer Close button (the header X button shares the name, so take the last). */
   get closeButton(): Locator {
-    return this.dialog.getByRole('button', { name: /^close$/i });
+    return this.dialog.getByRole('button', { name: /^close$/i }).last();
   }
 
   /** Fills a text field by its label. */

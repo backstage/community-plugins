@@ -16,15 +16,15 @@
 import { useRef, useState } from 'react';
 import { JsonValue } from '@backstage/types';
 import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
-import { Button, ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
-import { RiCloseLine } from '@remixicon/react';
-// TODO: Replace with BUI Dialog once @backstage/ui exports Dialog components.
 import {
+  Button,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@material-ui/core';
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import { PatchesLayout } from '../PatchesLayout/PatchesLayout';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
 import { LoadErrorAlert } from '../LoadErrorAlert';
@@ -80,20 +80,13 @@ export const PatchEditDialog = ({
 
   return (
     <Dialog
-      open
-      onClose={handleClose}
-      aria-labelledby="patch-edit-dialog-title"
-      PaperProps={{ style: { width: 720, maxWidth: '90vw' } }}
+      isOpen
+      onOpenChange={open => !open && handleClose()}
+      width={720}
+      style={{ maxWidth: '90vw' }}
     >
-      <DialogTitle id="patch-edit-dialog-title">Edit Entity</DialogTitle>
-      <ButtonIcon
-        style={{ position: 'absolute', top: 8, right: 8 }}
-        variant="tertiary"
-        icon={<RiCloseLine />}
-        aria-label="Close dialog"
-        onClick={handleClose}
-      />
-      <DialogContent ref={dialogContentRef}>
+      <DialogHeader>Edit Entity</DialogHeader>
+      <DialogBody ref={dialogContentRef}>
         <LoadErrorAlert show={!!loadError} />
         <UnsavedWarningAlert
           show={showUnsavedWarning}
@@ -113,8 +106,8 @@ export const PatchEditDialog = ({
           patches={patches}
           extensions={formFields}
         />
-      </DialogContent>
-      <DialogActions>
+      </DialogBody>
+      <DialogFooter>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
@@ -128,7 +121,7 @@ export const PatchEditDialog = ({
           </Button>
           <Tooltip>{saveTooltip}</Tooltip>
         </TooltipTrigger>
-      </DialogActions>
+      </DialogFooter>
     </Dialog>
   );
 };
