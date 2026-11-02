@@ -1,0 +1,22 @@
+app:
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:${BACKSTAGE_DEV_PORT:-7007}
+  listen:
+    port: ${BACKSTAGE_DEV_PORT:-7007}
+
+auth:
+  environment: development
+  session:
+    secret: ${AUTH_SESSION_SECRET}
+  providers:
+    keycloak:
+      development:
+        clientId: ${AUTH_KEYCLOAK_CLIENT_ID}
+        clientSecret: ${AUTH_KEYCLOAK_CLIENT_SECRET}
+        baseUrl: ${AUTH_KEYCLOAK_BASE_URL}
+        realm: ${AUTH_KEYCLOAK_REALM}
+        signIn:
+          resolvers:
+            - resolver: preferredUsernameMatchingUserEntityName

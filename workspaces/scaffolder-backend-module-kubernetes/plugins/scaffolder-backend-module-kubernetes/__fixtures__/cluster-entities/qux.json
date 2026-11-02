@@ -1,0 +1,11 @@
+{
+  "apiVersion": "backstage.io/v1beta1",
+  "kind": "Resource",
+  "metadata": {
+    "annotations": {},
+    "name": "qux"
+  },
+  "spec": {
+    "type": "kubernetes-cluster"
+  }
+}
