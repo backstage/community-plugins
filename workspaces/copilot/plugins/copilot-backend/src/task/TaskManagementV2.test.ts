@@ -16,11 +16,139 @@
 
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { DateTime } from 'luxon';
 import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
 import { TaskManagementV2, runBackfill } from './TaskManagementV2';
 
 describe('TaskManagementV2', () => {
+  it('does not retry newly required user and team reports outside their retention window', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const rollingStart = DateTime.utc()
+      .startOf('day')
+      .minus({ years: 1 })
+      .toISODate()!;
+    const reportWindowStart =
+      rollingStart > '2025-10-10' ? rollingStart : '2025-10-10';
+    const backfillFromDate = DateTime.fromISO(reportWindowStart, {
+      zone: 'utc',
+    })
+      .minus({ days: 1 })
+      .toISODate()!;
+    const config = createConfigMock({
+      'copilot.enterprise': 'ent-1',
+      'copilot.backfillFromDate': backfillFromDate,
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+
+    db.getMissingDays.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      1,
+      'enterprise',
+      'ent-1',
+      backfillFromDate,
+      expect.any(String),
+      ['totals'],
+    );
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      2,
+      'enterprise',
+      'ent-1',
+      reportWindowStart,
+      expect.any(String),
+      ['totals', 'users', 'teams'],
+    );
+    expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseUserTeamsLinks).not.toHaveBeenCalled();
+  });
+
+  it('continues loading totals outside the user and team report window', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const rollingStart = DateTime.utc()
+      .startOf('day')
+      .minus({ years: 1 })
+      .toISODate()!;
+    const reportWindowStart =
+      rollingStart > '2025-10-10' ? rollingStart : '2025-10-10';
+    const outsideWindowDay = DateTime.fromISO(reportWindowStart, {
+      zone: 'utc',
+    })
+      .minus({ days: 1 })
+      .toISODate()!;
+    const config = createConfigMock({
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+
+    db.getMissingDays
+      .mockResolvedValueOnce([outsideWindowDay])
+      .mockResolvedValueOnce([]);
+    api.fetchEnterpriseReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/totals.json'],
+    });
+    api.downloadDocument.mockResolvedValueOnce(
+      makeEnterpriseDocument(outsideWindowDay),
+    );
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runBackfill(
+      outsideWindowDay,
+      outsideWindowDay,
+      'enterprise',
+      'ent-1',
+    );
+
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      1,
+      'enterprise',
+      'ent-1',
+      outsideWindowDay,
+      outsideWindowDay,
+      ['totals'],
+    );
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      2,
+      'enterprise',
+      'ent-1',
+      reportWindowStart,
+      outsideWindowDay,
+      ['totals', 'users', 'teams'],
+    );
+    expect(api.fetchEnterpriseReportLinks).toHaveBeenCalledWith(
+      outsideWindowDay,
+    );
+    expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseUserTeamsLinks).not.toHaveBeenCalled();
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        day: outsideWindowDay,
+        status: 'success',
+        components_loaded: '["totals"]',
+      }),
+    );
+  });
+
   it('runAsync with no missing days exits without API calls', async () => {
     const db = createDbMock();
     const api = createApiMock();

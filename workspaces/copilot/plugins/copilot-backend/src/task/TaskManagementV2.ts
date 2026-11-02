@@ -47,9 +47,21 @@ export type TaskManagementV2Options = {
 };
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const GITHUB_REPORTS_EARLIEST_DATE = '2025-10-10';
 
 function getRequiredComponents(ingestTeams: boolean): string[] {
   return ingestTeams ? ['totals', 'users', 'teams'] : ['totals'];
+}
+
+function getReportWindowStartDate(now = DateTime.utc()): string {
+  const rollingStart = now
+    .toUTC()
+    .startOf('day')
+    .minus({ years: 1 })
+    .toISODate();
+  return rollingStart > GITHUB_REPORTS_EARLIEST_DATE
+    ? rollingStart
+    : GITHUB_REPORTS_EARLIEST_DATE;
 }
 
 export async function runBackfill(
@@ -108,16 +120,40 @@ export class TaskManagementV2 {
       `[TaskManagementV2] Starting gap-fill ingestion from ${backfillFromDate} to ${yesterday} for ${entities.length} entities.`,
     );
 
+    const reportWindowStartDate = getReportWindowStartDate();
     const requiredComponents = getRequiredComponents(ingestTeams);
 
     for (const entity of entities) {
-      const missingDays = await this.options.db.getMissingDays(
-        entity.metricsType,
-        entity.entityId,
-        backfillFromDate,
-        yesterday,
-        requiredComponents,
-      );
+      let missingDays: string[];
+      if (ingestTeams && backfillFromDate < reportWindowStartDate) {
+        const [missingTotalsDays, missingReportDays] = await Promise.all([
+          this.options.db.getMissingDays(
+            entity.metricsType,
+            entity.entityId,
+            backfillFromDate,
+            yesterday,
+            ['totals'],
+          ),
+          this.options.db.getMissingDays(
+            entity.metricsType,
+            entity.entityId,
+            reportWindowStartDate,
+            yesterday,
+            requiredComponents,
+          ),
+        ]);
+        missingDays = [
+          ...new Set([...missingTotalsDays, ...missingReportDays]),
+        ].sort();
+      } else {
+        missingDays = await this.options.db.getMissingDays(
+          entity.metricsType,
+          entity.entityId,
+          backfillFromDate,
+          yesterday,
+          requiredComponents,
+        );
+      }
 
       if (!missingDays.length) {
         logger.info(
@@ -132,7 +168,7 @@ export class TaskManagementV2 {
 
       for (const day of missingDays) {
         await this.ingestDay(day, entity.metricsType, entity.entityId, {
-          ingestTeams,
+          ingestTeams: ingestTeams && day >= reportWindowStartDate,
           source: 'scheduled',
         });
 
@@ -156,14 +192,38 @@ export class TaskManagementV2 {
     const backfillDelayMs =
       this.options.config.getOptionalNumber('copilot.backfillDelayMs') ?? 200;
     const requiredComponents = getRequiredComponents(ingestTeams);
+    const reportWindowStartDate = getReportWindowStartDate();
 
-    const missingDays = await this.options.db.getMissingDays(
-      metricsType,
-      entityId,
-      fromDate,
-      toDate,
-      requiredComponents,
-    );
+    let missingDays: string[];
+    if (ingestTeams && fromDate < reportWindowStartDate) {
+      const [missingTotalsDays, missingReportDays] = await Promise.all([
+        this.options.db.getMissingDays(
+          metricsType,
+          entityId,
+          fromDate,
+          toDate,
+          ['totals'],
+        ),
+        this.options.db.getMissingDays(
+          metricsType,
+          entityId,
+          reportWindowStartDate,
+          toDate,
+          requiredComponents,
+        ),
+      ]);
+      missingDays = [
+        ...new Set([...missingTotalsDays, ...missingReportDays]),
+      ].sort();
+    } else {
+      missingDays = await this.options.db.getMissingDays(
+        metricsType,
+        entityId,
+        fromDate,
+        toDate,
+        requiredComponents,
+      );
+    }
 
     if (!missingDays.length) {
       this.options.logger.info(
@@ -178,7 +238,7 @@ export class TaskManagementV2 {
 
     for (const day of missingDays) {
       await this.ingestDay(day, metricsType, entityId, {
-        ingestTeams,
+        ingestTeams: ingestTeams && day >= reportWindowStartDate,
         source: 'backfill',
       });
 
