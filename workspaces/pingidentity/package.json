@@ -44,6 +44,8 @@
     "@jest/environment-jsdom-abstract": "^30.0.0",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "jest": "^30.0.0",
     "jsdom": "^27.0.0",
     "node-gyp": "^9.0.0",
