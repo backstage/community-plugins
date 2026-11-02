@@ -6,6 +6,7 @@
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { EntityContextMenuItemData } from '@backstage/plugin-catalog-react/alpha';
 import { EntityContextMenuItemParams } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
@@ -31,13 +32,17 @@ const entityPatchPlugin: OverridableFrontendPlugin<
         filter?: FilterPredicate | undefined;
       };
       output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
             {
               optional: true;
             }
+          >
+        | ExtensionDataRef<
+            EntityContextMenuItemData,
+            'catalog.entity-context-menu-item-data',
+            {}
           >;
       inputs: {};
       kind: 'entity-context-menu-item';

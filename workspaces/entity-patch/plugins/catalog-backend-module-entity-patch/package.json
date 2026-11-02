@@ -45,7 +45,7 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
-    "@types/lodash": "^4.17.24",
+    "@types/lodash": "^4.17.27",
     "@types/nunjucks": "^3.2.6"
   },
   "files": [

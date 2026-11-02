@@ -67,8 +67,7 @@ const devGuestFetchModule = createFrontendModule({
                 if (!resp.ok) return undefined;
                 const data = await resp.json();
                 cachedToken = data?.backstageIdentity?.token as
-                  | string
-                  | undefined;
+                  string | undefined;
                 expiresAt =
                   now +
                   (data?.backstageIdentity?.expiresInSeconds ?? 3600) * 1000;
