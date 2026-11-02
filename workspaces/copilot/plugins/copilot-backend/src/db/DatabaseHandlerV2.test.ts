@@ -810,6 +810,43 @@ describe('DatabaseHandlerV2', () => {
       expect(rows.every(r => r.user_login === 'octocat')).toBe(true);
     });
 
+    it('reads stored per-user reports for a day', async () => {
+      await handler.insertUserMetrics([buildUserMetric({ day: '2026-05-01' })]);
+      await handler.insertUserMetricsByFeature([
+        buildUserMetricsByFeature({ day: '2026-05-01' }),
+      ]);
+
+      await expect(
+        handler.getUserMetricsForDay('organization', 'org-1', '2026-05-01'),
+      ).resolves.toEqual([
+        expect.objectContaining({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+
+      await expect(
+        handler.getUserBreakdownsForDay('organization', 'org-1', '2026-05-01'),
+      ).resolves.toEqual([
+        expect.objectContaining({
+          user_id: 1,
+          user_login: 'octocat',
+          byFeature: [
+            expect.objectContaining({
+              feature: 'chat_panel',
+              code_generation_activity_count: 4,
+            }),
+          ],
+          byIde: [],
+          byLanguageFeature: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          customizations: [],
+        }),
+      ]);
+    });
+
     it('getUserMetrics matches user login case-insensitively', async () => {
       await handler.insertUserMetrics([
         buildUserMetric({ user_login: 'OctoCat', day: '2026-05-01' }),

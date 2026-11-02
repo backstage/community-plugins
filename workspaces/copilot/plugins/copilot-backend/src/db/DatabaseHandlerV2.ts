@@ -43,6 +43,7 @@ import { DateTime } from 'luxon';
 import { Knex } from 'knex';
 import { migrationsDir } from './DatabaseHandler';
 import { batchInsertInChunks } from '../utils/batchInsert';
+import { UserBreakdownData } from '../utils/reportParser';
 
 type Options = {
   database: DatabaseService;
@@ -56,6 +57,29 @@ type TeamActivityRow = {
   used_agent: boolean | number | null;
   used_chat: boolean | number | null;
 };
+
+export function parseComponentsLoaded(value: unknown): string[] {
+  if (!value) {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    return value.filter((entry): entry is string => typeof entry === 'string');
+  }
+
+  if (typeof value !== 'string') {
+    return [];
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return Array.isArray(parsed)
+      ? parsed.filter((entry): entry is string => typeof entry === 'string')
+      : [];
+  } catch {
+    return [];
+  }
+}
 
 export class DatabaseHandlerV2 {
   static async create(options: Options): Promise<DatabaseHandlerV2> {
@@ -432,8 +456,8 @@ export class DatabaseHandlerV2 {
 
       const componentsLoaded = [
         ...new Set([
-          ...this.parseComponentsLoaded(existing.components_loaded),
-          ...this.parseComponentsLoaded(row.components_loaded),
+          ...parseComponentsLoaded(existing.components_loaded),
+          ...parseComponentsLoaded(row.components_loaded),
         ]),
       ];
       const preserveSuccessfulStatus =
@@ -1255,6 +1279,167 @@ export class DatabaseHandlerV2 {
     };
   }
 
+  async getUserMetricsForDay(
+    metricsType: MetricsScope,
+    entityId: string,
+    day: string,
+  ): Promise<V2UserMetricRow[]> {
+    const rows = await this.db<V2UserMetricRow>('copilot_user_metrics')
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .where('day', day)
+      .orderBy('user_id', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+      user_id: Number(row.user_id),
+    }));
+  }
+
+  async getUserBreakdownsForDay(
+    metricsType: MetricsScope,
+    entityId: string,
+    day: string,
+  ): Promise<UserBreakdownData[]> {
+    const getRows = (tableName: string) =>
+      this.db(tableName)
+        .where('metrics_type', metricsType)
+        .where('entity_id', entityId)
+        .where('day', day)
+        .orderBy('user_id', 'asc')
+        .select('*');
+
+    const [
+      featureRows,
+      ideRows,
+      languageFeatureRows,
+      modelFeatureRows,
+      languageModelRows,
+      customizationRows,
+    ] = await Promise.all([
+      getRows('copilot_user_metrics_by_feature'),
+      getRows('copilot_user_metrics_by_ide'),
+      getRows('copilot_user_metrics_by_language_feature'),
+      getRows('copilot_user_metrics_by_model_feature'),
+      getRows('copilot_user_metrics_by_language_model'),
+      this.db<V2CustomizationMetricRow>('copilot_customization_metrics')
+        .where({
+          metrics_type: metricsType,
+          entity_id: entityId,
+          day,
+          scope: 'user',
+        })
+        .orderBy('user_id', 'asc')
+        .orderBy('category', 'asc')
+        .orderBy('item_name', 'asc')
+        .select('*'),
+    ]);
+
+    const breakdowns = new Map<number, UserBreakdownData>();
+    const getBreakdown = (
+      userIdValue: unknown,
+      userLogin: string,
+    ): UserBreakdownData => {
+      const userId = Number(userIdValue);
+      const existing = breakdowns.get(userId);
+      if (existing) {
+        return existing;
+      }
+
+      const breakdown: UserBreakdownData = {
+        user_id: userId,
+        user_login: userLogin,
+        byFeature: [],
+        byIde: [],
+        byLanguageFeature: [],
+        byModelFeature: [],
+        byLanguageModel: [],
+        customizations: [],
+      };
+      breakdowns.set(userId, breakdown);
+      return breakdown;
+    };
+
+    for (const row of featureRows) {
+      getBreakdown(row.user_id, row.user_login).byFeature.push({
+        feature: row.feature,
+        user_initiated_interaction_count: row.user_initiated_interaction_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of ideRows) {
+      getBreakdown(row.user_id, row.user_login).byIde.push({
+        ide: row.ide,
+        user_initiated_interaction_count: row.user_initiated_interaction_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of languageFeatureRows) {
+      getBreakdown(row.user_id, row.user_login).byLanguageFeature.push({
+        language: row.language,
+        feature: row.feature,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of modelFeatureRows) {
+      getBreakdown(row.user_id, row.user_login).byModelFeature.push({
+        model_id: row.model_id,
+        feature: row.feature,
+        user_initiated_interaction_count: row.user_initiated_interaction_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of languageModelRows) {
+      getBreakdown(row.user_id, row.user_login).byLanguageModel.push({
+        language: row.language,
+        model_id: row.model_id,
+        request_count: row.request_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of customizationRows) {
+      getBreakdown(row.user_id, row.user_login).customizations.push({
+        category: row.category,
+        item_name: row.item_name,
+        interaction_count: row.interaction_count,
+      });
+    }
+
+    return [...breakdowns.values()];
+  }
+
   async hasUserMetrics(
     metricsType: MetricsScope,
     entityId: string,
@@ -1367,34 +1552,9 @@ export class DatabaseHandlerV2 {
     value: unknown,
     requiredComponents: string[],
   ): boolean {
-    const loadedComponents = new Set(this.parseComponentsLoaded(value));
+    const loadedComponents = new Set(parseComponentsLoaded(value));
     return requiredComponents.every(component =>
       loadedComponents.has(component),
     );
-  }
-
-  private parseComponentsLoaded(value: unknown): string[] {
-    if (!value) {
-      return [];
-    }
-
-    if (Array.isArray(value)) {
-      return value.filter(
-        (entry): entry is string => typeof entry === 'string',
-      );
-    }
-
-    if (typeof value !== 'string') {
-      return [];
-    }
-
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed)
-        ? parsed.filter((entry): entry is string => typeof entry === 'string')
-        : [];
-    } catch {
-      return [];
-    }
   }
 }
