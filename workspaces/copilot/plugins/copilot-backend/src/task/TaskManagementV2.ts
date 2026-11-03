@@ -490,16 +490,17 @@ export class TaskManagementV2 {
         const storedUserMetrics = previouslyLoaded.has('users')
           ? await db.getUserMetricsForDay(metricsType, entityId, day)
           : [];
-        const userReport =
+        const storedUserBreakdowns =
           storedUserMetrics.length > 0
+            ? await db.getUserBreakdownsForDay(metricsType, entityId, day)
+            : [];
+        // Reuse only complete stored reports; users loaded before breakdowns were persisted lack them.
+        const userReport =
+          storedUserMetrics.length > 0 && storedUserBreakdowns.length > 0
             ? {
                 loaded: true,
                 userMetrics: storedUserMetrics,
-                userBreakdowns: await db.getUserBreakdownsForDay(
-                  metricsType,
-                  entityId,
-                  day,
-                ),
+                userBreakdowns: storedUserBreakdowns,
               }
             : await this.ingestUserReports(day, metricsType, entityId);
         if (userReport.loaded) {

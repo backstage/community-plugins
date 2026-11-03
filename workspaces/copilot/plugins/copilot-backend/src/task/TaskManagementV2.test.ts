@@ -427,7 +427,11 @@ describe('TaskManagementV2', () => {
     );
   });
 
-  it('reuses stored per-user reports when retrying a partial team day', async () => {
+  it.each([
+    { status: 'partial', cached: true },
+    { status: 'partial', cached: false },
+    { status: 'error', cached: false },
+  ])('retries $status (breakdowns: $cached)', async ({ status, cached }) => {
     const db = createDbMock();
     const api = createApiMock();
     const logger = createLoggerMock();
@@ -438,12 +442,13 @@ describe('TaskManagementV2', () => {
       'copilot.backfillDelayMs': 0,
       'copilot.ingestTeams': true,
     });
+    const userDocument = makeUserMetricsDocument(day);
     const storedUserMetric = {
       day,
       metrics_type: 'enterprise',
       entity_id: 'ent-1',
       user_id: 1,
-      user_login: 'octocat',
+      user_login: 'user-1',
       used_agent: true,
       used_chat: true,
       used_cli: false,
@@ -459,33 +464,42 @@ describe('TaskManagementV2', () => {
     };
     const storedBreakdown = {
       user_id: 1,
-      user_login: 'octocat',
-      byFeature: [],
-      byIde: [],
+      user_login: 'user-1',
+      byFeature: userDocument[0].totals_by_feature,
+      byIde: userDocument[0].totals_by_ide,
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
       customizations: [],
     };
 
-    db.getMissingDays.mockResolvedValue([day]);
+    db.getMissingDays
+      .mockResolvedValueOnce([day])
+      .mockResolvedValue(cached ? [] : [day]);
     db.getIngestionLog.mockResolvedValue([
       {
         day,
         metrics_type: 'enterprise',
         entity_id: 'ent-1',
-        status: 'partial',
+        status,
         components_loaded: '["totals","users"]',
         source: 'scheduled',
       },
     ]);
     db.getUserMetricsForDay.mockResolvedValue([storedUserMetric]);
-    db.getUserBreakdownsForDay.mockResolvedValue([storedBreakdown]);
+    db.getUserBreakdownsForDay.mockResolvedValue(
+      cached ? [storedBreakdown] : [],
+    );
+    api.fetchEnterpriseUserReportLinks
+      .mockResolvedValueOnce({ download_links: [] })
+      .mockResolvedValue({
+        download_links: ['https://downloads.github.com/users.json'],
+      });
     api.fetchEnterpriseUserTeamsLinks.mockResolvedValue({
       download_links: ['https://downloads.github.com/user-teams.json'],
     });
-    api.downloadNdjsonDocument.mockResolvedValueOnce(
-      makeUserTeamsDocument(day),
+    api.downloadNdjsonDocument.mockImplementation(async (url: string) =>
+      url.endsWith('/users.json') ? userDocument : makeUserTeamsDocument(day),
     );
 
     const task = TaskManagementV2.create({
@@ -495,6 +509,18 @@ describe('TaskManagementV2', () => {
       logger,
     });
 
+    await task.runAsync();
+
+    expect(db.insertDailyTotals).toHaveBeenCalledTimes(cached ? 1 : 0);
+    expect(db.upsertIngestionLog).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        day,
+        status: cached ? 'success' : 'partial',
+        components_loaded: cached
+          ? '["totals","users","teams"]'
+          : '["totals","users"]',
+      }),
+    );
     await task.runAsync();
 
     expect(db.getUserMetricsForDay).toHaveBeenCalledWith(
@@ -508,10 +534,29 @@ describe('TaskManagementV2', () => {
       day,
     );
     expect(api.fetchEnterpriseReportLinks).not.toHaveBeenCalled();
-    expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseUserReportLinks).toHaveBeenCalledTimes(
+      cached ? 0 : 2,
+    );
+    expect(db.insertUserMetricsByFeature).toHaveBeenCalledTimes(cached ? 0 : 1);
     expect(api.fetchEnterpriseUserTeamsLinks).toHaveBeenCalledWith(day);
     expect(db.insertDailyTotals).toHaveBeenCalledWith([
       expect.objectContaining({ day, team_slug: 'platform' }),
+    ]);
+    expect(db.insertByFeature).toHaveBeenCalledWith([
+      expect.objectContaining({
+        day,
+        team_slug: 'platform',
+        feature: 'chat_panel',
+        code_generation_activity_count: 4,
+      }),
+    ]);
+    expect(db.insertByIde).toHaveBeenCalledWith([
+      expect.objectContaining({
+        day,
+        team_slug: 'platform',
+        ide: 'vscode',
+        code_acceptance_activity_count: 3,
+      }),
     ]);
     expect(db.upsertIngestionLog).toHaveBeenCalledWith(
       expect.objectContaining({
