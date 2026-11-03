@@ -52,6 +52,8 @@ export interface Config {
     /**
      * Earliest date to ingest for v2. Must be >= '2025-10-10' (GitHub API limit).
      * On first run the task backfills every calendar day from this date to yesterday.
+     * User, team, and cost-center report backfills are additionally limited to
+     * GitHub's rolling one-year availability window.
      * @default '2025-10-10'
      */
     backfillFromDate?: string;
@@ -68,5 +70,19 @@ export interface Config {
      * @default false
      */
     ingestTeams?: boolean;
+    /**
+     * Opt-in to ingesting Cost Center membership and pre-aggregating per-user
+     * Copilot metrics by cost center. Organization metrics are included when
+     * both copilot.enterprise and copilot.organization are configured. This
+     * ingests the users-1-day report even when ingestTeams is disabled;
+     * ingestTeams independently controls team-level filtering. Enterprise
+     * App installations need Enterprise billing: read, Enterprise Copilot
+     * metrics: read, and Enterprise teams: read permissions. Org resources
+     * also require Members: read on each referenced organization. Classic
+     * PATs require read:enterprise and read:org.
+     *
+     * @default false
+     */
+    ingestCostCenters?: boolean;
   };
 }

@@ -2154,6 +2154,7 @@ describe('DatabaseHandlerV2', () => {
           byModelFeature: [],
           byLanguageModel: [],
           customizationMetrics: [],
+          costCenterCustomizationMetrics: [],
         },
       );
 
