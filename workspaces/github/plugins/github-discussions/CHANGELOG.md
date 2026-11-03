@@ -1,5 +1,16 @@
 # @backstage-community/plugin-github-discussions
 
+## 1.6.0
+
+### Minor Changes
+
+- ac2847a: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [ac2847a]
+  - @backstage-community/plugin-github-discussions-common@0.18.0
+
 ## 1.5.1
 
 ### Patch Changes
