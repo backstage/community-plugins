@@ -21,6 +21,14 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { CustomizationMetrics } from './CustomizationMetrics';
 
+jest.mock('@mui/x-charts/PieChart', () => ({
+  PieChart: () => <div />,
+}));
+
+jest.mock('@mui/x-charts/BarChart', () => ({
+  BarChart: () => <div />,
+}));
+
 jest.mock('@backstage/core-components', () => ({
   InfoCard: ({
     title,
@@ -92,6 +100,12 @@ describe('CustomizationMetrics', () => {
             category: 'mcp',
             interaction_count: 4,
           },
+          {
+            ...BASE_METRIC,
+            category: 'agent',
+            item_name: 'unused-agent',
+            interaction_count: 0,
+          },
         ]}
         summaries={[
           {
@@ -101,24 +115,39 @@ describe('CustomizationMetrics', () => {
           },
           BASE_SUMMARY,
         ]}
+        from="2026-10-22"
+        to="2026-10-23"
       />,
     );
 
-    expect(screen.getByRole('heading', { name: 'Skill' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Mcp' })).toBeVisible();
-    expect(screen.getByText('release-checks: 5')).toBeVisible();
-    expect(screen.getByText('release-checks: 4')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Skills' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'MCPs' })).toBeVisible();
+    expect(
+      screen.queryByRole('heading', { name: 'Agents' }),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('3 distinct items on 2026-10-23')).toBeVisible();
   });
 
   it('renders safely when summaries or metrics are unavailable', () => {
     const { rerender } = render(
-      <CustomizationMetrics metrics={[BASE_METRIC]} summaries={[]} />,
+      <CustomizationMetrics
+        metrics={[BASE_METRIC]}
+        summaries={[]}
+        from="2026-10-22"
+        to="2026-10-22"
+      />,
     );
 
     expect(screen.queryByText(/distinct items on/)).not.toBeInTheDocument();
 
-    rerender(<CustomizationMetrics metrics={[]} summaries={[]} />);
+    rerender(
+      <CustomizationMetrics
+        metrics={[]}
+        summaries={[]}
+        from="2026-10-22"
+        to="2026-10-22"
+      />,
+    );
 
     expect(
       screen.getByText(
