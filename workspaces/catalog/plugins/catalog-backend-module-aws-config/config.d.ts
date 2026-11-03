@@ -49,7 +49,7 @@ export interface Config {
            */
           hashEntityNames?: boolean;
           /**
-           * (Required) Filters to apply in AWS Config query
+           * (Required) Filters for AWS Config resources
            */
           filters: {
             /**
@@ -66,6 +66,26 @@ export interface Config {
                * If not set, only the key of the tag fill be used
                */
               value?: string;
+            }[];
+            /**
+             * (Optional) Exclude resources locally before transformation and ingestion.
+             * Any matching entry excludes the resource; missing tags do not match.
+             * Does not reduce the data fetched from AWS Config.
+             */
+            excludeTags?: {
+              /** (Required) Exact tag key to exclude. Alone, matches any value. */
+              key: string;
+              /**
+               * (Optional) Exact, case-sensitive value, including an empty string.
+               * Cannot be combined with valuePattern.
+               */
+              value?: string;
+              /**
+               * (Optional) JavaScript regular expression matched against the value,
+               * with no implicit anchoring or flags. Cannot be combined with value.
+               * Patterns are compiled at initialization; invalid patterns fail startup.
+               */
+              valuePattern?: string;
             }[];
             /**
              * (Required) List of AWS Config resource types to retrieve

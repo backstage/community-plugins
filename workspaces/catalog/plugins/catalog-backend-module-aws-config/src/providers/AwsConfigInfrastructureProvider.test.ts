@@ -20,9 +20,11 @@ import { mockClient } from './mocks/awsClientMock';
 import {
   ConfigServiceClient,
   SelectResourceConfigCommand,
+  SelectAggregateResourceConfigCommand,
 } from '@aws-sdk/client-config-service';
 import { mockServices } from '@backstage/backend-test-utils';
 import { mockResource } from './mocks';
+import { AwsConfigResource } from './types';
 
 const logger = mockServices.logger.mock();
 
@@ -73,6 +75,181 @@ describe('AwsConfigInfrastructureProvider', () => {
       });
     }
   };
+
+  describe.each([false, true])('exclusions (aggregated: %s)', aggregated => {
+    const command = aggregated
+      ? SelectAggregateResourceConfigCommand
+      : SelectResourceConfigCommand;
+    const nameKey = 'Name';
+    const excludeTags = [
+      { key: nameKey, valuePattern: 'temporary-\\d+' },
+      { key: 'Ephemeral', value: 'true' },
+      { key: 'Temporary' },
+      { key: 'Unassigned', value: '' },
+    ];
+    const createProvider = async (exclusions?: object[]) => {
+      const [{ provider }] = await AwsConfigInfrastructureProvider.fromConfig(
+        new ConfigReader({
+          catalog: {
+            providers: {
+              awsConfig: {
+                default: {
+                  ...(aggregated ? { aggregator: 'organization' } : {}),
+                  filters: {
+                    resourceTypes: ['AWS::DynamoDB::Table'],
+                    tags: [{ key: 'environment', value: 'prod' }],
+                    ...(exclusions ? { excludeTags: exclusions } : {}),
+                  },
+                },
+              },
+            },
+          },
+        }),
+        { logger },
+      );
+      return provider;
+    };
+    const resource = (name: string, tags?: Record<string, string>) => {
+      const result: AwsConfigResource = mockResource(
+        name,
+        '111',
+        'us-west-2',
+        'AWS::DynamoDB::Table',
+        {},
+        tags ?? {},
+      );
+      if (tags === undefined) {
+        delete result.tags;
+      }
+      return result;
+    };
+
+    it('matches exclusions locally before transformation and preserves the query', async () => {
+      const resources = [
+        resource('pattern-match', { [nameKey]: 'resource-temporary-123' }),
+        resource('pattern-with-suffix', {
+          [nameKey]: 'resource-temporary-123-dev',
+        }),
+        resource('ephemeral', { Ephemeral: 'true' }),
+        resource('temporary', { Temporary: 'anything' }),
+        resource('temporary-empty', { Temporary: '' }),
+        resource('empty-value', { Unassigned: '' }),
+        resource('persistent', { [nameKey]: 'resource-production' }),
+        resource('non-numeric-suffix', {
+          [nameKey]: 'resource-temporary-example',
+        }),
+        resource('missing-tags'),
+        resource('empty-tags', {}),
+        resource('unrelated-key', { other: 'resource-temporary-123' }),
+        resource('different-value', { Ephemeral: 'false', Unassigned: 'team' }),
+        resource('case-sensitive', {
+          Ephemeral: 'TRUE',
+          [nameKey]: 'resource-TEMPORARY-123',
+        }),
+        resource('exact-value', { Ephemeral: 'true-extra' }),
+        resource('any-tag', { other: 'keep', Ephemeral: 'true' }),
+      ];
+      mock.on(command).callsFake(async () => ({
+        Results: resources.map(r => JSON.stringify(r)),
+      }));
+
+      const unfiltered = await createProvider();
+      expect((await unfiltered.next({})).entities).toHaveLength(
+        resources.length,
+      );
+      const provider = await createProvider(excludeTags);
+      const transform = jest.spyOn(provider, 'resourceToEntity');
+      const result = await provider.next({});
+      const retained = resources.slice(6, -1);
+      expect(result.entities?.map(e => e.entity.metadata.name)).toEqual(
+        retained.map(r => r.resourceName),
+      );
+      expect(transform.mock.calls.map(([r]) => r.resourceName)).toEqual(
+        retained.map(r => r.resourceName),
+      );
+      expect(result.done).toBe(true);
+      expect(mock).toHaveReceivedCommandWith(command, {
+        Expression:
+          "SELECT resourceId, resourceName, resourceType, awsRegion, accountId, arn, tags, configuration WHERE resourceType IN ('AWS::DynamoDB::Table') AND tags.tag = 'environment=prod'",
+        ...(aggregated ? { ConfigurationAggregatorName: 'organization' } : {}),
+      });
+    });
+
+    it('continues pagination through a fully excluded page', async () => {
+      mock.on(command).callsFake(async input =>
+        input.NextToken
+          ? {
+              Results: [
+                JSON.stringify(resource('retained', { Ephemeral: 'false' })),
+              ],
+            }
+          : {
+              Results: [
+                JSON.stringify(resource('excluded', { Ephemeral: 'true' })),
+              ],
+              NextToken: 'page-two',
+            },
+      );
+      const provider = await createProvider(excludeTags);
+      const transform = jest.spyOn(provider, 'resourceToEntity');
+      const first = await provider.next({});
+      expect(first).toEqual({
+        entities: [],
+        cursor: { nextToken: 'page-two' },
+        done: false,
+      });
+      expect(transform).not.toHaveBeenCalled();
+      const second = await provider.next({}, first.cursor);
+      expect(second.entities?.map(e => e.entity.metadata.name)).toEqual([
+        'retained',
+      ]);
+      expect(second.done).toBe(true);
+      expect(mock).toHaveReceivedCommandWith(command, {
+        NextToken: 'page-two',
+      });
+    });
+  });
+
+  it.each([
+    [
+      { key: 'Ephemeral', value: '', valuePattern: '' },
+      'specify only one of value and valuePattern',
+    ],
+    [{ key: 'stack', valuePattern: '[' }, 'invalid valuePattern'],
+  ])(
+    'rejects invalid exclusions during initialization: %j',
+    async (entry, message) => {
+      await expect(
+        AwsConfigInfrastructureProvider.fromConfig(
+          new ConfigReader({
+            catalog: {
+              providers: {
+                awsConfig: {
+                  broken: {
+                    filters: {
+                      resourceTypes: ['AWS::DynamoDB::Table'],
+                      excludeTags: [{ key: 'valid' }, entry],
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          { logger },
+        ),
+      ).rejects.toThrow(
+        `catalog.providers.awsConfig.broken.filters.excludeTags[1]: ${message}`,
+      );
+      expect(mock).not.toHaveReceivedCommandWith(
+        SelectResourceConfigCommand,
+        {},
+      );
+      expect(mock).not.toHaveReceivedCommandWith(
+        SelectAggregateResourceConfigCommand,
+        {},
+      );
+    },
+  );
 
   // eslint-disable-next-line jest/expect-expect
   it('should apply mutation', async () => {

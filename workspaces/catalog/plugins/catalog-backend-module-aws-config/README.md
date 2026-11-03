@@ -102,6 +102,53 @@ spec:
 
 > NOTE: The `metadata.name` field must be unique across your Backstage instance, otherwise entities will over-write each other. If your AWS resources naming is already unique then you have no actions to take. If you have AWS resources that potentially have conflicting names then you will need to use the `transform.fields.name` configuration value to transform the `metadata.name` field to something unique for each entity.
 
+### Excluding resources by tag
+
+Use `filters.excludeTags` to omit ephemeral resources without changing AWS
+configuration or resource tags:
+
+```yaml
+catalog:
+  providers:
+    awsConfig:
+      default:
+        filters:
+          resourceTypes:
+            - AWS::DynamoDB::Table
+          excludeTags:
+            - key: Name
+              valuePattern: 'temporary-\d+'
+            - key: Ephemeral
+              value: 'true'
+            - key: Temporary # Exclude any resource containing this tag
+            - key: Unassigned
+              value: '' # Match only an empty tag value
+```
+
+Each entry requires a `key` and optionally either `value` or `valuePattern`.
+A resource is excluded if any entry matches any of its tags. Tag keys and exact
+values are case-sensitive. A key alone matches any value for that tag; `value`
+matches exactly, including an empty string. Missing tags do not match.
+
+`valuePattern` is a JavaScript regular expression string, with no implicit
+anchoring or configurable flags. For example, `'temporary-\d+'` matches both
+`resource-temporary-123` and `resource-temporary-123-dev`, while retaining
+persistent resources such as `resource-production` and `resource-temporary-example`.
+Use `^` and `$` explicitly if you need an anchored match. Single-quoted YAML strings preserve backslashes.
+Specifying both `value` and `valuePattern`, or an invalid regular expression,
+fails configuration initialization with an error identifying the provider and entry.
+Patterns are compiled once when reading configuration.
+
+Exclusions apply locally to both aggregated and single-account AWS Config results,
+before entity transformation and incremental ingestion marking. They reduce catalog
+ingestion, not the amount of data fetched from AWS Config. Resource type and positive
+`filters.tags` query filters continue to work as before, and pagination continues
+even when every resource in a page is excluded. With no exclusions configured,
+existing behavior is preserved.
+
+Existing matching entities become eligible for removal after a successful completed
+ingestion cycle, subject to the incremental ingestion removal safeguards.
+
 ## Considerations
 
 It's recommended to use the configuration available to ingest the minimum entities necessary into the Backstage catalog. AWS Config, especially in larger organizations, can be tracking a large number of AWS resources that can have a negative effect on both the ingestion mechanism as well as the user catalog experience once stored.
