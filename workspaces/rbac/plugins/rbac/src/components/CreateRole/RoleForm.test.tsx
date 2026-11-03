@@ -45,7 +45,8 @@ jest.mock('react-router-dom', () => ({
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn().mockReturnValue({
-    searchMembers: jest.fn().mockResolvedValue([]),
+    searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+    getMemberNamespaces: jest.fn().mockResolvedValue([]),
   }),
 }));
 

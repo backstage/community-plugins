@@ -11,7 +11,6 @@ app:
           defaultLanguage: 'en'
     # Disable the nav items that we're manually rendering in packages/app/src/modules/nav/Sidebar.tsx
     - nav-item:search: false
-    - nav-item:user-settings: false
     - nav-item:scaffolder: false
     - nav-item:catalog:
         config:
