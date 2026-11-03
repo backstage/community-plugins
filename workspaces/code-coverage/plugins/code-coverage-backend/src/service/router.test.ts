@@ -130,6 +130,22 @@ describe('createRouter', () => {
     });
   });
 
+  describe('GET /report', () => {
+    it('includes function coverage in the aggregate', async () => {
+      const response = await request(app).get(
+        '/report?entity=component:default/mycomponent',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(response.body.aggregate.function).toEqual({
+        available: 0,
+        covered: 0,
+        missed: 0,
+        percentage: 0,
+      });
+    });
+  });
+
   describe('POST /report', () => {
     it('returns created when body does not exceed limit', async () => {
       const response = await request(app)

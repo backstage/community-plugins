@@ -16,7 +16,8 @@
         "missed": 1,
         "available": 6
       }
-    }
+    },
+    "functionHits": [4]
   },
   {
     "filename": "src/Calc/Math.cs",
@@ -42,6 +43,7 @@
         "missed": 0,
         "available": 2
       }
-    }
+    },
+    "functionHits": [1, 0, 2]
   }
 ]
