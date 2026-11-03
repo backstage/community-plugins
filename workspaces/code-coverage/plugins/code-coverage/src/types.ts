@@ -53,6 +53,7 @@ export type FileEntry = {
   filename: string;
   lineHits: Record<number, number>;
   branchHits: Record<number, BranchHit>;
+  functionHits?: number[];
 };
 
 export type AggregateCoverage = {
@@ -64,6 +65,12 @@ export type AggregateCoverage = {
     percentage: number;
   };
   branch: {
+    available: number;
+    covered: number;
+    missed: number;
+    percentage: number;
+  };
+  function?: {
     available: number;
     covered: number;
     missed: number;
