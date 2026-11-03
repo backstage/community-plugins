@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 1.3.1
+
+### Patch Changes
+
+- 8c721b0: Updated `csstype` to v3.2.3
+
 ## 1.3.0
 
 ### Minor Changes
