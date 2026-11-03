@@ -45,6 +45,14 @@ describe('getTrendForCoverage function', () => {
 });
 
 describe('getFunctionCoverage function', () => {
+  it('should handle an empty history', () => {
+    expect(getFunctionCoverage([])).toEqual({
+      history: [],
+      current: undefined,
+      trend: 0,
+    });
+  });
+
   it('should return no history when no build has function data', () => {
     const result = getFunctionCoverage([
       coverage(80, 70),

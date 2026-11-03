@@ -110,9 +110,10 @@ describe('convert lcov', () => {
         'FNL:,9',
         'FNA:4',
         'FNA:5,x,broken',
+        'FN:12',
       );
 
-      expect(file.functionHits).toEqual([2, 0, 0, 1, 0]);
+      expect(file.functionHits).toEqual([2, 0, 0, 1]);
     });
 
     it('keeps commas in function names', () => {
@@ -124,6 +125,29 @@ describe('convert lcov', () => {
       );
 
       expect(file.functionHits).toEqual([2, 1]);
+    });
+
+    it('splits records at the first colon only', () => {
+      const [file] = converter.convert(
+        [
+          'SF:C:\\repo\\src\\a.ts',
+          'FN:1,A::x',
+          'FN:2,A::y',
+          'FNDA:0,A::y',
+          'FNDA:4,A::x',
+          'end_of_record',
+        ].join('\n'),
+        [],
+      );
+
+      expect(file.filename).toEqual('C:\\repo\\src\\a.ts');
+      expect(file.functionHits).toEqual([4, 0]);
+    });
+
+    it('ignores FNDA records beyond the declared functions', () => {
+      const [file] = convert('FN:1,run', 'FNDA:2,run', 'FNDA:5,run');
+
+      expect(file.functionHits).toEqual([2]);
     });
 
     it('resets function state for every file', () => {

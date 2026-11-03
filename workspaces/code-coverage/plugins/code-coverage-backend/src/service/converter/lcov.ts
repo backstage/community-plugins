@@ -169,7 +169,7 @@ export class Lcov implements Converter {
   ): void {
     if (!currentFile) return;
 
-    const name = value.replace(/^\d+,(?:\d+,)?/, '');
+    const name = /^\d+,(?:\d+,)?(.+)$/.exec(value)?.[1];
     if (!name) return;
 
     const hits = (currentFile.functionHits ??= []);
@@ -246,7 +246,7 @@ export class Lcov implements Converter {
     if (!currentFile) return;
 
     const [index, hits] = value.split(',');
-    if (!index || !hits) return;
+    if (!index || !/^\d+$/.test(hits ?? '')) return;
 
     if (!functions.byIndex.has(index)) {
       this.processFunctionLocation(currentFile, functions, `${index},0`);
@@ -257,7 +257,7 @@ export class Lcov implements Converter {
 
     currentFile.functionHits[slot] = Math.max(
       currentFile.functionHits[slot],
-      Number(hits) || 0,
+      Number(hits),
     );
   }
 }

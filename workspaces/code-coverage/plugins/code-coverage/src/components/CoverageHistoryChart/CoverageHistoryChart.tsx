@@ -85,9 +85,10 @@ export const getFunctionCoverage = (history: AggregateCoverage[]) => {
   const functionHistory = history.filter(hasFunctionData);
   return {
     history: functionHistory,
-    current: hasFunctionData(history[0])
-      ? history[0].function?.percentage
-      : undefined,
+    current:
+      history.length && hasFunctionData(history[0])
+        ? history[0].function?.percentage
+        : undefined,
     trend: functionHistory.length
       ? getTrendForCoverage(functionHistory, 'function')
       : 0,
