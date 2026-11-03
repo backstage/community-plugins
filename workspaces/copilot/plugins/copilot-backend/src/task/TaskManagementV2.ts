@@ -487,21 +487,21 @@ export class TaskManagementV2 {
       }
 
       if (context.ingestTeams) {
-        const userReport = previouslyLoaded.has('users')
-          ? {
-              loaded: true,
-              userMetrics: await db.getUserMetricsForDay(
-                metricsType,
-                entityId,
-                day,
-              ),
-              userBreakdowns: await db.getUserBreakdownsForDay(
-                metricsType,
-                entityId,
-                day,
-              ),
-            }
-          : await this.ingestUserReports(day, metricsType, entityId);
+        const storedUserMetrics = previouslyLoaded.has('users')
+          ? await db.getUserMetricsForDay(metricsType, entityId, day)
+          : [];
+        const userReport =
+          storedUserMetrics.length > 0
+            ? {
+                loaded: true,
+                userMetrics: storedUserMetrics,
+                userBreakdowns: await db.getUserBreakdownsForDay(
+                  metricsType,
+                  entityId,
+                  day,
+                ),
+              }
+            : await this.ingestUserReports(day, metricsType, entityId);
         if (userReport.loaded) {
           componentsLoaded.add('users');
         }
