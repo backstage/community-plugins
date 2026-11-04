@@ -24,6 +24,8 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
+import { ServiceFactory } from '@backstage/backend-plugin-api';
+import { TechInsightsFactInsertService } from '@backstage-community/plugin-tech-insights-node';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
@@ -44,6 +46,10 @@ export function createRouter<
   CheckType extends Check,
   CheckResultType extends CheckResult,
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router>;
+
+// @public
+const _default: BackendFeature;
+export default _default;
 
 // @public
 export const entityMetadataFactRetriever: FactRetriever;
@@ -111,6 +117,13 @@ export type TechInsightsContext<
   factRetrieverEngine: FactRetrieverEngine;
 };
 
+// @public
+export const techInsightsFactInsertServiceFactory: ServiceFactory<
+  TechInsightsFactInsertService,
+  'plugin',
+  'singleton'
+>;
+
 // @public (undocumented)
 export interface TechInsightsOptions<
   CheckType extends Check,
@@ -137,8 +150,7 @@ export interface TechInsightsOptions<
 }
 
 // @public
-const techInsightsPlugin: BackendFeature;
-export default techInsightsPlugin;
+export const techInsightsPlugin: BackendFeature;
 
 // (No @packageDocumentation comment for this package)
 ```

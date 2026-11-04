@@ -59,6 +59,30 @@ export const checks = [
       },
     },
   },
+  {
+    // Demonstrates that facts inserted via the
+    // `techInsightsFactInsertServiceRef` (see ./incrementalFactExample.ts)
+    // are queryable by checks just like facts produced by a registered
+    // FactRetriever. The fact id below must match `EXAMPLE_FACT_ID` in
+    // that example file.
+    id: 'exampleCountCheck',
+    type: JSON_RULE_ENGINE_CHECK_TYPE,
+    name: 'Example Count Check',
+    description:
+      'Verifies that the example incremental fact source produced a non-zero exampleCount for the entity',
+    factIds: ['example-incremental-facts'],
+    rule: {
+      conditions: {
+        all: [
+          {
+            fact: 'exampleCount',
+            operator: 'greaterThan',
+            value: 0,
+          },
+        ],
+      },
+    },
+  },
 ];
 
 export const apiDefinitionFactRetriever: FactRetriever = {
