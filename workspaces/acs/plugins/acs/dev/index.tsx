@@ -16,7 +16,9 @@
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityACSContent, acsPlugin } from '../src/plugin';
 
-import '@backstage/canon/css/styles.css';
+// The dev app is a standalone Backstage instance and not part of the plugin.
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 
 createDevApp()
   .registerPlugin(acsPlugin)
