@@ -68,6 +68,51 @@ describe('DatabaseHandlerV2', () => {
       await knex?.destroy();
     });
 
+    it('re-ingests incomplete reports from the customization availability date', async () => {
+      await knex('copilot_ingestion_log').insert([
+        buildIngestionLog({
+          day: '2026-10-21',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-22',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-23',
+          status: 'error',
+          components_loaded: '["totals","users","teams"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-24',
+          status: 'success',
+          components_loaded: '["totals","users","teams"]',
+        }),
+      ]);
+
+      const migration = jest.requireActual(
+        '../../migrations/202611040000_reingest_partial_customization_days',
+      ) as { up: (database: Knex) => Promise<void> };
+      await migration.up(knex);
+
+      const logs = await handler.getIngestionLog('organization', 'org-1');
+      expect(logs.map(({ day, status }) => ({ day, status }))).toEqual([
+        { day: '2026-10-21', status: 'partial' },
+        { day: '2026-10-24', status: 'success' },
+      ]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-10-22',
+          '2026-10-23',
+          ['totals', 'users', 'teams'],
+        ),
+      ).resolves.toEqual(['2026-10-22', '2026-10-23']);
+    });
+
     it('getMissingDays returns all days when ingestion log is empty', async () => {
       const result = await handler.getMissingDays(
         'organization',
