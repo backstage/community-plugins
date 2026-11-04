@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-kubernetes
 
+## 2.21.1
+
+### Patch Changes
+
+- 94537ec: Rename the plugin source folder so it matches the published package name.
+
 ## 2.21.0
 
 ### Minor Changes
