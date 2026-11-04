@@ -1703,6 +1703,94 @@ describe('TaskManagementV2', () => {
     },
   );
 
+  it('aggregates persisted merged metrics and added users after a legacy refresh', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const day = '2026-05-12';
+    const config = createConfigMock({
+      'copilot.enterprise': 'ent-1',
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+      'copilot.ingestCostCenters': true,
+    });
+    const original = makeStoredUserMetric(day, { loc_added_sum: 15 });
+    const refreshed = makeUserMetricsDocument(day).map(metric => ({
+      ...metric,
+      used_vscode_agent: true,
+    }));
+    refreshed.push({
+      ...refreshed[0],
+      user_id: 2,
+      user_login: 'octocat-user-2',
+    });
+    db.getMissingDays.mockResolvedValue([]);
+    db.getDaysMissingCostCenterAggregation.mockResolvedValue([day]);
+    db.getUserMetricsForDay
+      .mockResolvedValueOnce([original])
+      .mockResolvedValue([
+        {
+          ...original,
+          ai_credits_used: 5.5,
+          used_vscode_agent: true,
+        },
+        makeStoredUserMetric(day, {
+          user_id: 2,
+          user_login: 'octocat-user-2',
+          ai_credits_used: 5.5,
+          used_vscode_agent: true,
+        }),
+      ]);
+    api.fetchCostCenterMemberships.mockResolvedValue(
+      makeCostCenterSnapshot(
+        new Map([
+          [1, { costCenterId: 'cc-1', login: 'octocat' }],
+          [2, { costCenterId: 'cc-1', login: 'octocat-user-2' }],
+        ]),
+      ),
+    );
+    api.fetchEnterpriseUserReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/users.json'],
+    });
+    api.downloadNdjsonDocument.mockResolvedValue(refreshed);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger: createLoggerMock(),
+    });
+
+    await task.runBackfill(day, day, 'enterprise', 'ent-1');
+
+    expect(db.getUserMetricsForDay).toHaveBeenCalledTimes(2);
+    expect(db.replaceCostCenterAggregates).toHaveBeenCalledWith(
+      day,
+      'enterprise',
+      'ent-1',
+      [
+        expect.objectContaining({ user_id: 1, cost_center_id: 'cc-1' }),
+        expect.objectContaining({ user_id: 2, cost_center_id: 'cc-1' }),
+      ],
+      expect.objectContaining({
+        dailyTotals: expect.arrayContaining([
+          expect.objectContaining({
+            cost_center_id: 'cc-1',
+            daily_active_users: 2,
+            daily_active_vscode_agent_users: 2,
+            total_ai_credits_used: 11,
+            loc_added_sum: 25,
+          }),
+        ]),
+        byFeature: [
+          expect.objectContaining({ feature: 'chat_panel', loc_added_sum: 20 }),
+        ],
+      }),
+      true,
+    );
+    expect(db.insertDailyTotals).not.toHaveBeenCalled();
+    expect(db.replaceTeamAggregates).not.toHaveBeenCalled();
+    expect(db.upsertIngestionLog).not.toHaveBeenCalled();
+  });
+
   it('re-aggregates incomplete unassigned days after the snapshot becomes complete', async () => {
     const db = createDbMock();
     const api = createApiMock();

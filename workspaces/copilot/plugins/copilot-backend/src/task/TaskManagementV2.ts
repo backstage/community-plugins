@@ -811,11 +811,7 @@ export class TaskManagementV2 {
     markEmptyDay: boolean,
   ): Promise<boolean> {
     const { db } = this.options;
-    const userMetrics = await db.getUserMetricsForDay(
-      metricsType,
-      entityId,
-      day,
-    );
+    let userMetrics = await db.getUserMetricsForDay(metricsType, entityId, day);
 
     if (!userMetrics.length && !markEmptyDay) {
       return false;
@@ -830,6 +826,7 @@ export class TaskManagementV2 {
       if (!report.loaded || report.userBreakdowns.length === 0) {
         return false;
       }
+      userMetrics = await db.getUserMetricsForDay(metricsType, entityId, day);
       userBreakdowns = report.userBreakdowns;
     }
 
