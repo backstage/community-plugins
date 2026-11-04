@@ -9,6 +9,7 @@ import { ScmIntegrationRegistry } from '@backstage/integration';
 
 // @public
 export interface AdrDocument extends IndexableDocument {
+  category?: string;
   date?: string;
   entityRef: string;
   entityTitle?: string;
@@ -20,6 +21,8 @@ export type AdrFilePathFilterFn = (path: string) => boolean;
 
 // @public
 export interface AdrInfo {
+  // (undocumented)
+  category?: string;
   // (undocumented)
   date?: string;
   // (undocumented)
@@ -43,6 +46,10 @@ export type AdrParserContext = {
 
 // @public
 export const ANNOTATION_ADR_LOCATION = 'backstage.io/adr-location';
+
+// @public
+export const ANNOTATION_ASSESSMENT_LOCATION =
+  'backstage.io/assessment-location';
 
 // @public
 export const createMadrParser: (options?: MadrParserOptions) => AdrParser;
@@ -79,6 +86,7 @@ export type MadrParserOptions = {
 // @public
 export interface ParsedMadr {
   attributes: Record<string, unknown>;
+  category?: string;
   content: string;
   date?: string;
   status?: string;

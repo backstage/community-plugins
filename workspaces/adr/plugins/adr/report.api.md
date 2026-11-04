@@ -5,6 +5,8 @@
 ```ts
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { AdrFilePathFilterFn } from '@backstage-community/plugin-adr-common';
+import { ANNOTATION_ADR_LOCATION } from '@backstage-community/plugin-adr-common';
+import { ANNOTATION_ASSESSMENT_LOCATION } from '@backstage-community/plugin-adr-common';
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Context } from 'react';
@@ -25,6 +27,12 @@ export interface AdrApi {
 // @public
 export const adrApiRef: ApiRef<AdrApi, 'plugin.adr.api'> & {
   readonly $$type: '@backstage/ApiRef';
+};
+
+// @public
+export type AdrCategoryConfig = {
+  type: string;
+  label: string;
 };
 
 // @public
@@ -61,6 +69,7 @@ export type AdrFileInfo = {
   title?: string;
   status?: string;
   date?: string;
+  category?: string;
 };
 
 // @public
@@ -106,11 +115,16 @@ export type AdrSearchResultListItemProps = {
   result?: AdrDocument;
 };
 
+export { ANNOTATION_ADR_LOCATION };
+
+export { ANNOTATION_ASSESSMENT_LOCATION };
+
 // @public
 export const EntityAdrContent: (props: {
   contentDecorators?: AdrContentDecorator[];
   filePathFilterFn?: AdrFilePathFilterFn;
   statusComponent?: ReactNode;
+  categories?: AdrCategoryConfig[];
 }) => JSX_2.Element;
 
 // @public

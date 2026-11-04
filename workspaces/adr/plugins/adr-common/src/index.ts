@@ -29,11 +29,19 @@ export * from './search';
 export const ANNOTATION_ADR_LOCATION = 'backstage.io/adr-location';
 
 /**
+ * Assessment and governance plugin annotation.
+ * @public
+ */
+export const ANNOTATION_ASSESSMENT_LOCATION =
+  'backstage.io/assessment-location';
+
+/**
  * Utility function to get the value of an entity ADR annotation.
  * @public
  */
 const getAdrLocationDir = (entity: Entity) =>
-  entity.metadata.annotations?.[ANNOTATION_ADR_LOCATION]?.trim();
+  entity.metadata.annotations?.[ANNOTATION_ADR_LOCATION]?.trim() ??
+  entity.metadata.annotations?.[ANNOTATION_ASSESSMENT_LOCATION]?.trim();
 
 /**
  * Utility function to determine if the given entity has ADRs.
@@ -53,7 +61,9 @@ export const getAdrLocationUrl = (
   adrFilePath?: String,
 ) => {
   if (!isAdrAvailable(entity)) {
-    throw new Error(`Missing ADR annotation: ${ANNOTATION_ADR_LOCATION}`);
+    throw new Error(
+      `Missing ADR annotation: ${ANNOTATION_ADR_LOCATION} or ${ANNOTATION_ASSESSMENT_LOCATION}`,
+    );
   }
 
   let url = getAdrLocationDir(entity)!.replace(/\/$/, '');

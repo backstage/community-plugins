@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ReactNode, useEffect, useState } from 'react';
+import { Key, ReactNode, useEffect, useState } from 'react';
 
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAsync from 'react-use/esm/useAsync';
@@ -49,6 +49,9 @@ import {
   Grid,
   List,
   ListRow,
+  Tab,
+  TabList,
+  Tabs,
   Tag,
   TagGroup,
   Text,
@@ -137,6 +140,17 @@ const AdrListContainer = (props: {
 };
 
 /**
+ * Configuration for document categories in EntityAdrContent.
+ * @public
+ */
+export type AdrCategoryConfig = {
+  /** The category or type value defined in document front-matter (e.g. 'adr', 'legal', 'finance', 'rfc') */
+  type: string;
+  /** Display label for the category tab */
+  label: string;
+};
+
+/**
  * Component for browsing ADRs on an entity page.
  * @public
  */
@@ -144,8 +158,10 @@ export const EntityAdrContent = (props: {
   contentDecorators?: AdrContentDecorator[];
   filePathFilterFn?: AdrFilePathFilterFn;
   statusComponent?: ReactNode;
+  categories?: AdrCategoryConfig[];
 }) => {
-  const { contentDecorators, filePathFilterFn, statusComponent } = props;
+  const { contentDecorators, filePathFilterFn, statusComponent, categories } =
+    props;
   const { entity } = useEntity();
   const [adrList, setAdrList] = useState<AdrFileInfo[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -162,16 +178,30 @@ export const EntityAdrContent = (props: {
     return adrApi.listAdrs(url);
   }, [entity, scmIntegrations]);
 
+  const activeCategory =
+    categories && categories.length > 0
+      ? searchParams.get('category') ?? categories[0].type
+      : undefined;
+
+  const filteredAdrs = activeCategory
+    ? adrList.filter(
+        adr =>
+          (adr.category ?? 'adr').toLowerCase() ===
+          activeCategory.toLowerCase(),
+      )
+    : adrList;
+
   const selectedAdr =
-    adrList.find(adr => adr.path === searchParams.get('record'))?.path ?? '';
+    filteredAdrs.find(adr => adr.path === searchParams.get('record'))?.path ??
+    '';
 
   const adrSubDirectoryFunc = (adr: AdrFileInfo) => {
     return adr.path.split('/').slice(0, -1).join('/');
   };
 
   useEffect(() => {
-    if (adrList.length && !selectedAdr) {
-      searchParams.set('record', adrList[0].path);
+    if (filteredAdrs.length && !selectedAdr) {
+      searchParams.set('record', filteredAdrs[0].path);
       setSearchParams(searchParams, { replace: true });
     }
   });
@@ -192,8 +222,23 @@ export const EntityAdrContent = (props: {
     setAdrList(adrs);
   }, [filePathFilterFn, value]);
 
+  const handleCategoryChange = (key: Key) => {
+    const newCategory = String(key);
+    searchParams.set('category', newCategory);
+    const newCategoryAdrs = adrList.filter(
+      adr =>
+        (adr.category ?? 'adr').toLowerCase() === newCategory.toLowerCase(),
+    );
+    if (newCategoryAdrs.length > 0) {
+      searchParams.set('record', newCategoryAdrs[0].path);
+    } else {
+      searchParams.delete('record');
+    }
+    setSearchParams(searchParams, { replace: true });
+  };
+
   const adrListGrouped = Object.entries(
-    groupBy(adrList, adrSubDirectoryFunc),
+    groupBy(filteredAdrs, adrSubDirectoryFunc),
   ).sort();
 
   return (
@@ -216,26 +261,48 @@ export const EntityAdrContent = (props: {
         !loading &&
         !error &&
         (adrList.length ? (
-          <Grid.Root columns={{ sm: '12' }} gap="4">
-            <Grid.Item colSpan={{ sm: '3' }}>
-              <InfoCard>
-                <div className={styles.adrMenu}>
-                  {adrListGrouped.map(([title, adrs]) => (
-                    <AdrListContainer
-                      adrs={adrs}
-                      key={title}
-                      selectedAdr={selectedAdr}
-                      title={title}
-                      statusComponent={statusComponent}
-                    />
-                  ))}
-                </div>
-              </InfoCard>
-            </Grid.Item>
-            <Grid.Item colSpan={{ sm: '9' }}>
-              <AdrReader adr={selectedAdr} decorators={contentDecorators} />
-            </Grid.Item>
-          </Grid.Root>
+          <>
+            {categories && categories.length > 0 && (
+              <div className={styles.categoryTabs}>
+                <Tabs
+                  selectedKey={activeCategory}
+                  onSelectionChange={handleCategoryChange}
+                >
+                  <TabList aria-label="Document Categories">
+                    {categories.map(cat => (
+                      <Tab key={cat.type} id={cat.type}>
+                        {cat.label}
+                      </Tab>
+                    ))}
+                  </TabList>
+                </Tabs>
+              </div>
+            )}
+            {filteredAdrs.length ? (
+              <Grid.Root columns={{ sm: '12' }} gap="4">
+                <Grid.Item colSpan={{ sm: '3' }}>
+                  <InfoCard>
+                    <div className={styles.adrMenu}>
+                      {adrListGrouped.map(([title, adrs]) => (
+                        <AdrListContainer
+                          adrs={adrs}
+                          key={title}
+                          selectedAdr={selectedAdr}
+                          title={title}
+                          statusComponent={statusComponent}
+                        />
+                      ))}
+                    </div>
+                  </InfoCard>
+                </Grid.Item>
+                <Grid.Item colSpan={{ sm: '9' }}>
+                  <AdrReader adr={selectedAdr} decorators={contentDecorators} />
+                </Grid.Item>
+              </Grid.Root>
+            ) : (
+              <Text>{t('notFound')}</Text>
+            )}
+          </>
         ) : (
           <Text>{t('notFound')}</Text>
         ))}
