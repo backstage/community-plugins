@@ -72,10 +72,6 @@ export const linguistPlugin = createBackendPlugin({
             permissions,
           }),
         );
-        httpRouter.addAuthPolicy({
-          path: '/health',
-          allow: 'unauthenticated',
-        });
       },
     });
   },
