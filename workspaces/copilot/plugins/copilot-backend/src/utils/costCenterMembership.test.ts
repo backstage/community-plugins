@@ -151,4 +151,49 @@ describe('resolveCostCenterMemberships', () => {
       login: 'octocat-user-16',
     });
   });
+
+  it.each([undefined, 'invalid-date'])(
+    'consistently orders mixed team timestamps with an unavailable date of %s',
+    unavailableDate => {
+      const teams = [
+        { id: 30, createdAt: '2022-01-01T00:00:00Z' },
+        { id: 20, createdAt: unavailableDate },
+        { id: 10, createdAt: '2023-01-01T00:00:00Z' },
+      ];
+      const permutations = [
+        [0, 1, 2],
+        [0, 2, 1],
+        [1, 0, 2],
+        [1, 2, 0],
+        [2, 0, 1],
+        [2, 1, 0],
+      ];
+
+      for (const permutation of permutations) {
+        const memberships = resolveCostCenterMemberships(
+          permutation.map(index => {
+            const team = teams[index];
+            return {
+              id: `center-${team.id}`,
+              name: `Center ${team.id}`,
+              resources: [
+                {
+                  type: 'Team',
+                  name: `ent:team-${team.id}`,
+                  teamId: team.id,
+                  teamCreatedAt: team.createdAt,
+                  members: [{ id: 10, login: 'octocat' }],
+                },
+              ],
+            };
+          }),
+        );
+
+        expect(memberships.get(10)).toEqual({
+          costCenterId: 'center-30',
+          login: 'octocat',
+        });
+      }
+    },
+  );
 });

@@ -82,6 +82,13 @@ function candidateWins(candidate: Candidate, current: Candidate): boolean {
     const currentCreatedAt = getTimestamp(current.teamCreatedAt);
 
     if (
+      (candidateCreatedAt === undefined) !==
+      (currentCreatedAt === undefined)
+    ) {
+      return candidateCreatedAt !== undefined;
+    }
+
+    if (
       candidateCreatedAt !== undefined &&
       currentCreatedAt !== undefined &&
       candidateCreatedAt !== currentCreatedAt
@@ -89,8 +96,8 @@ function candidateWins(candidate: Candidate, current: Candidate): boolean {
       return candidateCreatedAt < currentCreatedAt;
     }
 
-    // Enterprise team creation timestamps are used when available; the
-    // numeric team ID is the stable fallback and breaks timestamp ties.
+    // Dated teams precede undated teams; numeric IDs break timestamp ties
+    // and order teams when neither has a timestamp.
     const candidateTeamId = candidate.teamId ?? Number.POSITIVE_INFINITY;
     const currentTeamId = current.teamId ?? Number.POSITIVE_INFINITY;
     if (candidateTeamId !== currentTeamId) {
