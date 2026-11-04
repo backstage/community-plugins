@@ -35,19 +35,21 @@ export const mcpChatPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        logger: coreServices.logger,
+        auth: coreServices.auth,
         config: coreServices.rootConfig,
-        httpRouter: coreServices.httpRouter,
         database: coreServices.database,
         httpAuth: coreServices.httpAuth,
+        httpRouter: coreServices.httpRouter,
+        logger: coreServices.logger,
       },
-      async init({ logger, httpRouter, config, database, httpAuth }) {
+      async init({ auth, config, database, httpAuth, httpRouter, logger }) {
         validateConfig(config);
 
         // Initialize core services
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
+          auth,
         });
 
         const conversationStore = await ChatConversationStore.create({
