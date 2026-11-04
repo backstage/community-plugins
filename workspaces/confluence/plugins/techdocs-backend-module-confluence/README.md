@@ -49,6 +49,20 @@ confluence:
     maxDepth: 5 # Maximum depth to traverse (default: 0 = unlimited)
 ```
 
+### Embedded Images
+
+By default, embedded data images are excluded when converting Confluence HTML to Markdown. To preserve embedded images such as PlantUML or Gliffy SVGs, enable:
+
+`yaml
+confluence:
+
+# ...
+
+keepDataImages: true
+`
+
+The default is alse to preserve existing behavior.
+
 ### Multiple Confluence Instances
 
 When multiple instances are configured (see the [collator README](https://github.com/backstage/community-plugins/tree/main/workspaces/confluence/plugins/search-backend-module-confluence-collator#multiple-instances)), this module automatically routes TechDocs requests to the correct instance by matching the hostname in the entity's `backstage.io/techdocs-ref` URL against each instance's `baseUrl`.
