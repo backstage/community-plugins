@@ -783,13 +783,14 @@ describe('DatabaseHandlerV2', () => {
         'copilot_cost_center_aggregation_log',
       ).where('needs_reaggregation', true);
       expect(pendingRows).toHaveLength(1);
-      expect(pendingRows[0]).toEqual(
-        expect.objectContaining({
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where({
           day,
           metrics_type: 'organization',
           entity_id: 'org-1',
+          needs_reaggregation: true,
         }),
-      );
+      ).resolves.toHaveLength(1);
       await expect(
         knex('copilot_cost_center_aggregation_log').where({
           day: '2026-05-07',
