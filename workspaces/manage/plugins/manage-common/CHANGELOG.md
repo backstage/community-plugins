@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-common
 
+## 1.6.0
+
+### Minor Changes
+
+- 3868439: Backstage version bump to v1.54.5
+
 ## 1.5.0
 
 ### Minor Changes

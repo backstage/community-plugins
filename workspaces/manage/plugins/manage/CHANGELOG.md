@@ -1,5 +1,19 @@
 # @backstage-community/plugin-manage
 
+## 1.4.0
+
+### Minor Changes
+
+- 3868439: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 07e4dc4: Updated dependency `react-router-dom` to `6.30.5 ^6.30.5`.
+- Updated dependencies [07e4dc4]
+- Updated dependencies [3868439]
+  - @backstage-community/plugin-manage-react@2.3.0
+  - @backstage-community/plugin-manage-common@1.6.0
+
 ## 1.3.0
 
 ### Minor Changes
