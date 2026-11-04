@@ -2066,6 +2066,104 @@ describe('TaskManagementV2', () => {
     expect(db.markCostCenterAggregationDone).not.toHaveBeenCalled();
   });
 
+  it.each(['scheduled', 'backfill'] as const)(
+    'retries refreshed cost-center data after snapshot and replacement failures (%s)',
+    async source => {
+      const db = createDbMock();
+      const api = createApiMock();
+      const day = '2026-05-10';
+      const config = createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillFromDate': day,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestTeams': false,
+        'copilot.ingestCostCenters': true,
+      });
+      let pending = false;
+      db.getMissingDays.mockResolvedValue([day]);
+      db.getDaysMissingCostCenterAggregation.mockImplementation(async () =>
+        pending ? [day] : [],
+      );
+      db.markCostCenterAggregationPending.mockImplementation(async () => {
+        pending = true;
+      });
+      const snapshot = makeCostCenterSnapshot(
+        new Map([[1, { costCenterId: 'cc-1', login: 'octocat-user-1' }]]),
+      );
+      if (source === 'backfill') {
+        snapshot.unassignedComplete = false;
+        db.getDaysWithIncompleteCostCenterAggregation.mockResolvedValue([day]);
+      }
+      if (source === 'scheduled') {
+        api.fetchCostCenterMemberships.mockRejectedValueOnce(
+          new Error('unavailable'),
+        );
+      } else {
+        api.fetchCostCenterMemberships.mockResolvedValueOnce(
+          makeCostCenterSnapshot(new Map(), ['incomplete'], false),
+        );
+      }
+      api.fetchCostCenterMemberships.mockResolvedValue(snapshot);
+      api.fetchEnterpriseReportLinks.mockResolvedValue({
+        download_links: ['totals'],
+      });
+      api.fetchEnterpriseUserReportLinks.mockResolvedValue({
+        download_links: ['users'],
+      });
+      api.downloadDocument.mockResolvedValue(makeEnterpriseDocument(day));
+      api.downloadNdjsonDocument.mockResolvedValue(
+        makeUserMetricsDocument(day),
+      );
+      db.replaceCostCenterAggregates
+        .mockRejectedValueOnce(new Error('replacement failed'))
+        .mockImplementation(async () => {
+          pending = false;
+        });
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config,
+        logger: createLoggerMock(),
+      });
+      const run = () =>
+        source === 'scheduled'
+          ? task.runAsync()
+          : task.runBackfill(day, day, 'enterprise', 'ent-1');
+
+      await run();
+      expect(db.markCostCenterAggregationPending).toHaveBeenCalledWith(
+        day,
+        'enterprise',
+        'ent-1',
+      );
+      expect(pending).toBe(true);
+      expect(db.replaceCostCenterAggregates).not.toHaveBeenCalled();
+
+      db.getMissingDays.mockResolvedValue([]);
+      db.getUserMetricsForDay.mockResolvedValue([makeStoredUserMetric(day)]);
+      db.getUserBreakdownsForDay.mockResolvedValue([
+        makeStoredUserBreakdown(1, 'octocat-user-1'),
+      ]);
+      await run();
+      expect(db.replaceCostCenterAggregates).toHaveBeenCalledTimes(1);
+      expect(pending).toBe(true);
+      await run();
+      expect(db.replaceCostCenterAggregates).toHaveBeenCalledTimes(2);
+      expect(pending).toBe(false);
+
+      // A retry of core ingestion must reuse cached users without requeueing cost centers.
+      db.getMissingDays.mockResolvedValue([day]);
+      db.getIngestionLog.mockResolvedValue([
+        { components_loaded: '["totals","users"]' },
+      ]);
+      await run();
+      expect(db.markCostCenterAggregationPending).toHaveBeenCalledTimes(1);
+      expect(api.fetchEnterpriseUserReportLinks).toHaveBeenCalledTimes(1);
+      expect(db.replaceCostCenterAggregates).toHaveBeenCalledTimes(2);
+      expect(pending).toBe(false);
+    },
+  );
+
   it('continues core ingestion and leaves cost-center days unmarked when listing fails', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -2795,6 +2893,7 @@ function createDbMock() {
     upsertCostCenters: jest.fn().mockResolvedValue(undefined),
     upsertUserCostCenters: jest.fn().mockResolvedValue(undefined),
     markCostCenterAggregationDone: jest.fn().mockResolvedValue(undefined),
+    markCostCenterAggregationPending: jest.fn().mockResolvedValue(undefined),
     replaceCostCenterAggregates: jest.fn().mockResolvedValue(undefined),
     upsertIngestionLog: jest.fn().mockResolvedValue(undefined),
   };

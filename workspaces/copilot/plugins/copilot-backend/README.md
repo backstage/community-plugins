@@ -129,6 +129,8 @@ implementation markers.
 
 GitHub does not provide historical cost-center membership. Each ingested day uses the membership snapshot fetched at that time; backfilling existing per-user data applies the current snapshot to those historical days. GitHub's per-user and team reports cover roughly a rolling year, so newly enabled user, team, and cost-center data is backfilled only within that window. Older totals-only records remain unchanged and are not retried.
 
+Refreshing a user report queues its existing cost-center aggregates for replacement. Scheduled ingestion and manual backfills retry pending days within the report window until replacement succeeds, retaining the previous aggregates, including **No cost center**, meanwhile. Reusing a cached user report does not queue a replacement.
+
 For expired native team-report days, `/v2/backfill/status` omits `teams` from `components_loaded` while preserving the successful totals status.
 
 Detailed CLI and VS Code Agent breakdowns are not available for cost-center views, as with team views.

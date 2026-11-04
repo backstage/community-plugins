@@ -778,10 +778,11 @@ export class DatabaseHandlerV2 {
           metrics_type: metricsType,
           entity_id: entityId,
           unassigned_complete: unassignedComplete,
+          needs_reaggregation: false,
           aggregated_at: this.db.fn.now(),
         })
         .onConflict(['day', 'metrics_type', 'entity_id'])
-        .merge(['unassigned_complete', 'aggregated_at']);
+        .merge(['unassigned_complete', 'needs_reaggregation', 'aggregated_at']);
     });
   }
 
@@ -1015,6 +1016,7 @@ export class DatabaseHandlerV2 {
         .select('day', 'components_loaded'),
       this.db('copilot_cost_center_aggregation_log')
         .where({ metrics_type: metricsType, entity_id: entityId })
+        .where('needs_reaggregation', false)
         .whereBetween('day', [from, to])
         .select('day'),
     ]);
@@ -1079,10 +1081,21 @@ export class DatabaseHandlerV2 {
         metrics_type: metricsType,
         entity_id: entityId,
         unassigned_complete: unassignedComplete,
+        needs_reaggregation: false,
         aggregated_at: this.db.fn.now(),
       })
       .onConflict(['day', 'metrics_type', 'entity_id'])
-      .merge(['unassigned_complete', 'aggregated_at']);
+      .merge(['unassigned_complete', 'needs_reaggregation', 'aggregated_at']);
+  }
+
+  async markCostCenterAggregationPending(
+    day: string,
+    metricsType: MetricsScope,
+    entityId: string,
+  ): Promise<void> {
+    await this.db('copilot_cost_center_aggregation_log')
+      .where({ day, metrics_type: metricsType, entity_id: entityId })
+      .update({ needs_reaggregation: true });
   }
 
   /**

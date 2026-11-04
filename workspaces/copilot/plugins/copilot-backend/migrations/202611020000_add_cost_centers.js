@@ -223,6 +223,7 @@ exports.up = async function up(knex) {
       table.string('metrics_type').notNullable();
       table.string('entity_id').notNullable();
       table.boolean('unassigned_complete').notNullable().defaultTo(true);
+      table.boolean('needs_reaggregation').notNullable().defaultTo(false);
       table.timestamp('aggregated_at').notNullable().defaultTo(knex.fn.now());
       table.unique(
         ['day', 'metrics_type', 'entity_id'],

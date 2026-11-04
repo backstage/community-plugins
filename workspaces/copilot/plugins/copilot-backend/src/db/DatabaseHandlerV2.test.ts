@@ -753,6 +753,90 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toEqual(['2026-05-03']);
     });
 
+    it('requeues refreshed days without hiding their previous unassigned aggregates', async () => {
+      const day = '2026-05-05';
+      await handler.insertUserMetrics([buildUserMetric({ day })]);
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({ day, cost_center_id: '' }),
+        without_cost_center: true,
+      });
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-1');
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-2');
+      await handler.markCostCenterAggregationDone(day, 'enterprise', 'org-1');
+      await handler.markCostCenterAggregationDone(
+        '2026-05-06',
+        'organization',
+        'org-1',
+      );
+      await handler.markCostCenterAggregationPending(
+        day,
+        'organization',
+        'org-1',
+      );
+      await handler.markCostCenterAggregationPending(
+        '2026-05-07',
+        'organization',
+        'org-1',
+      );
+
+      const pendingRows = await knex(
+        'copilot_cost_center_aggregation_log',
+      ).where('needs_reaggregation', true);
+      expect(pendingRows).toHaveLength(1);
+      expect(pendingRows[0]).toEqual(
+        expect.objectContaining({
+          day,
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+        }),
+      );
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where({
+          day: '2026-05-07',
+        }),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([day]);
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          '2026-05-06',
+          '2026-05-06',
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getDailyTotals('organization', 'org-1', day, day, undefined, {
+          kind: 'noCostCenter',
+        }),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getCostCenters('organization', 'org-1', day, day, 1),
+      ).resolves.toEqual({ costCenters: [], hasUsersWithoutCostCenter: true });
+
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-1');
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where(
+          'needs_reaggregation',
+          true,
+        ),
+      ).resolves.toEqual([]);
+    });
+
     it('requeues only days marked with an incomplete unassigned snapshot', async () => {
       const day = '2026-05-05';
       await handler.insertUserMetrics([
@@ -838,6 +922,11 @@ describe('DatabaseHandlerV2', () => {
         { costCenterId: 'cc-a', teamSlug: '', activeUsers: 5, locAdded: 50 },
         { costCenterId: 'cc-b', teamSlug: '', activeUsers: 1, locAdded: 10 },
       ]);
+      await handler.markCostCenterAggregationPending(
+        day,
+        'enterprise',
+        'ent-1',
+      );
       await handler.replaceCostCenterAggregates(
         day,
         'enterprise',
@@ -845,6 +934,11 @@ describe('DatabaseHandlerV2', () => {
         memberships('cc-b'),
         updatedGroups,
       );
+      await expect(
+        knex('copilot_cost_center_aggregation_log')
+          .where(scope)
+          .where('needs_reaggregation', true),
+      ).resolves.toEqual([]);
 
       const membershipRows = await knex('copilot_user_cost_centers').where(
         scope,

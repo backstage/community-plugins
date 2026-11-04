@@ -46,6 +46,7 @@ type IngestSource = 'scheduled' | 'backfill';
 type IngestContext = {
   ingestTeams: boolean;
   ingestUsers: boolean;
+  ingestCostCenters: boolean;
   source: IngestSource;
 };
 
@@ -318,6 +319,7 @@ export class TaskManagementV2 {
           {
             ingestTeams: ingestTeams && day >= reportWindowStartDate,
             ingestUsers: plan.ingestUsers && day >= reportWindowStartDate,
+            ingestCostCenters: plan.ingestCostCenters,
             source: 'scheduled',
           },
         );
@@ -492,6 +494,7 @@ export class TaskManagementV2 {
       const userReport = await this.ingestDay(day, metricsType, entityId, {
         ingestTeams: ingestTeams && day >= reportWindowStartDate,
         ingestUsers: ingestUsers && day >= reportWindowStartDate,
+        ingestCostCenters: costCenterIngestionAvailable,
         source: 'backfill',
       });
       if (userReport.loaded) {
@@ -516,6 +519,7 @@ export class TaskManagementV2 {
     for (const day of costCenterDays) {
       if (
         incompleteCostCenterDays.includes(day) &&
+        !missingCostCenterDays.includes(day) &&
         !retryIncompleteDays.includes(day)
       ) {
         continue;
@@ -981,6 +985,9 @@ export class TaskManagementV2 {
           : await this.ingestUserReports(day, metricsType, entityId);
         userReportsLoaded = userReport.loaded;
         userReportsRefreshed = userReport.loaded && !reuseStoredReport;
+        if (userReportsRefreshed && context.ingestCostCenters) {
+          await db.markCostCenterAggregationPending(day, metricsType, entityId);
+        }
         if (userReport.loaded) {
           componentsLoaded.add('users');
         }
