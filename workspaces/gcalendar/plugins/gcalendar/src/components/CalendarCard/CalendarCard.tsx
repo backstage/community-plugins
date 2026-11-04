@@ -133,9 +133,9 @@ export const CalendarCard = () => {
     >
       <Box>
         {showLoader && (
-          <div className={styles.loaderWrap}>
+          <Box className={styles.loaderWrap}>
             <Progress variant="query" />
-          </div>
+          </Box>
         )}
         {!isSignedIn && isInitialized && (
           <SignInContent handleAuthClick={() => signIn(false)} />
@@ -143,11 +143,11 @@ export const CalendarCard = () => {
         {!isEventLoading && !isCalendarLoading && isSignedIn && (
           <Box className={styles.eventList}>
             {events.length === 0 && (
-              <div className={styles.noEventsWrap}>
+              <Box className={styles.noEventsWrap}>
                 <Text as="h6" variant="title-small" className={styles.noEvents}>
                   No events
                 </Text>
-              </div>
+              </Box>
             )}
             {sortBy(events, [getStartDate]).map(event => (
               <CalendarEvent
