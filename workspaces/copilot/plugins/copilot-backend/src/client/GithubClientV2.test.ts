@@ -1079,12 +1079,13 @@ describe('GithubClientV2', () => {
     expect(mockLogger.warn).toHaveBeenCalledTimes(3);
   });
 
-  it('skips App org rosters without members permission even if the public roster is non-empty', async () => {
+  it('refreshes App installations with missing members permission on the next snapshot', async () => {
     const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
     getGithubCredentials.mockResolvedValueOnce({
       enterprise: { appId: 123, privateKey: 'private-key' },
     });
 
+    let orgInstallationLookups = 0;
     mockRequest.mockImplementation(async (route: string) => {
       const url = parseMockRequestUrl(route);
       if (url.pathname === '/enterprises/my-enterprise/installation') {
@@ -1116,9 +1117,12 @@ describe('GithubClientV2', () => {
         });
       }
       if (url.pathname === '/orgs/public-only-org/installation') {
+        orgInstallationLookups += 1;
         return githubResponse({
           id: 20,
-          permissions: { members: 'none' },
+          permissions: {
+            members: orgInstallationLookups === 1 ? 'none' : 'read',
+          },
         });
       }
       if (url.pathname === '/orgs/public-only-org/members') {
@@ -1144,6 +1148,15 @@ describe('GithubClientV2', () => {
         ),
       ),
     ).toBe(false);
+
+    const refreshedResult = await client.fetchCostCenterMemberships();
+    expect(refreshedResult.complete).toBe(true);
+    expect(refreshedResult.members).toEqual(
+      new Map([[88, { costCenterId: 'cc-public', login: 'octocat-user-7' }]]),
+    );
+    expect(refreshedResult.warnings).toEqual([]);
+    await client.fetchCostCenterMemberships();
+    expect(orgInstallationLookups).toBe(2);
   });
 
   it('marks an organization roster incomplete when a member entry cannot be resolved', async () => {

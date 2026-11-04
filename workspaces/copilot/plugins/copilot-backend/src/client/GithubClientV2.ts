@@ -489,7 +489,14 @@ export class GithubClientV2 {
     }
 
     try {
-      return await octokitPromise;
+      const client = await octokitPromise;
+      if (
+        !hasMembersReadPermission(client.membersPermission) &&
+        this.costCenterOrganizationOctokits.get(cacheKey) === octokitPromise
+      ) {
+        this.costCenterOrganizationOctokits.delete(cacheKey);
+      }
+      return client;
     } catch (error) {
       if (
         this.costCenterOrganizationOctokits.get(cacheKey) === octokitPromise
