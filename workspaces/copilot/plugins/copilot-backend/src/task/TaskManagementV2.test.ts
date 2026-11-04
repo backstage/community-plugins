@@ -1611,6 +1611,98 @@ describe('TaskManagementV2', () => {
     expect(db.markCostCenterAggregationDone).not.toHaveBeenCalled();
   });
 
+  it.each(['missing links', 'download failure', 'empty report'])(
+    'refreshes legacy cost-center breakdowns and retries after %s',
+    async failure => {
+      const db = createDbMock();
+      const api = createApiMock();
+      const day = DateTime.utc().minus({ days: 30 }).toISODate()!;
+      const config = createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestTeams': true,
+        'copilot.ingestCostCenters': true,
+      });
+      db.getMissingDays.mockResolvedValue([]);
+      db.getDaysMissingCostCenterAggregation.mockResolvedValue([day]);
+      db.getIngestionLog.mockResolvedValue([
+        {
+          day,
+          status: 'success',
+          components_loaded: '["totals","users","teams"]',
+        },
+      ]);
+      db.getUserMetricsForDay.mockResolvedValue([
+        makeStoredUserMetric(day, { loc_added_sum: 15 }),
+      ]);
+      api.fetchCostCenterMemberships.mockResolvedValue(
+        makeCostCenterSnapshot(
+          new Map([[1, { costCenterId: 'cc-1', login: 'octocat' }]]),
+        ),
+      );
+      api.fetchEnterpriseUserReportLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/users.json'],
+      });
+      if (failure === 'missing links') {
+        api.fetchEnterpriseUserReportLinks.mockResolvedValueOnce({
+          download_links: [],
+        });
+      } else if (failure === 'download failure') {
+        api.downloadNdjsonDocument.mockRejectedValueOnce(
+          new Error('Report download failed'),
+        );
+      } else {
+        api.downloadNdjsonDocument.mockResolvedValueOnce([]);
+      }
+      api.downloadNdjsonDocument.mockResolvedValue(
+        makeUserMetricsDocument(day),
+      );
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config,
+        logger: createLoggerMock(),
+      });
+
+      await task.runBackfill(day, day, 'enterprise', 'ent-1');
+
+      expect(db.replaceCostCenterAggregates).not.toHaveBeenCalled();
+      expect(db.markCostCenterAggregationDone).not.toHaveBeenCalled();
+
+      await task.runBackfill(day, day, 'enterprise', 'ent-1');
+
+      expect(api.fetchEnterpriseUserReportLinks).toHaveBeenCalledTimes(2);
+      expect(api.fetchEnterpriseUserReportLinks).toHaveBeenLastCalledWith(day);
+      expect(db.insertUserMetricsByFeature).toHaveBeenLastCalledWith([
+        expect.objectContaining({ day, feature: 'chat_panel' }),
+      ]);
+      expect(db.replaceCostCenterAggregates).toHaveBeenCalledTimes(1);
+      expect(db.replaceCostCenterAggregates).toHaveBeenCalledWith(
+        day,
+        'enterprise',
+        'ent-1',
+        [expect.objectContaining({ user_id: 1, cost_center_id: 'cc-1' })],
+        expect.objectContaining({
+          dailyTotals: expect.arrayContaining([
+            expect.objectContaining({ loc_added_sum: 15 }),
+          ]),
+          byFeature: [
+            expect.objectContaining({
+              feature: 'chat_panel',
+              loc_added_sum: 10,
+            }),
+          ],
+        }),
+        true,
+      );
+      expect(api.fetchEnterpriseReportLinks).not.toHaveBeenCalled();
+      expect(api.fetchEnterpriseUserTeamsLinks).not.toHaveBeenCalled();
+      expect(db.insertDailyTotals).not.toHaveBeenCalled();
+      expect(db.replaceTeamAggregates).not.toHaveBeenCalled();
+      expect(db.upsertIngestionLog).not.toHaveBeenCalled();
+    },
+  );
+
   it('re-aggregates incomplete unassigned days after the snapshot becomes complete', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -1949,7 +2041,9 @@ describe('TaskManagementV2', () => {
     db.getUserMetricsForDay.mockResolvedValue([
       makeStoredUserMetric(day, { loc_added_sum: 15 }),
     ]);
-    db.getUserBreakdownsForDay.mockResolvedValue([]);
+    db.getUserBreakdownsForDay.mockResolvedValue([
+      makeStoredUserBreakdown(1, 'octocat-user-1'),
+    ]);
     api.fetchCostCenterMemberships.mockResolvedValue(
       makeCostCenterSnapshot(
         new Map([[1, { costCenterId: 'cc-1', login: 'octocat-user-1' }]]),

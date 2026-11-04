@@ -817,6 +817,18 @@ export class TaskManagementV2 {
       return false;
     }
 
+    let userBreakdowns = userMetrics.length
+      ? await db.getUserBreakdownsForDay(metricsType, entityId, day)
+      : [];
+    // Legacy successful ingestion logs can predate persisted user breakdowns.
+    if (userMetrics.length > 0 && userBreakdowns.length === 0) {
+      const report = await this.ingestUserReports(day, metricsType, entityId);
+      if (!report.loaded || report.userBreakdowns.length === 0) {
+        return false;
+      }
+      userBreakdowns = report.userBreakdowns;
+    }
+
     const memberships = new Map<number, string>();
     const userCostCentersByUserId = new Map<number, V2UserCostCenterRow>();
     for (const metric of userMetrics) {
@@ -837,9 +849,6 @@ export class TaskManagementV2 {
     }
     const userCostCenters = [...userCostCentersByUserId.values()];
 
-    const userBreakdowns = userMetrics.length
-      ? await db.getUserBreakdownsForDay(metricsType, entityId, day)
-      : [];
     const aggregates = aggregateCostCenterMetrics(
       userMetrics,
       userBreakdowns,
