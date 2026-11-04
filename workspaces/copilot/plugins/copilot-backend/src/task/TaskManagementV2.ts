@@ -309,8 +309,9 @@ export class TaskManagementV2 {
 
     for (const plan of plans) {
       const loadedUserReportDays = new Set<string>();
+      const refreshedUserReportDays = new Set<string>();
       for (const day of plan.missingDays) {
-        const usersLoaded = await this.ingestDay(
+        const userReport = await this.ingestDay(
           day,
           plan.entity.metricsType,
           plan.entity.entityId,
@@ -320,8 +321,11 @@ export class TaskManagementV2 {
             source: 'scheduled',
           },
         );
-        if (usersLoaded) {
+        if (userReport.loaded) {
           loadedUserReportDays.add(day);
+        }
+        if (userReport.refreshed) {
+          refreshedUserReportDays.add(day);
         }
 
         if (backfillDelayMs > 0) {
@@ -337,7 +341,9 @@ export class TaskManagementV2 {
         ? plan.incompleteCostCenterDays
         : [];
       const daysToAggregate = uniqueDays(
-        plan.missingDays.filter(day => day >= reportWindowStartDate),
+        [...refreshedUserReportDays].filter(
+          day => day >= reportWindowStartDate,
+        ),
         plan.missingCostCenterDays.filter(day => day >= reportWindowStartDate),
         retryIncompleteDays.filter(day => day >= reportWindowStartDate),
       );
@@ -481,15 +487,18 @@ export class TaskManagementV2 {
     }
 
     const loadedUserReportDays = new Set<string>();
+    const refreshedUserReportDays = new Set<string>();
     for (const day of missingDays) {
-      if (
-        await this.ingestDay(day, metricsType, entityId, {
-          ingestTeams: ingestTeams && day >= reportWindowStartDate,
-          ingestUsers: ingestUsers && day >= reportWindowStartDate,
-          source: 'backfill',
-        })
-      ) {
+      const userReport = await this.ingestDay(day, metricsType, entityId, {
+        ingestTeams: ingestTeams && day >= reportWindowStartDate,
+        ingestUsers: ingestUsers && day >= reportWindowStartDate,
+        source: 'backfill',
+      });
+      if (userReport.loaded) {
         loadedUserReportDays.add(day);
+      }
+      if (userReport.refreshed) {
+        refreshedUserReportDays.add(day);
       }
 
       if (backfillDelayMs > 0) {
@@ -512,6 +521,13 @@ export class TaskManagementV2 {
         continue;
       }
       if (missingDays.includes(day) && !loadedUserReportDays.has(day)) {
+        continue;
+      }
+      if (
+        !missingCostCenterDays.includes(day) &&
+        !retryIncompleteDays.includes(day) &&
+        !refreshedUserReportDays.has(day)
+      ) {
         continue;
       }
 
@@ -908,7 +924,7 @@ export class TaskManagementV2 {
     metricsType: MetricsScope,
     entityId: string,
     context: IngestContext,
-  ): Promise<boolean> {
+  ): Promise<{ loaded: boolean; refreshed: boolean }> {
     const { db, logger } = this.options;
     const requiredComponents = getRequiredComponents(
       context.ingestUsers,
@@ -916,6 +932,7 @@ export class TaskManagementV2 {
     );
     const componentsLoaded = new Set<string>();
     let userReportsLoaded = false;
+    let userReportsRefreshed = false;
 
     try {
       const previousLog = (
@@ -944,15 +961,17 @@ export class TaskManagementV2 {
             ? await db.getUserBreakdownsForDay(metricsType, entityId, day)
             : [];
         // Reuse only complete stored reports; users loaded before breakdowns were persisted lack them.
-        const userReport =
-          storedUserMetrics.length > 0 && storedUserBreakdowns.length > 0
-            ? {
-                loaded: true,
-                userMetrics: storedUserMetrics,
-                userBreakdowns: storedUserBreakdowns,
-              }
-            : await this.ingestUserReports(day, metricsType, entityId);
+        const reuseStoredReport =
+          storedUserMetrics.length > 0 && storedUserBreakdowns.length > 0;
+        const userReport = reuseStoredReport
+          ? {
+              loaded: true,
+              userMetrics: storedUserMetrics,
+              userBreakdowns: storedUserBreakdowns,
+            }
+          : await this.ingestUserReports(day, metricsType, entityId);
         userReportsLoaded = userReport.loaded;
+        userReportsRefreshed = userReport.loaded && !reuseStoredReport;
         if (userReport.loaded) {
           componentsLoaded.add('users');
         }
@@ -980,7 +999,7 @@ export class TaskManagementV2 {
         [...componentsLoaded],
         requiredComponents,
       );
-      return userReportsLoaded;
+      return { loaded: userReportsLoaded, refreshed: userReportsRefreshed };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       logger.error(
@@ -997,7 +1016,7 @@ export class TaskManagementV2 {
         error_message: message,
         source: context.source,
       });
-      return userReportsLoaded;
+      return { loaded: userReportsLoaded, refreshed: userReportsRefreshed };
     }
   }
 }

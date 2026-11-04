@@ -710,6 +710,116 @@ describe('TaskManagementV2', () => {
     );
   });
 
+  it.each(
+    ['scheduled', 'backfill'].flatMap(source =>
+      [
+        {
+          component: 'totals',
+          costCenters: 'complete',
+          unassignedComplete: false,
+        },
+        {
+          component: 'teams',
+          costCenters: 'complete',
+          unassignedComplete: true,
+        },
+        {
+          component: 'teams',
+          costCenters: 'missing',
+          unassignedComplete: true,
+        },
+        {
+          component: 'totals',
+          costCenters: 'incomplete',
+          unassignedComplete: true,
+        },
+      ].map(scenario => ({ source, ...scenario })),
+    ),
+  )(
+    'preserves cached memberships on $source $component retries with $costCenters cost centers',
+    async ({ source, component, costCenters, unassignedComplete }) => {
+      const db = createDbMock();
+      const api = createApiMock();
+      const day = DateTime.utc().minus({ days: 5 }).toISODate()!;
+      const config = createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillFromDate': day,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestTeams': true,
+        'copilot.ingestCostCenters': true,
+      });
+      db.getMissingDays.mockResolvedValue([day]);
+      db.getIngestionLog.mockResolvedValue([
+        {
+          day,
+          metrics_type: 'enterprise',
+          entity_id: 'ent-1',
+          status: 'partial',
+          components_loaded:
+            component === 'totals' ? '["users","teams"]' : '["totals","users"]',
+          source,
+        },
+      ]);
+      db.getDaysMissingCostCenterAggregation.mockResolvedValue(
+        costCenters === 'missing' ? [day] : [],
+      );
+      db.getDaysWithIncompleteCostCenterAggregation.mockResolvedValue(
+        costCenters === 'incomplete' ? [day] : [],
+      );
+      db.getUserMetricsForDay.mockResolvedValue([makeStoredUserMetric(day)]);
+      db.getUserBreakdownsForDay.mockResolvedValue([
+        makeStoredUserBreakdown(1, 'octocat-user-1'),
+      ]);
+      api.fetchCostCenterMemberships.mockResolvedValue(
+        makeCostCenterSnapshot(
+          new Map([[1, { costCenterId: 'cc-new', login: 'octocat-user-1' }]]),
+          [],
+          true,
+          unassignedComplete,
+        ),
+      );
+      api.fetchEnterpriseReportLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/totals.json'],
+      });
+      api.downloadDocument.mockResolvedValue(makeEnterpriseDocument(day));
+      api.fetchEnterpriseUserTeamsLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/teams.json'],
+      });
+      api.downloadNdjsonDocument.mockResolvedValue(makeUserTeamsDocument(day));
+
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config,
+        logger: createLoggerMock(),
+      });
+      if (source === 'scheduled') {
+        await task.runAsync();
+      } else {
+        await task.runBackfill(day, day, 'enterprise', 'ent-1');
+      }
+
+      expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
+      expect(db.replaceTeamAggregates).toHaveBeenCalled();
+      expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+        expect.objectContaining({ day, status: 'success' }),
+      );
+      const expectedReplacement = [
+        day,
+        'enterprise',
+        'ent-1',
+        [expect.objectContaining({ user_id: 1, cost_center_id: 'cc-new' })],
+        expect.objectContaining({
+          dailyTotals: [expect.objectContaining({ cost_center_id: 'cc-new' })],
+        }),
+        true,
+      ];
+      expect(db.replaceCostCenterAggregates.mock.calls).toEqual(
+        costCenters === 'complete' ? [] : [expectedReplacement],
+      );
+    },
+  );
+
   it('keeps team and cost-center aggregates in separate scopes', async () => {
     const db = createDbMock();
     const api = createApiMock();
