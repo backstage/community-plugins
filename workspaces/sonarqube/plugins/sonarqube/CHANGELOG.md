@@ -1,5 +1,16 @@
 # @backstage-community/plugin-sonarqube
 
+## 1.4.0
+
+### Minor Changes
+
+- 4b874dd: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [4b874dd]
+  - @backstage-community/plugin-sonarqube-react@1.4.0
+
 ## 1.3.1
 
 ### Patch Changes
