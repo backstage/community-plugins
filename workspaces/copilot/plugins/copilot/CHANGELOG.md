@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 1.7.0
+
+### Minor Changes
+
+- af4e2f3: Updated visualisation of Agent Harness view
+
 ## 1.6.0
 
 ### Minor Changes
