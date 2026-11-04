@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   DateRangePicker,
@@ -110,8 +110,16 @@ export const V2DashboardPage = () => {
     DateTime.now().minus({ days: 30 }).toFormat('yyyy-MM-dd'),
   );
   const [to, setTo] = useState(DateTime.now().toFormat('yyyy-MM-dd'));
-  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(
-    undefined,
+  const scopeKey = JSON.stringify([type, entityId]);
+  const [teamSelection, setTeamSelection] = useState<{
+    scopeKey: string;
+    value: string | undefined;
+  }>({ scopeKey, value: undefined });
+  const selectedTeam =
+    teamSelection.scopeKey === scopeKey ? teamSelection.value : undefined;
+  const setSelectedTeam = useCallback(
+    (value: string | undefined) => setTeamSelection({ scopeKey, value }),
+    [scopeKey],
   );
 
   const params = useMemo(
@@ -121,6 +129,23 @@ export const V2DashboardPage = () => {
 
   const { data } = useV2DashboardData(params);
   const teams = useV2Teams(type, entityId, from, to);
+
+  useEffect(() => {
+    if (teamSelection.scopeKey !== scopeKey) {
+      setTeamSelection({ scopeKey, value: undefined });
+    }
+  }, [scopeKey, teamSelection.scopeKey]);
+
+  useEffect(() => {
+    if (
+      selectedTeam &&
+      !teams.loading &&
+      !teams.error &&
+      !teams.items.includes(selectedTeam)
+    ) {
+      setSelectedTeam(undefined);
+    }
+  }, [selectedTeam, setSelectedTeam, teams.error, teams.items, teams.loading]);
 
   const onDateRangeChange = useCallback(
     (value: RangeValue<DateValue> | null) => {

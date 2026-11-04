@@ -18,18 +18,56 @@ import { GithubClientV2 } from './GithubClientV2';
 import { Octokit } from '@octokit/rest';
 
 const mockRequest = jest.fn();
+const mockGetOrgInstallation = jest.fn();
+const mockHookBefore = jest.fn();
+const mockOutgoingHeaders: Array<Record<string, string>> = [];
+const mockAppAuthentication = jest
+  .fn()
+  .mockResolvedValue({ token: 'fake-app-jwt' });
+const mockCreateAppAuth = jest.fn((_options: unknown) => mockAppAuthentication);
 
 // Mock Octokit
 jest.mock('@octokit/rest', () => ({
-  Octokit: jest.fn().mockImplementation(() => ({
-    request: mockRequest,
-    rest: {
-      apps: {
-        getOrgInstallation: jest.fn().mockResolvedValue({ data: { id: 999 } }),
+  Octokit: jest.fn().mockImplementation(() => {
+    const requestHooks: Array<
+      (requestOptions: { headers: Record<string, string> }) => void
+    > = [];
+    return {
+      request: (...args: any[]) => {
+        const requestOptions = {
+          headers: {
+            accept: 'application/vnd.github.v3+json',
+          } as Record<string, string>,
+        };
+        requestHooks.forEach(requestHook => requestHook(requestOptions));
+        mockOutgoingHeaders.push({ ...requestOptions.headers });
+        return mockRequest(...args);
       },
-    },
-    graphql: jest.fn(),
-  })),
+      rest: {
+        apps: {
+          getOrgInstallation: mockGetOrgInstallation,
+        },
+      },
+      graphql: jest.fn(),
+      hook: {
+        before: (
+          name: string,
+          requestHook: (requestOptions: {
+            headers: Record<string, string>;
+          }) => void,
+        ) => {
+          mockHookBefore(name, requestHook);
+          if (name === 'request') {
+            requestHooks.push(requestHook);
+          }
+        },
+      },
+    };
+  }),
+}));
+
+jest.mock('@octokit/auth-app', () => ({
+  createAppAuth: (options: unknown) => mockCreateAppAuth(options),
 }));
 
 // Mock GithubUtils
@@ -53,6 +91,14 @@ describe('GithubClientV2', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRequest.mockReset();
+    mockGetOrgInstallation.mockReset().mockResolvedValue({ data: { id: 999 } });
+    mockHookBefore.mockReset();
+    mockOutgoingHeaders.length = 0;
+    mockAppAuthentication
+      .mockReset()
+      .mockResolvedValue({ token: 'fake-app-jwt' });
+    mockCreateAppAuth.mockReset().mockReturnValue(mockAppAuthentication);
     mockConfig = {} as any;
     mockLogger = {
       debug: jest.fn(),
@@ -359,7 +405,9 @@ describe('GithubClientV2', () => {
     getGithubCredentials.mockResolvedValueOnce({
       enterprise: { appId: 123, privateKey: 'private-key' },
     });
-    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+    mockRequest
+      .mockResolvedValueOnce({ data: { id: 999 } })
+      .mockResolvedValueOnce({ data: { download_links: [] } });
 
     const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
     await client.fetchEnterpriseReportLinks('2026-01-01');
@@ -467,13 +515,65 @@ describe('GithubClientV2', () => {
       `GET /enterprises/my-enterprise/copilot/metrics/reports/enterprise-1-day?day=2026-01-01`,
     );
 
-    // Check Octokit construction included the API version header
-    const MockedOctokit = Octokit as unknown as jest.Mock;
-    const firstCallArgs = MockedOctokit.mock.calls[0][0] as any;
-    expect(firstCallArgs.headers['X-GitHub-Api-Version']).toBe('2026-03-10');
-    expect(firstCallArgs.baseUrl).toBe('https://api.github.com');
+    expect(mockOutgoingHeaders[0]).toEqual({
+      accept: 'application/vnd.github+json',
+      'x-github-api-version': '2026-03-10',
+    });
 
     expect(res.download_links[0]).toContain('s3.amazonaws.com');
+  });
+
+  it('discovers enterprise GitHub App installations with the App-JWT endpoint', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest
+      .mockResolvedValueOnce({ data: { id: 174085427 } })
+      .mockResolvedValueOnce({ data: { download_links: [] } });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchEnterpriseReportLinks('2026-01-01');
+
+    expect(mockRequest).toHaveBeenNthCalledWith(
+      1,
+      'GET /enterprises/my-enterprise/installation',
+    );
+    expect(mockGetOrgInstallation).not.toHaveBeenCalled();
+    expect(mockOutgoingHeaders[0]).toEqual({
+      accept: 'application/vnd.github+json',
+      'x-github-api-version': '2026-03-10',
+      authorization: 'Bearer fake-app-jwt',
+    });
+
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls[1][0].auth).toEqual({
+      appId: 123,
+      privateKey: 'private-key',
+      installationId: 174085427,
+    });
+  });
+
+  it('falls back to the org-installation endpoint when enterprise lookup returns 404', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest
+      .mockRejectedValueOnce(
+        Object.assign(new Error('Not found'), { status: 404 }),
+      )
+      .mockResolvedValueOnce({ data: { download_links: [] } });
+    mockGetOrgInstallation.mockResolvedValueOnce({ data: { id: 321 } });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchEnterpriseReportLinks('2026-01-01');
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledWith({
+      org: 'my-enterprise',
+    });
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls[1][0].auth.installationId).toBe(321);
   });
 
   it('fetchOrganizationReportLinks calls correct org path', async () => {

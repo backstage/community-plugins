@@ -16,7 +16,7 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Octokit } from '@octokit/rest';
-import { createAppAuth } from '@octokit/auth-app';
+import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import {
   MetricsScope,
   ReportEnvelope,
@@ -48,6 +48,25 @@ const GHE_COM_API_HOST = /^api\.([a-z0-9-]+\.ghe\.com)$/;
 
 function isWithinDomain(hostname: string, domain: string): boolean {
   return hostname === domain || hostname.endsWith(`.${domain}`);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function getHttpStatus(error: unknown): number | undefined {
+  if (!isRecord(error)) {
+    return undefined;
+  }
+  return typeof error.status === 'number' ? error.status : undefined;
+}
+
+function getInstallationId(data: unknown): number {
+  const id = isRecord(data) ? data.id : undefined;
+  if (typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0) {
+    throw new Error('Unexpected GitHub App installation response.');
+  }
+  return id;
 }
 
 // `copilot.host` may carry a port, which URL.hostname never does.
@@ -110,6 +129,53 @@ export class GithubClientV2 {
     return new GithubClientV2(info, config, logger);
   }
 
+  private getBaseOctokitConfig(): NonNullable<
+    ConstructorParameters<typeof Octokit>[0]
+  > {
+    return {
+      baseUrl: this.copilotConfig.apiBaseUrl,
+    };
+  }
+
+  private createOctokit(
+    options: NonNullable<ConstructorParameters<typeof Octokit>[0]> = {},
+  ): Octokit {
+    const octokit = new Octokit({
+      ...this.getBaseOctokitConfig(),
+      ...options,
+    });
+    octokit.hook.before('request', requestOptions => {
+      requestOptions.headers.accept = 'application/vnd.github+json';
+      requestOptions.headers['x-github-api-version'] ??= '2026-03-10';
+    });
+    return octokit;
+  }
+
+  private async getAppJwtOctokit(
+    authStrategy: StrategyOptions,
+  ): Promise<Octokit> {
+    const { token } = await createAppAuth(authStrategy)({ type: 'app' });
+    const octokit = this.createOctokit();
+    octokit.hook.before('request', requestOptions => {
+      requestOptions.headers.authorization = `Bearer ${token}`;
+    });
+    return octokit;
+  }
+
+  private createInstallationOctokit(
+    authStrategy: StrategyOptions,
+    installationId: number,
+  ): Octokit {
+    return this.createOctokit({
+      authStrategy: createAppAuth,
+      auth: {
+        appId: authStrategy.appId,
+        privateKey: authStrategy.privateKey,
+        installationId,
+      },
+    });
+  }
+
   private async getOctokit(type: MetricsScope): Promise<Octokit> {
     const credentials = await getGithubCredentials(
       this.config,
@@ -123,42 +189,52 @@ export class GithubClientV2 {
       );
     }
 
-    const octokitConfig: ConstructorParameters<typeof Octokit>[0] = {
-      baseUrl: this.copilotConfig.apiBaseUrl,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2026-03-10',
-      },
-    };
-
     if (typeof authStrategy === 'string') {
-      octokitConfig.auth = authStrategy;
+      return this.createOctokit({
+        auth: authStrategy,
+      });
+    }
+
+    const orgName =
+      type === 'organization'
+        ? this.copilotConfig.organization
+        : this.copilotConfig.enterprise;
+    if (!orgName) {
+      throw new Error(`No ${type} name configured.`);
+    }
+
+    let installationId: number;
+    if (type === 'enterprise') {
+      const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
+      try {
+        const { data } = await appJwtOctokit.request(
+          `GET /enterprises/${encodeURIComponent(orgName)}/installation`,
+        );
+        installationId = getInstallationId(data);
+      } catch (error) {
+        if (getHttpStatus(error) !== 404) {
+          throw error;
+        }
+        const { data } = await appJwtOctokit.rest.apps.getOrgInstallation({
+          org: orgName,
+        });
+        installationId = getInstallationId(data);
+      }
     } else {
-      const appOctokit = new Octokit({
-        baseUrl: this.copilotConfig.apiBaseUrl,
+      const appOctokit = this.createOctokit({
         authStrategy: createAppAuth,
         auth: {
           appId: authStrategy.appId,
           privateKey: authStrategy.privateKey,
         },
       });
-      const orgName =
-        type === 'organization'
-          ? this.copilotConfig.organization
-          : this.copilotConfig.enterprise;
-      if (!orgName) {
-        throw new Error(`No ${type} name configured.`);
-      }
-      const { data: installation } =
-        await appOctokit.rest.apps.getOrgInstallation({ org: orgName });
-      octokitConfig.authStrategy = createAppAuth;
-      octokitConfig.auth = {
-        appId: authStrategy.appId,
-        privateKey: authStrategy.privateKey,
-        installationId: installation.id,
-      };
+      const { data } = await appOctokit.rest.apps.getOrgInstallation({
+        org: orgName,
+      });
+      installationId = getInstallationId(data);
     }
-    return new Octokit(octokitConfig);
+
+    return this.createInstallationOctokit(authStrategy, installationId);
   }
 
   private async getEnterpriseOctokit(): Promise<Octokit> {

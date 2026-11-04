@@ -68,6 +68,51 @@ describe('DatabaseHandlerV2', () => {
       await knex?.destroy();
     });
 
+    it('re-ingests incomplete reports from the customization availability date', async () => {
+      await knex('copilot_ingestion_log').insert([
+        buildIngestionLog({
+          day: '2026-10-21',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-22',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-23',
+          status: 'error',
+          components_loaded: '["totals","users","teams"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-24',
+          status: 'success',
+          components_loaded: '["totals","users","teams"]',
+        }),
+      ]);
+
+      const migration = jest.requireActual(
+        '../../migrations/202611040000_reingest_partial_customization_days',
+      ) as { up: (database: Knex) => Promise<void> };
+      await migration.up(knex);
+
+      const logs = await handler.getIngestionLog('organization', 'org-1');
+      expect(logs.map(({ day, status }) => ({ day, status }))).toEqual([
+        { day: '2026-10-21', status: 'partial' },
+        { day: '2026-10-24', status: 'success' },
+      ]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-10-22',
+          '2026-10-23',
+          ['totals', 'users', 'teams'],
+        ),
+      ).resolves.toEqual(['2026-10-22', '2026-10-23']);
+    });
+
     it('getMissingDays returns all days when ingestion log is empty', async () => {
       const result = await handler.getMissingDays(
         'organization',
@@ -118,12 +163,16 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toEqual([]);
     });
 
-    it('getMissingDays does not skip error days', async () => {
+    it('getMissingDays does not skip error days missing required components', async () => {
       await handler.upsertIngestionLog(
         buildIngestionLog({ day: '2026-05-01', status: 'success' }),
       );
       await handler.upsertIngestionLog(
-        buildIngestionLog({ day: '2026-05-02', status: 'error' }),
+        buildIngestionLog({
+          day: '2026-05-02',
+          status: 'error',
+          components_loaded: '[]',
+        }),
       );
 
       const result = await handler.getMissingDays(
@@ -134,6 +183,35 @@ describe('DatabaseHandlerV2', () => {
       );
 
       expect(result).toEqual(['2026-05-02', '2026-05-03']);
+    });
+
+    it('does not retry components already loaded before a later error', async () => {
+      await knex('copilot_ingestion_log').insert(
+        buildIngestionLog({
+          day: '2026-05-02',
+          status: 'error',
+          components_loaded: '["totals"]',
+        }),
+      );
+
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-02',
+          '2026-05-02',
+          ['totals'],
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-02',
+          '2026-05-02',
+          ['totals', 'users'],
+        ),
+      ).resolves.toEqual(['2026-05-02']);
     });
 
     it('getMissingDays only skips success rows with all required components', async () => {
@@ -182,14 +260,18 @@ describe('DatabaseHandlerV2', () => {
 
     it('upsertIngestionLog updates existing row on conflict', async () => {
       await handler.upsertIngestionLog(
-        buildIngestionLog({ day: '2026-05-11', status: 'success' }),
+        buildIngestionLog({
+          day: '2026-05-11',
+          status: 'success',
+          components_loaded: '["totals"]',
+        }),
       );
 
       await handler.upsertIngestionLog(
         buildIngestionLog({
           day: '2026-05-11',
           status: 'error',
-          components_loaded: '["totals"]',
+          components_loaded: '[]',
           error_message: 'download failed',
           source: 'backfill',
         }),
@@ -197,10 +279,28 @@ describe('DatabaseHandlerV2', () => {
 
       const logs = await handler.getIngestionLog('organization', 'org-1');
       expect(logs).toHaveLength(1);
-      expect(logs[0].status).toBe('error');
+      expect(logs[0].status).toBe('success');
       expect(logs[0].components_loaded).toBe('["totals"]');
       expect(logs[0].error_message).toBe('download failed');
       expect(logs[0].source).toBe('backfill');
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-11',
+          '2026-05-11',
+          ['totals'],
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-11',
+          '2026-05-11',
+          ['totals', 'users'],
+        ),
+      ).resolves.toEqual(['2026-05-11']);
     });
 
     it('insertDailyTotals is idempotent with conflict ignore', async () => {
@@ -753,6 +853,43 @@ describe('DatabaseHandlerV2', () => {
 
       expect(rows).toHaveLength(2);
       expect(rows.every(r => r.user_login === 'octocat')).toBe(true);
+    });
+
+    it('reads stored per-user reports for a day', async () => {
+      await handler.insertUserMetrics([buildUserMetric({ day: '2026-05-01' })]);
+      await handler.insertUserMetricsByFeature([
+        buildUserMetricsByFeature({ day: '2026-05-01' }),
+      ]);
+
+      await expect(
+        handler.getUserMetricsForDay('organization', 'org-1', '2026-05-01'),
+      ).resolves.toEqual([
+        expect.objectContaining({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+
+      await expect(
+        handler.getUserBreakdownsForDay('organization', 'org-1', '2026-05-01'),
+      ).resolves.toEqual([
+        expect.objectContaining({
+          user_id: 1,
+          user_login: 'octocat',
+          byFeature: [
+            expect.objectContaining({
+              feature: 'chat_panel',
+              code_generation_activity_count: 4,
+            }),
+          ],
+          byIde: [],
+          byLanguageFeature: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          customizations: [],
+        }),
+      ]);
     });
 
     it('getUserMetrics matches user login case-insensitively', async () => {

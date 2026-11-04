@@ -16,11 +16,139 @@
 
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { DateTime } from 'luxon';
 import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
 import { TaskManagementV2, runBackfill } from './TaskManagementV2';
 
 describe('TaskManagementV2', () => {
+  it('does not retry newly required user and team reports outside their retention window', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const rollingStart = DateTime.utc()
+      .startOf('day')
+      .minus({ years: 1 })
+      .toISODate()!;
+    const reportWindowStart =
+      rollingStart > '2025-10-10' ? rollingStart : '2025-10-10';
+    const backfillFromDate = DateTime.fromISO(reportWindowStart, {
+      zone: 'utc',
+    })
+      .minus({ days: 1 })
+      .toISODate()!;
+    const config = createConfigMock({
+      'copilot.enterprise': 'ent-1',
+      'copilot.backfillFromDate': backfillFromDate,
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+
+    db.getMissingDays.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      1,
+      'enterprise',
+      'ent-1',
+      backfillFromDate,
+      expect.any(String),
+      ['totals'],
+    );
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      2,
+      'enterprise',
+      'ent-1',
+      reportWindowStart,
+      expect.any(String),
+      ['totals', 'users', 'teams'],
+    );
+    expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseUserTeamsLinks).not.toHaveBeenCalled();
+  });
+
+  it('continues loading totals outside the user and team report window', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const rollingStart = DateTime.utc()
+      .startOf('day')
+      .minus({ years: 1 })
+      .toISODate()!;
+    const reportWindowStart =
+      rollingStart > '2025-10-10' ? rollingStart : '2025-10-10';
+    const outsideWindowDay = DateTime.fromISO(reportWindowStart, {
+      zone: 'utc',
+    })
+      .minus({ days: 1 })
+      .toISODate()!;
+    const config = createConfigMock({
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+
+    db.getMissingDays
+      .mockResolvedValueOnce([outsideWindowDay])
+      .mockResolvedValueOnce([]);
+    api.fetchEnterpriseReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/totals.json'],
+    });
+    api.downloadDocument.mockResolvedValueOnce(
+      makeEnterpriseDocument(outsideWindowDay),
+    );
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runBackfill(
+      outsideWindowDay,
+      outsideWindowDay,
+      'enterprise',
+      'ent-1',
+    );
+
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      1,
+      'enterprise',
+      'ent-1',
+      outsideWindowDay,
+      outsideWindowDay,
+      ['totals'],
+    );
+    expect(db.getMissingDays).toHaveBeenNthCalledWith(
+      2,
+      'enterprise',
+      'ent-1',
+      reportWindowStart,
+      outsideWindowDay,
+      ['totals', 'users', 'teams'],
+    );
+    expect(api.fetchEnterpriseReportLinks).toHaveBeenCalledWith(
+      outsideWindowDay,
+    );
+    expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseUserTeamsLinks).not.toHaveBeenCalled();
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        day: outsideWindowDay,
+        status: 'success',
+        components_loaded: '["totals"]',
+      }),
+    );
+  });
+
   it('runAsync with no missing days exits without API calls', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -299,6 +427,245 @@ describe('TaskManagementV2', () => {
     );
   });
 
+  it.each([
+    { status: 'partial', cached: true },
+    { status: 'partial', cached: false },
+    { status: 'error', cached: false },
+  ])('retries $status (breakdowns: $cached)', async ({ status, cached }) => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 5 }).toISODate()!;
+    const config = createConfigMock({
+      'copilot.enterprise': 'ent-1',
+      'copilot.backfillFromDate': day,
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+    const userDocument = makeUserMetricsDocument(day);
+    const storedUserMetric = {
+      day,
+      metrics_type: 'enterprise',
+      entity_id: 'ent-1',
+      user_id: 1,
+      user_login: 'user-1',
+      used_agent: true,
+      used_chat: true,
+      used_cli: false,
+      used_vscode_agent: false,
+      code_acceptance_activity_count: 3,
+      code_generation_activity_count: 4,
+      loc_added_sum: 10,
+      loc_deleted_sum: 2,
+      loc_suggested_to_add_sum: 12,
+      loc_suggested_to_delete_sum: 3,
+      user_initiated_interaction_count: 7,
+      ai_credits_used: 5.5,
+    };
+    const storedBreakdown = {
+      user_id: 1,
+      user_login: 'user-1',
+      byFeature: userDocument[0].totals_by_feature,
+      byIde: userDocument[0].totals_by_ide,
+      byLanguageFeature: [],
+      byModelFeature: [],
+      byLanguageModel: [],
+      customizations: [],
+    };
+
+    db.getMissingDays
+      .mockResolvedValueOnce([day])
+      .mockResolvedValue(cached ? [] : [day]);
+    db.getIngestionLog.mockResolvedValue([
+      {
+        day,
+        metrics_type: 'enterprise',
+        entity_id: 'ent-1',
+        status,
+        components_loaded: '["totals","users"]',
+        source: 'scheduled',
+      },
+    ]);
+    db.getUserMetricsForDay.mockResolvedValue([storedUserMetric]);
+    db.getUserBreakdownsForDay.mockResolvedValue(
+      cached ? [storedBreakdown] : [],
+    );
+    api.fetchEnterpriseUserReportLinks
+      .mockResolvedValueOnce({ download_links: [] })
+      .mockResolvedValue({
+        download_links: ['https://downloads.github.com/users.json'],
+      });
+    api.fetchEnterpriseUserTeamsLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/user-teams.json'],
+    });
+    api.downloadNdjsonDocument.mockImplementation(async (url: string) =>
+      url.endsWith('/users.json') ? userDocument : makeUserTeamsDocument(day),
+    );
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.insertDailyTotals).toHaveBeenCalledTimes(cached ? 1 : 0);
+    expect(db.upsertIngestionLog).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        day,
+        status: cached ? 'success' : 'partial',
+        components_loaded: cached
+          ? '["totals","users","teams"]'
+          : '["totals","users"]',
+      }),
+    );
+    await task.runAsync();
+
+    expect(db.getUserMetricsForDay).toHaveBeenCalledWith(
+      'enterprise',
+      'ent-1',
+      day,
+    );
+    expect(db.getUserBreakdownsForDay).toHaveBeenCalledWith(
+      'enterprise',
+      'ent-1',
+      day,
+    );
+    expect(api.fetchEnterpriseReportLinks).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseUserReportLinks).toHaveBeenCalledTimes(
+      cached ? 0 : 2,
+    );
+    expect(db.insertUserMetricsByFeature).toHaveBeenCalledTimes(cached ? 0 : 1);
+    expect(api.fetchEnterpriseUserTeamsLinks).toHaveBeenCalledWith(day);
+    expect(db.insertDailyTotals).toHaveBeenCalledWith([
+      expect.objectContaining({ day, team_slug: 'platform' }),
+    ]);
+    expect(db.insertByFeature).toHaveBeenCalledWith([
+      expect.objectContaining({
+        day,
+        team_slug: 'platform',
+        feature: 'chat_panel',
+        code_generation_activity_count: 4,
+      }),
+    ]);
+    expect(db.insertByIde).toHaveBeenCalledWith([
+      expect.objectContaining({
+        day,
+        team_slug: 'platform',
+        ide: 'vscode',
+        code_acceptance_activity_count: 3,
+      }),
+    ]);
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        day,
+        status: 'success',
+        components_loaded: '["totals","users","teams"]',
+      }),
+    );
+  });
+
+  it.each([
+    { report: 'empty', userRows: [] },
+    { report: 'invalid', userRows: [{}] },
+  ])(
+    'refetches $report user reports on partial team retries until user rows become available',
+    async ({ userRows }) => {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      const day = DateTime.utc().minus({ days: 5 }).toISODate()!;
+      const config = createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillFromDate': day,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestTeams': true,
+      });
+
+      db.getMissingDays.mockResolvedValue([day]);
+      db.getIngestionLog.mockResolvedValueOnce([]).mockResolvedValue([
+        {
+          day,
+          metrics_type: 'enterprise',
+          entity_id: 'ent-1',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+          source: 'scheduled',
+        },
+      ]);
+      db.getUserMetricsForDay.mockResolvedValue([]);
+      db.getUserBreakdownsForDay.mockResolvedValue([]);
+      api.fetchEnterpriseReportLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/totals.json'],
+      });
+      api.downloadDocument.mockResolvedValue(makeEnterpriseDocument(day));
+      api.fetchEnterpriseUserReportLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/users.json'],
+      });
+      api.fetchEnterpriseUserTeamsLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/user-teams.json'],
+      });
+      const userReports = [userRows, userRows, makeUserMetricsDocument(day)];
+      api.downloadNdjsonDocument.mockImplementation(async (url: string) =>
+        url.endsWith('/users.json')
+          ? userReports.shift() ?? []
+          : makeUserTeamsDocument(day),
+      );
+
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config,
+        logger,
+      });
+
+      for (const attempt of [1, 2]) {
+        await task.runAsync();
+
+        expect(api.fetchEnterpriseUserReportLinks).toHaveBeenCalledTimes(
+          attempt,
+        );
+        expect(db.upsertIngestionLog).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            day,
+            status: 'partial',
+            components_loaded: '["totals","users"]',
+            error_message: 'Missing components: teams',
+          }),
+        );
+        expect(db.insertUserMetrics).toHaveBeenLastCalledWith([]);
+        expect(db.insertDailyTotals).toHaveBeenCalledTimes(1);
+      }
+
+      await task.runAsync();
+
+      expect(api.fetchEnterpriseReportLinks).toHaveBeenCalledTimes(1);
+      expect(api.fetchEnterpriseUserReportLinks).toHaveBeenCalledTimes(3);
+      expect(db.getUserMetricsForDay).toHaveBeenCalledTimes(2);
+      expect(db.insertUserMetrics).toHaveBeenLastCalledWith([
+        expect.objectContaining({ day, user_id: 1 }),
+      ]);
+      expect(db.insertDailyTotals).toHaveBeenLastCalledWith([
+        expect.objectContaining({
+          day,
+          team_slug: 'platform',
+          daily_active_users: 1,
+          code_generation_activity_count: 4,
+        }),
+      ]);
+      expect(db.upsertIngestionLog).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          day,
+          status: 'success',
+          components_loaded: '["totals","users","teams"]',
+        }),
+      );
+      expect(logger.error).not.toHaveBeenCalled();
+    },
+  );
+
   it('persists per-user breakdown rows in addition to team aggregates when ingesting teams', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -458,6 +825,9 @@ it('ingestTotals returns partial status when downloaded document yields 0 parsed
 function createDbMock() {
   return {
     getMissingDays: jest.fn(),
+    getIngestionLog: jest.fn().mockResolvedValue([]),
+    getUserMetricsForDay: jest.fn(),
+    getUserBreakdownsForDay: jest.fn(),
     insertDailyTotals: jest.fn().mockResolvedValue(undefined),
     insertPrMetrics: jest.fn().mockResolvedValue(undefined),
     insertByFeature: jest.fn().mockResolvedValue(undefined),

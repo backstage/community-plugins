@@ -43,6 +43,7 @@ import { DateTime } from 'luxon';
 import { Knex } from 'knex';
 import { migrationsDir } from './DatabaseHandler';
 import { batchInsertInChunks } from '../utils/batchInsert';
+import { UserBreakdownData } from '../utils/reportParser';
 
 type Options = {
   database: DatabaseService;
@@ -56,6 +57,29 @@ type TeamActivityRow = {
   used_agent: boolean | number | null;
   used_chat: boolean | number | null;
 };
+
+export function parseComponentsLoaded(value: unknown): string[] {
+  if (!value) {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    return value.filter((entry): entry is string => typeof entry === 'string');
+  }
+
+  if (typeof value !== 'string') {
+    return [];
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return Array.isArray(parsed)
+      ? parsed.filter((entry): entry is string => typeof entry === 'string')
+      : [];
+  } catch {
+    return [];
+  }
+}
 
 export class DatabaseHandlerV2 {
   static async create(options: Options): Promise<DatabaseHandlerV2> {
@@ -409,10 +433,49 @@ export class DatabaseHandlerV2 {
   }
 
   async upsertIngestionLog(row: V2IngestionLogRow): Promise<void> {
-    await this.db<V2IngestionLogRow>('copilot_ingestion_log')
-      .insert(row)
-      .onConflict(['day', 'metrics_type', 'entity_id'])
-      .merge();
+    await this.db.transaction(async transaction => {
+      const scope = {
+        day: row.day,
+        metrics_type: row.metrics_type,
+        entity_id: row.entity_id,
+      };
+      await transaction<V2IngestionLogRow>('copilot_ingestion_log')
+        .insert(row)
+        .onConflict(['day', 'metrics_type', 'entity_id'])
+        .ignore();
+
+      const existing = await transaction<V2IngestionLogRow>(
+        'copilot_ingestion_log',
+      )
+        .where(scope)
+        .forUpdate()
+        .first();
+      if (!existing) {
+        throw new Error('Ingestion log row could not be initialized.');
+      }
+
+      const componentsLoaded = [
+        ...new Set([
+          ...parseComponentsLoaded(existing.components_loaded),
+          ...parseComponentsLoaded(row.components_loaded),
+        ]),
+      ];
+      const preserveSuccessfulStatus =
+        existing.status === 'success' && row.status !== 'success';
+      let errorMessage = row.error_message;
+      if (errorMessage === undefined) {
+        errorMessage = preserveSuccessfulStatus ? existing.error_message : null;
+      }
+
+      await transaction('copilot_ingestion_log')
+        .where(scope)
+        .update({
+          status: preserveSuccessfulStatus ? 'success' : row.status,
+          components_loaded: JSON.stringify(componentsLoaded),
+          error_message: errorMessage,
+          source: row.source,
+        });
+    });
   }
 
   async getMissingDays(
@@ -422,15 +485,14 @@ export class DatabaseHandlerV2 {
     to: string,
     requiredComponents: string[] = ['totals'],
   ): Promise<string[]> {
-    const successfulRows = await this.db('copilot_ingestion_log')
+    const ingestionRows = await this.db('copilot_ingestion_log')
       .where('metrics_type', metricsType)
       .where('entity_id', entityId)
-      .where('status', 'success')
       .whereBetween('day', [from, to])
       .select('day', 'components_loaded');
 
-    const successfulDays = new Set(
-      successfulRows
+    const completeDays = new Set(
+      ingestionRows
         .filter(row =>
           this.hasRequiredComponents(row.components_loaded, requiredComponents),
         )
@@ -448,7 +510,7 @@ export class DatabaseHandlerV2 {
     const missingDays: string[] = [];
     for (let cursor = start; cursor <= end; cursor = cursor.plus({ days: 1 })) {
       const day = cursor.toISODate();
-      if (day && !successfulDays.has(day)) {
+      if (day && !completeDays.has(day)) {
         missingDays.push(day);
       }
     }
@@ -1217,6 +1279,167 @@ export class DatabaseHandlerV2 {
     };
   }
 
+  async getUserMetricsForDay(
+    metricsType: MetricsScope,
+    entityId: string,
+    day: string,
+  ): Promise<V2UserMetricRow[]> {
+    const rows = await this.db<V2UserMetricRow>('copilot_user_metrics')
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .where('day', day)
+      .orderBy('user_id', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+      user_id: Number(row.user_id),
+    }));
+  }
+
+  async getUserBreakdownsForDay(
+    metricsType: MetricsScope,
+    entityId: string,
+    day: string,
+  ): Promise<UserBreakdownData[]> {
+    const getRows = (tableName: string) =>
+      this.db(tableName)
+        .where('metrics_type', metricsType)
+        .where('entity_id', entityId)
+        .where('day', day)
+        .orderBy('user_id', 'asc')
+        .select('*');
+
+    const [
+      featureRows,
+      ideRows,
+      languageFeatureRows,
+      modelFeatureRows,
+      languageModelRows,
+      customizationRows,
+    ] = await Promise.all([
+      getRows('copilot_user_metrics_by_feature'),
+      getRows('copilot_user_metrics_by_ide'),
+      getRows('copilot_user_metrics_by_language_feature'),
+      getRows('copilot_user_metrics_by_model_feature'),
+      getRows('copilot_user_metrics_by_language_model'),
+      this.db<V2CustomizationMetricRow>('copilot_customization_metrics')
+        .where({
+          metrics_type: metricsType,
+          entity_id: entityId,
+          day,
+          scope: 'user',
+        })
+        .orderBy('user_id', 'asc')
+        .orderBy('category', 'asc')
+        .orderBy('item_name', 'asc')
+        .select('*'),
+    ]);
+
+    const breakdowns = new Map<number, UserBreakdownData>();
+    const getBreakdown = (
+      userIdValue: unknown,
+      userLogin: string,
+    ): UserBreakdownData => {
+      const userId = Number(userIdValue);
+      const existing = breakdowns.get(userId);
+      if (existing) {
+        return existing;
+      }
+
+      const breakdown: UserBreakdownData = {
+        user_id: userId,
+        user_login: userLogin,
+        byFeature: [],
+        byIde: [],
+        byLanguageFeature: [],
+        byModelFeature: [],
+        byLanguageModel: [],
+        customizations: [],
+      };
+      breakdowns.set(userId, breakdown);
+      return breakdown;
+    };
+
+    for (const row of featureRows) {
+      getBreakdown(row.user_id, row.user_login).byFeature.push({
+        feature: row.feature,
+        user_initiated_interaction_count: row.user_initiated_interaction_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of ideRows) {
+      getBreakdown(row.user_id, row.user_login).byIde.push({
+        ide: row.ide,
+        user_initiated_interaction_count: row.user_initiated_interaction_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of languageFeatureRows) {
+      getBreakdown(row.user_id, row.user_login).byLanguageFeature.push({
+        language: row.language,
+        feature: row.feature,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of modelFeatureRows) {
+      getBreakdown(row.user_id, row.user_login).byModelFeature.push({
+        model_id: row.model_id,
+        feature: row.feature,
+        user_initiated_interaction_count: row.user_initiated_interaction_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of languageModelRows) {
+      getBreakdown(row.user_id, row.user_login).byLanguageModel.push({
+        language: row.language,
+        model_id: row.model_id,
+        request_count: row.request_count,
+        code_generation_activity_count: row.code_generation_activity_count,
+        code_acceptance_activity_count: row.code_acceptance_activity_count,
+        loc_added_sum: row.loc_added_sum,
+        loc_deleted_sum: row.loc_deleted_sum,
+        loc_suggested_to_add_sum: row.loc_suggested_to_add_sum,
+        loc_suggested_to_delete_sum: row.loc_suggested_to_delete_sum,
+      });
+    }
+
+    for (const row of customizationRows) {
+      getBreakdown(row.user_id, row.user_login).customizations.push({
+        category: row.category,
+        item_name: row.item_name,
+        interaction_count: row.interaction_count,
+      });
+    }
+
+    return [...breakdowns.values()];
+  }
+
   async hasUserMetrics(
     metricsType: MetricsScope,
     entityId: string,
@@ -1329,34 +1552,9 @@ export class DatabaseHandlerV2 {
     value: unknown,
     requiredComponents: string[],
   ): boolean {
-    const loadedComponents = new Set(this.parseComponentsLoaded(value));
+    const loadedComponents = new Set(parseComponentsLoaded(value));
     return requiredComponents.every(component =>
       loadedComponents.has(component),
     );
-  }
-
-  private parseComponentsLoaded(value: unknown): string[] {
-    if (!value) {
-      return [];
-    }
-
-    if (Array.isArray(value)) {
-      return value.filter(
-        (entry): entry is string => typeof entry === 'string',
-      );
-    }
-
-    if (typeof value !== 'string') {
-      return [];
-    }
-
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed)
-        ? parsed.filter((entry): entry is string => typeof entry === 'string')
-        : [];
-    } catch {
-      return [];
-    }
   }
 }
