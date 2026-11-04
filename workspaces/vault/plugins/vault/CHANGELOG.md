@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault
 
+## 0.26.0
+
+### Minor Changes
+
+- 92e25b3: Backstage version bump to v1.56.2
+
 ## 0.25.0
 
 ### Minor Changes

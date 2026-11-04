@@ -49,6 +49,7 @@ export function AvgChatRequestsChart({ data, from, to }: Props) {
 
   return (
     <LineChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,

@@ -70,6 +70,7 @@ import {
   toLanguageModelRows,
 } from '../adapters';
 import { MyUsageSummary } from './MyUsageSummary';
+import { CustomizationMetrics } from '../../components/V2Dashboard/CustomizationMetrics';
 
 function ChartCard({
   title,
@@ -269,6 +270,7 @@ export function MyMetricsContent() {
             <TabList>
               <Tab id="copilot-usage">Copilot Usage</Tab>
               <Tab id="code-generation">Code Generation</Tab>
+              <Tab id="customizations">Customizations</Tab>
               <Tab id="consumption">Consumption</Tab>
             </TabList>
 
@@ -352,6 +354,21 @@ export function MyMetricsContent() {
                     </ChartCard>
                   </Grid.Item>
                 </Grid.Root>
+              </Flex>
+            </TabPanel>
+
+            <TabPanel id="customizations">
+              <Flex
+                direction="column"
+                style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
+              >
+                <Text variant="body-small" color="secondary">
+                  Your use of named Copilot customizations.
+                </Text>
+                <CustomizationMetrics
+                  metrics={data.customizationMetrics}
+                  summaries={data.customizationSummaries}
+                />
               </Flex>
             </TabPanel>
 

@@ -39,14 +39,38 @@ export function useReadme(entity: Entity): {
       );
     }
 
+    let path = readmePath;
+    let version: string | undefined;
+
+    if (path?.includes('&version=')) {
+      const versionSeparator = '&version=';
+      const versionIndex = path.indexOf(versionSeparator);
+
+      version = path.slice(versionIndex + versionSeparator.length);
+      path = path.slice(0, versionIndex);
+    }
+
+    const sourceLocation =
+      entity.metadata.annotations?.['backstage.io/source-location'];
+
+    if (sourceLocation && !version) {
+      const versionMatch = sourceLocation.match(/[?&]version=([^&]+)/);
+
+      if (versionMatch) {
+        version = decodeURIComponent(versionMatch[1]);
+      }
+    }
+
     const entityRef = stringifyEntityRef(entity);
+
     return api.getReadme({
       project,
       repo: repo as string,
       entityRef,
       host,
       org,
-      path: readmePath,
+      path,
+      version,
     });
   }, [api]);
 

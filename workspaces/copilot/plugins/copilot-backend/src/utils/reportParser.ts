@@ -16,6 +16,8 @@
 
 import {
   V2DailyTotal,
+  V2CustomizationMetricRow,
+  V2CustomizationSummaryRow,
   V2MetricsByCliRow,
   V2MetricsByFeatureRow,
   V2MetricsByIdeRow,
@@ -41,6 +43,8 @@ export interface ParsedEnterpriseDocument {
   byLanguageModel: V2MetricsByLanguageModelRow[];
   byCli: V2MetricsByCliRow[];
   byVscodeAgent: V2MetricsByVscodeAgentRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 /**
@@ -101,11 +105,18 @@ export interface UserBreakdownData {
     loc_suggested_to_add_sum: number;
     loc_suggested_to_delete_sum: number;
   }>;
+  customizations: Array<{
+    category: string;
+    item_name: string;
+    interaction_count: number;
+  }>;
 }
 
 export interface ParsedUserDocument {
   userMetrics: V2UserMetricRow[];
   userBreakdowns: UserBreakdownData[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 function logWarn(message: string): void {
@@ -123,6 +134,122 @@ function toNumber(value: unknown): number {
 
 function toStringValue(value: unknown): string | null {
   return typeof value === 'string' ? value : null;
+}
+
+type CustomizationContext = {
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  scope: 'aggregate' | 'user';
+  user_id?: number;
+  user_login?: string;
+};
+
+const TYPED_BREAKDOWN_CATEGORIES = new Set([
+  'feature',
+  'ide',
+  'language_feature',
+  'model_feature',
+  'language_model',
+]);
+
+function isCustomizationCategory(category: string): boolean {
+  return /^[a-z][a-z0-9_]{0,63}$/.test(category);
+}
+
+/**
+ * Parses GitHub's extensible named-customization arrays. A category is
+ * recognized only when entries follow the `totals_by_<category>` convention
+ * and provide both the matching name field and interaction_count. This keeps
+ * the generic path separate from existing typed report dimensions.
+ */
+function parseCustomizationData(
+  record: Record<string, unknown>,
+  context: CustomizationContext,
+): {
+  metrics: V2CustomizationMetricRow[];
+  summaries: V2CustomizationSummaryRow[];
+} {
+  const metrics: V2CustomizationMetricRow[] = [];
+  const summaries: V2CustomizationSummaryRow[] = [];
+  const categories = new Set<string>();
+
+  for (const [field, value] of Object.entries(record)) {
+    if (!field.startsWith('totals_by_') || !Array.isArray(value)) {
+      continue;
+    }
+
+    const category = field.slice('totals_by_'.length);
+    if (
+      !isCustomizationCategory(category) ||
+      TYPED_BREAKDOWN_CATEGORIES.has(category)
+    ) {
+      continue;
+    }
+
+    for (const row of value) {
+      if (!isRecord(row)) {
+        continue;
+      }
+
+      const itemName = toStringValue(row[category])?.trim();
+      const interactionCount = row.interaction_count;
+      if (
+        !itemName ||
+        itemName.length > 128 ||
+        typeof interactionCount !== 'number' ||
+        !Number.isFinite(interactionCount)
+      ) {
+        continue;
+      }
+
+      categories.add(category);
+      metrics.push({
+        day: context.day,
+        metrics_type: context.metrics_type,
+        entity_id: context.entity_id,
+        scope: context.scope,
+        team_slug: '',
+        user_id: context.user_id ?? 0,
+        user_login: context.user_login ?? '',
+        category,
+        item_name: itemName,
+        interaction_count: interactionCount,
+      });
+    }
+  }
+
+  for (const [field, value] of Object.entries(record)) {
+    const match = /^distinct_([a-z][a-z0-9_]*)_use_count$/.exec(field);
+    if (
+      !match ||
+      typeof value !== 'number' ||
+      !Number.isFinite(value) ||
+      !isCustomizationCategory(match[1])
+    ) {
+      continue;
+    }
+
+    // Keep summary and item data aligned. An absent item list means GitHub
+    // did not make that customization category available for this record.
+    if (!categories.has(match[1])) {
+      continue;
+    }
+
+    summaries.push({
+      day: context.day,
+      metrics_type: context.metrics_type,
+      entity_id: context.entity_id,
+      scope: context.scope,
+      team_slug: '',
+      user_id: context.user_id ?? 0,
+      user_login: context.user_login ?? '',
+      category: match[1],
+      distinct_item_count: value,
+    });
+  }
+
+  return { metrics, summaries };
 }
 
 /**
@@ -146,6 +273,8 @@ export function parseEnterpriseDocument(
     byLanguageModel: [],
     byCli: [],
     byVscodeAgent: [],
+    customizationMetrics: [],
+    customizationSummaries: [],
   };
 
   // Normalize: the GitHub report API (2026-03-10) downloads a single flat
@@ -225,6 +354,15 @@ export function parseEnterpriseDocument(
           dayTotal.user_initiated_interaction_count,
         ),
       });
+
+      const customizationData = parseCustomizationData(dayTotal, {
+        day,
+        metrics_type: metricsType,
+        entity_id: entityId,
+        scope: 'aggregate',
+      });
+      parsed.customizationMetrics.push(...customizationData.metrics);
+      parsed.customizationSummaries.push(...customizationData.summaries);
 
       if (isRecord(dayTotal.pull_requests)) {
         parsed.prMetrics.push({
@@ -511,6 +649,8 @@ export function parseOrganizationDocument(
     byLanguageModel: [],
     byCli: [],
     byVscodeAgent: [],
+    customizationMetrics: [],
+    customizationSummaries: [],
   };
 
   // Normalize: the API downloads a single flat object per file, but accept arrays too.
@@ -598,6 +738,15 @@ export function parseOrganizationDocument(
         orgDoc.user_initiated_interaction_count,
       ),
     });
+
+    const customizationData = parseCustomizationData(orgDoc, {
+      day,
+      metrics_type: metricsType,
+      entity_id: entityId,
+      scope: 'aggregate',
+    });
+    parsed.customizationMetrics.push(...customizationData.metrics);
+    parsed.customizationSummaries.push(...customizationData.summaries);
 
     // No pull_requests field at the org level.
 
@@ -829,11 +978,18 @@ export function parseUserDocument(
     logWarn(
       'Expected user metrics document array, received non-array payload.',
     );
-    return { userMetrics: [], userBreakdowns: [] };
+    return {
+      userMetrics: [],
+      userBreakdowns: [],
+      customizationMetrics: [],
+      customizationSummaries: [],
+    };
   }
 
   const userMetrics: V2UserMetricRow[] = [];
   const userBreakdowns: UserBreakdownData[] = [];
+  const customizationMetrics: V2CustomizationMetricRow[] = [];
+  const customizationSummaries: V2CustomizationSummaryRow[] = [];
 
   for (const metric of doc as V2UserMetric[]) {
     if (!isRecord(metric)) {
@@ -876,6 +1032,17 @@ export function parseUserDocument(
       ai_credits_used: toNumber(metric.ai_credits_used),
     });
 
+    const customizationData = parseCustomizationData(metric, {
+      day,
+      metrics_type: metricsType,
+      entity_id: entityId,
+      scope: 'user',
+      user_id: userId,
+      user_login: userLogin,
+    });
+    customizationMetrics.push(...customizationData.metrics);
+    customizationSummaries.push(...customizationData.summaries);
+
     const breakdown: UserBreakdownData = {
       user_id: userId,
       user_login: userLogin,
@@ -884,6 +1051,11 @@ export function parseUserDocument(
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
+      customizations: customizationData.metrics.map(row => ({
+        category: row.category,
+        item_name: row.item_name,
+        interaction_count: row.interaction_count,
+      })),
     };
 
     if (Array.isArray(metric.totals_by_feature)) {
@@ -1024,7 +1196,12 @@ export function parseUserDocument(
     userBreakdowns.push(breakdown);
   }
 
-  return { userMetrics, userBreakdowns };
+  return {
+    userMetrics,
+    userBreakdowns,
+    customizationMetrics,
+    customizationSummaries,
+  };
 }
 
 /**

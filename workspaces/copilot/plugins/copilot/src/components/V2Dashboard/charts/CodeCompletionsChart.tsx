@@ -76,6 +76,7 @@ export function CodeCompletionsChart({ data, from, to }: Props) {
 
   return (
     <LineChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,

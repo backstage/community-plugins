@@ -62,6 +62,7 @@ export function IDEActiveUsersChart({ data, variant, from, to }: Props) {
 
   return (
     <LineChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,

@@ -36,6 +36,7 @@ import {
 } from './types';
 
 const lastSeenKey = 'user_last_seen_date';
+const dismissedIdsKey = 'dismissed_announcement_ids';
 
 /**
  * Options for the AnnouncementsClient
@@ -235,5 +236,21 @@ export class AnnouncementsClient implements AnnouncementsApi {
 
   markLastSeenDate(date: DateTime): void {
     this.webStorage.set<string>(lastSeenKey, date.toISO()!);
+  }
+
+  dismissAnnouncement(id: string): void {
+    const dismissed = this.getDismissedIds();
+    if (!dismissed.includes(id)) {
+      // Create a new array since WebStorage returns frozen objects
+      this.webStorage.set<string[]>(dismissedIdsKey, [...dismissed, id]);
+    }
+  }
+
+  isAnnouncementDismissed(id: string): boolean {
+    return this.getDismissedIds().includes(id);
+  }
+
+  private getDismissedIds(): string[] {
+    return this.webStorage.get<string[]>(dismissedIdsKey) ?? [];
   }
 }

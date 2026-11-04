@@ -27,10 +27,12 @@ import {
   InputError,
   NotAllowedError,
   NotFoundError,
+  ServiceUnavailableError,
 } from '@backstage/errors';
 import {
   AuthorizeResult,
   BasicPermission,
+  MetadataResponse,
   PolicyDecision,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
@@ -100,6 +102,41 @@ function validateNamedPermissionMapping(
         `e.g. {name: "catalog.entity.read", action: "read"}. ` +
         `Received plain action: '${actionOnlyEntry}'. ` +
         `Action-only (broad) format is supported in YAML conditional policies file and provider extension point.`,
+    );
+  }
+}
+
+function validateRulesAreDeclared(
+  conditions: RoleConditionalPolicyDecision['conditions'],
+  pluginId: string,
+  declaredRules: MetadataResponse['rules'],
+): void {
+  if ('not' in conditions) {
+    validateRulesAreDeclared(conditions.not, pluginId, declaredRules);
+    return;
+  }
+  if ('allOf' in conditions) {
+    for (const condition of conditions.allOf) {
+      validateRulesAreDeclared(condition, pluginId, declaredRules);
+    }
+    return;
+  }
+  if ('anyOf' in conditions) {
+    for (const condition of conditions.anyOf) {
+      validateRulesAreDeclared(condition, pluginId, declaredRules);
+    }
+    return;
+  }
+
+  const { rule, resourceType } = conditions;
+  if (
+    !declaredRules.some(
+      declared =>
+        declared.name === rule && declared.resourceType === resourceType,
+    )
+  ) {
+    throw new InputError(
+      `Rule '${rule}' with resource type '${resourceType}' is not declared by plugin '${pluginId}'`,
     );
   }
 }
@@ -881,6 +918,7 @@ export class PoliciesServer {
           this.conditionValidationLimits,
         );
         validateNamedPermissionMapping(roleConditionPolicy.permissionMapping);
+        await this.validateConditionRules(roleConditionPolicy);
 
         const id =
           await this.conditionalStorage.createCondition(roleConditionPolicy);
@@ -1019,6 +1057,7 @@ export class PoliciesServer {
           this.conditionValidationLimits,
         );
         validateNamedPermissionMapping(roleConditionPolicy.permissionMapping);
+        await this.validateConditionRules(roleConditionPolicy);
 
         await this.conditionalStorage.updateCondition(id, roleConditionPolicy);
 
@@ -1069,6 +1108,31 @@ export class PoliciesServer {
     router.use(setAuditorError());
 
     return router;
+  }
+
+  // Not part of validateRoleCondition: the YAML watcher and providers share
+  // it and must not depend on other plugins being reachable at startup.
+  private async validateConditionRules(
+    roleConditionPolicy: RoleConditionalPolicyDecision,
+  ): Promise<void> {
+    const { auth } = this.options;
+    const { pluginId, conditions } = roleConditionPolicy;
+
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await auth.getOwnServiceCredentials(),
+      targetPluginId: pluginId,
+    });
+    const metadata = await this.pluginPermMetaData.getMetadataByPluginId(
+      pluginId,
+      token,
+    );
+    if (!metadata) {
+      throw new ServiceUnavailableError( // 503
+        `Unable to verify the condition rules: permission metadata of plugin '${pluginId}' could not be retrieved`,
+      );
+    }
+
+    validateRulesAreDeclared(conditions, pluginId, metadata.rules);
   }
 
   getEntityReference(request: Request, role?: boolean): string {

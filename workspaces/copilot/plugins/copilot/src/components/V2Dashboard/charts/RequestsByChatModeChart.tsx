@@ -66,6 +66,7 @@ export function RequestsByChatModeChart({ data, from, to }: Readonly<Props>) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,

@@ -222,6 +222,9 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     if (opts.path) {
       queryString.append('path', opts.path);
     }
+    if (opts.version) {
+      queryString.append('version', opts.version);
+    }
     queryString.append('entityRef', opts.entityRef);
 
     return await this.get(

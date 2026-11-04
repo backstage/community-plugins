@@ -1,5 +1,34 @@
 # @backstage-community/plugin-copilot
 
+## 1.6.0
+
+### Minor Changes
+
+- 7e226cd: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7e226cd]
+  - @backstage-community/plugin-copilot-common@1.5.0
+
+## 1.5.0
+
+### Minor Changes
+
+- e8a706e: Show named GitHub Copilot customization usage for skills, agents, MCP servers, commands, plugins, and future compatible categories.
+
+### Patch Changes
+
+- Updated dependencies [e8a706e]
+  - @backstage-community/plugin-copilot-common@1.4.0
+
+## 1.4.1
+
+### Patch Changes
+
+- e29f602: Moved `@mui/x-charts` back from v9 to v8, the newest major that still supports MUI v5. Version 9 requires `@mui/material` v7.3 or later, while this plugin and Backstage apps use MUI v5, so the dependency is now kept below v9. The charts keep the keyboard navigation and the look they had on v9.
+- 76b57ea: Updated dependency `react-router` to `^7.18.0`.
+
 ## 1.4.0
 
 ### Minor Changes

@@ -225,6 +225,8 @@ export class TaskManagementV2 {
       await db.insertByLanguageModel(parsed.byLanguageModel);
       await db.insertByCli(parsed.byCli);
       await db.insertByVscodeAgent(parsed.byVscodeAgent);
+      await db.insertCustomizationMetrics(parsed.customizationMetrics);
+      await db.insertCustomizationSummaries(parsed.customizationSummaries);
 
       totalRowsParsed += parsed.dailyTotals.length;
     }
@@ -270,6 +272,8 @@ export class TaskManagementV2 {
       const parsed = parseUserDocument(rows, metricsType, entityId);
       userMetrics.push(...parsed.userMetrics);
       userBreakdowns.push(...parsed.userBreakdowns);
+      await db.insertCustomizationMetrics(parsed.customizationMetrics);
+      await db.insertCustomizationSummaries(parsed.customizationSummaries);
     }
 
     await db.insertUserMetrics(userMetrics);
@@ -339,6 +343,7 @@ export class TaskManagementV2 {
     await db.insertByLanguageFeature(teamAggregates.byLanguageFeature);
     await db.insertByModelFeature(teamAggregates.byModelFeature);
     await db.insertByLanguageModel(teamAggregates.byLanguageModel);
+    await db.insertCustomizationMetrics(teamAggregates.customizationMetrics);
 
     return true;
   }

@@ -1,9 +1,12 @@
 import { useMemo } from 'react';
 
+import { DateTime } from 'luxon';
+
 import { Link, Table, type TableColumn } from '@backstage/core-components';
 import { Flex, Tag, TagGroup } from '@backstage/ui';
 
 import { formatByteSize } from '../../utils/format-byte-size/format-byte-size';
+import { formatDate } from '../../utils/format-date/format-date';
 import { useTranslation } from '../../hooks/useTranslation';
 
 import type { AssetHash } from '../../types';
@@ -107,6 +110,23 @@ export const ArtifactTable = ({
         title: t('table.columns.modified'),
         field: 'lastModified',
         type: 'string',
+        defaultSort: 'desc',
+        render: rowData => formatDate(rowData.lastModified),
+        customFilterAndSearch: (term, rowData) =>
+          formatDate(rowData.lastModified)
+            .toLowerCase()
+            .includes(term.toLowerCase()),
+        customSort: (a, b) => {
+          if (!a.lastModified) {
+            return b.lastModified ? -1 : 0;
+          }
+          if (!b.lastModified) {
+            return 1;
+          }
+          const aMillis = DateTime.fromISO(a.lastModified).toMillis();
+          const bMillis = DateTime.fromISO(b.lastModified).toMillis();
+          return aMillis - bMillis;
+        },
       },
       {
         title: t('table.columns.size'),
@@ -120,7 +140,13 @@ export const ArtifactTable = ({
   return (
     <Table
       title={t('table.title', { title } as Record<string, string>)}
-      options={{ paging: true, padding: 'dense', draggable: false }}
+      options={{
+        paging: true,
+        padding: 'dense',
+        draggable: false,
+        keepSortDirectionOnColumnSwitch: false,
+        thirdSortClick: false,
+      }}
       data={artifacts}
       columns={columns}
       localization={{

@@ -59,8 +59,24 @@ New V2 data is stored in new plugin tables that match the GitHub report structur
 - `copilot_user_metrics`
 - `copilot_user_teams`
 - `copilot_ingestion_log`
+- `copilot_customization_metrics`
+- `copilot_customization_summaries`
 
 These tables are separate from the older schema used by the legacy dashboard. During migration, the plugin keeps legacy read endpoints available under `/api/copilot/legacy/*` while V2 backfill is validated.
+
+### Customization Metrics
+
+GitHub reports named customization usage for skills, custom agents, MCP
+servers, slash commands, plugins, and compatible future categories. The V2
+dashboard and the individual metrics view render these categories dynamically
+in a **Customizations** tab. Names can be sensitive organizational metadata;
+review dashboard access before exposing them broadly.
+
+The upgrade migration schedules re-ingestion of successful days from
+2026-10-22 onward, the first day GitHub reports configured names. Earlier
+history can still contain `other` or `custom` buckets. Team and individual
+views need `copilot.ingestTeams: true`; team views intentionally do not show
+distinct-item counts because GitHub caps the per-user named item lists.
 
 ### AI Credits Consumption (Team-level)
 

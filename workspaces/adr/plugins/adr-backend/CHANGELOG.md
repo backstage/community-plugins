@@ -1,5 +1,17 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.27.0
+
+### Minor Changes
+
+- 919cb7d: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [919cb7d]
+  - @backstage-community/plugin-adr-common@0.26.0
+  - @backstage-community/search-backend-module-adr@0.24.0
+
 ## 0.26.1
 
 ### Patch Changes

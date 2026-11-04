@@ -1809,7 +1809,7 @@ __metadata:
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"
     "@patternfly/react-tokens": "npm:^6.0.0"
-    "@patternfly/react-topology": "npm:6.6.0"
+    "@patternfly/react-topology": "npm:6.7.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -1843,7 +1843,7 @@ __metadata:
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"
     "@patternfly/react-tokens": "npm:^6.0.0"
-    "@patternfly/react-topology": "npm:6.6.0"
+    "@patternfly/react-topology": "npm:6.7.0"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -1857,7 +1857,7 @@ __metadata:
     axios: "npm:^1.7.4"
     canvas: "npm:^3.0.0"
     cross-fetch: "npm:4.1.0"
-    cytoscape: "npm:3.34.3"
+    cytoscape: "npm:3.34.4"
     d3-format: "npm:^3.1.0"
     d3-transition: "npm:^3.0.1"
     deep-freeze: "npm:0.0.1"
@@ -8194,9 +8194,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-topology@npm:6.6.0":
-  version: 6.6.0
-  resolution: "@patternfly/react-topology@npm:6.6.0"
+"@patternfly/react-topology@npm:6.7.0":
+  version: 6.7.0
+  resolution: "@patternfly/react-topology@npm:6.7.0"
   dependencies:
     "@dagrejs/dagre": "npm:1.1.2"
     "@patternfly/react-core": "npm:^6.5.1"
@@ -8214,7 +8214,7 @@ __metadata:
   peerDependencies:
     react: ^17 || ^18 || ^19
     react-dom: ^17 || ^18 || ^19
-  checksum: 10/efd2f74c7e58194ec87c0219766bbd95f959b7b8ff20ddb189904b5105d282bc636877309d88cfe2d8ecb97b5871aff80b9ed0359ae80d1b0f6ea31811b86dd5
+  checksum: 10/e432c9b964fc8cee7826127fe9c1dc0bcdfb8e14ff501840fe8461d91a96b7800c99a6a52b2a30ce04c28821ea449f20e1413a7eeccd5439ed0950aadd643339
   languageName: node
   linkType: hard
 
@@ -16593,10 +16593,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cytoscape@npm:3.34.3":
-  version: 3.34.3
-  resolution: "cytoscape@npm:3.34.3"
-  checksum: 10/37ae352e3273364fb907c2a7cbffd29f52b05e08bfc26c576c99dae1b962e5cf7c079750d94d4e8f01b8b904d9b7cfb056404eaa09e76da0095a067f6fb633d6
+"cytoscape@npm:3.34.4":
+  version: 3.34.4
+  resolution: "cytoscape@npm:3.34.4"
+  checksum: 10/62f13161e58692951f0e25b9038d056936dd0f35258f3d618d79f80f443bf97a4f7f03b1c20bb39b1146d527b143b4292d79fd6bb0d46200953c9f0b0694b331
   languageName: node
   linkType: hard
 

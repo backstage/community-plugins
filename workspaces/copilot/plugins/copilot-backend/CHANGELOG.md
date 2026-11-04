@@ -1,5 +1,27 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.5.0
+
+### Minor Changes
+
+- 7e226cd: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7e226cd]
+  - @backstage-community/plugin-copilot-common@1.5.0
+
+## 1.4.0
+
+### Minor Changes
+
+- e8a706e: Show named GitHub Copilot customization usage for skills, agents, MCP servers, commands, plugins, and future compatible categories.
+
+### Patch Changes
+
+- Updated dependencies [e8a706e]
+  - @backstage-community/plugin-copilot-common@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes

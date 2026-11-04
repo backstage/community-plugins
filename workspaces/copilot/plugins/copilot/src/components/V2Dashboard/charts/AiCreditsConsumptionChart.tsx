@@ -47,6 +47,7 @@ export function AiCreditsConsumptionChart({ data, from, to }: Props) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[
         {
           data: days,

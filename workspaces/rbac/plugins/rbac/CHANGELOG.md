@@ -1,5 +1,13 @@
 # @backstage-community/plugin-rbac
 
+## 2.3.7
+
+### Patch Changes
+
+- 1095c45: Updated dependency `qs` to `6.16.1`.
+  Updated dependency `@playwright/test` to `1.64.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.8`.
+
 ## 2.3.6
 
 ### Patch Changes

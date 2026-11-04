@@ -15,7 +15,7 @@
  */
 
 import { GraphiQLPage } from './GraphiQLPage';
-import { act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { GraphQLBrowseApi, graphQlBrowseApiRef } from '../../lib/api';
 
@@ -60,7 +60,12 @@ describe('GraphiQLPage', () => {
     );
 
     rendered.getByText('GraphiQL');
-    rendered.getByText('Failed to load GraphQL endpoints, Error: NOPE');
+    expect(
+      await screen.findByRole('heading', {
+        level: 4,
+        name: 'Failed to load GraphQL endpoints, Error: NOPE',
+      }),
+    ).toBeVisible();
   });
 
   it('should show GraphiQLBrowser', async () => {

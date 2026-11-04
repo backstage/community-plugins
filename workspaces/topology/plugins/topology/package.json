@@ -114,7 +114,7 @@
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18",
     "cross-fetch": "4.1.0",
-    "glob": "^13.0.0",
+    "glob": "^14.0.0",
     "react": "^18.3.1",
     "react-aria-components": "~1.21.0",
     "react-dom": "^18.3.1",

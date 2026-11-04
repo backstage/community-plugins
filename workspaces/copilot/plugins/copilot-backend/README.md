@@ -169,8 +169,26 @@ New V2 data is stored in plugin-owned tables aligned with the new GitHub report 
 - `copilot_user_metrics`
 - `copilot_user_teams`
 - `copilot_ingestion_log`
+- `copilot_customization_metrics`
+- `copilot_customization_summaries`
 
 The older schema and legacy read paths remain available during migration, but new data is written to the V2 tables.
+
+### Named Customization Metrics
+
+The V2 dashboard includes a **Customizations** tab for named Copilot skills,
+custom agents, MCP servers, slash commands, plugins, and compatible future
+categories returned by GitHub. The backend discovers compatible
+`totals_by_*` report arrays dynamically, so newly added categories do not
+need a plugin database migration.
+
+Named values are shown as GitHub reports them. GitHub may retain `other` or
+`custom` buckets for unavailable names, and it only provides configured names
+for reports processed from 2026-10-22 onward. Review customization names
+before granting dashboard access outside the organization. Team and individual
+customization views require `copilot.ingestTeams: true`; team views omit
+distinct-item counts because capped per-user report entries cannot be combined
+into an exact team-wide distinct count.
 
 ### Historical Backfill
 
@@ -179,6 +197,10 @@ The V2 task runner performs gap-fill ingestion for missing days from `copilot.ba
 GitHub's report API currently exposes historical data back to `2025-10-10`, which means existing users can backfill V2 data covering October 2025 onward.
 
 Use `copilot.backfillDelayMs` to slow down day-by-day requests if you encounter rate pressure during historical ingestion.
+
+When upgrading to a version with customization metrics, the database migration
+automatically re-ingests successful report days from 2026-10-22 onward so
+named values are populated without a manual backfill.
 
 ### Manual Backfill Endpoints
 

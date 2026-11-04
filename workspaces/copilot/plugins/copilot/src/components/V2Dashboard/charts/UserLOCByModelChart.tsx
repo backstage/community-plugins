@@ -56,6 +56,7 @@ export function UserLOCByModelChart({ data }: Readonly<Props>) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[
         { data: models, scaleType: 'band', tickLabelStyle: { fontSize: 11 } },
       ]}
