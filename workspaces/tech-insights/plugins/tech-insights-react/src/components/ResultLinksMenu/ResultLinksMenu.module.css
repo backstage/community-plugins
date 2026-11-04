@@ -1,0 +1,8 @@
+@layer components {
+  /* Mirrors the inner content styles of the BUI Menu, which cannot be used here */
+  .menu {
+    min-width: 150px;
+    outline: none;
+    padding-block: var(--bui-space-1);
+  }
+}
