@@ -1278,6 +1278,9 @@ describe('GithubClientV2', () => {
           },
         );
       }
+      if (url.pathname === '/user/memberships/orgs/pat-org') {
+        return githubResponse({ state: 'active' });
+      }
       throw new Error(
         `Unexpected GitHub request: ${url.pathname}${url.search}`,
       );
@@ -1286,6 +1289,7 @@ describe('GithubClientV2', () => {
     const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
     const result = await client.fetchCostCenterMemberships();
 
+    expect(result.complete).toBe(true);
     expect(result.members).toEqual(
       new Map([[11, { costCenterId: 'cc-pat', login: 'octocat-user-10' }]]),
     );
@@ -1300,6 +1304,64 @@ describe('GithubClientV2', () => {
     expect(MockedOctokit).toHaveBeenCalledTimes(1);
     expect(MockedOctokit.mock.calls[0][0].auth).toBe('enterprise-pat');
   });
+
+  it.each(['pending', 'missing', 403, 404, 500])(
+    'rejects a public PAT roster when active organization membership cannot be verified (%s)',
+    async membershipState => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: 'enterprise-pat',
+      });
+      mockRequest.mockImplementation(async (route: string) => {
+        const url = parseMockRequestUrl(route);
+        if (
+          url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers'
+        ) {
+          return githubResponse({
+            costCenters: [{ id: 'cc-org', name: 'Org' }],
+          });
+        }
+        if (
+          url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers/cc-org'
+        ) {
+          return githubResponse({
+            id: 'cc-org',
+            name: 'Org',
+            resources: [{ type: 'Org', name: 'public-only-org' }],
+            has_next_page: false,
+          });
+        }
+        if (url.pathname === '/orgs/public-only-org/members') {
+          return githubResponse(
+            [{ id: 88, login: 'octocat-user-7' }],
+            undefined,
+            { 'x-oauth-scopes': 'read:org' },
+          );
+        }
+        if (url.pathname === '/user/memberships/orgs/public-only-org') {
+          if (typeof membershipState === 'number') {
+            throw Object.assign(new Error('Membership lookup failed'), {
+              status: membershipState,
+            });
+          }
+          return githubResponse(
+            membershipState === 'missing' ? {} : { state: membershipState },
+          );
+        }
+        throw new Error(`Unexpected GitHub request: ${url.pathname}`);
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      const result = await client.fetchCostCenterMemberships();
+
+      expect(result.complete).toBe(false);
+      expect(result.members).toEqual(new Map());
+      expect(result.warnings).toHaveLength(1);
+      expect(result.warnings[0]).toContain('public-only-org');
+    },
+  );
 
   it('skips non-empty PAT org rosters when the classic token lacks an org scope', async () => {
     const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');

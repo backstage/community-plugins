@@ -867,6 +867,20 @@ export class GithubClientV2 {
                   'the classic GitHub PAT is missing one of the "read:org", "write:org", or "admin:org" scopes required to read a complete roster',
               };
             }
+            const membershipUrl = buildApiUrl(
+              this.copilotConfig.apiBaseUrl,
+              `/user/memberships/orgs/${encodeURIComponent(resource.name)}`,
+            );
+            const membership = await orgClient.octokit.request(
+              `GET ${membershipUrl}`,
+            );
+            if (membership.data?.state !== 'active') {
+              return {
+                members: [],
+                skipReason:
+                  'the classic GitHub PAT owner does not have active organization membership required to read a complete roster',
+              };
+            }
           }
 
           return { members: roster.members };
