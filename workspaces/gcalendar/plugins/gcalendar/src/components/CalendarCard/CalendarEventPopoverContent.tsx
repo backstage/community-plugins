@@ -105,11 +105,11 @@ export const CalendarEventPopoverContent = ({
             <Text as="p" variant="body-small">
               Attendees
             </Text>
-            <div className={styles.attendees}>
+            <Box className={styles.attendees}>
               {sortBy(event.attendees || [], 'email').map(user => (
                 <AttendeeChip key={user.email} user={user} />
               ))}
-            </div>
+            </Box>
           </Box>
         </>
       )}
