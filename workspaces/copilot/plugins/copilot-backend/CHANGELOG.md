@@ -1,5 +1,21 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.6.0
+
+### Minor Changes
+
+- 55359b1: Add opt-in cost-center filtering and a separate **No cost center** dashboard scope. Incomplete GitHub membership snapshots are not applied, preventing partial rosters from skewing cost-center aggregates. Organization team data requires the GitHub App's Copilot metrics: read permission; 403/404 user-team reports are logged as errors and skipped. Backfills preserve existing totals and limit newly required user, team, and cost-center data to GitHub's rolling report window.
+
+### Patch Changes
+
+- d2e695b: Preserve successfully loaded Copilot ingestion components when a later report fails.
+- d2e695b: Resolve GitHub App installations for enterprise accounts, with an organization-level fallback.
+- d2e695b: Send the configured GitHub API version with every request.
+- d2e695b: Skip newly requested Copilot user and team reports outside GitHub's retention window while continuing to backfill available totals.
+- d2e695b: Reuse stored user metrics when completing team ingestion for a partially loaded day, refetching legacy reports when their breakdown data was not stored. Retries also re-ingest recent incomplete reports so available customization data is captured.
+- Updated dependencies [55359b1]
+  - @backstage-community/plugin-copilot-common@1.6.0
+
 ## 1.5.0
 
 ### Minor Changes

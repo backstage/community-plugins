@@ -1,5 +1,17 @@
 # @backstage-community/plugin-copilot
 
+## 1.8.0
+
+### Minor Changes
+
+- 55359b1: Add opt-in cost-center filtering and a separate **No cost center** dashboard scope. Incomplete GitHub membership snapshots are not applied, preventing partial rosters from skewing cost-center aggregates. Organization team data requires the GitHub App's Copilot metrics: read permission; 403/404 user-team reports are logged as errors and skipped. Backfills preserve existing totals and limit newly required user, team, and cost-center data to GitHub's rolling report window.
+
+### Patch Changes
+
+- d2e695b: Clear team selections when the dashboard scope changes and hide outdated options while teams load.
+- Updated dependencies [55359b1]
+  - @backstage-community/plugin-copilot-common@1.6.0
+
 ## 1.7.0
 
 ### Minor Changes
