@@ -71,6 +71,11 @@ import {
   EntityTechInsightsScorecardCard,
   EntityTechInsightsScorecardContent,
 } from '@backstage-community/plugin-tech-insights';
+import {
+  EntityMaturityScorecardContent,
+  EntityMaturitySummaryCard,
+  EntityMaturitySummaryContent,
+} from '@backstage-community/plugin-tech-insights-maturity';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -189,6 +194,10 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/maturity" title="Maturity">
+      <EntityMaturityScorecardContent />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
@@ -220,6 +229,10 @@ const websiteEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/maturity" title="Maturity">
+      <EntityMaturityScorecardContent />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
@@ -237,6 +250,10 @@ const defaultEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/maturity" title="Maturity">
+      <EntityMaturityScorecardContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/docs" title="Docs">
@@ -327,7 +344,14 @@ const groupPage = (
         <Grid item xs={12} md={6}>
           <EntityLinksCard />
         </Grid>
+        <Grid item md={6} xs={12}>
+          <EntityMaturitySummaryCard />
+        </Grid>
       </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/maturity" title="Maturity">
+      <EntityMaturitySummaryContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -355,6 +379,9 @@ const systemPage = (
         <Grid item md={6}>
           <EntityHasResourcesCard />
         </Grid>
+        <Grid item md={6}>
+          <EntityMaturitySummaryCard />
+        </Grid>
       </Grid>
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
@@ -375,6 +402,10 @@ const systemPage = (
         unidirectional={false}
       />
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/maturity" title="Maturity">
+      <EntityMaturitySummaryContent />
+    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -392,7 +423,14 @@ const domainPage = (
         <Grid item md={6}>
           <EntityHasSystemsCard />
         </Grid>
+        <Grid item md={6} xs={12}>
+          <EntityMaturitySummaryCard />
+        </Grid>
       </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/maturity" title="Maturity">
+      <EntityMaturitySummaryContent />
     </EntityLayout.Route>
   </EntityLayout>
 );

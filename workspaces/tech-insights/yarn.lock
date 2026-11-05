@@ -1977,7 +1977,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-tech-insights-maturity@workspace:plugins/tech-insights-maturity":
+"@backstage-community/plugin-tech-insights-maturity@workspace:^, @backstage-community/plugin-tech-insights-maturity@workspace:plugins/tech-insights-maturity":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights-maturity@workspace:plugins/tech-insights-maturity"
   dependencies:
@@ -12885,6 +12885,7 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-tech-insights": "workspace:^"
+    "@backstage-community/plugin-tech-insights-maturity": "workspace:^"
     "@backstage/app-defaults": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
