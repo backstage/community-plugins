@@ -49,6 +49,7 @@ const useRolesMockData: RolesData[] = [
       edit: { allowed: true },
     },
     accessiblePlugins: ['catalog'],
+    source: 'rest',
   },
   {
     name: 'role:default/rbac_admin',
@@ -61,6 +62,7 @@ const useRolesMockData: RolesData[] = [
       edit: { allowed: true },
     },
     accessiblePlugins: ['catalog', 'permission', 'scaffolder'],
+    source: 'configuration',
   },
 ];
 
@@ -224,7 +226,10 @@ describe('RolesList', () => {
     });
     const { getByTestId } = await renderInTestApp(<RolesList />);
     expect(getByTestId('disable-edit-role-role:default/guests')).not.toBeNull();
-    expect(getByTestId('delete-role-role:default/rbac_admin')).not.toBeNull();
+    // App Config roles remain disabled regardless of update permission
+    expect(
+      getByTestId('disable-delete-role-role:default/rbac_admin'),
+    ).not.toBeNull();
   });
 
   it('should disable create button if user is not authorized to create roles', async () => {
@@ -357,6 +362,56 @@ describe('RolesList', () => {
     expect(queryByText('role:default/rbac_admin')).not.toBeNull();
     expect(
       queryByText('Catalog, Permission + 1', { exact: true }),
+    ).not.toBeNull();
+  });
+
+  it('should show the Source column with user-facing labels', async () => {
+    RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
+    mockUseRoles.mockReturnValue({
+      loading: false,
+      data: useRolesMockData,
+      error: {
+        rolesError: '',
+        policiesError: '',
+        roleConditionError: '',
+      },
+      retry: { roleRetry: jest.fn(), policiesRetry: jest.fn() },
+      createRoleAllowed: false,
+      createRoleLoading: false,
+    });
+    const { queryByText, getByTestId } = await renderInTestApp(<RolesList />);
+    expect(queryByText('Source')).not.toBeNull();
+    expect(getByTestId('role-source-rest')).toHaveTextContent('Form');
+    expect(getByTestId('role-source-configuration')).toHaveTextContent(
+      'App Config',
+    );
+  });
+
+  it('should disable edit and delete for roles not created via REST/UI', async () => {
+    RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
+    mockUseRoles.mockReturnValue({
+      loading: false,
+      data: useRolesMockData,
+      error: {
+        rolesError: '',
+        policiesError: '',
+        roleConditionError: '',
+      },
+      retry: { roleRetry: jest.fn(), policiesRetry: jest.fn() },
+      createRoleAllowed: true,
+      createRoleLoading: false,
+    });
+    const { getByTestId } = await renderInTestApp(<RolesList />);
+
+    expect(getByTestId('edit-role-role:default/guests')).not.toBeNull();
+    expect(getByTestId('delete-role-role:default/guests')).not.toBeNull();
+    expect(
+      getByTestId('disable-edit-role-role:default/rbac_admin'),
+    ).not.toBeNull();
+    expect(
+      getByTestId('disable-delete-role-role:default/rbac_admin'),
     ).not.toBeNull();
   });
 });

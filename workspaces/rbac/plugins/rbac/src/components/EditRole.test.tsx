@@ -18,6 +18,7 @@ import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
 
@@ -75,8 +76,11 @@ describe('EditRole', () => {
     );
 
     expect(screen.getByTestId('edit-role-btn')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Update' })).not.toBeDisabled();
-    fireEvent.mouseOver(screen.getByRole('button', { name: 'Update' }));
+    const button = screen.getByRole('button', { name: 'Update' });
+    expect(button).not.toBeDisabled();
+    // BUI/React Aria tooltips open on keyboard focus in jsdom.
+    await userEvent.tab();
+    expect(button).toHaveFocus();
     await waitFor(() => {
       expect(screen.getByRole('tooltip')).toHaveTextContent(tooltipText);
     });

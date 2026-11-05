@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import { parseEntityRef } from '@backstage/catalog-model';
-
-import EditIcon from '@mui/icons-material/Edit';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import { ButtonIcon, Focusable, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
+import { RiEditLine } from '@remixicon/react';
 import { useNavigate } from 'react-router-dom';
+
 import { useActionPermissionTooltip } from '../hooks/useActionPermissionTooltip';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -51,26 +50,33 @@ const EditRole = ({
     fallbackTooltip: tooltip,
   });
 
+  const button = (
+    <ButtonIcon
+      icon={<RiEditLine size={16} />}
+      size="medium"
+      variant="tertiary"
+      aria-label={t('common.update')}
+      isDisabled={disable}
+      data-testid={testIdText}
+      onPress={() => {
+        navigate(to ?? `../role/${kind}/${namespace}/${name}`);
+      }}
+    />
+  );
+
   return (
-    <Tooltip title={tooltipText}>
-      <span style={{ display: 'inline-flex' }}>
-        <IconButton
-          onClick={() => {
-            navigate(to ?? `../role/${kind}/${namespace}/${name}`);
-          }}
-          data-testid={testIdText}
-          aria-label={t('common.update')}
-          disabled={disable}
-          sx={{
-            p: 1,
-            borderRadius: '50%',
-            '&:hover': { borderRadius: '50%' },
-          }}
-        >
-          <EditIcon />
-        </IconButton>
-      </span>
-    </Tooltip>
+    <TooltipTrigger delay={0}>
+      {disable ? (
+        <Focusable>
+          <span style={{ display: 'inline-flex', cursor: 'not-allowed' }}>
+            {button}
+          </span>
+        </Focusable>
+      ) : (
+        button
+      )}
+      <Tooltip>{tooltipText}</Tooltip>
+    </TooltipTrigger>
   );
 };
 
