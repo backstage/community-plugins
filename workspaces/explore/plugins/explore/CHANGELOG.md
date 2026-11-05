@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 1.0.2
+
+### Patch Changes
+
+- 606ec49: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 1.0.1
 
 ### Patch Changes
