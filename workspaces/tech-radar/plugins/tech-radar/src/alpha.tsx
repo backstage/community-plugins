@@ -35,6 +35,8 @@ import {
 import MapIcon from '@material-ui/icons/MyLocation';
 import { rootRouteRef } from './plugin';
 
+export { techRadarTranslationRef } from './translations';
+
 /** @alpha */
 export const techRadarPage = PageBlueprint.makeWithOverrides({
   configSchema: {
