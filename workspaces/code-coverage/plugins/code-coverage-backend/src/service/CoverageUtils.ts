@@ -39,6 +39,8 @@ export const aggregateCoverage = (c: JsonCodeCoverage): AggregateCoverage => {
   let coveredLine = 0;
   let availableBranch = 0;
   let coveredBranch = 0;
+  let availableFunction = 0;
+  let coveredFunction = 0;
   c.files.forEach(f => {
     availableLine += Object.keys(f.lineHits).length;
     coveredLine += Object.values(f.lineHits).filter(l => l > 0).length;
@@ -53,6 +55,10 @@ export const aggregateCoverage = (c: JsonCodeCoverage): AggregateCoverage => {
       .map((b: number) => f.branchHits[b].covered)
       .filter(Boolean)
       .reduce((acc, curr) => acc + curr, 0);
+
+    const functionHits = f.functionHits ?? [];
+    availableFunction += functionHits.length;
+    coveredFunction += functionHits.filter(hits => hits > 0).length;
   });
 
   return {
@@ -68,6 +74,12 @@ export const aggregateCoverage = (c: JsonCodeCoverage): AggregateCoverage => {
       covered: coveredLine,
       missed: availableLine - coveredLine,
       percentage: calculatePercentage(availableLine, coveredLine),
+    },
+    function: {
+      available: availableFunction,
+      covered: coveredFunction,
+      missed: availableFunction - coveredFunction,
+      percentage: calculatePercentage(availableFunction, coveredFunction),
     },
   };
 };

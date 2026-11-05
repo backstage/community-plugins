@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { formatTrend, getTrendForCoverage } from './CoverageHistoryChart';
+import {
+  formatTrend,
+  getFunctionCoverage,
+  getTrendForCoverage,
+} from './CoverageHistoryChart';
 
 const coverage = (line: number, branch: number) => ({
   timestamp: 0,
   line: { available: 0, covered: 0, missed: 0, percentage: line },
   branch: { available: 0, covered: 0, missed: 0, percentage: branch },
+});
+
+const withFunction = (percentage: number) => ({
+  ...coverage(0, 0),
+  function: { available: 10, covered: 0, missed: 0, percentage },
 });
 
 describe('getTrendForCoverage function', () => {
@@ -27,6 +36,50 @@ describe('getTrendForCoverage function', () => {
     expect(getTrendForCoverage(history, 'line')).toBeCloseTo(9.29, 2);
     expect(getTrendForCoverage(history, 'branch')).toBe(40);
     expect(getTrendForCoverage([coverage(80, 70)], 'line')).toBe(0);
+  });
+
+  it('should return the function coverage trend', () => {
+    const history = [withFunction(70), withFunction(55)];
+    expect(getTrendForCoverage(history, 'function')).toBe(15);
+  });
+});
+
+describe('getFunctionCoverage function', () => {
+  it('should handle an empty history', () => {
+    expect(getFunctionCoverage([])).toEqual({
+      history: [],
+      current: undefined,
+      trend: 0,
+    });
+  });
+
+  it('should return no history when no build has function data', () => {
+    const result = getFunctionCoverage([
+      coverage(80, 70),
+      {
+        ...coverage(70, 60),
+        function: { available: 0, covered: 0, missed: 0, percentage: 0 },
+      },
+    ]);
+    expect(result.history).toHaveLength(0);
+    expect(result.current).toBeUndefined();
+  });
+
+  it('should return no current value when only older builds have function data', () => {
+    const result = getFunctionCoverage([coverage(80, 70), withFunction(50)]);
+    expect(result.history).toHaveLength(1);
+    expect(result.current).toBeUndefined();
+  });
+
+  it('should compute the trend over builds with function data only', () => {
+    const result = getFunctionCoverage([
+      withFunction(60),
+      coverage(80, 70),
+      withFunction(50),
+    ]);
+    expect(result.current).toBe(60);
+    expect(result.history).toHaveLength(2);
+    expect(formatTrend(result.trend)).toBe('+10.00%');
   });
 });
 
