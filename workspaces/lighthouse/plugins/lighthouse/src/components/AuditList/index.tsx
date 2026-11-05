@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import Pagination from '@material-ui/lab/Pagination';
+import { Button } from '@backstage/ui';
 import { ChangeEvent, ReactNode, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAsync from 'react-use/esm/useAsync';
@@ -114,20 +113,12 @@ const AuditList = () => {
           title="Audits"
           description="View all audits run for your website through Backstage here. Track the trend of your most recent audits."
         >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate('create-audit')}
-          >
+          <Button variant="primary" onClick={() => navigate('create-audit')}>
             Create Audit
           </Button>
           {dismissed && <LighthouseSupportButton />}
         </ContentHeader>
-        <Grid container spacing={3} direction="column">
-          <Grid item>
-            <InfoCard noPadding>{content}</InfoCard>
-          </Grid>
-        </Grid>
+        <InfoCard noPadding>{content}</InfoCard>
       </Content>
     </Page>
   );
