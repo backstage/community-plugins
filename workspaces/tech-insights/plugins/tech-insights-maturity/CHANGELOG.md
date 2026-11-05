@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.10.1
+
+### Patch Changes
+
+- 395c31d: Add some entity links tests to the maturity card.
+
 ## 0.10.0
 
 ### Minor Changes
