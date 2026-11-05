@@ -102,11 +102,7 @@ body:
         - rbac
         - report-portal
         - rollbar
-        - scaffolder-backend-module-annotator
-        - scaffolder-backend-module-kubernetes
-        - scaffolder-backend-module-regex
-        - scaffolder-backend-module-servicenow
-        - scaffolder-backend-module-sonarqube
+        - scaffolder
         - scaffolder-relation-processor
         - sentry
         - servicenow
