@@ -37,6 +37,8 @@ yarn workspace backend add @backstage-community/plugin-catalog-backend-module-ke
            realm: ${KEYCLOAK_REALM}
            clientId: ${KEYCLOAK_CLIENTID}
            clientSecret: ${KEYCLOAK_CLIENTSECRET}
+           userNamespace: default # Optional (defaults to "default")
+           groupNamespace: keycloak # Optional (defaults to "default")
            schedule: # Optional (defaults to the configurations below if not provided); same options as in TaskScheduleDefinition
              # supports cron, ISO duration, "human duration" as used in code
              frequency: { minutes: 30 } # Customize this to fit your needs
@@ -130,7 +132,11 @@ The following table describes the parameters that you can configure to enable th
 | `clientSecret`   | Client Secret to authenticate                                             | ""            | Yes if using client credentials based authentication |
 | `userQuerySize`  | Number of users to query at a time                                        | `100`         | No                                                   |
 | `groupQuerySize` | Number of groups to query at a time                                       | `100`         | No                                                   |
+| `userNamespace`  | Namespace used for ingested users                                         | `default`     | No                                                   |
+| `groupNamespace` | Namespace used for ingested groups                                        | `default`     | No                                                   |
 | `maxConcurrency` | Maximum request concurrency to prevent DoS attacks on the Keycloak server | `20`          | No                                                   |
+
+When `userNamespace` or `groupNamespace` is configured, it takes precedence over a namespace returned by the corresponding custom transformer. When the setting is omitted, a transformer-provided namespace is preserved. Otherwise, Backstage uses the `default` namespace.
 
 When using client credentials, the access type must be set to `confidential` and service accounts must be enabled. You must also add the following roles from the `realm-management` client role:
 
