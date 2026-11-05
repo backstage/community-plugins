@@ -1,0 +1,46 @@
+# Overlay that loads CSV roles and App Config–sourced roles for local UI demos
+# of the Roles list Source column.
+#
+# From workspaces/rbac:
+#   yarn start:role-sources
+#
+# Or manually (backend package cwd is plugins/rbac-backend):
+#   yarn workspace @backstage-community/plugin-rbac-backend start \
+#     --config app-config.yaml --config ../../app-config.role-sources.yaml
+#
+# Expected Sources in the Roles list:
+#   - App Config  → role:default/rbac_admin (admin.users)
+#                   role:default/authenticated-user (defaultPermissions)
+#   - CSV         → roles from examples/rbac-policy.csv
+#   - Form        → roles you create in the UI (REST)
+
+permission:
+  enabled: true
+  rbac:
+    # CSV roles (source: csv-file → UI label "CSV")
+    # Path is relative to plugins/rbac-backend (backend package start cwd).
+    policies-csv-file: ../../examples/rbac-policy.csv
+    policyFileReload: true
+
+    # App Config roles (source: configuration → UI label "App Config")
+    #
+    # 1) admin.users creates role:default/rbac_admin (read-only in the UI).
+    #    Prefer a catalog user that is not the e2e guest super-user.
+    admin:
+      users:
+        - name: user:default/xyz
+        - name: group:default/admins
+      # Keep guest as super-user so you can still create Form/REST roles in the UI.
+      superUsers:
+        - name: user:development/guest
+        - name: user:default/guest
+
+    # 2) defaultPermissions creates a configuration-sourced default role
+    #    applied to every authenticated user (also read-only in the UI).
+    defaultPermissions:
+      defaultRole: role:default/authenticated-user
+      basicPermissions:
+        - permission: catalog.entity.read
+          action: read
+        - permission: catalog-entity
+          action: read

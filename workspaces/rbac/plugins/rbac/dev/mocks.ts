@@ -163,10 +163,12 @@ export const mockRBACApi = new MockRBACApi([
   {
     memberReferences: ['user:default/guest'],
     name: 'role:default/guests',
+    metadata: { source: 'rest' },
   },
   {
     memberReferences: ['user:default/xyz', 'group:default/admins'],
     name: 'role:default/rbac_admin',
+    metadata: { source: 'configuration' },
   },
 ]);
 

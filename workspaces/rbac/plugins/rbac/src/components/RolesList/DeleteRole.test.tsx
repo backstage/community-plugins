@@ -15,6 +15,7 @@
  */
 import { usePermission } from '@backstage/plugin-permission-react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import DeleteRole from './DeleteRole';
 import { useDeleteDialog } from '../DeleteDialogContext';
@@ -43,18 +44,21 @@ describe('DeleteRole', () => {
   });
 
   it('renders the button with the correct tooltip', async () => {
-    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     render(
       <DeleteRole
         roleName="Admin"
-        canEdit={false}
+        canEdit
         tooltip="Delete Admin Role"
         dataTestId="delete-admin-role"
       />,
     );
 
     expect(screen.getByTestId('delete-admin-role')).toBeInTheDocument();
-    fireEvent.mouseOver(screen.getByRole('button'));
+    const button = screen.getByRole('button');
+    // BUI/React Aria tooltips open on keyboard focus in jsdom.
+    await userEvent.tab();
+    expect(button).toHaveFocus();
     await waitFor(() => {
       expect(screen.getByRole('tooltip')).toHaveTextContent(
         'Delete Admin Role',
