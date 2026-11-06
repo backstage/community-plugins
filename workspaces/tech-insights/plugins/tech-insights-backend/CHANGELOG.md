@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 3.2.0
+
+### Minor Changes
+
+- b83788b: Add MCP actions
+
 ## 3.1.0
 
 ### Minor Changes
