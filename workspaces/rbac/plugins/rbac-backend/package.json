@@ -20,7 +20,7 @@
     ]
   },
   "scripts": {
-    "start": "backstage-cli package start --config app-config.yaml",
+    "start": "sh -c 'set -- --config app-config.yaml; [ -f app-config.local.yaml ] && set -- \"$@\" --config app-config.local.yaml; exec backstage-cli package start \"$@\"'",
     "start:legacy": "backstage-cli package start",
     "start:keycloak": "docker compose -f docker-compose.keycloak.yaml up",
     "start:multi-user": "backstage-cli package start --config app-config.yaml --config app-config.multi-user.yaml",
@@ -63,6 +63,7 @@
     "@backstage/cli": "^0.36.5",
     "@backstage/core-plugin-api": "^1.12.9",
     "@backstage/plugin-auth-backend": "^0.30.0",
+    "@backstage/plugin-auth-backend-module-github-provider": "^0.3.7",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.22",
     "@backstage/plugin-auth-backend-module-oidc-provider": "^0.4.20",
     "@backstage/plugin-catalog-backend": "^3.9.1",

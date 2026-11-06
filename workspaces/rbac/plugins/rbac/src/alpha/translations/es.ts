@@ -168,6 +168,16 @@ const rbacTranslationEs = createTranslationMessages({
     'common.unauthorizedToEdit': 'No tiene autorización para modificar',
     'common.noRecordsFound': 'No se encontraron registros',
     'common.selectUsersAndGroups': 'Seleccionar usuarios y grupos',
+    'common.addMembersAndGroups': 'Agregar miembros y grupos',
+    'common.searchMembers': 'Buscar',
+    'common.searchByName': 'Buscar por nombre',
+    'common.kind': 'Tipo',
+    'common.kindAll': 'Todos',
+    'common.namespace': 'Espacio de nombres',
+    'common.namespaceAll': 'Todos',
+    'common.allResults': 'Todos ({{count}})',
+    'common.selectedCount': '{{count}} seleccionados',
+    'common.add': 'Agregar',
     'common.clearSearch': 'borrar búsqueda',
     'common.closeDrawer': 'Cerrar el panel',
     'common.remove': 'Eliminar',
@@ -217,7 +227,10 @@ const rbacTranslationEs = createTranslationMessages({
     'common.childGroupsCount': '{{count}} grupos secundarios',
     'common.searchAndSelectUsersGroups':
       'Busque y seleccione los usuarios y grupos que desea agregar. Los usuarios y grupos seleccionados aparecerán en la tabla a continuación.',
+    'common.searchAndFilterCatalog':
+      'Busque y filtre el catálogo para agregar usuarios y grupos. Esto reemplaza un menú desplegable de 100 elementos para listas grandes de miembros.',
     'common.noUsersAndGroupsFound': 'No se encontraron usuarios ni grupos.',
+    'common.noMembersMatchSearch': 'Ningún miembro coincide con su búsqueda.',
     'common.errorFetchingUserGroups':
       'Error al extraer usuarios y grupos: {{error}}',
     'common.nameRequired': 'El nombre es obligatorio',

@@ -174,6 +174,16 @@ const rbacTranslationFr = createTranslationMessages({
     'common.noRecordsFound': 'Aucun enregistrement trouvé',
     'common.selectUsersAndGroups':
       'Sélectionner les utilisateurs et les groupes',
+    'common.addMembersAndGroups': 'Ajouter des membres et des groupes',
+    'common.searchMembers': 'Rechercher',
+    'common.searchByName': 'Rechercher par nom',
+    'common.kind': 'Type',
+    'common.kindAll': 'Tous',
+    'common.namespace': 'Espace de noms',
+    'common.namespaceAll': 'Tous',
+    'common.allResults': 'Tous ({{count}})',
+    'common.selectedCount': '{{count}} sélectionné(s)',
+    'common.add': 'Ajouter',
     'common.clearSearch': 'supprimer la recherche',
     'common.closeDrawer': 'Fermez le tiroir',
     'common.remove': 'Supprimer',
@@ -223,7 +233,11 @@ const rbacTranslationFr = createTranslationMessages({
     'common.childGroupsCount': '{{count}} groupes enfants',
     'common.searchAndSelectUsersGroups':
       'Recherchez et sélectionnez les utilisateurs et les groupes à ajouter. Les utilisateurs et groupes sélectionnés apparaîtront dans le tableau ci-dessous.',
+    'common.searchAndFilterCatalog':
+      'Recherchez et filtrez le catalogue pour ajouter des utilisateurs et des groupes. Cela remplace une liste déroulante de 100 éléments pour les grandes listes de membres.',
     'common.noUsersAndGroupsFound': 'Aucun utilisateur ni groupe trouvé.',
+    'common.noMembersMatchSearch':
+      'Aucun membre ne correspond à votre recherche.',
     'common.errorFetchingUserGroups':
       "Erreur lors de la récupération de l'utilisateur et des groupes : {{error}}",
     'common.nameRequired': 'Le nom est obligatoire',
