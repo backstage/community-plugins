@@ -46,8 +46,13 @@ import {
   AuthorizeResult,
   BasicPermission,
 } from '@backstage/plugin-permission-common';
-import { NotAllowedError } from '@backstage/errors';
+import {
+  InputError,
+  NotAllowedError,
+  NotImplementedError,
+} from '@backstage/errors';
 import pLimit from 'p-limit';
+import { FactRetrieverEngine } from './fact/FactRetrieverEngine';
 
 /**
  * @public
@@ -69,6 +74,11 @@ export interface RouterOptions<
    * TechInsights PersistenceContext. Should contain an implementation of TechInsightsStore
    */
   persistenceContext: PersistenceContext;
+
+  /**
+   * Optional FactRetrieverEngine implementation. Needed to refresh the facts of a single entity on demand
+   */
+  factRetrieverEngine?: FactRetrieverEngine;
 
   /**
    * Backstage config object
@@ -112,6 +122,7 @@ export async function createRouter<
   const {
     persistenceContext,
     factChecker,
+    factRetrieverEngine,
     logger,
     config,
     permissions,
@@ -199,6 +210,42 @@ export async function createRouter<
       'Starting tech insights module without fact checking endpoints.',
     );
   }
+
+  /**
+   * Runs fact retrievers for a single entity right away and stores their facts.
+   * Optional body: { "factRetrieverIds": ["factRetrieverId1"] }
+   */
+  router.post('/facts/refresh/:namespace/:kind/:name', async (req, res) => {
+    const decision = await authorize(req, techInsightsCheckUpdatePermission);
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+    if (!factRetrieverEngine?.refreshEntityFacts) {
+      throw new NotImplementedError(
+        'The configured fact retriever engine does not support refreshing facts',
+      );
+    }
+
+    const factRetrieverIds: unknown = req.body?.factRetrieverIds;
+    if (
+      factRetrieverIds !== undefined &&
+      !(
+        Array.isArray(factRetrieverIds) &&
+        factRetrieverIds.every(id => typeof id === 'string')
+      )
+    ) {
+      throw new InputError('factRetrieverIds must be an array of strings');
+    }
+
+    const { namespace, kind, name } = req.params;
+    return res.json(
+      await factRetrieverEngine.refreshEntityFacts({
+        entityRef: { namespace, kind, name },
+        factRetrieverIds,
+      }),
+    );
+  });
 
   router.get('/fact-schemas', async (req, res) => {
     const decision = await authorize(

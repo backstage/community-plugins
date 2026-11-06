@@ -250,3 +250,118 @@ describe('FactRetrieverEngine', () => {
     },
   );
 });
+
+describe('FactRetrieverEngine.refreshEntityFacts', () => {
+  const entityRef = { kind: 'Component', namespace: 'default', name: 'svc' };
+  const entityFact = (id: string) => ({
+    entity: entityRef,
+    facts: { [id]: 1 },
+  });
+
+  function retriever(
+    id: string,
+    handler: FactRetriever['handler'],
+    entityFilter?: FactRetriever['entityFilter'],
+  ): FactRetriever {
+    return { id, version: '0.0.1', schema: {}, entityFilter, handler };
+  }
+
+  async function createEngine(registrations: FactRetrieverRegistration[]) {
+    const insertFacts = jest.fn();
+    const engine = await DefaultFactRetrieverEngine.create({
+      factRetrieverContext: {
+        logger: mockServices.logger.mock(),
+        config: ConfigReader.fromConfigs([]),
+        auth: mockServices.auth(),
+        urlReader: mockServices.urlReader.mock(),
+        discovery: mockServices.discovery(),
+      },
+      factRetrieverRegistry: {
+        listRetrievers: async () => registrations.map(it => it.factRetriever),
+        listRegistrations: async () => registrations,
+      } as unknown as FactRetrieverRegistry,
+      repository: {
+        insertFacts,
+        insertFactSchema: jest.fn(),
+      } as unknown as TechInsightsStore,
+      scheduler: mockServices.scheduler.mock(),
+    });
+    return { engine, insertFacts };
+  }
+
+  it('runs each applicable fact retriever for the entity only', async () => {
+    const forComponents = jest.fn(async () => [entityFact('components')]);
+    const forSystems = jest.fn(async () => []);
+    const failing = jest.fn(async () => {
+      throw new Error('source unreachable');
+    });
+    const { engine, insertFacts } = await createEngine([
+      {
+        factRetriever: retriever('components', forComponents, {
+          kind: 'component',
+        }),
+        cadence: '* * * * *',
+        lifecycle: { maxItems: 2 },
+      },
+      {
+        factRetriever: retriever('systems', forSystems, { kind: 'system' }),
+        cadence: '* * * * *',
+      },
+      {
+        factRetriever: retriever('failing', failing),
+        cadence: '* * * * *',
+      },
+    ]);
+
+    const result = await engine.refreshEntityFacts({ entityRef });
+
+    const scopedFilter = [
+      {
+        kind: 'Component',
+        'metadata.namespace': 'default',
+        'metadata.name': 'svc',
+      },
+    ];
+    expect(forComponents).toHaveBeenCalledWith(
+      expect.objectContaining({ entityFilter: scopedFilter }),
+    );
+    expect(forSystems).not.toHaveBeenCalled();
+    expect(insertFacts).toHaveBeenCalledWith({
+      id: 'components',
+      facts: [entityFact('components')],
+      lifecycle: { maxItems: 2 },
+    });
+    expect(result).toEqual({
+      entity: 'component:default/svc',
+      results: [
+        { factRetrieverId: 'components', facts: 1 },
+        {
+          factRetrieverId: 'failing',
+          facts: 0,
+          error: expect.objectContaining({ message: 'source unreachable' }),
+        },
+      ],
+    });
+  });
+
+  it('runs only the requested fact retrievers', async () => {
+    const first = jest.fn(async () => [entityFact('first')]);
+    const second = jest.fn(async () => [entityFact('second')]);
+    const { engine } = await createEngine([
+      { factRetriever: retriever('first', first), cadence: '* * * * *' },
+      { factRetriever: retriever('second', second), cadence: '* * * * *' },
+    ]);
+
+    await expect(
+      engine.refreshEntityFacts({ entityRef, factRetrieverIds: ['second'] }),
+    ).resolves.toEqual({
+      entity: 'component:default/svc',
+      results: [{ factRetrieverId: 'second', facts: 1 }],
+    });
+    expect(first).not.toHaveBeenCalled();
+
+    await expect(
+      engine.refreshEntityFacts({ entityRef, factRetrieverIds: ['unknown'] }),
+    ).rejects.toThrow('Unknown fact retrievers: unknown');
+  });
+});
