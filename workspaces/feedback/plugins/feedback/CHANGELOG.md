@@ -1,5 +1,14 @@
 # @backstage-community/plugin-feedback
 
+## 1.8.9
+
+### Patch Changes
+
+- 9cadb2a: Updated dependency `react-router-dom` to `^6.30.6`.
+- 8307bf5: Updated dependency `@types/nodemailer` to `^8.0.1`.
+  Updated dependency `@types/supertest` to `^7.2.1`.
+  Updated dependency `@testing-library/user-event` to `^14.6.6`.
+
 ## 1.8.8
 
 ### Patch Changes
