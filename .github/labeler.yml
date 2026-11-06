@@ -265,20 +265,8 @@ workspace/report-portal:
 workspace/rollbar:
   - "Workspace\\s*rollbar"
 
-workspace/scaffolder-backend-module-annotator:
-  - "Workspace\\s*scaffolder-backend-module-annotator"
-
-workspace/scaffolder-backend-module-kubernetes:
-  - "Workspace\\s*scaffolder-backend-module-kubernetes"
-
-workspace/scaffolder-backend-module-regex:
-  - "Workspace\\s*scaffolder-backend-module-regex"
-
-workspace/scaffolder-backend-module-servicenow:
-  - "Workspace\\s*scaffolder-backend-module-servicenow"
-
-workspace/scaffolder-backend-module-sonarqube:
-  - "Workspace\\s*scaffolder-backend-module-sonarqube"
+workspace/scaffolder:
+  - "Workspace\\s*scaffolder"
 
 workspace/scaffolder-relation-processor:
   - "Workspace\\s*scaffolder-relation-processor"
