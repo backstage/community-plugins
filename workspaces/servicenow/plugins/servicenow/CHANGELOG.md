@@ -1,5 +1,18 @@
 # @backstage-community/plugin-servicenow
 
+## 1.16.0
+
+### Minor Changes
+
+- c21ab18: Backstage version bump to v1.56.3
+
+### Patch Changes
+
+- 8896893: Updated dependency `@playwright/test` to `1.64.1`.
+- 6080778: Updated dependency `@playwright/test` to `1.64.0`.
+- Updated dependencies [c21ab18]
+  - @backstage-community/plugin-servicenow-common@1.14.0
+
 ## 1.15.3
 
 ### Patch Changes
