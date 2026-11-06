@@ -1,0 +1,26 @@
+@layer components {
+  .operational {
+    background-color: #388e3d;
+    color: white;
+  }
+
+  .underMaintenance {
+    background-color: #616161;
+    color: white;
+  }
+
+  .degraded {
+    background-color: #fbc02d;
+    color: white;
+  }
+
+  .partialOutage {
+    background-color: #f57c02;
+    color: white;
+  }
+
+  .majorOutage {
+    background-color: #d22f2e;
+    color: white;
+  }
+}
