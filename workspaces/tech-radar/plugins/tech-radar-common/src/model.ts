@@ -22,7 +22,10 @@
  */
 export interface TechRadarLoaderResponse {
   /**
-   * Quadrant of Tech Radar. Should be 4
+   * Up to four quadrants of Tech Radar, clockwise starting at the bottom right.
+   * Quadrants occupy fixed 90-degree sections in array order. Unused sections
+   * remain empty and have no legend. Each entry must reference the ID of a
+   * configured quadrant.
    */
   quadrants: RadarQuadrant[];
   /**
