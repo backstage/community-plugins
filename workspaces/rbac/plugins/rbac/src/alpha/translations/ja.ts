@@ -34,9 +34,32 @@ const rbacTranslationJa = createTranslationMessages({
     'table.title': 'すべてのロール',
     'table.titleWithCount': 'すべてのロール ({{count}})',
     'table.headers.name': '名前',
+    'table.headers.source': 'ソース',
     'table.headers.usersAndGroups': 'ユーザーとグループ',
     'table.headers.accessiblePlugins': 'アクセス可能なプラグイン',
     'table.headers.actions': 'アクション',
+    'table.sources.appConfig': 'アプリ設定',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'フォーム',
+    'table.sources.legacy': 'レガシー',
+    'table.sources.tooltips.appConfig':
+      'app-config.yaml の permission.rbac.admin で定義されています。',
+    'table.sources.tooltips.csv':
+      'app-config.yaml の permission.rbac.policies-csv-file で参照される CSV ポリシーファイルで定義されています。',
+    'table.sources.tooltips.form':
+      'UI の RBAC フォームで作成されました。REST API でも管理できます。',
+    'table.sources.tooltips.legacy':
+      'ロールソースが記録される前に作成されました。REST API または CSV ポリシーファイルで管理できます。',
+    'table.sources.tooltips.generic':
+      'このロールはそのソースによって管理されており、UI では変更できません。',
+    'table.sources.actionTooltips.appConfig':
+      'このロールはアプリケーション設定 (app-config.yaml の permission.rbac.admin) で管理されています。変更するには設定を更新して再デプロイしてください。',
+    'table.sources.actionTooltips.csv':
+      'このロールは CSV ポリシーファイルで管理されています。変更するには CSV ファイルを更新して再デプロイしてください。',
+    'table.sources.actionTooltips.legacy':
+      'これはレガシーロールのため、UI では変更できません。REST API または CSV ポリシーファイルから更新してください。',
+    'table.sources.actionTooltips.generic':
+      'このロールはそのソースによって管理されており、UI では変更できません。',
     'table.emptyContent': 'レコードが見つかりません',
     'toolbar.createButton': '作成',
     'toolbar.warning.title': 'ロールを作成できません。',

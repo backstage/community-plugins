@@ -34,9 +34,32 @@ const rbacTranslationEs = createTranslationMessages({
     'table.title': 'Todos los roles',
     'table.titleWithCount': 'Todos los roles ({{count}})',
     'table.headers.name': 'Nombre',
+    'table.headers.source': 'Origen',
     'table.headers.usersAndGroups': 'Usuarios y grupos',
     'table.headers.accessiblePlugins': 'Complementos accesibles',
     'table.headers.actions': 'Acciones',
+    'table.sources.appConfig': 'Config. de la app',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'Formulario',
+    'table.sources.legacy': 'Legado',
+    'table.sources.tooltips.appConfig':
+      'Definido en permission.rbac.admin en app-config.yaml.',
+    'table.sources.tooltips.csv':
+      'Definido en el archivo de políticas CSV referenciado por permission.rbac.policies-csv-file en app-config.yaml.',
+    'table.sources.tooltips.form':
+      'Creado mediante el formulario de RBAC en la IU. También se puede gestionar a través de la API REST.',
+    'table.sources.tooltips.legacy':
+      'Creado antes de que se registraran los orígenes de roles. Se puede gestionar a través de la API REST o el archivo de políticas CSV.',
+    'table.sources.tooltips.generic':
+      'Este rol lo gestiona su origen y no se puede cambiar en la IU.',
+    'table.sources.actionTooltips.appConfig':
+      'Este rol se gestiona mediante la configuración de la aplicación (permission.rbac.admin en app-config.yaml). Actualice la configuración y vuelva a implementar para realizar cambios.',
+    'table.sources.actionTooltips.csv':
+      'Este rol se gestiona mediante un archivo de políticas CSV. Actualice el archivo CSV y vuelva a implementar para realizar cambios.',
+    'table.sources.actionTooltips.legacy':
+      'Este es un rol legado y no se puede cambiar en la IU. Actualícelo a través de la API REST o el archivo de políticas CSV.',
+    'table.sources.actionTooltips.generic':
+      'Este rol lo gestiona su origen y no se puede cambiar en la IU.',
     'table.defaultRoleUsersAndGroups': 'Todos los usuarios y todos los grupos',
     'table.emptyContent': 'No se encontraron registros',
     'toolbar.createButton': 'Crear',

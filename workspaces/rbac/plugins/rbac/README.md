@@ -29,6 +29,19 @@ g, user:default/<login-id/user-name>, role:default/team_a
 
 > Note: Even after ingesting users/groups in catalog and applying above permissions if the create/edit button is still disabled then please contact your administrator as you might be conditionally restricted from accessing the create/edit button.
 
+### Role sources and UI editability
+
+Each role in the Roles list shows a **Source** column that indicates where the role was created:
+
+| Source label | Backend source  | Editable in UI |
+| ------------ | --------------- | -------------- |
+| Form         | `rest`          | Yes            |
+| App Config   | `configuration` | No             |
+| CSV          | `csv-file`      | No             |
+| Legacy       | `legacy`        | No             |
+
+**App Config**, **CSV**, and **Legacy** roles are immutable in the UI: Edit and Delete are disabled, and hovering those actions explains that the role is managed by its source. To change those roles, update the corresponding source (for example `app-config.yaml` or the CSV policy file) and redeploy. Only roles created through the REST API or the RBAC UI (**Form**) can be edited or deleted from the Roles list.
+
 - To fetch the permissions from other plugins like `Kubernetes` and `Jenkins` in the Role Form as mentioned in the [RBAC permissions documentation](../rbac-backend/docs/permissions.md), add the following configuration in your `app-config.yaml`:
 
 ```yaml title="app-config.yaml"
