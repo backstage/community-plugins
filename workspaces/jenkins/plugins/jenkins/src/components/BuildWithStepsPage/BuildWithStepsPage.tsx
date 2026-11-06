@@ -29,6 +29,7 @@ import { useBuildWithSteps } from '../useBuildWithSteps';
 
 import { Breadcrumbs, Content, Link } from '@backstage/core-components';
 import { useRouteRefParams } from '@backstage/core-plugin-api';
+import { useSearchParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,9 +47,15 @@ const useStyles = makeStyles(theme => ({
 const BuildWithStepsView = () => {
   // TODO: Add a test that react-router decodes this (even though `generatePath` doesn't encode it for you!)
   const { jobFullName, buildNumber } = useRouteRefParams(buildRouteRef);
+  const [searchParams] = useSearchParams();
+  const instanceName = searchParams.get('instanceName') ?? undefined;
   const classes = useStyles();
 
-  const [{ value }] = useBuildWithSteps({ jobFullName, buildNumber });
+  const [{ value }] = useBuildWithSteps({
+    jobFullName,
+    buildNumber,
+    instanceName,
+  });
 
   return (
     <div className={classes.root}>
