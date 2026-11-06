@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow-common
 
+## 1.14.0
+
+### Minor Changes
+
+- c21ab18: Backstage version bump to v1.56.3
+
 ## 1.13.1
 
 ### Patch Changes
