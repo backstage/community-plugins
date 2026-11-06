@@ -30,10 +30,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Delay batches (5 min between)
+      - name: Delay batches (6 min between)
         if: ${{ strategy.job-index != 0 }}
         run: |
-          delay=$(( ${{ strategy.job-index }} * 300 ))
+          delay=$(( ${{ strategy.job-index }} * 360 ))
           echo "Sleeping $delay seconds before triggering batch ${{ strategy.job-index }}..."
           sleep $delay
 
