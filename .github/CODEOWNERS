@@ -74,6 +74,7 @@ yarn.lock                                                               @backsta
 /workspaces/grafana                                                     @backstage/community-plugins-maintainers
 /workspaces/graphiql                                                    @backstage/community-plugins-maintainers
 /workspaces/graphql-voyager                                             @backstage/community-plugins-maintainers
+/workspaces/guided-tours                                                @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff @lokanandaprabhu @rohitkrai03 @karthikjeeyar
 /workspaces/healert                                                     @backstage/community-plugins-maintainers  @amgadmag  @israa-mosad
 /workspaces/ilert                                                       @backstage/community-plugins-maintainers
 /workspaces/jaeger                                                      @backstage/community-plugins-maintainers
