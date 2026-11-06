@@ -1,5 +1,13 @@
 # @backstage-community/plugin-quay
 
+## 1.38.4
+
+### Patch Changes
+
+- 028bee3: Updated dependency `@playwright/test` to `1.64.0`.
+  Updated dependency `start-server-and-test` to `3.0.13`.
+- 86762ee: Updated dependency `@playwright/test` to `1.64.1`.
+
 ## 1.38.3
 
 ### Patch Changes
