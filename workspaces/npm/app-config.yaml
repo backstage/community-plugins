@@ -7,6 +7,11 @@ app:
         config:
           availableLanguages: ['en', 'de', 'es']
           defaultLanguage: 'en'
+    - app/routes:
+        config:
+          redirects:
+            - from: /
+              to: /catalog
 
 organization:
   name: npm plugin example

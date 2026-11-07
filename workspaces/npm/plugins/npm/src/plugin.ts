@@ -17,33 +17,26 @@ import {
   createApiFactory,
   createComponentExtension,
   createPlugin,
-  discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
 import { NpmBackendApiRef, NpmBackendClient } from './api';
 
 /**
- * Backstage plugin.
+ * Backstage 'old' frontend system plugin.
  *
  * @public
  */
 export const npmPlugin = createPlugin({
   id: 'npm',
-  routes: {
-    root: rootRouteRef,
-  },
   apis: [
     createApiFactory({
       api: NpmBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
         fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, fetchApi }) =>
+      factory: ({ fetchApi }) =>
         new NpmBackendClient({
-          discoveryApi,
           fetchApi,
         }),
     }),
