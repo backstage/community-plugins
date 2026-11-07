@@ -15,7 +15,7 @@
  */
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Entity } from '@backstage/catalog-model';
-import { ConflictError, NotFoundError } from '@backstage/errors';
+import { ConflictError, InputError, NotFoundError } from '@backstage/errors';
 import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 import { NpmRegistryPackageInfo } from '@backstage-community/plugin-npm-common';
@@ -218,7 +218,7 @@ describe('createGetPackageInfoAction', () => {
     expect(npmRegistryService.getPackageInfoForEntity).not.toHaveBeenCalled();
   });
 
-  it('throws NotFoundError for unknown entities and entities without package annotation', async () => {
+  it('throws InputError for unknown entities and NotFoundError for entities without package annotation', async () => {
     const registration = actionsRegistry.register.mock.calls[0][0];
 
     await expect(
@@ -227,7 +227,7 @@ describe('createGetPackageInfoAction', () => {
         credentials,
         logger,
       }),
-    ).rejects.toThrow(new NotFoundError("No entity found with name 'unknown'"));
+    ).rejects.toThrow(new InputError("No entity found with name 'unknown'"));
 
     // wrong namespace for an existing name
     await expect(
@@ -236,7 +236,7 @@ describe('createGetPackageInfoAction', () => {
         credentials,
         logger,
       }),
-    ).rejects.toThrow(NotFoundError);
+    ).rejects.toThrow(InputError);
 
     await expect(
       registration.action({

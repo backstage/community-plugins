@@ -16,7 +16,7 @@
 import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { ConflictError, NotFoundError } from '@backstage/errors';
+import { ConflictError, InputError, NotFoundError } from '@backstage/errors';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 
 import {
@@ -89,7 +89,7 @@ export async function resolveEntity(options: {
   const { items } = await catalog.queryEntities({ filter }, { credentials });
 
   if (items.length === 0) {
-    throw new NotFoundError(`No entity found with name '${input.name}'`);
+    throw new InputError(`No entity found with name '${input.name}'`);
   }
   if (items.length > 1) {
     throw new ConflictError(

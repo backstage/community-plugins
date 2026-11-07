@@ -15,7 +15,7 @@
  */
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Entity } from '@backstage/catalog-model';
-import { NotFoundError } from '@backstage/errors';
+import { InputError } from '@backstage/errors';
 import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 import { NpmRegistryPackageInfo } from '@backstage-community/plugin-npm-common';
@@ -163,7 +163,7 @@ describe('createListPackageVersionsAction', () => {
     });
   });
 
-  it('throws NotFoundError for unknown entities', async () => {
+  it('throws InputError for unknown entities', async () => {
     const registration = actionsRegistry.register.mock.calls[0][0];
 
     await expect(
@@ -172,7 +172,7 @@ describe('createListPackageVersionsAction', () => {
         credentials,
         logger,
       }),
-    ).rejects.toThrow(NotFoundError);
+    ).rejects.toThrow(InputError);
     expect(npmRegistryService.getPackageInfoForEntity).not.toHaveBeenCalled();
   });
 });
