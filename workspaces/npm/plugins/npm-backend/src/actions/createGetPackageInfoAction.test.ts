@@ -15,7 +15,7 @@
  */
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Entity } from '@backstage/catalog-model';
-import { NotFoundError } from '@backstage/errors';
+import { ConflictError, NotFoundError } from '@backstage/errors';
 import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 import { NpmRegistryPackageInfo } from '@backstage-community/plugin-npm-common';
@@ -58,6 +58,18 @@ const entityWithoutPackage: Entity = {
   spec: { type: 'library' },
 };
 
+// Same name as `entity`, but a different kind
+const apiWithSameName: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'API',
+  metadata: {
+    name: 'my-package',
+    namespace: 'default',
+    annotations: { 'npm/package': '@internal/my-package-api' },
+  },
+  spec: { type: 'openapi' },
+};
+
 const packageInfo: NpmRegistryPackageInfo = {
   _id: '@internal/my-package',
   _rev: '1',
@@ -92,7 +104,12 @@ describe('createGetPackageInfoAction', () => {
     getPackageInfoForEntity: jest.fn(),
   };
   const catalog = catalogServiceMock({
-    entities: [entity, entityWithStableTag, entityWithoutPackage],
+    entities: [
+      entity,
+      entityWithStableTag,
+      entityWithoutPackage,
+      apiWithSameName,
+    ],
   });
   const credentials = mockCredentials.user();
   const logger = mockServices.logger.mock();
@@ -122,7 +139,7 @@ describe('createGetPackageInfoAction', () => {
     const registration = actionsRegistry.register.mock.calls[0][0];
 
     const result = await registration.action({
-      input: { name: 'my-package' },
+      input: { name: 'my-package', kind: 'Component' },
       credentials,
       logger,
     });
@@ -156,18 +173,19 @@ describe('createGetPackageInfoAction', () => {
     });
   });
 
-  it('respects the stable-tag annotation and the entity kind and namespace', async () => {
+  it('resolves the entity by name only and respects the stable-tag annotation', async () => {
     const registration = actionsRegistry.register.mock.calls[0][0];
 
+    // kind and namespace are omitted, the entity is unique by name
     const result = await registration.action({
-      input: {
-        name: 'my-stable-package',
-        kind: 'component',
-        namespace: 'team-a',
-      },
+      input: { name: 'my-stable-package' },
       credentials,
       logger,
     });
+
+    expect(npmRegistryService.getPackageInfoForEntity).toHaveBeenCalledWith(
+      expect.objectContaining({ metadata: entityWithStableTag.metadata }),
+    );
 
     expect(result.output).toMatchObject({
       latestTag: 'stable',
@@ -183,12 +201,38 @@ describe('createGetPackageInfoAction', () => {
     ]);
   });
 
+  it('throws ConflictError when the name matches multiple entities', async () => {
+    const registration = actionsRegistry.register.mock.calls[0][0];
+
+    await expect(
+      registration.action({
+        input: { name: 'my-package' },
+        credentials,
+        logger,
+      }),
+    ).rejects.toThrow(
+      new ConflictError(
+        "Multiple entities found with name 'my-package', please provide a more specific kind and/or namespace. Matching entities: component:default/my-package, api:default/my-package",
+      ),
+    );
+    expect(npmRegistryService.getPackageInfoForEntity).not.toHaveBeenCalled();
+  });
+
   it('throws NotFoundError for unknown entities and entities without package annotation', async () => {
     const registration = actionsRegistry.register.mock.calls[0][0];
 
     await expect(
       registration.action({
         input: { name: 'unknown' },
+        credentials,
+        logger,
+      }),
+    ).rejects.toThrow(new NotFoundError("No entity found with name 'unknown'"));
+
+    // wrong namespace for an existing name
+    await expect(
+      registration.action({
+        input: { name: 'my-stable-package', namespace: 'default' },
         credentials,
         logger,
       }),

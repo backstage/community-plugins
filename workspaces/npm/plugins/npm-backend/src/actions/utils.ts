@@ -16,7 +16,7 @@
 import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { NotFoundError } from '@backstage/errors';
+import { ConflictError, NotFoundError } from '@backstage/errors';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 
 import {
@@ -44,20 +44,63 @@ type Zod = Parameters<
  */
 export function entityInputSchema(zod: Zod) {
   return {
-    name: zod.string().describe('The name of the catalog entity.'),
+    name: zod
+      .string()
+      .trim()
+      .min(1)
+      .describe('The name of the catalog entity.'),
     kind: zod
       .string()
+      .min(1)
       .optional()
       .describe(
-        'The kind of the catalog entity, e.g. "Component". Defaults to "Component" if omitted.',
+        'The kind of the catalog entity, e.g. "Component", "API", "System". If the kind is unknown it can be omitted.',
       ),
     namespace: zod
       .string()
+      .min(1)
       .optional()
       .describe(
-        'The namespace of the catalog entity. Defaults to "default" if omitted.',
+        'The namespace of the catalog entity. If the namespace is unknown it can be omitted.',
       ),
   };
+}
+
+/**
+ * Resolves the catalog entity for the action input the same way the
+ * core catalog actions do: by name, narrowed down by kind and namespace
+ * if they are provided.
+ */
+export async function resolveEntity(options: {
+  catalog: CatalogService;
+  input: EntityInput;
+  credentials: BackstageCredentials;
+}): Promise<Entity> {
+  const { catalog, input, credentials } = options;
+
+  const filter: Record<string, string> = { 'metadata.name': input.name };
+  if (input.kind) {
+    filter.kind = input.kind;
+  }
+  if (input.namespace) {
+    filter['metadata.namespace'] = input.namespace;
+  }
+
+  const { items } = await catalog.queryEntities({ filter }, { credentials });
+
+  if (items.length === 0) {
+    throw new NotFoundError(`No entity found with name '${input.name}'`);
+  }
+  if (items.length > 1) {
+    throw new ConflictError(
+      `Multiple entities found with name '${
+        input.name
+      }', please provide a more specific kind and/or namespace. Matching entities: ${items
+        .map(e => stringifyEntityRef(e))
+        .join(', ')}`,
+    );
+  }
+  return items[0];
 }
 
 /**
@@ -77,16 +120,8 @@ export async function loadPackageInfo(options: {
 }> {
   const { catalog, npmRegistryService, input, credentials } = options;
 
-  const entityRef = stringifyEntityRef({
-    kind: input.kind ?? 'Component',
-    namespace: input.namespace ?? 'default',
-    name: input.name,
-  });
-
-  const entity = await catalog.getEntityByRef(entityRef, { credentials });
-  if (!entity) {
-    throw new NotFoundError(`No entity found for ref '${entityRef}'`);
-  }
+  const entity = await resolveEntity({ catalog, input, credentials });
+  const entityRef = stringifyEntityRef(entity);
 
   const packageName = entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME];
   if (!packageName) {

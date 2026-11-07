@@ -231,9 +231,11 @@ load the same information that is shown in the frontend cards:
 | `npm:list-package-versions` | Returns the published versions of the npm package of a catalog entity, newest first, including the release date (if provided by the registry) and the dist-tags of each version. Supports a `limit`. |
 
 Both actions identify the catalog entity by `name` and the optional `kind`
-(default `Component`) and `namespace` (default `default`) and respect the
-`npm/package`, `npm/registry`, `npm/stable-tag` and `npm/show-tags` annotations
-the same way the frontend cards do.
+and `namespace`, like the core catalog actions. If kind or namespace are
+omitted, the entity is looked up by name and an error is returned if the name
+is ambiguous. The actions respect the `npm/package`, `npm/registry`,
+`npm/stable-tag` and `npm/show-tags` annotations the same way the frontend
+cards do.
 
 Example input for `npm:list-package-versions`:
 
