@@ -25,7 +25,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
 import { ShortcutApi } from './api';
-import { alertApiRef, useApi, useAnalytics } from '@backstage/core-plugin-api';
+import { useApi, useAnalytics } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -54,7 +55,7 @@ export const AddShortcut = ({
   allowExternalLinks,
 }: Props) => {
   const classes = useStyles();
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const { pathname, search } = useLocation();
   const [formValues, setFormValues] = useState<FormValues>();
   const open = Boolean(anchorEl);
@@ -66,15 +67,15 @@ export const AddShortcut = ({
 
     try {
       await api.add(shortcut);
-      alertApi.post({
-        message: `Added shortcut '${title}' to your sidebar`,
-        severity: 'success',
-        display: 'transient',
+      toastApi.post({
+        title: `Added shortcut '${title}' to your sidebar`,
+        status: 'success',
+        timeout: 5000,
       });
     } catch (error) {
-      alertApi.post({
-        message: `Could not add shortcut: ${error.message}`,
-        severity: 'error',
+      toastApi.post({
+        title: `Could not add shortcut: ${error.message}`,
+        status: 'danger',
       });
     }
 
