@@ -218,6 +218,32 @@ Ensure that your Backstage frontend app is using that new frontend system.
 
 For more information, please checkout the [Registries](./registries.md) documentation.
 
+### Optional: Actions (for MCP and the actions registry)
+
+The backend plugin registers two read-only actions with the Backstage
+[actions registry](https://backstage.io/docs/backend-system/core-services/actions-registry),
+so that AI agents (e.g. via the MCP actions backend) and other plugins can
+load the same information that is shown in the frontend cards:
+
+| Action                      | Description                                                                                                                                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm:get-package-info`      | Returns general information about the npm package of a catalog entity: latest version and release date, description, license, keywords, links and the current dist-tags.                             |
+| `npm:list-package-versions` | Returns the published versions of the npm package of a catalog entity, newest first, including the release date (if provided by the registry) and the dist-tags of each version. Supports a `limit`. |
+
+Both actions identify the catalog entity by `name` and the optional `kind`
+(default `Component`) and `namespace` (default `default`) and respect the
+`npm/package`, `npm/registry`, `npm/stable-tag` and `npm/show-tags` annotations
+the same way the frontend cards do.
+
+Example input for `npm:list-package-versions`:
+
+```json
+{
+  "name": "react",
+  "limit": 5
+}
+```
+
 ### Optional: Test with plugin-example catalog entities
 
 For testing purpose you can import this catalog entities:
