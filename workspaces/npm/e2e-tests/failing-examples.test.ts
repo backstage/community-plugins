@@ -17,7 +17,12 @@
 import { test, expect } from '@playwright/test';
 
 import { failingExamples } from '../examples/failing-examples';
-import { navigateToCatalogIfPresent, skipLoginIfPresent } from './test-utils';
+import {
+  isNewFrontendSystem,
+  navigateToCatalogIfPresent,
+  npmReleasesTab,
+  skipLoginIfPresent,
+} from './test-utils';
 
 test('failing-examples', async ({ page }) => {
   await page.goto('/');
@@ -31,10 +36,9 @@ test('failing-examples', async ({ page }) => {
     await page.getByRole('link', { name }).click();
 
     if (name === 'no-npm-package-annotation') {
-      if (await page.getByRole('link', { name: 'Catalog' }).isVisible()) {
-        // NFS
+      if (await isNewFrontendSystem(page)) {
         await expect(page.getByText('About')).toBeVisible();
-        await expect(page.getByRole('tab')).toHaveCount(1);
+        await expect(npmReleasesTab(page)).toHaveCount(0);
         await expect(
           page.getByText(`NPM package ${packageName}`),
         ).not.toBeVisible();
@@ -43,14 +47,13 @@ test('failing-examples', async ({ page }) => {
       }
     } else if (name === 'npm-package-not-found') {
       await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
-      if (await page.getByRole('link', { name: 'Catalog' }).isVisible()) {
-        // NFS
+      if (await isNewFrontendSystem(page)) {
         await expect(page.getByText('About')).toBeVisible();
-        await expect(page.getByRole('tab')).toHaveCount(2);
+        await expect(npmReleasesTab(page)).toHaveCount(1);
         await expect(
           page.getByText('Error: Unexpected status code: 404 Not Found'),
         ).toHaveCount(4);
-        await page.getByRole('tab', { name: 'Npm Releases' }).click();
+        await npmReleasesTab(page).click();
         await expect(
           page.getByText('Error: Unexpected status code: 404 Not Found'),
         ).toHaveCount(4);

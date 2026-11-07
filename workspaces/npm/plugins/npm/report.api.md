@@ -6,7 +6,6 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { RouteRef } from '@backstage/core-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
@@ -25,13 +24,7 @@ export { isNpmAvailable };
 export const NpmInfoCard: () => JSX_2.Element;
 
 // @public
-export const npmPlugin: BackstagePlugin<
-  {
-    root: RouteRef<undefined>;
-  },
-  {},
-  {}
->;
+export const npmPlugin: BackstagePlugin<{}, {}, {}>;
 
 // @public @deprecated (undocumented)
 export const NpmReleaseOverviewCard: () => JSX_2.Element;

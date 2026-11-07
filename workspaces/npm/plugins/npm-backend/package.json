@@ -11,7 +11,7 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.28.0",
+    "supported-versions": "1.54.0",
     "pluginId": "npm",
     "pluginPackage": "@backstage-community/plugin-npm-backend",
     "pluginPackages": [
