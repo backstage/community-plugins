@@ -17,7 +17,11 @@
 import { test, expect } from '@playwright/test';
 
 import { npmjsExamples } from '../examples/npmjs-examples';
-import { navigateToCatalogIfPresent, skipLoginIfPresent } from './test-utils';
+import {
+  navigateToCatalogIfPresent,
+  openNpmReleasesTabIfPresent,
+  skipLoginIfPresent,
+} from './test-utils';
 
 test('npmjs-examples', async ({ page }) => {
   await page.goto('/');
@@ -33,9 +37,7 @@ test('npmjs-examples', async ({ page }) => {
     await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
     await expect(page.getByText('Current Tags').first()).toBeVisible();
 
-    if (await page.getByRole('tab', { name: 'Npm Releases' }).isVisible()) {
-      await page.getByRole('tab', { name: 'Npm Releases' }).click();
-    }
+    await openNpmReleasesTabIfPresent(page);
 
     await expect(page.getByText('Current Tags').last()).toBeVisible();
     await expect(page.getByText('Version History')).toBeVisible();
