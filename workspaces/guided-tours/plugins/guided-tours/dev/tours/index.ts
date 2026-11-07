@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { catalogTour } from './catalogTour';
+import { invalidSelectorTour } from './invalidSelectorTour';
+import { missingTargetTour } from './missingTargetTour';
 import { notificationsTour } from './notificationsTour';
 import { scaffolderTour } from './scaffolderTour';
 import { settingsTour } from './settingsTour';
@@ -26,4 +28,7 @@ export const devTours = [
   scaffolderTour,
   notificationsTour,
   settingsTour,
+  // edge cases, started by hand from the tours page
+  missingTargetTour,
+  invalidSelectorTour,
 ];

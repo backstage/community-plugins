@@ -87,6 +87,7 @@ test.describe('guided tours page', () => {
     await expect(welcome.getByText('Dismissed')).toBeVisible();
     await page.getByRole('button', { name: 'Reset all tours' }).click();
     await page.getByRole('button', { name: 'Reset', exact: true }).click();
-    await expect(page.getByText('New')).toHaveCount(5);
+    // every tour of the dev app, including the two edge case tours
+    await expect(page.getByText('New')).toHaveCount(7);
   });
 });

@@ -20,11 +20,14 @@ export type TargetStatus = 'none' | 'resolving' | 'found' | 'missing';
 export interface TargetResult {
   element: HTMLElement | null;
   status: TargetStatus;
+  /** Set when the selector cannot be parsed; the status is `missing` then. */
+  error?: Error;
 }
 
 /**
  * Resolves a CSS selector to an element, waiting for it to appear (lazy
- * pages, navigation) until `timeoutMs` elapses.
+ * pages, navigation) until `timeoutMs` elapses. A selector that cannot be
+ * parsed counts as missing right away and is reported through `error`.
  */
 export function useTargetElement(
   selector: string | undefined,
@@ -54,7 +57,14 @@ export function useTargetElement(
     }
 
     const find = () => document.querySelector<HTMLElement>(selector);
-    const existing = find();
+    let existing: HTMLElement | null;
+    try {
+      existing = find();
+    } catch (error) {
+      // an invalid selector throws a SyntaxError; waiting would not help
+      setResult({ element: null, status: 'missing', error: error as Error });
+      return undefined;
+    }
     if (existing) {
       setResult({ element: existing, status: 'found' });
       return undefined;
@@ -88,7 +98,11 @@ export function useTargetElement(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selector, enabled, timeoutMs, resetKey]);
 
-  return { element: result.element, status: result.status };
+  return {
+    element: result.element,
+    status: result.status,
+    error: result.error,
+  };
 }
 
 export interface Rect {

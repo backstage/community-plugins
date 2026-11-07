@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useApi } from '@backstage/frontend-plugin-api';
+import { errorApiRef, useApi } from '@backstage/frontend-plugin-api';
 import { Dialog, DialogBody, Popover, Skeleton } from '@backstage/ui';
 import {
   GuidedTour,
@@ -44,6 +44,7 @@ export function ActiveStep(props: ActiveStepProps) {
   const { tour, stepIndex } = props;
   const step = tour.steps[stepIndex];
   const api = useApi(guidedTourApiRef);
+  const errorApi = useApi(errorApiRef);
   const navigate = useNavigate();
   const location = useLocation();
   const stepTitle = useGuidedTourText(step.title);
@@ -61,12 +62,27 @@ export function ActiveStep(props: ActiveStepProps) {
   const selector = step.target
     ? guidedTourTargetSelector(step.target)
     : undefined;
-  const { element, status } = useTargetElement(selector, {
+  const {
+    element,
+    status,
+    error: selectorError,
+  } = useTargetElement(selector, {
     enabled: onRoute,
     timeoutMs: step.targetTimeoutMs,
     resetKey: `${tour.id}:${stepIndex}`,
   });
   const rect = useElementRect(element);
+
+  // a selector that cannot be parsed is a mistake in the tour: tell the author
+  useEffect(() => {
+    if (selectorError) {
+      errorApi.post(
+        new Error(
+          `Invalid target selector "${selector}" in step "${step.id}" of tour "${tour.id}": ${selectorError.message}`,
+        ),
+      );
+    }
+  }, [selectorError, errorApi, selector, step.id, tour.id]);
 
   // skip steps whose target never showed up, when configured so
   useEffect(() => {

@@ -180,7 +180,9 @@ export interface GuidedTourStep {
   /**
    * Element to spotlight. A bare id is resolved to
    * `[data-guided-tour="<id>"]`; use `{ selector }` for an arbitrary CSS
-   * selector. Omit to show the step centered without a spotlight.
+   * selector. Omit to show the step centered without a spotlight. A selector
+   * that cannot be parsed counts as a missing target and is reported to the
+   * error API.
    */
   target?: string | { selector: string };
   /** Where to place the card relative to the target. Default `bottom`. */

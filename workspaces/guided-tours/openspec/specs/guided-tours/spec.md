@@ -71,6 +71,11 @@ Each step SHALL highlight its target element with a dimmed mask and a cut-out an
 - **WHEN** the target is not found within `targetTimeoutMs`
 - **THEN** the step is shown centered when `onMissingTarget` is `center` (default), or skipped when it is `skip`
 
+#### Scenario: Invalid selector
+
+- **WHEN** a step's `selector` cannot be parsed, e.g. `div[`
+- **THEN** the step is treated as a missing target at once, without waiting for the timeout, the error is posted to the error API, and the overlay keeps working
+
 ### Requirement: Navigation buttons
 
 The popover SHALL show a Previous button (disabled on the first step), a Next button (labelled Done on the last step), a close control, and a `current / total` counter. Escape SHALL close the tour.

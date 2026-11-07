@@ -39,6 +39,15 @@ describe('useTargetElement', () => {
     expect(disabled.result.current.status).toBe('resolving');
   });
 
+  it('treats a selector that cannot be parsed as missing, at once', () => {
+    const { result } = renderHook(() =>
+      useTargetElement('div[', { timeoutMs: 5000 }),
+    );
+    expect(result.current.status).toBe('missing');
+    expect(result.current.element).toBeNull();
+    expect(result.current.error?.message).toMatch(/not a valid selector/);
+  });
+
   it('waits for the element to appear and gives up after the timeout', async () => {
     const { result } = renderHook(() =>
       useTargetElement('#late', { timeoutMs: 50 }),
