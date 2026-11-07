@@ -56,6 +56,16 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 // Tech insights
 backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 
+// Demonstrates inserting facts from an incremental entity provider via
+// `techInsightsFactInsertServiceRef`. The local file at
+// `./plugins/incrementalFactExample.ts` bundles both the `tech-insights`
+// capture module and the `catalog` ingestion module via
+// `createBackendFeatureLoader`, so a single `backend.add` is sufficient.
+backend.add(
+  import('@backstage/plugin-catalog-backend-module-incremental-ingestion'),
+);
+backend.add(import('./plugins/incrementalFactExample'));
+
 // This will register JsonRulesEngineFactCheckerFactory by configuration and overwrite all programmatically registration
 // backend.add(import('@backstage-community/plugin-tech-insights-backend-module-jsonfc'));
 
