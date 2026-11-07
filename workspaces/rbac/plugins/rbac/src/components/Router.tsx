@@ -33,12 +33,15 @@ import { RbacPage } from './RbacPage';
 import { RoleOverviewPage } from './RoleOverview/RoleOverviewPage';
 import { ToastContextProvider } from './ToastContext';
 import { useTranslation } from '../hooks/useTranslation';
+import { HeaderVariant } from './RolePageLayout';
 
-/**
- *
- * @public
- */
-export const Router = ({ useHeader = true }: { useHeader?: boolean }) => {
+const RbacRoutes = ({
+  useHeader,
+  headerVariant,
+}: {
+  useHeader: boolean;
+  headerVariant: HeaderVariant;
+}) => {
   const config = useApi(configApiRef);
   const { t } = useTranslation();
   const isRBACPluginEnabled = config.getOptionalBoolean('permission.enabled');
@@ -57,17 +60,35 @@ export const Router = ({ useHeader = true }: { useHeader?: boolean }) => {
     <ToastContextProvider>
       <Routes>
         <Route path="/" element={<RbacPage useHeader={useHeader} />} />
-        <Route path={roleRouteRef.path} element={<RoleOverviewPage />} />
+        <Route
+          path={roleRouteRef.path}
+          element={<RoleOverviewPage headerVariant={headerVariant} />}
+        />
         <Route
           path={createRoleRouteRef.path}
           element={
             <RequirePermission permission={policyEntityCreatePermission}>
-              <CreateRolePage />
+              <CreateRolePage headerVariant={headerVariant} />
             </RequirePermission>
           }
         />
-        <Route path={editRoleRouteRef.path} element={<EditRolePage />} />
+        <Route
+          path={editRoleRouteRef.path}
+          element={<EditRolePage headerVariant={headerVariant} />}
+        />
       </Routes>
     </ToastContextProvider>
   );
 };
+
+/**
+ *
+ * @public
+ */
+export const Router = ({ useHeader = true }: { useHeader?: boolean }) => (
+  <RbacRoutes useHeader={useHeader} headerVariant="legacy" />
+);
+
+export const NfsRouter = () => (
+  <RbacRoutes useHeader={false} headerVariant="bui" />
+);
