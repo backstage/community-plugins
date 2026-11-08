@@ -41,7 +41,14 @@ test.describe('edge case tours', () => {
     await expect(step(page, 'Missing targets')).toBeVisible();
     await stepButton(page, 'Next').click();
 
-    // the target is awaited for 1.5 s, then the card is centered
+    // meanwhile a card shaped placeholder with a progress ring is shown,
+    // which can be closed too
+    await expect(page.getByRole('progressbar')).toBeVisible();
+    await expect(
+      page.getByRole('dialog').getByRole('button', { name: 'Close tour' }),
+    ).toBeVisible();
+
+    // after 1.5 s the card is centered
     await expect(step(page, 'Shown centered')).toBeVisible({ timeout: 5000 });
     await expect(
       step(page, 'Shown centered').getByText('Step 2 of 4'),

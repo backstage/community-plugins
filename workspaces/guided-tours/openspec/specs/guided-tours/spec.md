@@ -61,6 +61,12 @@ Each step SHALL highlight its target element with a dimmed mask and a cut-out an
 - **WHEN** a step's loader rejects, or its element throws while rendering
 - **THEN** the card body shows an error with the message, the error is posted to the error API, and Previous, Next and Close keep working
 
+#### Scenario: Target or content still loading
+
+- **WHEN** a step waits for its target or for its lazily loaded content for more than 500 ms
+- **THEN** a centered placeholder with the layout of the step card (titles, Previous and Next) is shown, with a progress ring in place of the text that reaches 100% when `targetTimeoutMs` (default 5000 ms) elapses, and the tour can be closed from it
+- **AND** nothing is shown during the first 500 ms, so steps whose target is found quickly do not flash a placeholder
+
 #### Scenario: Step without target
 
 - **WHEN** a step has no `target`

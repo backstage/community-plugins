@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { errorApiRef, useApi } from '@backstage/frontend-plugin-api';
-import { Dialog, DialogBody, Popover, Skeleton } from '@backstage/ui';
+import { Dialog, DialogBody, Popover } from '@backstage/ui';
 import {
   GuidedTour,
   guidedTourApiRef,
@@ -28,8 +28,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { isOnRoute } from './isOnRoute';
 import { Spotlight } from './Spotlight';
 import { StepCard } from './StepCard';
+import { StepCardSkeleton } from './StepCardSkeleton';
 import { useLoadedElement } from './useLoadedElement';
-import { useElementRect, useTargetElement } from './useTargetElement';
+import { useElapsedMs } from './useElapsedMs';
+import {
+  DEFAULT_TARGET_TIMEOUT_MS,
+  useElementRect,
+  useTargetElement,
+} from './useTargetElement';
+
+/** Short waits show nothing at all, so quick steps do not flash a placeholder. */
+const LOADING_DIALOG_DELAY_MS = 500;
 
 export interface ActiveStepProps {
   tour: GuidedTour;
@@ -131,6 +140,8 @@ export function ActiveStep(props: ActiveStepProps) {
   const loaded = useLoadedElement(
     isGuidedTourElementLoader(step.content) ? step.content.loader : undefined,
   );
+  const waiting = status === 'resolving' || loaded.status === 'loading';
+  const waitedMs = useElapsedMs(waiting, `${tour.id}:${stepIndex}`);
 
   const card = (
     <StepCard
@@ -147,12 +158,29 @@ export function ActiveStep(props: ActiveStepProps) {
   );
 
   // The BUI Dialog brings its own backdrop, so the spotlight is only used
-  // for anchored steps.
-  if (status === 'resolving' || loaded.status === 'loading') {
+  // for anchored steps. While the target or the content loads, a card shaped
+  // placeholder is shown that can be closed like the step itself; the ring
+  // on it fills up until the target times out.
+  if (waiting) {
+    if (waitedMs < LOADING_DIALOG_DELAY_MS) {
+      return null;
+    }
+    const timeoutMs = step.targetTimeoutMs ?? DEFAULT_TARGET_TIMEOUT_MS;
+    const progress =
+      status === 'resolving' ? Math.min(waitedMs / timeoutMs, 1) : undefined;
     return (
-      <Dialog key="resolving" isOpen isDismissable={false} width={360}>
+      <Dialog
+        key="resolving"
+        isOpen
+        isKeyboardDismissDisabled
+        onOpenChange={open => !open && api.dismiss()}
+        width={420}
+      >
         <DialogBody>
-          <Skeleton width="100%" height={80} />
+          <StepCardSkeleton
+            progress={progress}
+            onDismiss={() => api.dismiss()}
+          />
         </DialogBody>
       </Dialog>
     );

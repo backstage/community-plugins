@@ -17,6 +17,9 @@ import { useEffect, useState } from 'react';
 
 export type TargetStatus = 'none' | 'resolving' | 'found' | 'missing';
 
+/** How long a step waits for its target unless it sets `targetTimeoutMs`. */
+export const DEFAULT_TARGET_TIMEOUT_MS = 5000;
+
 export interface TargetResult {
   element: HTMLElement | null;
   status: TargetStatus;
@@ -33,7 +36,11 @@ export function useTargetElement(
   selector: string | undefined,
   options: { enabled?: boolean; timeoutMs?: number; resetKey?: string } = {},
 ): TargetResult {
-  const { enabled = true, timeoutMs = 5000, resetKey } = options;
+  const {
+    enabled = true,
+    timeoutMs = DEFAULT_TARGET_TIMEOUT_MS,
+    resetKey,
+  } = options;
   const initial = (): TargetResult & { key?: string } => ({
     element: null,
     status: selector ? 'resolving' : 'none',
