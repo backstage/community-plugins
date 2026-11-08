@@ -39,6 +39,12 @@ test.describe('edge case tours', () => {
       .getByRole('button', { name: 'Start' })
       .click();
     await expect(step(page, 'Missing targets')).toBeVisible();
+    // centered steps sit on the spotlight mask, the dialog adds no backdrop
+    await expect(spotlight(page)).toBeVisible();
+    await expect(page.locator('.bui-DialogOverlay')).toHaveCSS(
+      'background-color',
+      'rgba(0, 0, 0, 0)',
+    );
     await stepButton(page, 'Next').click();
 
     // meanwhile a card shaped placeholder with a progress ring is shown,
@@ -53,7 +59,7 @@ test.describe('edge case tours', () => {
     await expect(
       step(page, 'Shown centered').getByText('Step 2 of 4'),
     ).toBeVisible();
-    await expect(spotlight(page)).toHaveCount(0);
+    await expect(spotlight(page)).toBeVisible();
 
     // the skip step is passed over after its timeout
     await stepButton(page, 'Next').click();
@@ -80,7 +86,7 @@ test.describe('edge case tours', () => {
 
     // shown centered at once, with the mistake reported through the error API
     await expect(step(page, 'Broken selector')).toBeVisible({ timeout: 1000 });
-    await expect(spotlight(page)).toHaveCount(0);
+    await expect(spotlight(page)).toBeVisible();
     await expect(
       page.getByText(/Invalid target selector "div\[" in step "broken"/),
     ).toBeVisible();

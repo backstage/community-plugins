@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { errorApiRef, useApi } from '@backstage/frontend-plugin-api';
-import { Dialog, DialogBody, Popover } from '@backstage/ui';
+import { Popover } from '@backstage/ui';
 import {
   GuidedTour,
   guidedTourApiRef,
@@ -29,6 +29,7 @@ import { isOnRoute } from './isOnRoute';
 import { Spotlight } from './Spotlight';
 import { StepCard } from './StepCard';
 import { StepCardSkeleton } from './StepCardSkeleton';
+import { StepDialog } from './StepDialog';
 import { useLoadedElement } from './useLoadedElement';
 import { useElapsedMs } from './useElapsedMs';
 import {
@@ -157,32 +158,21 @@ export function ActiveStep(props: ActiveStepProps) {
     />
   );
 
-  // The BUI Dialog brings its own backdrop, so the spotlight is only used
-  // for anchored steps. While the target or the content loads, a card shaped
-  // placeholder is shown that can be closed like the step itself; the ring
-  // on it fills up until the target times out.
+  // While the target or the content loads, a card shaped placeholder is
+  // shown that can be closed like the step itself; the ring on it fills up
+  // until the target times out.
   if (waiting) {
+    // the page is dimmed at once, the placeholder follows after the delay
     if (waitedMs < LOADING_DIALOG_DELAY_MS) {
-      return null;
+      return <Spotlight rect={null} />;
     }
     const timeoutMs = step.targetTimeoutMs ?? DEFAULT_TARGET_TIMEOUT_MS;
     const progress =
       status === 'resolving' ? Math.min(waitedMs / timeoutMs, 1) : undefined;
     return (
-      <Dialog
-        key="resolving"
-        isOpen
-        isKeyboardDismissDisabled
-        onOpenChange={open => !open && api.dismiss()}
-        width={420}
-      >
-        <DialogBody>
-          <StepCardSkeleton
-            progress={progress}
-            onDismiss={() => api.dismiss()}
-          />
-        </DialogBody>
-      </Dialog>
+      <StepDialog key="resolving" onDismiss={() => api.dismiss()}>
+        <StepCardSkeleton progress={progress} onDismiss={() => api.dismiss()} />
+      </StepDialog>
     );
   }
 
@@ -216,16 +206,11 @@ export function ActiveStep(props: ActiveStepProps) {
     return null;
   }
 
-  // no target, or target missing with the default `center` behaviour
+  // no target, or target missing with the default `center` behaviour: the
+  // dialog sits on the full spotlight mask
   return (
-    <Dialog
-      key="step"
-      isOpen
-      isKeyboardDismissDisabled
-      onOpenChange={open => !open && api.dismiss()}
-      width={420}
-    >
-      <DialogBody>{card}</DialogBody>
-    </Dialog>
+    <StepDialog key="step" onDismiss={() => api.dismiss()}>
+      {card}
+    </StepDialog>
   );
 }

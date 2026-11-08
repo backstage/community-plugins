@@ -139,7 +139,8 @@ describe('GuidedTourOverlay', () => {
     const intro = await screen.findByRole('dialog', { name: 'Hi 👋' });
     expect(intro).toBeVisible();
     expect(screen.getByText('Step 1 of 3')).toBeVisible();
-    expect(screen.queryByTestId('guided-tour-spotlight')).toBeNull();
+    // centered steps dim the page with the full mask
+    expect(screen.getByTestId('guided-tour-spotlight')).toBeInTheDocument();
 
     // step 2 navigates to its route, waits for the target and anchors to it
     await userEvent.click(screen.getByRole('button', { name: 'Next' }));

@@ -70,7 +70,7 @@ Each step SHALL highlight its target element with a dimmed mask and a cut-out an
 #### Scenario: Step without target
 
 - **WHEN** a step has no `target`
-- **THEN** the step is shown in a centered dialog without a cut-out
+- **THEN** the step is shown in a centered dialog on the spotlight mask without a cut-out; the dialog adds no backdrop of its own, so the dim is the same as for anchored steps
 
 #### Scenario: Target never appears
 

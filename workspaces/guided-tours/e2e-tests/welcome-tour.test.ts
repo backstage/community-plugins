@@ -38,7 +38,7 @@ test.describe('welcome tour', () => {
     await expect(intro.getByText('Welcome to Backstage')).toBeVisible();
     await expect(intro.getByText('Step 1 of 6')).toBeVisible();
     await expect(stepButton(page, 'Previous')).toBeDisabled();
-    await expect(spotlight(page)).toHaveCount(0);
+    await expect(spotlight(page)).toBeVisible();
 
     // the second step navigates and anchors to the sidebar item
     await stepButton(page, 'Next').click();
