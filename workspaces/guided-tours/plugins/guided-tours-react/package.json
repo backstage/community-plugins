@@ -50,8 +50,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/frontend-plugin-api": "^0.18.0",
-    "@backstage/ui": "^0.17.1",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@braintree/sanitize-url": "^7.1.2",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "marked": "^15.0.12"
@@ -61,11 +61,13 @@
     "react-router-dom": "^6.30.2"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.5",
-    "@backstage/frontend-test-utils": "^0.6.3",
+    "@backstage/cli": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
+    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
+    "@types/react-dom": "^18",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.30.2"
