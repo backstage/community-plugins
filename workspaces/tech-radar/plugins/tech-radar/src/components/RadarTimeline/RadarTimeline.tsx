@@ -30,6 +30,8 @@ import AdjustIcon from '@material-ui/icons/Adjust';
 
 import { MarkdownContent } from '@backstage/core-components';
 import { MovedState } from '@backstage-community/plugin-tech-radar-common';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { techRadarTranslationRef } from '../../translations';
 
 export type Props = {
   timeline?: EntrySnapshot[];
@@ -37,29 +39,36 @@ export type Props = {
 
 const RadarTimeline = (props: Props): React.JSX.Element => {
   const { timeline } = props;
+  const { t } = useTranslationRef(techRadarTranslationRef);
 
   return (
     <>
       <Typography variant="h6" gutterBottom>
-        History
+        {t('radarTimeline.title')}
       </Typography>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell align="left" style={{ wordBreak: 'normal' }}>
-                Moved in direction
+                {t('radarTimeline.tableHeader.movedInDirection')}
               </TableCell>
-              <TableCell align="left">Moved to ring</TableCell>
-              <TableCell align="left">Moved on date</TableCell>
-              <TableCell align="left">Description</TableCell>
+              <TableCell align="left">
+                {t('radarTimeline.tableHeader.movedToRing')}
+              </TableCell>
+              <TableCell align="left">
+                {t('radarTimeline.tableHeader.movedOnDate')}
+              </TableCell>
+              <TableCell align="left">
+                {t('radarTimeline.tableHeader.description')}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {timeline?.length === 0 && (
               <TableRow key="no-timeline">
                 <TableCell component="th" scope="row">
-                  No Timeline
+                  {t('radarTimeline.noTimeline')}
                 </TableCell>
               </TableRow>
             )}
