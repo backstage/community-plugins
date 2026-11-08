@@ -66,8 +66,9 @@ describe('<GroupsDiagram />', () => {
       },
     );
 
+    // DependencyGraph stays visibility:hidden until layout settles.
     expect(
-      screen.getByRole('link', { name: 'my-namespace/group-a' }),
+      await screen.findByRole('link', { name: 'my-namespace/group-a' }),
     ).toBeInTheDocument();
   });
 
@@ -130,8 +131,9 @@ describe('<GroupsDiagram />', () => {
       },
     );
 
+    // Wait until the graph is visible before asserting which links exist.
     expect(
-      screen.getByRole('link', { name: 'my-namespace/parent-a' }),
+      await screen.findByRole('link', { name: 'my-namespace/parent-a' }),
     ).toBeInTheDocument();
 
     expect(
