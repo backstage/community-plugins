@@ -90,7 +90,19 @@ function ChartCard({
   );
 }
 
-type FilterTarget = 'costCenter' | 'team';
+type FilterTarget =
+  | 'costCenter'
+  | 'team'
+  | 'enterpriseTeam'
+  | 'organizationTeam';
+type TeamFilterTarget = Exclude<FilterTarget, 'costCenter'>;
+type FilterTargetToggleProps = {
+  id: FilterTarget;
+  label: string;
+  description?: string;
+  emptyDescription?: string;
+  isEmpty: boolean;
+};
 type CostCenterSelection =
   | { kind: 'all' }
   | { kind: 'costCenter'; id: string }
@@ -99,6 +111,11 @@ type CostCenterSelection =
 const ALL_COST_CENTERS_OPTION = 'all';
 const UNASSIGNED_OPTION = 'no-cost-center';
 const COST_CENTER_OPTION_PREFIX = 'cost-center:';
+const TEAM_TARGET_LABELS: Record<TeamFilterTarget, string> = {
+  team: 'Team',
+  enterpriseTeam: 'Enterprise team',
+  organizationTeam: 'Organization team',
+};
 
 const getCostCenterOptionValue = (id: string) =>
   `${COST_CENTER_OPTION_PREFIX}${id}`;
@@ -115,6 +132,81 @@ const getCostCenterSelectionOptionValue = (
   return getCostCenterOptionValue(selection.id);
 };
 
+const getListAvailability = (result: {
+  loading: boolean;
+  error?: Error;
+  items: unknown[];
+}) => {
+  const isLoaded = !result.loading && !result.error;
+  return {
+    knownEmpty: isLoaded && result.items.length === 0,
+    hasOptions: isLoaded && result.items.length > 0,
+  };
+};
+
+function FilterTargetToggle({
+  id,
+  label,
+  description,
+  emptyDescription,
+  isEmpty,
+}: FilterTargetToggleProps) {
+  const tooltipRef = useRef<HTMLElement | null>(null);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const descriptionId = useId();
+  const tooltipText = [description, isEmpty ? emptyDescription : undefined]
+    .filter(Boolean)
+    .join(' ');
+
+  if (!tooltipText) {
+    return <ToggleButton id={id}>{label}</ToggleButton>;
+  }
+
+  return (
+    <>
+      <TooltipTrigger
+        delay={0}
+        isOpen={tooltipOpen}
+        onOpenChange={setTooltipOpen}
+      >
+        {isEmpty ? (
+          <Flex
+            direction="row"
+            ref={node => {
+              tooltipRef.current = node;
+            }}
+            aria-describedby={descriptionId}
+            onMouseEnter={() => setTooltipOpen(true)}
+            onMouseLeave={() => setTooltipOpen(false)}
+          >
+            <ToggleButton id={id} isDisabled aria-describedby={descriptionId}>
+              {label}
+            </ToggleButton>
+          </Flex>
+        ) : (
+          <ToggleButton
+            id={id}
+            ref={node => {
+              tooltipRef.current = node;
+            }}
+            aria-describedby={descriptionId}
+            onMouseEnter={() => setTooltipOpen(true)}
+            onMouseLeave={() => setTooltipOpen(false)}
+            onFocus={() => setTooltipOpen(true)}
+            onBlur={() => setTooltipOpen(false)}
+          >
+            {label}
+          </ToggleButton>
+        )}
+        <Tooltip placement="top" shouldFlip={false} triggerRef={tooltipRef}>
+          {tooltipText}
+        </Tooltip>
+      </TooltipTrigger>
+      <VisuallyHidden id={descriptionId}>{tooltipText}</VisuallyHidden>
+    </>
+  );
+}
+
 /** @public */
 export const V2DashboardPage = () => {
   const configApi = useApi(configApiRef);
@@ -124,6 +216,9 @@ export const V2DashboardPage = () => {
     configApi.getOptionalBoolean('copilot.ingestTeams') ?? false;
   const ingestCostCenters =
     configApi.getOptionalBoolean('copilot.ingestCostCenters') ?? false;
+  const enterpriseOrganizationTeams =
+    configApi.getOptionalBoolean('copilot.enterpriseOrganizationTeams') ??
+    false;
   const defaultView = configApi.getOptionalString('copilot.defaultView') as
     | 'enterprise'
     | 'organization'
@@ -149,8 +244,27 @@ export const V2DashboardPage = () => {
   const costCenterScopeEnabled =
     ingestCostCenters &&
     (type === 'enterprise' || Boolean(enterprise && organization));
-  const teamScopeEnabled = ingestTeams;
-  const bothFilterTargetsAvailable = costCenterScopeEnabled && teamScopeEnabled;
+  const organizationTeamScopeEnabled =
+    type === 'enterprise' &&
+    enterpriseOrganizationTeams &&
+    Boolean(enterprise && organization && ingestTeams);
+  const defaultTeamTarget: FilterTarget =
+    type === 'enterprise' ? 'enterpriseTeam' : 'team';
+  const teamTargets = useMemo<FilterTarget[]>(
+    () => [
+      defaultTeamTarget,
+      ...(organizationTeamScopeEnabled ? ['organizationTeam' as const] : []),
+    ],
+    [defaultTeamTarget, organizationTeamScopeEnabled],
+  );
+  const filterTargets = useMemo<FilterTarget[]>(
+    () => [
+      ...(costCenterScopeEnabled ? ['costCenter' as const] : []),
+      ...(ingestTeams ? teamTargets : []),
+    ],
+    [costCenterScopeEnabled, ingestTeams, teamTargets],
+  );
+  const filterTargetToggleAvailable = filterTargets.length > 1;
 
   const [from, setFrom] = useState(
     DateTime.now().minus({ days: 30 }).toFormat('yyyy-MM-dd'),
@@ -160,19 +274,21 @@ export const V2DashboardPage = () => {
   const [filterTargetSelection, setFilterTargetSelection] = useState<{
     scopeKey: string;
     value: FilterTarget;
-  }>({ scopeKey, value: 'team' });
+  }>({ scopeKey, value: defaultTeamTarget });
   const selectedFilterTarget =
-    filterTargetSelection.scopeKey === scopeKey
+    filterTargetSelection.scopeKey === scopeKey &&
+    filterTargets.includes(filterTargetSelection.value)
       ? filterTargetSelection.value
-      : 'team';
+      : defaultTeamTarget;
   let filterTarget: FilterTarget | undefined;
-  if (bothFilterTargetsAvailable) {
+  if (filterTargetToggleAvailable) {
     filterTarget = selectedFilterTarget;
   } else if (costCenterScopeEnabled) {
     filterTarget = 'costCenter';
-  } else if (teamScopeEnabled) {
-    filterTarget = 'team';
+  } else if (ingestTeams) {
+    filterTarget = defaultTeamTarget;
   }
+  const teamSelectionScopeKey = JSON.stringify([scopeKey, filterTarget]);
   const [teamSelection, setTeamSelection] = useState<{
     scopeKey: string;
     value: string | undefined;
@@ -182,7 +298,9 @@ export const V2DashboardPage = () => {
     value: CostCenterSelection;
   }>({ scopeKey, value: { kind: 'all' } });
   const selectedTeam =
-    teamSelection.scopeKey === scopeKey ? teamSelection.value : undefined;
+    teamSelection.scopeKey === teamSelectionScopeKey
+      ? teamSelection.value
+      : undefined;
   const selectedCostCenter = useMemo<CostCenterSelection>(
     () =>
       costCenterScopeEnabled && costCenterSelection.scopeKey === scopeKey
@@ -195,7 +313,11 @@ export const V2DashboardPage = () => {
       scopeKey,
     ],
   );
-  const activeTeam = filterTarget === 'team' ? selectedTeam : undefined;
+  const isTeamTarget =
+    filterTarget === 'team' ||
+    filterTarget === 'enterpriseTeam' ||
+    filterTarget === 'organizationTeam';
+  const activeTeam = isTeamTarget ? selectedTeam : undefined;
   const activeCostCenter =
     filterTarget === 'costCenter' && selectedCostCenter.kind === 'costCenter'
       ? selectedCostCenter.id
@@ -204,76 +326,133 @@ export const V2DashboardPage = () => {
     filterTarget === 'costCenter' && selectedCostCenter.kind === 'noCostCenter';
   const setSelectedTeam = useCallback(
     (value: string | undefined) => {
-      setTeamSelection({ scopeKey, value });
+      setTeamSelection({ scopeKey: teamSelectionScopeKey, value });
       setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
     },
-    [scopeKey],
+    [scopeKey, teamSelectionScopeKey],
   );
   const setSelectedCostCenter = useCallback(
     (value: CostCenterSelection) => {
       setCostCenterSelection({ scopeKey, value });
-      setTeamSelection({ scopeKey, value: undefined });
+      setTeamSelection({
+        scopeKey: teamSelectionScopeKey,
+        value: undefined,
+      });
     },
-    [scopeKey],
+    [scopeKey, teamSelectionScopeKey],
   );
   const selectFilterTarget = useCallback(
     (value: FilterTarget) => {
+      if (value === selectedFilterTarget) {
+        return;
+      }
       setFilterTargetSelection({ scopeKey, value });
-      if (value === 'costCenter') {
-        setTeamSelection({ scopeKey, value: undefined });
-      } else {
+      if (value !== 'costCenter') {
         setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
       }
+      setTeamSelection({
+        scopeKey: JSON.stringify([scopeKey, value]),
+        value: undefined,
+      });
     },
-    [scopeKey],
+    [scopeKey, selectedFilterTarget],
   );
 
+  const useOrganizationTeamScope =
+    filterTarget === 'organizationTeam' && Boolean(activeTeam);
+  const dashboardType: MetricsScope = useOrganizationTeamScope
+    ? 'organization'
+    : type;
+  const dashboardEntityId = useOrganizationTeamScope
+    ? organization ?? ''
+    : entityId;
   const params = useMemo(
     () => ({
-      type,
-      entityId,
+      type: dashboardType,
+      entityId: dashboardEntityId,
       from,
       to,
       team: activeTeam,
       costCenter: activeCostCenter,
     }),
-    [type, entityId, from, to, activeTeam, activeCostCenter],
+    [dashboardType, dashboardEntityId, from, to, activeTeam, activeCostCenter],
   );
 
   const { data } = useV2DashboardData(params, activeNoCostCenter);
   const costCenters = useV2CostCenters(type, entityId, from, to);
-  const teams = useV2Teams(type, entityId, from, to);
-  const costCentersKnownEmpty =
-    !costCenters.loading &&
-    !costCenters.error &&
-    costCenters.items.length === 0 &&
-    !costCenters.hasUsersWithoutCostCenter;
-  const teamsKnownEmpty =
-    !teams.loading && !teams.error && teams.items.length === 0;
+  const enterpriseTeams = useV2Teams(type, entityId, from, to);
+  const organizationTeams = useV2Teams(
+    'organization',
+    organization ?? '',
+    from,
+    to,
+    organizationTeamScopeEnabled,
+  );
+  const teams =
+    filterTarget === 'organizationTeam' ? organizationTeams : enterpriseTeams;
+  const costCenterAvailability = getListAvailability(costCenters);
   const costCentersHaveOptions =
-    !costCenters.loading &&
-    !costCenters.error &&
-    (costCenters.items.length > 0 || costCenters.hasUsersWithoutCostCenter);
-  const teamsHaveOptions =
-    !teams.loading && !teams.error && teams.items.length > 0;
-  const filterDescriptionId = useId();
-  const costCentersTooltipRef = useRef<HTMLDivElement>(null);
-  const teamsTooltipRef = useRef<HTMLDivElement>(null);
-  const [costCentersTooltipOpen, setCostCentersTooltipOpen] = useState(false);
-  const [teamsTooltipOpen, setTeamsTooltipOpen] = useState(false);
+    costCenterAvailability.hasOptions ||
+    (!costCenters.loading &&
+      !costCenters.error &&
+      costCenters.hasUsersWithoutCostCenter);
+  const enterpriseTeamAvailability = getListAvailability(enterpriseTeams);
+  const organizationTeamAvailability = getListAvailability(organizationTeams);
+  const targetAvailability: Record<
+    FilterTarget,
+    ReturnType<typeof getListAvailability>
+  > = {
+    costCenter: {
+      knownEmpty:
+        costCenterAvailability.knownEmpty &&
+        !costCenters.hasUsersWithoutCostCenter,
+      hasOptions: costCentersHaveOptions,
+    },
+    team: enterpriseTeamAvailability,
+    enterpriseTeam: enterpriseTeamAvailability,
+    organizationTeam: organizationTeamAvailability,
+  };
+  const selectedTargetKnownEmpty = filterTarget
+    ? targetAvailability[filterTarget].knownEmpty
+    : false;
+  const targetWithOptions = filterTargets.find(
+    target => targetAvailability[target].hasOptions,
+  );
+  const allTargetsKnownEmpty = filterTargets.every(
+    target => targetAvailability[target].knownEmpty,
+  );
   const costCentersEmptyDescription =
     'No cost centers with enough Copilot users in the selected date range';
   const teamsEmptyDescription =
     'No teams with Copilot data in the selected date range';
+  const enterpriseTeamDescription =
+    'Teams defined at the enterprise level in GitHub. They can include members from any organization in the enterprise.';
+  const organizationTeamDescription = `Teams defined within the ${organization} organization. Metrics come from that organization's Copilot reports.`;
+  const teamTargetDescriptions: Partial<Record<TeamFilterTarget, string>> = {
+    enterpriseTeam: enterpriseTeamDescription,
+    organizationTeam: organizationTeamDescription,
+  };
+  const filterTargetToggles = filterTargets.map(
+    (target): FilterTargetToggleProps => {
+      if (target === 'costCenter') {
+        return {
+          id: target,
+          label: 'Cost center',
+          emptyDescription: costCentersEmptyDescription,
+          isEmpty: targetAvailability[target].knownEmpty,
+        };
+      }
 
-  useEffect(() => {
-    if (!costCentersKnownEmpty) {
-      setCostCentersTooltipOpen(false);
-    }
-    if (!teamsKnownEmpty) {
-      setTeamsTooltipOpen(false);
-    }
-  }, [costCentersKnownEmpty, teamsKnownEmpty]);
+      return {
+        id: target,
+        label: TEAM_TARGET_LABELS[target],
+        description:
+          type === 'enterprise' ? teamTargetDescriptions[target] : undefined,
+        emptyDescription: teamsEmptyDescription,
+        isEmpty: targetAvailability[target].knownEmpty,
+      };
+    },
+  );
 
   const costCenterOptions = useMemo(() => {
     const options = [...costCenters.items]
@@ -295,17 +474,19 @@ export const V2DashboardPage = () => {
   }, [costCenters.hasUsersWithoutCostCenter, costCenters.items]);
 
   useEffect(() => {
-    if (teamSelection.scopeKey !== scopeKey) {
-      setTeamSelection({ scopeKey, value: undefined });
+    if (teamSelection.scopeKey !== teamSelectionScopeKey) {
+      setTeamSelection({ scopeKey: teamSelectionScopeKey, value: undefined });
     }
     if (costCenterSelection.scopeKey !== scopeKey) {
       setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
     }
     if (filterTargetSelection.scopeKey !== scopeKey) {
-      setFilterTargetSelection({ scopeKey, value: 'team' });
+      setFilterTargetSelection({ scopeKey, value: defaultTeamTarget });
     }
   }, [
     scopeKey,
+    teamSelectionScopeKey,
+    defaultTeamTarget,
     teamSelection.scopeKey,
     costCenterSelection.scopeKey,
     filterTargetSelection.scopeKey,
@@ -346,46 +527,44 @@ export const V2DashboardPage = () => {
   ]);
 
   useEffect(() => {
-    if (!bothFilterTargetsAvailable) {
+    if (!filterTargetToggleAvailable) {
       return;
     }
 
-    if (costCentersKnownEmpty && teamsKnownEmpty) {
-      if (selectedFilterTarget !== 'costCenter') {
-        selectFilterTarget('costCenter');
+    if (allTargetsKnownEmpty) {
+      const emptyFallbackTarget = costCenterScopeEnabled
+        ? 'costCenter'
+        : defaultTeamTarget;
+      if (filterTarget !== emptyFallbackTarget) {
+        selectFilterTarget(emptyFallbackTarget);
       }
       return;
     }
 
-    if (
-      selectedFilterTarget === 'costCenter' &&
-      costCentersKnownEmpty &&
-      teamsHaveOptions
-    ) {
-      selectFilterTarget('team');
-    } else if (
-      selectedFilterTarget === 'team' &&
-      teamsKnownEmpty &&
-      costCentersHaveOptions
-    ) {
-      selectFilterTarget('costCenter');
+    if (selectedTargetKnownEmpty && targetWithOptions) {
+      selectFilterTarget(targetWithOptions);
     }
   }, [
-    bothFilterTargetsAvailable,
-    costCentersHaveOptions,
-    costCentersKnownEmpty,
-    selectedFilterTarget,
+    defaultTeamTarget,
+    allTargetsKnownEmpty,
+    costCenterScopeEnabled,
+    filterTarget,
+    filterTargetToggleAvailable,
+    selectedTargetKnownEmpty,
+    targetWithOptions,
     selectFilterTarget,
-    teamsHaveOptions,
-    teamsKnownEmpty,
   ]);
 
   const showFilter =
     filterTarget !== undefined &&
-    (bothFilterTargetsAvailable ||
+    (filterTargetToggleAvailable ||
       (filterTarget === 'costCenter'
         ? costCentersHaveOptions
         : teams.items.length > 0));
+  const teamSelectorLabel =
+    filterTarget && filterTarget !== 'costCenter'
+      ? TEAM_TARGET_LABELS[filterTarget]
+      : 'Team';
 
   const onDateRangeChange = useCallback(
     (value: RangeValue<DateValue> | null) => {
@@ -431,7 +610,7 @@ export const V2DashboardPage = () => {
                   gap: 'var(--bui-space-4, 16px)',
                 }}
               >
-                {bothFilterTargetsAvailable && (
+                {filterTargetToggleAvailable && (
                   <>
                     <Flex direction="row" align="center" gap="2">
                       <Text variant="body-small">Filter by</Text>
@@ -441,89 +620,21 @@ export const V2DashboardPage = () => {
                         disallowEmptySelection
                         selectedKeys={[selectedFilterTarget]}
                         onSelectionChange={keys => {
-                          const [value] = Array.from(keys);
-                          if (value === 'costCenter' || value === 'team') {
-                            selectFilterTarget(value);
+                          const [selected] = Array.from(keys);
+                          if (
+                            typeof selected === 'string' &&
+                            filterTargets.includes(selected as FilterTarget)
+                          ) {
+                            selectFilterTarget(selected as FilterTarget);
                           }
                         }}
                         orientation="horizontal"
                       >
-                        {costCentersKnownEmpty ? (
-                          <TooltipTrigger
-                            delay={0}
-                            isOpen={costCentersTooltipOpen}
-                            onOpenChange={setCostCentersTooltipOpen}
-                          >
-                            <Flex
-                              direction="row"
-                              ref={costCentersTooltipRef}
-                              aria-describedby={`${filterDescriptionId}-cost-centers`}
-                              onMouseEnter={() =>
-                                setCostCentersTooltipOpen(true)
-                              }
-                              onMouseLeave={() =>
-                                setCostCentersTooltipOpen(false)
-                              }
-                            >
-                              <ToggleButton
-                                id="costCenter"
-                                isDisabled
-                                aria-describedby={`${filterDescriptionId}-cost-centers`}
-                              >
-                                Cost center
-                              </ToggleButton>
-                            </Flex>
-                            <Tooltip
-                              placement="top"
-                              triggerRef={costCentersTooltipRef}
-                            >
-                              {costCentersEmptyDescription}
-                            </Tooltip>
-                          </TooltipTrigger>
-                        ) : (
-                          <ToggleButton id="costCenter">
-                            Cost center
-                          </ToggleButton>
-                        )}
-                        {teamsKnownEmpty ? (
-                          <TooltipTrigger
-                            delay={0}
-                            isOpen={teamsTooltipOpen}
-                            onOpenChange={setTeamsTooltipOpen}
-                          >
-                            <Flex
-                              direction="row"
-                              ref={teamsTooltipRef}
-                              aria-describedby={`${filterDescriptionId}-teams`}
-                              onMouseEnter={() => setTeamsTooltipOpen(true)}
-                              onMouseLeave={() => setTeamsTooltipOpen(false)}
-                            >
-                              <ToggleButton
-                                id="team"
-                                isDisabled
-                                aria-describedby={`${filterDescriptionId}-teams`}
-                              >
-                                Team
-                              </ToggleButton>
-                            </Flex>
-                            <Tooltip
-                              placement="right"
-                              triggerRef={teamsTooltipRef}
-                            >
-                              {teamsEmptyDescription}
-                            </Tooltip>
-                          </TooltipTrigger>
-                        ) : (
-                          <ToggleButton id="team">Team</ToggleButton>
-                        )}
+                        {filterTargetToggles.map(toggle => (
+                          <FilterTargetToggle key={toggle.id} {...toggle} />
+                        ))}
                       </ToggleButtonGroup>
                     </Flex>
-                    <VisuallyHidden id={`${filterDescriptionId}-cost-centers`}>
-                      {costCentersEmptyDescription}
-                    </VisuallyHidden>
-                    <VisuallyHidden id={`${filterDescriptionId}-teams`}>
-                      {teamsEmptyDescription}
-                    </VisuallyHidden>
                   </>
                 )}
                 {filterTarget === 'costCenter' && (
@@ -550,11 +661,11 @@ export const V2DashboardPage = () => {
                     options={costCenterOptions}
                   />
                 )}
-                {filterTarget === 'team' && (
+                {isTeamTarget && (
                   <Select
                     searchable
                     isDisabled={teams.loading}
-                    label="Team"
+                    label={teamSelectorLabel}
                     selectedKey={activeTeam ?? ''}
                     onChange={key =>
                       setSelectedTeam(key ? String(key) : undefined)

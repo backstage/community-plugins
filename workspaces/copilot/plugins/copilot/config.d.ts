@@ -53,6 +53,14 @@ export interface Config {
      */
     ingestTeams?: boolean;
     /**
+     * Whether to offer organization teams as an additional filter target in
+     * the enterprise V2 dashboard. Requires enterprise, organization, and
+     * ingestTeams to be configured and the enterprise view to be active.
+     * @default false
+     * @visibility frontend
+     */
+    enterpriseOrganizationTeams?: boolean;
+    /**
      * Whether backend ingestion enables cost-center filtering and the
      * separately scoped No cost center dashboard option. The latter is shown
      * only when enough users without a cost-center membership have data.

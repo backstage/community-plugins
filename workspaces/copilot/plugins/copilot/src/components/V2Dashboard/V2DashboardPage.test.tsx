@@ -118,6 +118,7 @@ type DashboardConfig = {
   defaultView?: 'enterprise' | 'organization';
   ingestCostCenters?: boolean;
   ingestTeams?: boolean;
+  enterpriseOrganizationTeams?: boolean;
 };
 
 const createDashboard = (
@@ -132,6 +133,7 @@ const createDashboard = (
   const copilotConfig: Record<string, string | boolean> = {
     ingestCostCenters: config.ingestCostCenters,
     ingestTeams: config.ingestTeams,
+    enterpriseOrganizationTeams: config.enterpriseOrganizationTeams ?? false,
   };
   if (config.enterprise) {
     copilotConfig.enterprise = config.enterprise;
@@ -161,13 +163,17 @@ const renderDashboard = async (
 
 const getFilterToggleButtons = () =>
   screen
-    .queryAllByText(/^(Cost center|Team)$/)
+    .queryAllByText(/^(Cost center|Team|Enterprise team|Organization team)$/)
     .map(element => element.closest('button'))
     .filter((button): button is HTMLButtonElement => button !== null);
 
-const getFilterToggleButton = (label: 'Cost center' | 'Team') => {
+const getFilterToggleButton = (
+  label: 'Cost center' | 'Team' | 'Enterprise team' | 'Organization team',
+) => {
   const button = getFilterToggleButtons().find(
-    element => element.textContent?.trim() === label,
+    element =>
+      element.textContent?.trim() === label ||
+      (label === 'Team' && element.textContent?.trim() === 'Enterprise team'),
   );
   if (!button) {
     throw new Error(`Could not find the ${label} filter toggle button`);
@@ -188,16 +194,150 @@ describe('V2DashboardPage filter targets', () => {
     expect(filterGroup).toBeVisible();
     expect(filterLabel.parentElement).toBe(filterGroup.parentElement);
     expect(getFilterToggleButtons()).toHaveLength(2);
-    expect(getFilterToggleButton('Team')).toHaveAttribute(
+    expect(getFilterToggleButton('Enterprise team')).toHaveAttribute(
       'aria-checked',
       'true',
     );
     expect(getFilterToggleButton('Cost center')).not.toBeDisabled();
-    expect(getFilterToggleButton('Team')).not.toBeDisabled();
+    expect(getFilterToggleButton('Enterprise team')).not.toBeDisabled();
     expect(await screen.findByRole('button', { name: /team/i })).toBeVisible();
     expect(
       screen.queryByRole('button', { name: /Cost center/ }),
     ).not.toBeInTheDocument();
+  });
+
+  it('uses organization-team metrics in the enterprise view across dashboard tabs', async () => {
+    const api = createApi({ teams: ['octo-team'] });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      organization: 'my-org',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      enterpriseOrganizationTeams: true,
+    });
+
+    expect(getFilterToggleButtons()).toHaveLength(2);
+    expect(getFilterToggleButton('Enterprise team')).toBeVisible();
+    expect(getFilterToggleButton('Organization team')).toBeVisible();
+    expect(
+      getFilterToggleButton('Enterprise team'),
+    ).toHaveAccessibleDescription(
+      'Teams defined at the enterprise level in GitHub. They can include members from any organization in the enterprise.',
+    );
+    expect(
+      getFilterToggleButton('Organization team'),
+    ).toHaveAccessibleDescription(
+      "Teams defined within the my-org organization. Metrics come from that organization's Copilot reports.",
+    );
+
+    await user.hover(getFilterToggleButton('Enterprise team'));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      'Teams defined at the enterprise level in GitHub.',
+    );
+    await user.unhover(getFilterToggleButton('Enterprise team'));
+    await user.hover(getFilterToggleButton('Organization team'));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      'Teams defined within the my-org organization.',
+    );
+
+    await waitFor(() =>
+      expect(api.getTeams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'my-org',
+        }),
+      ),
+    );
+    await user.click(getFilterToggleButton('Organization team'));
+    await user.click(screen.getByRole('button', { name: /All teams/ }));
+    expect(api.getDashboardData).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'organization',
+        entityId: 'my-org',
+        team: undefined,
+      }),
+    );
+    expect(api.getDashboardData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        type: 'enterprise',
+        entityId: 'my-enterprise',
+        team: undefined,
+      }),
+    );
+    await user.click(await screen.findByRole('option', { name: 'octo-team' }));
+
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'my-org',
+          team: 'octo-team',
+        }),
+      ),
+    );
+    expect(screen.getByRole('tab', { name: 'Consumption' })).toBeVisible();
+    await user.click(screen.getByRole('tab', { name: 'Consumption' }));
+    await user.click(screen.getByRole('tab', { name: 'Agent Harness' }));
+    expect(api.getDashboardData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        type: 'organization',
+        entityId: 'my-org',
+        team: 'octo-team',
+      }),
+    );
+
+    await user.click(getFilterToggleButton('Enterprise team'));
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'enterprise',
+          entityId: 'my-enterprise',
+          team: undefined,
+        }),
+      ),
+    );
+  });
+
+  it('keeps organization teams opt-in to enterprise view and leaves organization labels unchanged', async () => {
+    const api = createApi();
+    const enterpriseRendered = await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      enterpriseOrganizationTeams: true,
+    });
+
+    expect(getFilterToggleButtons()).toHaveLength(0);
+    expect(
+      await screen.findByRole('button', { name: /Enterprise team/ }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('button', { name: 'Organization team' }),
+    ).not.toBeInTheDocument();
+    enterpriseRendered.unmount();
+
+    const organizationApi = createApi();
+    const user = userEvent.setup();
+    const rendered = await renderDashboard(organizationApi, {
+      enterprise: 'my-enterprise',
+      organization: 'my-org',
+      defaultView: 'organization',
+      ingestCostCenters: true,
+      ingestTeams: true,
+      enterpriseOrganizationTeams: true,
+    });
+    expect(await screen.findByRole('button', { name: /Team/ })).toBeVisible();
+    await user.hover(getFilterToggleButton('Team'));
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Enterprise team' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Organization team' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    rendered.unmount();
   });
 
   it('renders only the unchanged team dropdown when only team filtering is configured', async () => {
@@ -391,7 +531,7 @@ describe('V2DashboardPage filter targets', () => {
     const user = userEvent.setup();
     await renderDashboard(api);
 
-    const teamToggle = getFilterToggleButton('Team');
+    const teamToggle = getFilterToggleButton('Enterprise team');
     expect(teamToggle).not.toBeDisabled();
     expect(teamToggle).toHaveAttribute('aria-checked', 'true');
 
@@ -406,17 +546,17 @@ describe('V2DashboardPage filter targets', () => {
         'true',
       ),
     );
-    const disabledTeamToggle = getFilterToggleButton('Team');
+    const disabledTeamToggle = getFilterToggleButton('Enterprise team');
     expect(disabledTeamToggle).toBeDisabled();
     expect(disabledTeamToggle).toHaveAccessibleDescription(
-      'No teams with Copilot data in the selected date range',
+      /No teams with Copilot data in the selected date range/,
     );
     await user.hover(disabledTeamToggle.parentElement ?? disabledTeamToggle);
     const teamTooltip = await screen.findByRole('tooltip');
     expect(teamTooltip).toHaveTextContent(
       'No teams with Copilot data in the selected date range',
     );
-    expect(teamTooltip).toHaveAttribute('data-placement', 'right');
+    expect(teamTooltip).toHaveAttribute('data-placement', 'top');
   });
 
   it('keeps Cost center selected with an enabled empty dropdown when both lists are empty', async () => {

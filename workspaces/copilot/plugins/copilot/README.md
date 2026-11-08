@@ -20,7 +20,7 @@ The plugin now defaults to the V2 dashboard, backed by GitHub's report-based Cop
 - **Team Filtering**: Filter V2 data by team when `copilot.ingestTeams` is enabled.
 - **Cost Center Filtering**: In enterprise views, and in organization views when both `copilot.enterprise` and `copilot.organization` are configured, filter by eligible cost centers when `copilot.ingestCostCenters` is enabled. The Consumption tab also works for a selected cost center.
 - **No Cost Center View**: View users without a cost-center membership as a separate dashboard scope. This option is not represented by a reserved cost-center ID, so every real cost-center ID remains selectable.
-- **Exclusive V2 Filters**: Filter by either cost center or team, never both. When both are configured, the dashboard shows a `Filter by` toggle button group (`Cost center | Team`, defaulting to Team) and only the selected filter's dropdown. Changing the target clears the previous selection.
+- **Exclusive V2 Filters**: Filter by either cost center or team, never both. In enterprise view, `copilot.enterpriseOrganizationTeams: true` adds organization teams as an optional filter target alongside enterprise teams and cost centers. Selecting a specific organization team uses the configured organization's existing reports; **All teams** retains enterprise-wide totals. This does not add ingestion or storage. The dashboard identifies enterprise and organization teams separately and explains the distinction in tooltips.
 - **Individual ("Me") Metrics**: A privacy-scoped view, mounted by default at `/copilot/me`, that shows only the signed-in user's own Copilot usage and consumption — see [Individual ("Me") Metrics](#individual-me-metrics) below.
 
 _GitHub's Copilot user-teams reports include only teams with at least five
@@ -224,6 +224,7 @@ The frontend reads the following `app-config.yaml` settings:
 - `copilot.showLegacyView`: When `true`, the sidebar shows a link to the legacy dashboard.
 - `copilot.showUserMetrics`: Set to `false` to disable the individual ("me") metrics view — it will render a message explaining the feature has been turned off, rather than being removed from navigation. Defaults to `true`.
 - `copilot.ingestTeams`: Backend opt-in that enables team filtering; this value is frontend-visible so the dashboard can show the Team target.
+- `copilot.enterpriseOrganizationTeams`: Optional frontend opt-in that adds Organization team to the enterprise-view filter targets. Effective only when enterprise, organization, and `copilot.ingestTeams` are configured and enterprise view is active. Defaults to `false`.
 - `copilot.ingestCostCenters`: Backend opt-in that enables cost-center filtering; this value is frontend-visible so the dashboard can show the Cost center target.
 
 Example:
@@ -237,7 +238,14 @@ copilot:
   showUserMetrics: true
   ingestTeams: true
   ingestCostCenters: true
+  enterpriseOrganizationTeams: true
 ```
+
+With the organization-team option enabled in enterprise view, selected organization
+teams use the organization scope for dashboard, customization, and consumption
+metrics, matching the corresponding organization-view data. The existing
+five-user team eligibility threshold is unchanged. Organization view continues
+to use the `Team` label and is unaffected by this option.
 
 ## Routes And Legacy Dashboard
 
