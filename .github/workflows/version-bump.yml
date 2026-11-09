@@ -29,13 +29,12 @@ on:
         default: false
         type: boolean
 
-concurrency:
-  group: version-bump-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   version-bump:
     runs-on: ubuntu-latest
+    concurrency:
+      group: version-bump-workspace-${{ matrix.workspace }}
+      cancel-in-progress: true
 
     strategy:
       fail-fast: false
