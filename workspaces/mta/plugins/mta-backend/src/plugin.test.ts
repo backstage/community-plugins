@@ -8,6 +8,16 @@ import { setupServer } from 'msw/node';
 import request from 'supertest';
 import { mtaPlugin } from './plugin';
 
+// Keep the test free of a real database (and of native sqlite bindings).
+jest.mock('./database/storage', () => ({
+  DataBaseEntityApplicationStorage: {
+    create: async () => ({
+      getRefreshTokenForUser: async () => undefined,
+      saveRefreshTokenForUser: async () => {},
+    }),
+  },
+}));
+
 // Nothing listens on port 1, so connecting to it is refused.
 const MTA_URL = 'http://127.0.0.1:1';
 const ISSUER = `${MTA_URL}/auth/realms/mta`;
@@ -23,6 +33,10 @@ const config = mockServices.rootConfig.factory({
   },
 });
 
+const database = mockServices.database.mock({
+  getClient: async () => ({}) as any,
+}).factory;
+
 describe('mtaPlugin', () => {
   const server = setupServer();
 
@@ -32,7 +46,7 @@ describe('mtaPlugin', () => {
 
   it('starts when MTA is unreachable', async () => {
     const { server: backend } = await startTestBackend({
-      features: [mtaPlugin, config],
+      features: [mtaPlugin, config, database],
     });
 
     expect(backend).toBeDefined();
@@ -40,7 +54,7 @@ describe('mtaPlugin', () => {
 
   it('retries OIDC discovery on the next request after a failure', async () => {
     const { server: backend } = await startTestBackend({
-      features: [mtaPlugin, config],
+      features: [mtaPlugin, config, database],
     });
 
     const first = await request(backend)
