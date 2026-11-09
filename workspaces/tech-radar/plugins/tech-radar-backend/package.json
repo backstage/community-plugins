@@ -40,7 +40,6 @@
     "@backstage/config": "backstage:^",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
-    "node-fetch": "^2.6.7",
     "zod": "^3.20.0"
   },
   "devDependencies": {
@@ -50,7 +49,6 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@types/express": "*",
     "@types/supertest": "^7.0.0",
-    "msw": "^2.3.1",
     "supertest": "^7.0.0"
   },
   "files": [
