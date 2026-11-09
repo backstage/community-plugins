@@ -20,7 +20,9 @@ import { InputError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import jwt from 'jsonwebtoken';
 
-let refreshTokenPromise: Promise<void> | null = null;
+const TOKEN_REFRESH_WINDOW_MS = 30_000;
+
+const refreshPromises = new WeakMap<KeycloakAdminClient, Promise<void>>();
 
 export async function ensureTokenValid(
   kcAdminClient: KeycloakAdminClient,
@@ -36,16 +38,22 @@ export async function ensureTokenValid(
       const tokenExpiry = decodedToken.exp * 1000; // Convert to milliseconds
       const now = Date.now();
 
-      if (now > tokenExpiry - 30000) {
-        refreshTokenPromise = authenticate(
-          kcAdminClient,
-          provider,
-          logger,
-        ).finally(() => {
-          refreshTokenPromise = null;
-        });
+      if (
+        now > tokenExpiry - TOKEN_REFRESH_WINDOW_MS &&
+        !refreshPromises.has(kcAdminClient)
+      ) {
+        const promise = authenticate(kcAdminClient, provider, logger).finally(
+          () => {
+            refreshPromises.delete(kcAdminClient);
+          },
+        );
+        refreshPromises.set(kcAdminClient, promise);
       }
-      await refreshTokenPromise;
+
+      const pending = refreshPromises.get(kcAdminClient);
+      if (pending) {
+        await pending;
+      }
     }
   }
 }
