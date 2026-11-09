@@ -15,7 +15,6 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from 'react-use';
-import type { Key, Selection } from 'react-aria-components';
 
 import { useApi } from '@backstage/core-plugin-api';
 import {
@@ -26,8 +25,10 @@ import {
   DialogBody,
   DialogFooter,
   DialogHeader,
+  type Key,
   SearchField,
   Select,
+  type Selection,
   Table,
   Text,
   useTable,

@@ -68,7 +68,6 @@
     "@backstage/frontend-plugin-api": "^0.18.0",
     "@backstage/plugin-app-react": "^0.2.6",
     "@backstage/plugin-catalog": "^2.0.8",
-    "@backstage/plugin-catalog-common": "^1.1.10",
     "@backstage/plugin-permission-common": "^0.9.10",
     "@backstage/plugin-permission-react": "^0.5.4",
     "@backstage/theme": "^0.7.3",

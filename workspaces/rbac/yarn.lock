@@ -1255,7 +1255,6 @@ __metadata:
     "@backstage/frontend-test-utils": "npm:^0.6.3"
     "@backstage/plugin-app-react": "npm:^0.2.6"
     "@backstage/plugin-catalog": "npm:^2.0.8"
-    "@backstage/plugin-catalog-common": "npm:^1.1.10"
     "@backstage/plugin-permission-common": "npm:^0.9.10"
     "@backstage/plugin-permission-react": "npm:^0.5.4"
     "@backstage/plugin-user-settings": "npm:^0.9.6"
