@@ -1,5 +1,13 @@
 # @backstage-community/plugin-argocd
 
+## 3.1.4
+
+### Patch Changes
+
+- 79da234: Updated dependency `@playwright/test` to `1.64.0`.
+- 81a8c9b: Updated dependency `@playwright/test` to `1.64.1`.
+- c2c7836: Updated dependency `@playwright/test` to `1.65.0`.
+
 ## 3.1.3
 
 ### Patch Changes
