@@ -20,7 +20,7 @@
     ]
   },
   "scripts": {
-    "start": "sh -c 'set -- --config app-config.yaml; [ -f app-config.local.yaml ] && set -- \"$@\" --config app-config.local.yaml; exec backstage-cli package start \"$@\"'",
+    "start": "backstage-cli package start --config app-config.yaml",
     "start:legacy": "backstage-cli package start",
     "start:keycloak": "docker compose -f docker-compose.keycloak.yaml up",
     "start:multi-user": "backstage-cli package start --config app-config.yaml --config app-config.multi-user.yaml",
