@@ -17,7 +17,6 @@ import {
   ApiBlueprint,
   createFrontendModule,
   createFrontendPlugin,
-  discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -46,12 +45,10 @@ export const npmBackendApi = ApiBlueprint.make({
     defineParams({
       api: NpmBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
         fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, fetchApi }) =>
+      factory: ({ fetchApi }) =>
         new NpmBackendClient({
-          discoveryApi,
           fetchApi,
         }),
     }),
@@ -102,7 +99,7 @@ export const entityNpmReleaseOverviewCard = EntityCardBlueprint.make({
 export const entityNpmReleaseTableCard = EntityContentBlueprint.make({
   name: 'EntityNpmReleaseTableCard',
   params: {
-    path: 'npm-releases',
+    path: '/npm-releases',
     title: 'Npm Releases',
     group: 'development',
     filter: isNpmAvailable,
