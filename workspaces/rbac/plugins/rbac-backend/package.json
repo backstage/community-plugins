@@ -76,7 +76,7 @@
     "@types/supertest": "7.2.1",
     "knex-mock-client": "3.0.2",
     "qs": "6.17.1",
-    "supertest": "7.3.1"
+    "supertest": "7.3.2"
   },
   "files": [
     "dist",
