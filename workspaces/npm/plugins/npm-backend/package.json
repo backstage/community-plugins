@@ -34,6 +34,7 @@
     "@backstage-community/plugin-npm-common": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
     "express": "^4.17.1",
