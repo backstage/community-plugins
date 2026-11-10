@@ -14,150 +14,99 @@
  * limitations under the License.
  */
 import classnames from 'classnames';
-import {
-  bindPopover,
-  bindTrigger,
-  usePopupState,
-} from 'material-ui-popup-state/hooks';
-import { useState } from 'react';
 
 import { useAnalytics } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
 
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import Popover from '@material-ui/core/Popover';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  Box,
+  Card,
+  DialogTrigger,
+  Flex,
+  Popover,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 
 import zoomIcon from '../../icons/zoomIcon.svg';
 import { CalendarEventPopoverContent } from './CalendarEventPopoverContent';
 import { GCalendarEvent, ResponseStatus } from '../../api';
 import { getTimePeriod, getZoomLink, isAllDay, isPassed } from './util';
-
-const useStyles = makeStyles(
-  theme => ({
-    event: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: theme.spacing(1),
-      cursor: 'pointer',
-      paddingRight: 12,
-    },
-    declined: {
-      textDecoration: 'line-through',
-    },
-    passed: {
-      opacity: 0.6,
-      transition: 'opacity 0.15s ease-in-out',
-      '&:hover': {
-        opacity: 1,
-      },
-    },
-    link: {
-      width: 48,
-      height: 48,
-      display: 'inline-block',
-      padding: 8,
-      borderRadius: '50%',
-      '&:hover': {
-        backgroundColor: theme.palette.grey[100],
-      },
-    },
-    calendarColor: ({ event }: { event: GCalendarEvent }) => ({
-      width: 8,
-      borderTopLeftRadius: 4,
-      borderBottomLeftRadius: 4,
-      backgroundColor: event.primary
-        ? theme.palette.primary.light
-        : event.backgroundColor,
-    }),
-  }),
-  {
-    name: 'GCalendarEvent',
-  },
-);
+import styles from './CalendarEvent.module.css';
 
 export const CalendarEvent = ({ event }: { event: GCalendarEvent }) => {
-  const classes = useStyles({ event });
-  const popoverState = usePopupState({
-    variant: 'popover',
-    popupId: event.id,
-    disableAutoFocus: true,
-  });
-  const [hovered, setHovered] = useState(false);
   const analytics = useAnalytics();
   const zoomLink = getZoomLink(event);
 
-  const { onClick, ...restBindProps } = bindTrigger(popoverState);
-
   return (
-    <>
-      <Paper
-        onClick={e => {
-          onClick(e);
-          analytics.captureEvent('click', 'event info');
-        }}
-        {...restBindProps}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        elevation={hovered ? 4 : 1}
-        className={classnames(classes.event, {
-          [classes.passed]: isPassed(event),
-        })}
+    <DialogTrigger>
+      <Card
         data-testid="calendar-event"
+        label={event.summary ?? 'Calendar event'}
+        onPress={() => analytics.captureEvent('click', 'event info')}
+        className={classnames(styles.event, {
+          [styles.passed]: isPassed(event),
+        })}
       >
-        <Box className={classes.calendarColor} mr={1} alignSelf="stretch" />
-        <Box flex={1} pt={1} pb={1}>
-          <Typography
-            variant="subtitle2"
-            className={classnames({
-              [classes.declined]:
-                event.responseStatus === ResponseStatus.declined,
+        <Flex align="center" gap="2">
+          <Box
+            className={classnames(styles.calendarColor, {
+              [styles.calendarColorPrimary]: event.primary,
             })}
+            style={
+              event.primary
+                ? undefined
+                : { backgroundColor: event.backgroundColor }
+            }
           >
-            {event.summary}
-          </Typography>
-          {!isAllDay(event) && (
-            <Typography variant="body2" data-testid="calendar-event-time">
-              {getTimePeriod(event)}
-            </Typography>
-          )}
-        </Box>
-
-        {zoomLink && (
-          <Tooltip title="Join Zoom Meeting">
-            <Link
-              data-testid="calendar-event-zoom-link"
-              className={classes.link}
-              to={zoomLink}
-              onClick={e => {
-                e.stopPropagation();
-                analytics.captureEvent('click', 'zoom link');
-              }}
-              noTrack
+            {null}
+          </Box>
+          <Box className={styles.content}>
+            <Text
+              as="p"
+              variant="body-medium"
+              className={classnames({
+                [styles.declined]:
+                  event.responseStatus === ResponseStatus.declined,
+              })}
             >
-              <img src={zoomIcon} alt="Zoom link" />
-            </Link>
-          </Tooltip>
-        )}
-      </Paper>
+              {event.summary}
+            </Text>
+            {!isAllDay(event) && (
+              <Text
+                as="p"
+                variant="body-small"
+                data-testid="calendar-event-time"
+              >
+                {getTimePeriod(event)}
+              </Text>
+            )}
+          </Box>
 
-      <Popover
-        {...bindPopover(popoverState)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        data-testid="calendar-event-popover"
-      >
+          {zoomLink && (
+            <TooltipTrigger>
+              <Link
+                data-testid="calendar-event-zoom-link"
+                className={styles.zoomLink}
+                to={zoomLink}
+                onClick={e => {
+                  e.stopPropagation();
+                  analytics.captureEvent('click', 'zoom link');
+                }}
+                noTrack
+              >
+                <img src={zoomIcon} alt="Zoom link" />
+              </Link>
+              <Tooltip>Join Zoom Meeting</Tooltip>
+            </TooltipTrigger>
+          )}
+        </Flex>
+      </Card>
+
+      <Popover data-testid="calendar-event-popover">
         <CalendarEventPopoverContent event={event} />
       </Popover>
-    </>
+    </DialogTrigger>
   );
 };

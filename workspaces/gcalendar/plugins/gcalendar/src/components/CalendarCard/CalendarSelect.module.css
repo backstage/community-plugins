@@ -1,0 +1,5 @@
+@layer components {
+  .select {
+    width: 120px;
+  }
+}
