@@ -1,5 +1,15 @@
 # @backstage-community/plugin-npm-backend
 
+## 1.29.0
+
+### Minor Changes
+
+- 151a09c: Added two read-only actions to the actions registry: `npm:get-package-info` returns general package information including the latest version and its release date, and `npm:list-package-versions` returns the most recently published versions with their release dates. This makes the information shown in the npm cards also available to AI agents (MCP) and other plugins.
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.29.0
+
 ## 1.28.0
 
 ### Minor Changes
