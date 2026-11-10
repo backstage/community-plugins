@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: scaffolder-backend-module-http-request
+  title: Scaffolder HTTP Request Module
+  description: |
+    Scaffolder action to send an arbitrary http request
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+    github.com/project-readme-path: workspaces/scaffolder-backend-module-http-request/plugins/scaffolder-backend-module-http-request/README.md
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-http-request/plugins/scaffolder-backend-module-http-request/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-http-request/plugins/scaffolder-backend-module-http-request/catalog-info.yaml
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-http-request/plugins/scaffolder-backend-module-http-request
+  tags:
+    - scaffolder
+    - oss
+  links:
+    - url: https://www.npmjs.com/package/@backstage-community/plugin-scaffolder-backend-module-http-request
+      title: NPM
+spec:
+  type: library
+  owner: group:open-source
+  lifecycle: production
