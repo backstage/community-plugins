@@ -18,6 +18,8 @@ import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { JenkinsInfoProvider } from '../service/jenkinsInfoProvider';
 import { JenkinsApiImpl } from '../service/jenkinsApi';
+import { getJenkinsInstances } from '../service/getJenkinsInstances';
+import { getProjectsFromInstances } from '../service/getProjectsFromInstances';
 
 /**
  * Registers the `jenkins:list-builds` action with the ActionsRegistryService.
@@ -39,6 +41,11 @@ Lists all Jenkins builds (projects) configured for a Backstage catalog entity.
 
 The entity must have the \`jenkins.io/job-full-name\` annotation pointing to the Jenkins job(s).
 Each result represents a Jenkins job with its last build status.
+
+Jobs may belong to different Jenkins instances. Each build carries its \`instanceName\`;
+pass it to \`jenkins:get-build\`, \`jenkins:get-build-logs\` and \`jenkins:trigger-build\`.
+An instance that cannot be queried is listed in \`errors\`, and the builds of the other
+instances are still returned.
 
 ## Build status values
 
@@ -89,6 +96,9 @@ For re-triggering a build use \`jenkins:trigger-build\`.
           builds: z
             .array(
               z.object({
+                instanceName: z
+                  .string()
+                  .describe('The configured Jenkins instance for this job.'),
                 name: z.string().describe('The full name of the Jenkins job.'),
                 displayName: z
                   .string()
@@ -133,6 +143,18 @@ For re-triggering a build use \`jenkins:trigger-build\`.
               }),
             )
             .describe('List of Jenkins jobs associated with the entity.'),
+          errors: z
+            .array(
+              z.object({
+                instanceName: z
+                  .string()
+                  .describe('The configured Jenkins instance that failed.'),
+                message: z.string().describe('Why the instance failed.'),
+              }),
+            )
+            .describe(
+              'Jenkins instances that could not be queried. Builds from the other instances are still returned.',
+            ),
         }),
     },
     action: async ({ input, credentials, logger }) => {
@@ -146,17 +168,23 @@ For re-triggering a build use \`jenkins:trigger-build\`.
         `Listing Jenkins builds for entity ${stringifyEntityRef(entityRef)}`,
       );
 
-      const jenkinsInfo = await jenkinsInfoProvider.getInstance({
+      const jenkinsInstances = await getJenkinsInstances(jenkinsInfoProvider, {
         entityRef,
         credentials,
       });
 
       const branches = input.branch ? [input.branch] : undefined;
-      const projects = await jenkinsApi.getProjects(jenkinsInfo, branches);
+      const { projects, errors } = await getProjectsFromInstances({
+        jenkinsApi,
+        jenkinsInstances,
+        branches,
+        logger,
+      });
 
       return {
         output: {
           builds: projects.map(p => ({
+            instanceName: p.instanceName,
             name: p.fullName,
             displayName: p.fullDisplayName,
             status: p.status,
@@ -173,6 +201,7 @@ For re-triggering a build use \`jenkins:trigger-build\`.
                 }
               : null,
           })),
+          errors,
         },
       };
     },

@@ -15,10 +15,11 @@
  */
 import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { jenkinsApiRef } from '../api';
+import { jenkinsApiRef, JenkinsInstanceError } from '../api';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
+import { ResponseError } from '@backstage/errors';
 
 export enum ErrorType {
   CONNECTION_ERROR,
@@ -44,10 +45,22 @@ export function useBuilds({ branch }: { branch?: string } = {}) {
     message: string;
     errorType: ErrorType;
   }>();
+  const [instanceErrors, setInstanceErrors] = useState<JenkinsInstanceError[]>(
+    [],
+  );
 
-  const restartBuild = async (jobFullName: string, buildNumber: string) => {
+  const restartBuild = async (
+    jobFullName: string,
+    buildNumber: string,
+    instanceName?: string,
+  ) => {
     try {
-      await api.retry({ entity: entityName, jobFullName, buildNumber });
+      await api.retry({
+        entity: entityName,
+        jobFullName,
+        buildNumber,
+        instanceName,
+      });
     } catch (e) {
       errorApi.post(e);
     }
@@ -58,20 +71,30 @@ export function useBuilds({ branch }: { branch?: string } = {}) {
     value: projects,
     retry,
   } = useAsyncRetry(async () => {
+    setError(undefined);
     try {
-      const build = await api.getProjects({
+      const options = {
         entity: getCompoundEntityRef(entity),
         filter: { branch },
-      });
+      };
+      // Custom JenkinsApi implementations may not have getProjectsWithErrors.
+      const result = api.getProjectsWithErrors
+        ? await api.getProjectsWithErrors(options)
+        : { projects: await api.getProjects(options), errors: [] };
 
-      setTotal(build.length);
+      setTotal(result.projects.length);
+      setInstanceErrors(result.errors);
 
-      return build;
+      return result.projects;
     } catch (e) {
       const errorType = e.notFound
         ? ErrorType.NOT_FOUND
         : ErrorType.CONNECTION_ERROR;
-      setError({ message: e.message, errorType });
+      // A ResponseError's own message is only the status line; the reason
+      // given by the backend is in its cause.
+      const message = e instanceof ResponseError ? e.cause.message : e.message;
+      setInstanceErrors([]);
+      setError({ message, errorType });
       throw e;
     }
   }, [api, errorApi, entity, branch]);
@@ -84,6 +107,7 @@ export function useBuilds({ branch }: { branch?: string } = {}) {
       projects,
       total,
       error,
+      instanceErrors,
     },
     {
       setPage,
