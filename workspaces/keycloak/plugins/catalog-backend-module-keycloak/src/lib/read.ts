@@ -439,10 +439,13 @@ export const readKeycloakRealm = async (
     filteredParsedUsers.map(user => [user.username, user.entity]),
   );
 
-  const groupMap = new Map(
-    filteredParsedGroups.flatMap(group => [
-      [group.name, group.entity],
-      [group.entity.metadata.name, group.entity],
+  const groupMapByKeycloakName = new Map(
+    filteredParsedGroups.map(group => [group.name, group.entity]),
+  );
+  const groupMapByEntityName = new Map(
+    filteredParsedGroups.map(group => [
+      group.entity.metadata.name,
+      group.entity,
     ]),
   );
 
@@ -455,10 +458,10 @@ export const readKeycloakRealm = async (
       }) ?? [];
     entity.spec.children =
       g.entity.spec.children?.flatMap(c => {
-        const group = groupMap.get(c);
+        const group = groupMapByKeycloakName.get(c);
         return group ? toRelativeEntityRef(group, g.entity) : [];
       }) ?? [];
-    const parent = groupMap.get(entity.spec.parent);
+    const parent = groupMapByKeycloakName.get(entity.spec.parent);
     entity.spec.parent = parent
       ? toRelativeEntityRef(parent, entity)
       : undefined;
@@ -468,7 +471,7 @@ export const readKeycloakRealm = async (
   const users = filteredParsedUsers.map(user => {
     const entity = user.entity;
     entity.spec.memberOf = entity.spec.memberOf?.map(memberOf => {
-      const group = groupMap.get(memberOf);
+      const group = groupMapByEntityName.get(memberOf);
       return group ? toRelativeEntityRef(group, entity) : memberOf;
     });
     return entity;

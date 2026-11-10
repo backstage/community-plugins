@@ -393,6 +393,46 @@ describe('readKeycloakRealm', () => {
     expect(users[0].spec.memberOf).toEqual(['biggroup_foo']);
   });
 
+  it('should handle transformed group names colliding with original keycloak group names', async () => {
+    const transformedNames: Record<string, string> = {
+      biggroup: 'emptygroup',
+      subgroup: 'biggroup',
+      emptygroup: 'subgroup',
+    };
+    const groupTransformer: GroupTransformer = async entity => {
+      entity.metadata.name = transformedNames[entity.metadata.name];
+      return entity;
+    };
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+      { groupTransformer },
+    );
+
+    const jamesDoe = users.find(user => user.metadata.name === 'jamesdoe');
+    const originalBigGroup = groups.find(
+      group => group.metadata.name === 'emptygroup',
+    );
+    const originalSubgroup = groups.find(
+      group => group.metadata.name === 'biggroup',
+    );
+    const originalEmptyGroup = groups.find(
+      group => group.metadata.name === 'subgroup',
+    );
+
+    expect(jamesDoe?.spec.memberOf).toEqual(['emptygroup']);
+    expect(originalBigGroup?.spec.children).toEqual(['biggroup']);
+    expect(originalSubgroup?.spec.parent).toBe('emptygroup');
+    expect(originalEmptyGroup).toBeDefined();
+  });
+
   it('should propagate transformer changes to entities (version less than 23)', async () => {
     const groupTransformer: GroupTransformer = async (entity, _g, _r) => {
       entity.metadata.name = `${entity.metadata.name}_foo`;
