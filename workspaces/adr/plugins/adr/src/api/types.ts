@@ -39,6 +39,9 @@ export type AdrFileInfo = {
 
   /** The date of the ADR. */
   date?: string;
+
+  /** The category or type of the document. */
+  category?: string;
 };
 
 /**
