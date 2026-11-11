@@ -1,0 +1,82 @@
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 0;
+  position: relative;
+}
+
+.fistItemLine {
+  position: absolute;
+  bottom: 0;
+  height: 50%;
+  left: 36px;
+  width: 2px;
+  background-color: var(--bui-fg-muted);
+}
+
+.lastItemLine {
+  position: absolute;
+  top: 0;
+  height: 50%;
+  left: 36px;
+  width: 2px;
+  background-color: var(--bui-fg-muted);
+}
+
+.itemLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  left: 36px;
+  width: 2px;
+  background-color: var(--bui-fg-muted);
+}
+
+.avatarContainer {
+  flex-shrink: 0;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-right: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bui-bg-surface-secondary);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--bui-fg);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.primary {
+  font-weight: 600;
+  color: var(--bui-fg);
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.actions a {
+  text-decoration: none;
+  display: inline-flex;
+}

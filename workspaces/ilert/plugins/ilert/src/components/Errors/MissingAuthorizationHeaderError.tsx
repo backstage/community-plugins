@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Button from '@material-ui/core/Button';
+import { Button } from '@backstage/ui';
 import { EmptyState } from '@backstage/core-components';
 
 export const MissingAuthorizationHeaderError = () => (
@@ -23,9 +23,13 @@ export const MissingAuthorizationHeaderError = () => (
     description="The request to fetch data needs a valid authorization header. See README for more details."
     action={
       <Button
-        color="primary"
-        variant="contained"
-        href="https://github.com/backstage/backstage/blob/master/plugins/ilert/README.md"
+        variant="primary"
+        onPress={() =>
+          window.open(
+            'https://github.com/backstage/backstage/blob/master/plugins/ilert/README.md',
+            '_blank',
+          )
+        }
       >
         Read More
       </Button>
