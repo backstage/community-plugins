@@ -25,26 +25,25 @@ const app = createApp({
 });
 ```
 
-The plugin adds the shortcuts to your app's navigation by itself, as the `nav-element:shortcuts` extension in the `end` slot, after the page links. If your app has its own `NavContentBlueprint`, it needs to render `navSlots.end.rest()` once; that covers every plugin that adds navigation content.
-
-Configure it in `app-config.yaml`:
+The plugin provides a `nav-element:shortcuts` extension. To show it, list it in the `app/nav` config, under `end` (after the page links) or `start` (before them):
 
 ```yaml
 app:
   extensions:
-    # Allow external links as shortcuts
+    - app/nav:
+        config:
+          elements:
+            end:
+              - nav-element:shortcuts
+    # Optional: allow external links as shortcuts
     - nav-element:shortcuts:
         config:
           allowExternalLinks: true
-    # Or move it before the page links
-    - nav-element:shortcuts:
-        config:
-          slot: start
-    # Or turn it off
-    - nav-element:shortcuts: false
 ```
 
-Listing it under `app.extensions` also places it ahead of other navigation elements in the same slot.
+You don't need to change your sidebar code. If your app has its own `NavContentBlueprint`, it needs to render `navSlots.end.rest()` once, which covers every listed nav element.
+
+If you're moving from the old frontend system, remove `<Shortcuts />` from your sidebar when you add this config.
 
 To replace the default `localStorage` implementation, override the `shortcutsApiRef` API from a module with `pluginId: 'shortcuts'`.
 

@@ -24,7 +24,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import shortcutsPlugin from '../src/alpha';
 
-// Pages to add as shortcuts. The shortcuts plugin adds itself to the sidebar.
+// Pages to add as shortcuts. dev/app-config.yaml lists the shortcuts nav element.
 const examplePage = (name: string, title: string, icon: JSX.Element) =>
   PageBlueprint.make({
     name,

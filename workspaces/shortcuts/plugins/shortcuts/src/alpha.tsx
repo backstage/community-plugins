@@ -38,7 +38,6 @@ const shortcutsNavElement = NavElementBlueprint.makeWithOverrides({
   },
   factory(originalFactory, { config }) {
     return originalFactory({
-      slot: 'end',
       loader: () =>
         import('./Shortcuts').then(m => (
           <m.Shortcuts allowExternalLinks={config.allowExternalLinks} />
@@ -51,8 +50,8 @@ const shortcutsNavElement = NavElementBlueprint.makeWithOverrides({
  * The shortcuts plugin for the new frontend system.
  *
  * @remarks
- * Adds the user's shortcuts to the app's navigation, after the page links,
- * and provides the shortcuts API.
+ * Provides the shortcuts API and a `nav-element:shortcuts` extension with the
+ * user's shortcuts, which the app lists in its `app/nav` config to show.
  *
  * @alpha
  */

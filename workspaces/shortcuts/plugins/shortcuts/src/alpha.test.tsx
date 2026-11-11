@@ -18,10 +18,23 @@ import { screen, within } from '@testing-library/react';
 import shortcutsPlugin from './alpha';
 
 describe('shortcuts (new frontend system)', () => {
-  it('adds the shortcuts to the app navigation', async () => {
+  it('adds the shortcuts to the app navigation once the app lists them', async () => {
     expect(shortcutsPlugin.id).toBe('shortcuts');
 
-    renderTestApp({ features: [shortcutsPlugin] });
+    renderTestApp({
+      features: [shortcutsPlugin],
+      config: {
+        app: {
+          extensions: [
+            {
+              'app/nav': {
+                config: { elements: { end: ['nav-element:shortcuts'] } },
+              },
+            },
+          ],
+        },
+      },
+    });
 
     // Rendering the add button proves the element is in the navigation and
     // the plugin's API resolved; without the API the element would show an
