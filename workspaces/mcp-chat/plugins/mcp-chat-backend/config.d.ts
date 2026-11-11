@@ -166,5 +166,7 @@ export interface Config {
        */
       summarizeTimeout?: number;
     };
+
+    includeBackstageMcpServers?: boolean;
   };
 }
