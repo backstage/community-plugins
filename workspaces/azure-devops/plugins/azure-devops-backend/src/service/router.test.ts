@@ -34,6 +34,7 @@ import { UrlReaderService } from '@backstage/backend-plugin-api';
 import request from 'supertest';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockServices } from '@backstage/backend-test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 describe('createRouter', () => {
   let azureDevOpsApi: jest.Mocked<AzureDevOpsApi>;
@@ -110,6 +111,26 @@ describe('createRouter', () => {
       reader: mockUrlReader,
       permissions: mockPermissionEvaluator,
       httpAuth: mockServices.httpAuth(),
+      catalog: catalogServiceMock({
+        entities: [
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'mycomponent',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/build-definition': 'myDefinition',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: { name: 'unannotated' },
+          },
+        ],
+      }),
     });
 
     app = express().use(router);
@@ -117,6 +138,69 @@ describe('createRouter', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    mockedAuthorize.mockImplementation(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+  });
+
+  describe('entity binding', () => {
+    it('rejects requests for resources not annotated on the entity', async () => {
+      const entityRef = 'component:default/mycomponent';
+      const forbidden = [
+        request(app).get('/git-tags/otherProject/myRepo').query({ entityRef }),
+        request(app)
+          .get('/pull-requests/myProject/otherRepo')
+          .query({ entityRef }),
+        request(app)
+          .get('/pull-requests/myProject/myRepo')
+          .query({ entityRef, host: 'attacker.example', org: 'myOrg' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef, definitionName: 'otherDefinition' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef, repoName: 'otherRepo' }),
+        request(app).get('/readme/myProject/otherRepo').query({ entityRef }),
+        request(app)
+          .get('/builds/otherProject/build/8/log')
+          .query({ entityRef }),
+        request(app)
+          .get('/repository/myProject/otherRepo')
+          .query({ entityRef }),
+        request(app)
+          .get('/git-tags/myProject/myRepo')
+          .query({ entityRef: 'component:default/unannotated' }),
+      ];
+
+      for (const response of await Promise.all(forbidden)) {
+        expect(response.status).toEqual(403);
+      }
+
+      const missing = await request(app)
+        .get('/git-tags/myProject/myRepo')
+        .query({ entityRef: 'component:default/missing' });
+      expect(missing.status).toEqual(404);
+
+      const noEntityRef = await request(app).get(
+        '/builds/myProject/af4ae3af-e747-4129-9bbc-d1329f6b0998',
+      );
+      expect(noEntityRef.status).toEqual(400);
+
+      azureDevOpsApi.getGitRepository.mockResolvedValueOnce({
+        id: 'af4ae3af-e747-4129-9bbc-d1329f6b0998',
+      });
+      const otherRepoId = await request(app)
+        .get('/builds/myProject/00000000-0000-0000-0000-000000000000')
+        .query({ entityRef });
+      expect(otherRepoId.status).toEqual(403);
+
+      expect(azureDevOpsApi.getGitTags).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getPullRequests).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getBuildRuns).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getBuildList).not.toHaveBeenCalled();
+    });
   });
 
   describe('GET /health', () => {
@@ -232,11 +316,15 @@ describe('createRouter', () => {
 
       azureDevOpsApi.getGitRepository.mockResolvedValueOnce(gitRepository);
 
-      const response = await request(app).get('/repository/myProject/myRepo');
+      const response = await request(app)
+        .get('/repository/myProject/myRepo')
+        .query({ entityRef: 'component:default/mycomponent' });
 
       expect(azureDevOpsApi.getGitRepository).toHaveBeenCalledWith(
         'myProject',
         'myRepo',
+        undefined,
+        undefined,
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual(gitRepository);
@@ -277,11 +365,14 @@ describe('createRouter', () => {
 
       const builds: Build[] = [firstBuild, secondBuild, thirdBuild];
 
+      azureDevOpsApi.getGitRepository.mockResolvedValueOnce({
+        id: 'af4ae3af-e747-4129-9bbc-d1329f6b0998',
+      });
       azureDevOpsApi.getBuildList.mockResolvedValueOnce(builds);
 
       const response = await request(app)
         .get('/builds/myProject/af4ae3af-e747-4129-9bbc-d1329f6b0998')
-        .query({ top: '40' });
+        .query({ top: '40', entityRef: 'component:default/mycomponent' });
 
       expect(azureDevOpsApi.getBuildList).toHaveBeenCalledWith(
         'myProject',

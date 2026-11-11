@@ -121,7 +121,13 @@ export class AzureDevOpsApi {
     let authHandler;
     if (!credentials) {
       // No credentials found for the provided host and org in the `integrations.azure` config section
-      // use the fall back personal access token from `azureDevOps.token`
+      // use the fall back personal access token from `azureDevOps.token`,
+      // but never send it to a host other than the one it was configured for
+      if (validHost !== this.config.getOptionalString('azureDevOps.host')) {
+        throw new Error(
+          `No credentials found in 'integrations.azure' for host '${validHost}', unable to proceed`,
+        );
+      }
       const token = this.config.getOptionalString('azureDevOps.token');
       if (!token) {
         throw new Error(

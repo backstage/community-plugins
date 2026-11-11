@@ -131,6 +131,24 @@ describe('AzureDevOpsApi', () => {
     ]);
   });
 
+  it('should not send the fallback token to an unconfigured host', async () => {
+    const api = AzureDevOpsApi.fromConfig(
+      new ConfigReader({
+        azureDevOps: {
+          host: 'dev.azure.com',
+          token: 'token',
+          organization: 'org',
+        },
+      }),
+      { logger: mockLogger, urlReader: mockUrlReader },
+    );
+
+    await expect(api.getProjects('attacker.example', 'org')).rejects.toThrow(
+      "No credentials found in 'integrations.azure' for host 'attacker.example'",
+    );
+    expect(WebApi).not.toHaveBeenCalled();
+  });
+
   it('should get git repository', async () => {
     const mockGitRepository: GitRepository = {
       id: 'repo',

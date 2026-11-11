@@ -20,6 +20,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
 import { azureDevOpsPermissions } from '@backstage-community/plugin-azure-devops-common';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 /**
  * Azure DevOps backend plugin
@@ -38,6 +39,7 @@ export const azureDevOpsPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
         permissionsRegistry: coreServices.permissionsRegistry,
+        catalog: catalogServiceRef,
       },
       async init({
         config,
@@ -47,6 +49,7 @@ export const azureDevOpsPlugin = createBackendPlugin({
         httpRouter,
         httpAuth,
         permissionsRegistry,
+        catalog,
       }) {
         httpRouter.use(
           await createRouter({
@@ -55,6 +58,7 @@ export const azureDevOpsPlugin = createBackendPlugin({
             reader,
             permissions,
             httpAuth,
+            catalog,
           }),
         );
         httpRouter.addAuthPolicy({
