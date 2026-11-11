@@ -4,14 +4,60 @@ The shortcuts plugin allows a user to have easy access to pages within a Backsta
 
 ## Usage
 
-### Install the package:
+The plugin supports both the new frontend system and the old one.
+
+### New frontend system
+
+Install the package:
 
 ```bash
 # From your Backstage root directory
 yarn --cwd packages/app add @backstage-community/plugin-shortcuts
 ```
 
-### Register plugin:
+With [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery) turned on, the plugin is installed automatically. Otherwise add it to `createApp`:
+
+```ts
+import shortcutsPlugin from '@backstage-community/plugin-shortcuts/alpha';
+
+const app = createApp({
+  features: [shortcutsPlugin],
+});
+```
+
+The plugin adds the shortcuts to your app's navigation by itself, as the `nav-element:shortcuts` extension in the `end` slot, after the page links. If your app has its own `NavContentBlueprint`, it needs to render `navSlots.end.rest()` once; that covers every plugin that adds navigation content.
+
+Configure it in `app-config.yaml`:
+
+```yaml
+app:
+  extensions:
+    # Allow external links as shortcuts
+    - nav-element:shortcuts:
+        config:
+          allowExternalLinks: true
+    # Or move it before the page links
+    - nav-element:shortcuts:
+        config:
+          slot: start
+    # Or turn it off
+    - nav-element:shortcuts: false
+```
+
+Listing it under `app.extensions` also places it ahead of other navigation elements in the same slot.
+
+To replace the default `localStorage` implementation, override the `shortcutsApiRef` API from a module with `pluginId: 'shortcuts'`.
+
+### Old frontend system
+
+#### Install the package:
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/app add @backstage-community/plugin-shortcuts
+```
+
+#### Register plugin:
 
 This plugin requires explicit registration, so you will need to add it to your App's `plugins.ts` file:
 
@@ -22,7 +68,7 @@ export { shortcutsPlugin } from '@backstage-community/plugin-shortcuts';
 
 If you don't have a `plugins.ts` file see: [troubleshooting](#troubleshooting)
 
-### Add the `<Shortcuts />` component within your `<Sidebar>`:
+#### Add the `<Shortcuts />` component within your `<Sidebar>`:
 
 Edit file `packages/app/src/components/Root/Root.tsx`
 
