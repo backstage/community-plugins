@@ -51,7 +51,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/node": "24.10.4",
-    "@types/webpack-env": "1.18.8"
+    "@types/webpack-env": "1.18.8",
+    "@remixicon/react": ">=4.6.0 <4.9.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
