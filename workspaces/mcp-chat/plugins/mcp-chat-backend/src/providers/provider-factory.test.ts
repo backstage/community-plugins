@@ -177,6 +177,42 @@ describe('getProviderConfig', () => {
     });
   });
 
+  it('should configure Claude provider with default and custom base URLs', () => {
+    const testCases = [
+      {
+        customBaseUrl: undefined,
+        expectedBaseUrl: 'https://api.anthropic.com/v1',
+      },
+      {
+        customBaseUrl: 'https://custom-anthropic.com/v1',
+        expectedBaseUrl: 'https://custom-anthropic.com/v1',
+      },
+    ];
+
+    testCases.forEach(({ customBaseUrl, expectedBaseUrl }) => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'claude';
+          if (key === 'model') return 'test-model';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'token') return 'first-key';
+          if (key === 'baseUrl') return customBaseUrl;
+          return 'test-key';
+        }),
+        getOptionalNumber: jest.fn().mockReturnValue(undefined),
+      } as any;
+
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+      expect(result.baseUrl).toBe(expectedBaseUrl);
+      expect(result.type).toBe('claude');
+      expect(result.apiKey).toBe('first-key');
+    });
+  });
+
   it('should configure Ollama provider with default and custom base URLs', () => {
     const testCases = [
       { customBaseUrl: undefined, expectedBaseUrl: 'http://localhost:11434' },
@@ -295,6 +331,45 @@ describe('getProviderConfig', () => {
       deploymentName: 'my-gpt-5.1-deployment',
       maxTokens: undefined,
       temperature: undefined,
+      pathOverrides: {
+        inference: undefined,
+        models: undefined,
+      },
+    });
+  });
+
+  it('should configure pathOverrides for inference and models endpoints', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'token') return 'test-key';
+        if (key === 'baseUrl') return 'https://custom.example.com';
+        if (key === 'pathOverrides.inference') return '/v2/chat/completions';
+        if (key === 'pathOverrides.models') return '/models';
+        return undefined;
+      }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderConfig(mockConfig);
+
+    expect(result).toEqual({
+      type: 'openai',
+      apiKey: 'test-key',
+      baseUrl: 'https://custom.example.com',
+      model: 'gpt-4',
+      maxTokens: undefined,
+      temperature: undefined,
+      pathOverrides: {
+        inference: '/v2/chat/completions',
+        models: '/models',
+      },
     });
   });
 
@@ -310,6 +385,8 @@ describe('getProviderConfig', () => {
         if (key === 'baseUrl')
           return 'https://myresource.openai.azure.com/openai/v1';
         if (key === 'deploymentName') return undefined;
+        if (key === 'pathOverrides.inference') return undefined;
+        if (key === 'pathOverrides.models') return undefined;
         return undefined;
       }),
       getOptionalNumber: jest.fn().mockReturnValue(undefined),
@@ -349,6 +426,9 @@ describe('getProviderConfig', () => {
       }),
       getOptionalString: jest.fn().mockImplementation((key: string) => {
         if (key === 'baseUrl') return undefined;
+        if (key === 'pathOverrides.inference')
+          return '/custom/chat/completions';
+        if (key === 'pathOverrides.models') return undefined;
         return 'first-key';
       }),
       getOptionalNumber: jest.fn().mockReturnValue(undefined),
@@ -362,6 +442,8 @@ describe('getProviderConfig', () => {
       }),
       getOptionalString: jest.fn().mockImplementation((key: string) => {
         if (key === 'baseUrl') return undefined;
+        if (key === 'pathOverrides.inference') return undefined;
+        if (key === 'pathOverrides.models') return undefined;
         return 'second-key';
       }),
       getOptionalNumber: jest.fn().mockReturnValue(undefined),
@@ -377,8 +459,14 @@ describe('getProviderConfig', () => {
     expect(result).toEqual({
       type: 'openai',
       apiKey: 'first-key',
+      pathOverrides: {
+        inference: '/custom/chat/completions',
+        models: undefined,
+      },
       baseUrl: 'https://api.openai.com/v1',
+      maxTokens: undefined,
       model: 'gpt-4',
+      temperature: undefined,
     });
   });
 
@@ -391,6 +479,8 @@ describe('getProviderConfig', () => {
       }),
       getOptionalString: jest.fn().mockImplementation((key: string) => {
         if (key === 'baseUrl') return undefined;
+        if (key === 'pathOverrides.inference') return undefined;
+        if (key === 'pathOverrides.models') return undefined;
         return 'test-key';
       }),
       getOptionalNumber: jest.fn().mockReturnValue(undefined),
@@ -571,6 +661,8 @@ describe('getProviderInfo', () => {
       }),
       getOptionalString: jest.fn().mockImplementation((key: string) => {
         if (key === 'baseUrl') return 'https://api.openai.com/v1';
+        if (key === 'pathOverrides.inference') return undefined;
+        if (key === 'pathOverrides.models') return undefined;
         return 'test-key';
       }),
       getOptionalNumber: jest.fn().mockReturnValue(undefined),
@@ -604,6 +696,8 @@ describe('getProviderInfo', () => {
         if (key === 'baseUrl')
           return 'https://my-resource.openai.azure.com/openai/v1';
         if (key === 'deploymentName') return 'my-gpt4-deployment';
+        if (key === 'pathOverrides.inference') return undefined;
+        if (key === 'pathOverrides.models') return undefined;
         return 'test-key';
       }),
       getOptionalNumber: jest.fn().mockReturnValue(undefined),
@@ -630,6 +724,8 @@ describe('getProviderInfo', () => {
       }),
       getOptionalString: jest.fn().mockImplementation((key: string) => {
         if (key === 'baseUrl') return 'https://api.openai.com/v1';
+        if (key === 'pathOverrides.inference') return undefined;
+        if (key === 'pathOverrides.models') return undefined;
         if (key === 'deploymentName') return undefined;
         return 'test-key';
       }),

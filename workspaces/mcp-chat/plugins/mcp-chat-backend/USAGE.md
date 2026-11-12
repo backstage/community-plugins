@@ -82,6 +82,11 @@ const manualConfig: ProviderConfig = {
   apiKey: 'sk-...',
   baseUrl: 'https://api.openai.com/v1',
   model: 'gpt-4',
+  // Optional for custom deployments
+  pathOverrides: {
+    inference: '/chat/completions',
+    models: '/custom/models',
+  },
 };
 const provider = ProviderFactory.createProvider(manualConfig);
 ```
@@ -318,7 +323,13 @@ interface ProviderConfig {
   type: string; // Use LLMProviderType for type safety
   apiKey?: string; // API key (optional for Ollama)
   baseUrl: string; // API base URL
+  deploymentName?: string; // API
+  logger?: LoggerService;
+  maxTokens?: number;
   model: string; // Model name
+  pathOverrides?: Partial<Record<OverridablePaths, string>>;
+  temperature?: number;
+  type: string;
 }
 
 // ProviderInfo - Runtime information about an active provider
@@ -485,6 +496,11 @@ mcpChat:
       model: gpt-4
       # Optional: baseUrl for custom endpoints
       # baseUrl: https://api.openai.com/v1
+
+      # Optional: pathOverrides for custom paths
+      # pathOverrides:
+      #   inference: '/custom/completions'
+      #   models: '/custom/models'
 
   # MCP Server Configuration
   mcpServers:
