@@ -61,7 +61,7 @@ const app = createApp({
 });
 ```
 
-The plugin provides `page:opencost` at `/opencost` and `nav-item:opencost`.
+The plugin provides `page:opencost` at `/opencost`. Its page title and icon are used for sidebar navigation.
 
 ## Plugin Configuration
 
