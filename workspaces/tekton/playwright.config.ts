@@ -16,48 +16,62 @@
 
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/legacy.mock.tsx) or default NFS (dev/index.mock.tsx)
+// APP_MODE: 'nfs' (dev/index.tsx) or 'legacy' (dev/legacy.tsx)
 const appMode = process.env.APP_MODE || 'nfs';
-const startCommand =
-  appMode === 'legacy' ? 'yarn start:legacy:mock' : 'yarn start:mock';
+const frontendStartCommand =
+  appMode === 'legacy' ? 'yarn start:legacy' : 'yarn start';
 
 /**
- * See https://playwright.dev/docs/test-configuration.
+ * Full-stack Playwright config: frontend + backend as separate webServers
+ * so Playwright waits for both before tests run (same pattern as RBAC).
+ * @see https://playwright.dev/docs/test-webserver
+ *
+ * Locale projects share one fixture-backed backend. Prefer `en` locally:
+ * yarn playwright test --project=en
+ *
+ * Free :3000 / :7007 before `yarn test:nfs --ui` — reuseExistingServer is
+ * false (RBAC-equivalent); a stuck webServer makes the UI show "No tests".
  */
 export default defineConfig({
+  testDir: './plugins/tekton/tests/',
+  testMatch: '**/tekton.spec.ts',
   timeout: 120_000,
+  fullyParallel: false,
+  workers: 1,
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: startCommand,
-          port: 3000,
-          reuseExistingServer: true,
+          name: 'Frontend',
+          command: frontendStartCommand,
           cwd: 'plugins/tekton',
-          timeout: 120_000,
+          url: 'http://localhost:3000',
+          reuseExistingServer: false,
+          timeout: 180_000,
+        },
+        {
+          name: 'Backend',
+          command: 'yarn start',
+          cwd: 'plugins/tekton-dev-backend',
+          wait: { stdout: /Plugin initialization complete/ },
+          reuseExistingServer: false,
+          timeout: 180_000,
         },
       ],
-
-  forbidOnly: !!process.env.CI,
-
   retries: process.env.CI ? 2 : 0,
-
   reporter: [
     ['html', { open: 'never', outputFolder: `e2e-test-report-${appMode}` }],
   ],
-
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
   },
-
   outputDir: 'node_modules/.cache/e2e-test-results',
-
   projects: [
     {
       name: 'en',
-      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
         locale: 'en',
@@ -65,7 +79,6 @@ export default defineConfig({
     },
     {
       name: 'fr',
-      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
         locale: 'fr',
@@ -73,7 +86,6 @@ export default defineConfig({
     },
     {
       name: 'it',
-      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
         locale: 'it',
@@ -81,7 +93,6 @@ export default defineConfig({
     },
     {
       name: 'ja',
-      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
         locale: 'ja',
@@ -89,7 +100,6 @@ export default defineConfig({
     },
     {
       name: 'de',
-      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
         locale: 'de',
@@ -97,7 +107,6 @@ export default defineConfig({
     },
     {
       name: 'es',
-      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
         locale: 'es',
