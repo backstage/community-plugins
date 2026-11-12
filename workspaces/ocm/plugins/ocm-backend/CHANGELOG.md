@@ -1,5 +1,16 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.22.1
+
+### Patch Changes
+
+- c01b0ab: Updated dependency `supertest` to `7.3.0`.
+- ff984e3: Updated dependency `supertest` to `7.3.2`.
+- 566fa6e: Updated dependency `supertest` to `7.3.1`.
+- 7f0aad7: Updated dependency `@openapitools/openapi-generator-cli` to `2.42.1`.
+- b563617: Updated dependency `@openapitools/openapi-generator-cli` to `2.42.0`.
+  - @backstage-community/plugin-ocm-common@5.22.1
+
 ## 5.22.0
 
 ### Minor Changes
