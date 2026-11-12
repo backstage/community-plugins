@@ -172,6 +172,16 @@ const rbacTranslationDe = createTranslationMessages({
     'common.unauthorizedToEdit': 'Keine Berechtigung zum Bearbeiten',
     'common.noRecordsFound': 'Keine Datensätze gefunden',
     'common.selectUsersAndGroups': 'Benutzer und Gruppen auswählen',
+    'common.addMembersAndGroups': 'Mitglieder und Gruppen hinzufügen',
+    'common.searchMembers': 'Suchen',
+    'common.searchByName': 'Nach Namen suchen',
+    'common.kind': 'Art',
+    'common.kindAll': 'Alle',
+    'common.namespace': 'Namespace',
+    'common.namespaceAll': 'Alle',
+    'common.allResults': 'Alle ({{count}})',
+    'common.selectedCount': '{{count}} ausgewählt',
+    'common.add': 'Hinzufügen',
     'common.clearSearch': 'Suche löschen',
     'common.closeDrawer': 'Drawer schließen',
     'common.remove': 'Entfernen',
@@ -222,7 +232,10 @@ const rbacTranslationDe = createTranslationMessages({
     'common.childGroupsCount': '{{count}} untergeordnete Gruppen',
     'common.searchAndSelectUsersGroups':
       'Suchen und wählen Sie Benutzer und Gruppen aus, die hinzugefügt werden sollen. Ausgewählte Benutzer und Gruppen werden in der folgenden Tabelle angezeigt.',
+    'common.searchAndFilterCatalog':
+      'Katalog durchsuchen und filtern, um Benutzer und Gruppen hinzuzufügen. Dies ersetzt ein Dropdown mit 100 Einträgen für große Mitgliederlisten.',
     'common.noUsersAndGroupsFound': 'Keine Benutzer und Gruppen gefunden.',
+    'common.noMembersMatchSearch': 'Keine Mitglieder entsprechen Ihrer Suche.',
     'common.errorFetchingUserGroups':
       'Fehler beim Abrufen von Benutzern und Gruppen: {{error}}',
     'common.nameRequired': 'Name ist erforderlich',

@@ -63,6 +63,7 @@
     "@backstage/cli": "^0.36.5",
     "@backstage/core-plugin-api": "^1.12.9",
     "@backstage/plugin-auth-backend": "^0.30.0",
+    "@backstage/plugin-auth-backend-module-github-provider": "^0.3.7",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.22",
     "@backstage/plugin-auth-backend-module-oidc-provider": "^0.4.20",
     "@backstage/plugin-catalog-backend": "^3.9.1",

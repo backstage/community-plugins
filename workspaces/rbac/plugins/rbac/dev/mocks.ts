@@ -97,13 +97,66 @@ class MockRBACApi implements RBACAPI {
     });
   }
 
-  async searchMembers(searchTerm: string): Promise<MemberEntity[]> {
-    if (!searchTerm.trim()) {
-      return mockMembers;
+  async searchMembers(options?: {
+    searchTerm?: string;
+    limit?: number;
+    offset?: number;
+    kind?: 'user' | 'group';
+    namespace?: string;
+    orderBy?: 'name' | 'type' | 'namespace';
+    orderDirection?: 'asc' | 'desc';
+  }): Promise<{ items: MemberEntity[]; totalItems: number }> {
+    const {
+      searchTerm = '',
+      limit = 100,
+      offset = 0,
+      kind,
+      namespace,
+      orderBy = 'name',
+      orderDirection = 'asc',
+    } = options ?? {};
+    let filtered = [...mockMembers];
+    if (kind) {
+      filtered = filtered.filter(
+        m => m.kind.toLowerCase() === kind.toLowerCase(),
+      );
     }
-    return mockMembers.filter(m =>
-      m.metadata.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    if (namespace) {
+      filtered = filtered.filter(m => m.metadata.namespace === namespace);
+    }
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(m =>
+        m.metadata.name.toLowerCase().includes(term),
+      );
+    }
+    const direction = orderDirection === 'desc' ? -1 : 1;
+    const sortValue = (member: (typeof mockMembers)[number]) => {
+      if (orderBy === 'type') {
+        return member.kind;
+      }
+      if (orderBy === 'namespace') {
+        return member.metadata.namespace ?? '';
+      }
+      return member.metadata.name;
+    };
+    filtered.sort(
+      (a, b) => sortValue(a).localeCompare(sortValue(b)) * direction,
     );
+    return {
+      items: filtered.slice(offset, offset + limit),
+      totalItems: filtered.length,
+    };
+  }
+
+  async getMemberNamespaces(): Promise<string[]> {
+    return [
+      ...new Set(
+        mockMembers
+          .map(m => m.metadata.namespace)
+          .filter((ns): ns is string => Boolean(ns)),
+      ),
+    ].sort();
   }
 
   async listPermissions(): Promise<PluginPermissionMetaData[]> {
