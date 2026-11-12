@@ -74,6 +74,43 @@ Here are some samples of badges for the `artists-lookup` service in the Demo Bac
 
 ## Usage
 
+### New frontend system
+
+The plugin ships a new frontend system export at `@backstage-community/plugin-badges/alpha`. It provides the badges API and a **Badges** item in the entity page context menu (three dots in the upper right corner), so no `EntityPage` changes are needed.
+
+Install the package in your app package:
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/app add @backstage-community/plugin-badges
+```
+
+If your app discovers features automatically, no further steps are needed. Otherwise, register the plugin explicitly:
+
+```tsx
+import { createApp } from '@backstage/frontend-defaults';
+import badgesPlugin from '@backstage-community/plugin-badges/alpha';
+
+const app = createApp({
+  features: [badgesPlugin],
+});
+```
+
+The context menu item can be disabled or filtered by entity through app configuration:
+
+```yaml
+app:
+  extensions:
+    - entity-context-menu-item:badges/badges:
+        config:
+          filter:
+            kind: component
+```
+
+Remove any `convertLegacyPlugin(badgesPlugin)` wrapper from your app when you switch to the `/alpha` export.
+
+### Legacy frontend system
+
 ### Install the package
 
 Install the `@backstage-community/plugin-badges` package in your frontend app package:
