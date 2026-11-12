@@ -15,9 +15,30 @@
  */
 
 import { openCostPlugin } from './plugin';
+import openCostFrontendPlugin from './alpha';
+import { renderTestApp } from '@backstage/frontend-test-utils';
+import { screen, within } from '@testing-library/react';
+
+jest.mock('./components/OpenCostReport', () => ({
+  OpenCostReport: () => 'OpenCost report',
+}));
 
 describe('opencost', () => {
   it('should export plugin', () => {
     expect(openCostPlugin).toBeDefined();
+  });
+
+  it('should render the OpenCost page in the new frontend system', async () => {
+    renderTestApp({
+      features: [openCostFrontendPlugin],
+      initialRouteEntries: ['/opencost'],
+    });
+
+    expect(await screen.findByText('OpenCost report')).toBeTruthy();
+    expect(
+      within(screen.getByTestId('sidebar-root'))
+        .getByRole('link', { name: 'OpenCost' })
+        .getAttribute('href'),
+    ).toBe('/opencost');
   });
 });

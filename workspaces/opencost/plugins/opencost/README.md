@@ -48,6 +48,21 @@ and
 
     ```
 
+## New Frontend System
+
+Install the package as described above. With [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin is automatically discovered. Otherwise, add it to your app:
+
+```tsx
+import { createApp } from '@backstage/frontend-defaults';
+import openCostPlugin from '@backstage-community/plugin-opencost/alpha';
+
+const app = createApp({
+  features: [openCostPlugin],
+});
+```
+
+The plugin provides `page:opencost` at `/opencost` and `nav-item:opencost`.
+
 ## Plugin Configuration
 
 Since OpenCost doesn't have any authentication at this point, you just need to give API access to the plugin to access your data.
