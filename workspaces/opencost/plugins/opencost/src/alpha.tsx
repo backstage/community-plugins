@@ -21,7 +21,6 @@ import {
 import {
   createFrontendPlugin,
   PageBlueprint,
-  type FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import MoneyIcon from '@material-ui/icons/MonetizationOn';
 import { rootRouteRef } from './routes';
@@ -31,6 +30,7 @@ const openCostPage = PageBlueprint.make({
     path: '/opencost',
     title: 'OpenCost',
     icon: <MoneyIcon />,
+    noHeader: true,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('./components/OpenCostPage').then(m =>
@@ -40,7 +40,7 @@ const openCostPage = PageBlueprint.make({
 });
 
 /** @alpha */
-const openCostFrontendPlugin: FrontendPlugin = createFrontendPlugin({
+const openCostFrontendPlugin = createFrontendPlugin({
   pluginId: 'opencost',
   extensions: [openCostPage],
   routes: convertLegacyRouteRefs({ root: rootRouteRef }),

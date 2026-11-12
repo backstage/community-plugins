@@ -35,6 +35,9 @@ describe('opencost', () => {
     });
 
     expect(await screen.findByText('OpenCost report')).toBeTruthy();
+    expect(screen.getAllByRole('heading', { name: 'OpenCost' })).toHaveLength(
+      1,
+    );
     expect(
       within(screen.getByTestId('sidebar-root'))
         .getByRole('link', { name: 'OpenCost' })
