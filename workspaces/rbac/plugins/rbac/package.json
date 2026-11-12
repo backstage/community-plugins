@@ -74,6 +74,7 @@
     "@backstage/ui": "^0.17.1",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "^5.14.18",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "@rjsf/core": "^5.21.2",
     "@rjsf/mui": "^5.21.2",
     "@rjsf/utils": "^5.21.2",

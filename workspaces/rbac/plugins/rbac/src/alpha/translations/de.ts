@@ -34,9 +34,32 @@ const rbacTranslationDe = createTranslationMessages({
     'table.title': 'Alle Rollen',
     'table.titleWithCount': 'Alle Rollen ({{count}})',
     'table.headers.name': 'Name',
+    'table.headers.source': 'Quelle',
     'table.headers.usersAndGroups': 'Benutzer und Gruppen',
     'table.headers.accessiblePlugins': 'Zugängliche Plugins',
     'table.headers.actions': 'Aktionen',
+    'table.sources.appConfig': 'App-Konfiguration',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'Formular',
+    'table.sources.legacy': 'Legacy',
+    'table.sources.tooltips.appConfig':
+      'Definiert unter permission.rbac.admin in app-config.yaml.',
+    'table.sources.tooltips.csv':
+      'Definiert in der CSV-Richtliniendatei, die über permission.rbac.policies-csv-file in app-config.yaml referenziert wird.',
+    'table.sources.tooltips.form':
+      'Über das RBAC-Formular in der Benutzeroberfläche erstellt. Kann auch über die REST-API verwaltet werden.',
+    'table.sources.tooltips.legacy':
+      'Erstellt, bevor Rollenquellen erfasst wurden. Kann über die REST-API oder die CSV-Richtliniendatei verwaltet werden.',
+    'table.sources.tooltips.generic':
+      'Diese Rolle wird von ihrer Quelle verwaltet und kann in der Benutzeroberfläche nicht geändert werden.',
+    'table.sources.actionTooltips.appConfig':
+      'Diese Rolle wird über die Anwendungskonfiguration verwaltet (permission.rbac.admin in app-config.yaml). Aktualisieren Sie die Konfiguration und stellen Sie erneut bereit, um Änderungen vorzunehmen.',
+    'table.sources.actionTooltips.csv':
+      'Diese Rolle wird über eine CSV-Richtliniendatei verwaltet. Aktualisieren Sie die CSV-Datei und stellen Sie erneut bereit, um Änderungen vorzunehmen.',
+    'table.sources.actionTooltips.legacy':
+      'Dies ist eine Legacy-Rolle und kann in der Benutzeroberfläche nicht geändert werden. Aktualisieren Sie sie über die REST-API oder die CSV-Richtliniendatei.',
+    'table.sources.actionTooltips.generic':
+      'Diese Rolle wird von ihrer Quelle verwaltet und kann in der Benutzeroberfläche nicht geändert werden.',
     'table.defaultRoleUsersAndGroups': 'Alle Benutzer und alle Gruppen',
     'table.emptyContent': 'Keine Datensätze gefunden',
     'toolbar.createButton': 'Erstellen',

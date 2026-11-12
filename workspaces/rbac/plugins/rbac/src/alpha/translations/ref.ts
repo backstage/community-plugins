@@ -30,9 +30,34 @@ export const rbacMessages = {
     titleWithCount: 'All roles ({{count}})',
     headers: {
       name: 'Name',
+      source: 'Source',
       usersAndGroups: 'Users and groups',
       accessiblePlugins: 'Accessible plugins',
       actions: 'Actions',
+    },
+    sources: {
+      appConfig: 'App Config',
+      csv: 'CSV',
+      form: 'Form',
+      legacy: 'Legacy',
+      tooltips: {
+        appConfig: 'Defined under permission.rbac.admin in app-config.yaml.',
+        csv: 'Defined in the CSV policy file referenced by permission.rbac.policies-csv-file in app-config.yaml.',
+        form: 'Created via the RBAC form in the UI. Can also be managed via the REST API.',
+        legacy:
+          'Created before role sources were recorded. Can be managed via the REST API or CSV policy file.',
+        generic:
+          'This role is managed by its source and cannot be changed in the UI.',
+      },
+      actionTooltips: {
+        appConfig:
+          'This role is managed via application configuration (permission.rbac.admin in app-config.yaml). Update the config and redeploy to make changes.',
+        csv: 'This role is managed via a CSV policy file. Update the CSV file and redeploy to make changes.',
+        legacy:
+          'This is a legacy role and cannot be changed in the UI. Update it through the REST API or CSV policy file.',
+        generic:
+          'This role is managed by its source and cannot be changed in the UI.',
+      },
     },
     defaultRoleUsersAndGroups: 'All users and all groups',
     emptyContent: 'No records found',
