@@ -1,5 +1,20 @@
 # @backstage-community/plugin-rbac
 
+## 2.4.0
+
+### Minor Changes
+
+- b9b3444: Add a scalable members and groups selection modal for large catalogs (more than 100 users/groups), with search, kind/namespace filters, server-side pagination, and sortable Name/Type/Namespace columns. The existing dropdown remains for smaller catalogs. Reopening the modal keeps the current role members checked, and unchecking members updates the role form. The `searchMembers` API now accepts pagination/filter/sort options and returns `{ items, totalItems }`.
+- 0551e54: Show each role's source in the Roles list and disable Edit/Delete for roles not created via the REST API or UI
+
+  Roles now display a Source column (App Config, CSV, or Form). Edit and Delete are disabled for App Config and CSV roles, with a tooltip explaining that changes must be made in the corresponding source.
+
+  Also fix success toasts reappearing on page refresh after creating or updating a role.
+
+### Patch Changes
+
+- f418ee8: Updated dependency `@playwright/test` to `1.65.0`.
+
 ## 2.3.7
 
 ### Patch Changes
