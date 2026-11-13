@@ -169,6 +169,12 @@ describe('CodeCoverageDatabase', () => {
             missed: 3,
             percentage: 57.14,
           },
+          function: {
+            available: 0,
+            covered: 0,
+            missed: 0,
+            percentage: 0,
+          },
           timestamp: 2345678901,
         },
         {
@@ -183,6 +189,12 @@ describe('CodeCoverageDatabase', () => {
             covered: 3,
             missed: 0,
             percentage: 100,
+          },
+          function: {
+            available: 0,
+            covered: 0,
+            missed: 0,
+            percentage: 0,
           },
           timestamp: 1234567890,
         },
