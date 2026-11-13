@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.5.4
+
+### Patch Changes
+
+- d20fcac: The MTA backend no longer fails to start when MTA is unreachable. It now connects to the MTA identity provider on the first request that needs it, and retries on the next request if that fails.
+
 ## 0.5.3
 
 ### Patch Changes
