@@ -1,0 +1,11 @@
+app:
+  title: Shortcuts dev
+  extensions:
+    - app/nav:
+        config:
+          elements:
+            end:
+              - nav-element:shortcuts
+    - nav-element:shortcuts:
+        config:
+          allowExternalLinks: true
