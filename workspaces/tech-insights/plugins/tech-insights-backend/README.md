@@ -219,6 +219,8 @@ export const myFactRetriever: FactRetriever = {
 };
 ```
 
+The context also carries `signal`, an `AbortSignal` that aborts when the run exceeds its `timeout` (5 minutes by default) or the backend shuts down. Long-running retrievers should pass it to their requests or check it between steps, and return as soon as it fires.
+
 Additional FactRetrievers are added to the Tech Insights backend by creating a new backend module and registering the FactRetriever with the `techInsightsFactRetrieversExtensionPoint` extension point. This, along with other extension points, are available in the [@backstage-community/plugin-tech-insights-node](../tech-insights-node/README.md) library.
 
 ```ts title="plugins/tech-insights-backend-module-my-fact-retriever/src/module.ts"

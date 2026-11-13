@@ -16,6 +16,7 @@
 
 import {
   FactRetriever,
+  FactRetrieverContext,
   FactRetrieverRegistration,
   FactRetrieverRegistry,
   FactSchemaDefinition,
@@ -242,6 +243,7 @@ describe('FactRetrieverEngine', () => {
         await expect(handlerParam).toEqual(
           expect.objectContaining({
             entityFilter: testFactRetriever.entityFilter,
+            signal: expect.any(AbortSignal),
           }),
         );
       } finally {
@@ -249,4 +251,49 @@ describe('FactRetrieverEngine', () => {
       }
     },
   );
+
+  it('Should let the fact retriever handler observe the scheduler abort signal', async () => {
+    const handler = jest.fn(
+      (ctx: FactRetrieverContext) =>
+        new Promise<TechInsightFact[]>(resolve => {
+          ctx.signal?.addEventListener('abort', () => resolve([]));
+        }),
+    );
+    const scheduler = mockServices.scheduler.mock();
+    engine = await DefaultFactRetrieverEngine.create({
+      factRetrieverContext: {
+        logger: mockServices.logger.mock(),
+        config: ConfigReader.fromConfigs([]),
+        auth: mockServices.auth(),
+        urlReader: mockServices.urlReader.mock(),
+        discovery: {
+          getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
+          getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
+        },
+      },
+      factRetrieverRegistry: createMockFactRetrieverRegistry(undefined, {
+        ...testFactRetriever,
+        handler,
+      }),
+      repository: createMockRepository(
+        () => {},
+        () => {},
+      ),
+      scheduler,
+    });
+    await engine.schedule();
+
+    const { fn } = scheduler.scheduleTask.mock.calls[0][0];
+    const controller = new AbortController();
+    const run = fn(controller.signal);
+
+    const ctx = handler.mock.calls[0][0];
+    expect(ctx.signal).toBe(controller.signal);
+    expect(ctx.signal?.aborted).toBe(false);
+
+    controller.abort();
+    await run;
+
+    expect(ctx.signal?.aborted).toBe(true);
+  });
 });

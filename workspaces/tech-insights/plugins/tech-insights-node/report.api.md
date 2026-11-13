@@ -79,6 +79,7 @@ export type FactRetrieverContext<TExtension = {}> = {
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
+  signal?: AbortSignal;
 } & TExtension;
 
 // @public
