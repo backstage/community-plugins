@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 3.2.0
+
+### Minor Changes
+
+- b83788b: Add MCP actions
+
+### Patch Changes
+
+- e9ea781: Fact retrievers now receive the scheduler's abort signal as `signal` in their `FactRetrieverContext`. It aborts when a run exceeds its configured `timeout` or the backend shuts down, so long-running retrievers can stop instead of overlapping with a new run on another instance.
+- Updated dependencies [e9ea781]
+  - @backstage-community/plugin-tech-insights-node@2.10.0
+
 ## 3.1.0
 
 ### Minor Changes
