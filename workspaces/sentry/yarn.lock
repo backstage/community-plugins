@@ -13281,10 +13281,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-lock@npm:^1.1.0":
-  version: 1.4.1
-  resolution: "async-lock@npm:1.4.1"
-  checksum: 10/80d55ac95f920e880a865968b799963014f6d987dd790dd08173fae6e1af509d8cd0ab45a25daaca82e3ef8e7c939f5d128cd1facfcc5c647da8ac2409e20ef9
+"async-lock@npm:^1.4.1":
+  version: 1.5.0
+  resolution: "async-lock@npm:1.5.0"
+  checksum: 10/ea99e3c1a48b47496c3015644ed8ba680d8f25205240a091ac31f297993e355958e20248d9cfec366210120ace4d09cb2bb1102aa8f839177a0deafa6f351e23
   languageName: node
   linkType: hard
 
@@ -20084,10 +20084,10 @@ __metadata:
   linkType: hard
 
 "isomorphic-git@npm:^1.23.0":
-  version: 1.25.7
-  resolution: "isomorphic-git@npm:1.25.7"
+  version: 1.44.13
+  resolution: "isomorphic-git@npm:1.44.13"
   dependencies:
-    async-lock: "npm:^1.1.0"
+    async-lock: "npm:^1.4.1"
     clean-git-ref: "npm:^2.0.1"
     crc-32: "npm:^1.2.0"
     diff3: "npm:0.0.3"
@@ -20095,12 +20095,11 @@ __metadata:
     minimisted: "npm:^2.0.0"
     pako: "npm:^1.0.10"
     pify: "npm:^4.0.1"
-    readable-stream: "npm:^3.4.0"
-    sha.js: "npm:^2.4.9"
+    sha.js: "npm:^2.4.12"
     simple-get: "npm:^4.0.1"
   bin:
     isogit: cli.cjs
-  checksum: 10/b2b8a1247ea73249afcc8fb71f4354b2c4cfe1c0e27dfd9e1fab8d8dcc8e264b1acc4cb95bab7335cba55aea925d25767f50a23493d1606f3083fa0bedc6ab72
+  checksum: 10/1f4118d0ac3d5dc5bd81d3b8a1edec7648eedc0f559ce46c55f9d21b2c154fe1dc91ef7c04bdcbcccbfc04888867692d5f1870c3d6e1fd967a77fe9c6bf3f042
   languageName: node
   linkType: hard
 
@@ -27013,7 +27012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.12, sha.js@npm:^2.4.8, sha.js@npm:^2.4.9":
+"sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.12, sha.js@npm:^2.4.8":
   version: 2.4.12
   resolution: "sha.js@npm:2.4.12"
   dependencies:
