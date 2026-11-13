@@ -87,13 +87,13 @@ catalog:
   locations:
     # Local example organizational data
     - type: file
-      target: ../../examples/org.yaml
+      target: ./examples/org.yaml
       rules:
         - allow: [User, Group]
 
     # Local example data
     - type: file
-      target: ../../examples/entities.yaml
+      target: ./examples/entities.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -107,16 +107,18 @@ catalog:
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+  # Dev/e2e: tekton-dev-backend replaces cluster fetch/proxy with fixtures
+  # (see plugins/tekton-dev-backend/src/fixtures). No live cluster required.
+  # For a real cluster, remove the fixture module and set K8S_* below.
   serviceLocatorMethod:
     type: 'multiTenant'
   clusterLocatorMethods:
     - type: 'config'
       clusters:
-        # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
-        - name: test-cluster
+        - name: mock-cluster
           authProvider: serviceAccount
-          url: ${K8S_API_SERVER}
-          serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}
+          url: http://127.0.0.1:1
+          serviceAccountToken: tekton-e2e-fixture-token
           skipTLSVerify: true
           skipMetricsLookup: true
           customResources:

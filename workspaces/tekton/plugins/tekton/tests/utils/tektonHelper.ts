@@ -98,6 +98,9 @@ export class Common {
     })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .disableRules(['color-contrast'])
+      // TODO(RHDHBUGS-4116): revert after Backstage LogViewer ARIA fix
+      // (role="row" line anchors without grid/table parent/children).
+      .exclude('[class*="BackstageLogViewer"]')
       .analyze();
 
     await testInfo.attach('accessibility-scan-results.json', {
