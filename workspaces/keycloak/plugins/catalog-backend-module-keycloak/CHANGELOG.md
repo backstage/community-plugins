@@ -1,5 +1,14 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.23.2
+
+### Patch Changes
+
+- a25958d: Rename the Keycloak auth module source folder so it matches the published package name. Update the catalog module contributor docs that link to that folder.
+- 6641b9c: Updated dependency `@keycloak/keycloak-admin-client` to `26.8.1`.
+  Updated dependency `@types/lodash` to `4.17.26`.
+- c165f5b: Updated dependency `@keycloak/keycloak-admin-client` to `26.7.4`.
+
 ## 3.23.1
 
 ### Patch Changes
