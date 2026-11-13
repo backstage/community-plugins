@@ -58,8 +58,8 @@ const Radar = ({
     [quadrants, width, legendWidth, height],
   );
 
-  const rightMostPoint = adjustedQuadrants[3].legendX + legendWidth;
-  const leftMostPoint = adjustedQuadrants[2].legendX;
+  const rightMostPoint = width - margin;
+  const leftMostPoint = margin;
 
   const midpoint = (rightMostPoint + leftMostPoint) / 2;
   const widthBetween =
