@@ -1273,7 +1273,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/react-hooks": "npm:8.0.1"
-    "@testing-library/user-event": "npm:14.6.8"
+    "@testing-library/user-event": "npm:14.6.9"
     "@types/autosuggest-highlight": "npm:3.2.4"
     "@types/node": "npm:22.20.5"
     "@types/react": "npm:^18.3.11"
@@ -7980,12 +7980,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.6.8":
-  version: 14.6.8
-  resolution: "@testing-library/user-event@npm:14.6.8"
+"@testing-library/user-event@npm:14.6.9":
+  version: 14.6.9
+  resolution: "@testing-library/user-event@npm:14.6.9"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: 10/674190e5d592d5f1478af26c08c13ee197dbbc03885da3b99312c9cd810e4dc9c0ffbd4df91c51f39d467c1866a0c28f451df56d3fd535a5260d7660c24d9f42
+  checksum: 10/9b3c7708b9d0a49353516b30fbad2f672968813b97a971e483c4b85b2e09629220fae8852acf86ade6b83257ecceba8cfdd4c5acb441c9634a7b93f4ea390e81
   languageName: node
   linkType: hard
 
