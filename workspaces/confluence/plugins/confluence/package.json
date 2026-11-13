@@ -61,7 +61,7 @@
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.2",
-    "react-router-dom": "^6.14.1"
+    "react-router-dom": "^6.30.5"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
