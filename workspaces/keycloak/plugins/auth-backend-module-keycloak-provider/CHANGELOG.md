@@ -1,5 +1,11 @@
 # @backstage-community/plugin-auth-backend-module-keycloak-provider
 
+## 0.6.1
+
+### Patch Changes
+
+- a25958d: Rename the Keycloak auth module source folder so it matches the published package name. Update the catalog module contributor docs that link to that folder.
+
 ## 0.6.0
 
 ### Minor Changes
