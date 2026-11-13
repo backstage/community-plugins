@@ -21,10 +21,11 @@ import {
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
 import { NEWRELIC_GUID_ANNOTATION } from './constants';
+import { getDashboardGuids } from './dashboardGuids';
 
 /** @public */
 export const isNewRelicDashboardAvailable = (entity: Entity) =>
-  Boolean(entity?.metadata?.annotations?.[NEWRELIC_GUID_ANNOTATION]);
+  getDashboardGuids(entity).length > 0;
 
 export const Router = () => {
   const { entity } = useEntity();

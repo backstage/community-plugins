@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Fragment } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Page, Content } from '@backstage/core-components';
-import { DashboardEntityList } from './DashboardEntityList';
+import { DashboardPagesCard } from './DashboardEntityList';
 import { DashboardSnapshotList } from './DashboardSnapshotList';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { NEWRELIC_GUID_ANNOTATION } from '../../constants';
+import { getDashboardGuids } from '../../dashboardGuids';
 
 export const NewRelicDashboard = () => {
   const { entity } = useEntity();
+  const guids = getDashboardGuids(entity);
   return (
     <Page themeId="home">
       <Content>
         <Grid container spacing={6} direction="row" alignItems="stretch">
-          <Grid item xs={12}>
-            <DashboardEntityList />
-          </Grid>
-          <Grid item xs={12}>
-            <DashboardSnapshotList
-              guid={String(
-                entity.metadata.annotations?.[NEWRELIC_GUID_ANNOTATION],
-              )}
-            />
-          </Grid>
+          {guids.map(guid => (
+            <Fragment key={guid}>
+              <Grid item xs={12}>
+                <DashboardPagesCard guid={guid} variant="gridItem" />
+              </Grid>
+              <Grid item xs={12}>
+                <DashboardSnapshotList guid={guid} />
+              </Grid>
+            </Fragment>
+          ))}
         </Grid>
       </Content>
     </Page>
