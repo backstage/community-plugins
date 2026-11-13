@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import type { ReactNode } from 'react';
-import Typography from '@material-ui/core/Typography';
 import {
   Audit,
   AuditCompleted,
@@ -59,7 +58,7 @@ const LighthouseCategoryScoreStatus = (props: { score: number }) => {
         </>
       );
     default:
-      return <Typography component="span">N/A</Typography>;
+      return <span>N/A</span>;
   }
 };
 

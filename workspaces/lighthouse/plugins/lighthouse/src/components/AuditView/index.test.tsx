@@ -120,9 +120,7 @@ describe('AuditView', () => {
 
       const audit = websiteResponse.audits.find(a => a.id === id) as Audit;
       const auditElement = screen.getByText(formatTime(audit.timeCreated));
-      expect(auditElement.parentElement?.parentElement?.className).toContain(
-        'selected',
-      );
+      expect(auditElement.parentElement?.className).toContain('selected');
 
       const notSelectedAudit = websiteResponse.audits.find(
         a => a.id !== id,
@@ -130,9 +128,9 @@ describe('AuditView', () => {
       const notSelectedAuditElement = screen.getByText(
         formatTime(notSelectedAudit.timeCreated),
       );
-      expect(
-        notSelectedAuditElement.parentElement?.parentElement?.className,
-      ).not.toContain('selected');
+      expect(notSelectedAuditElement.parentElement?.className).not.toContain(
+        'selected',
+      );
     });
 
     it('navigates to the next report when an audit is clicked', async () => {
@@ -147,8 +145,7 @@ describe('AuditView', () => {
 
       websiteResponse.audits.forEach(a => {
         expect(
-          screen.getByText(formatTime(a.timeCreated)).parentElement
-            ?.parentElement,
+          screen.getByText(formatTime(a.timeCreated)).parentElement,
         ).toHaveAttribute('href', `/audit/${a.id}`);
       });
     });
@@ -175,8 +172,7 @@ describe('AuditView', () => {
 
       websiteResponse.audits.forEach(a => {
         expect(
-          screen.getByText(formatTime(a.timeCreated)).parentElement
-            ?.parentElement,
+          screen.getByText(formatTime(a.timeCreated)).parentElement,
         ).toHaveAttribute('href', `/example/lighthouse/audit/${a.id}`);
       });
     });
