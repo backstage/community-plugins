@@ -1,0 +1,97 @@
+{
+  "name": "@backstage-community/plugin-guided-tours",
+  "description": "Guided tours for Backstage: spotlight steps, per-user progress, auto-start on login or route",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/guided-tours/plugins/guided-tours",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/guided-tours/plugins/guided-tours"
+  },
+  "keywords": [
+    "backstage",
+    "guided-tours",
+    "onboarding"
+  ],
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "guided-tours",
+    "pluginPackages": [
+      "@backstage-community/plugin-guided-tours",
+      "@backstage-community/plugin-guided-tours-react"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start --config dev/app-config.yaml",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-guided-tours-react": "workspace:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
+    "@backstage/types": "backstage:^",
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
+    "react-aria-components": "~1.22.0",
+    "zod": "^4.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.2"
+  },
+  "devDependencies": {
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/frontend-dev-utils": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-home": "backstage:^",
+    "@backstage/plugin-home-react": "backstage:^",
+    "@backstage/plugin-notifications": "backstage:^",
+    "@backstage/plugin-notifications-common": "backstage:^",
+    "@backstage/plugin-scaffolder": "backstage:^",
+    "@backstage/plugin-scaffolder-common": "backstage:^",
+    "@backstage/plugin-scaffolder-react": "backstage:^",
+    "@backstage/plugin-user-settings": "backstage:^",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/react-dom": "^18",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.2"
+  },
+  "files": [
+    "dist"
+  ]
+}
