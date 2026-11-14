@@ -18,7 +18,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { GrowthbookClient } from './client';
-import { createRouter } from './router';
+import { createManagementRouter, createSdkRouter } from './router';
 import { resolveAppUrl } from './helpers';
 import { createSdkFlagsSource } from './sdkSource';
 
@@ -47,36 +47,40 @@ const growthbookFlagsPlugin = createBackendPlugin({
           baseUrl,
         );
         const secretKey = gbConfig.getOptionalString('secretKey');
-        const sdkKeysConfig = secretKey
-          ? undefined
-          : gbConfig.getOptionalConfig('sdkKeys');
 
-        if (!secretKey && !sdkKeysConfig) {
-          logger.error(
-            'Invalid growthbook config: either growthbook.secretKey or growthbook.sdkKeys must be configured',
+        if (secretKey) {
+          http.use(
+            createManagementRouter({
+              logger,
+              appUrl,
+              client: new GrowthbookClient({ baseUrl, secretKey }),
+            }),
           );
-          throw new Error(
-            'Missing required GrowthBook configuration: growthbook.secretKey or growthbook.sdkKeys',
+        } else {
+          const sdkKeys = gbConfig.getOptionalConfig('sdkKeys');
+          if (!sdkKeys) {
+            logger.error(
+              'Invalid growthbook config: either growthbook.secretKey or growthbook.sdkKeys must be configured',
+            );
+            throw new Error(
+              'Missing required GrowthBook configuration: growthbook.secretKey or growthbook.sdkKeys',
+            );
+          }
+          http.use(
+            createSdkRouter({
+              sdk: createSdkFlagsSource({
+                baseUrl,
+                resolveKey: gbEnv => {
+                  try {
+                    return sdkKeys.getString(gbEnv);
+                  } catch {
+                    return undefined;
+                  }
+                },
+              }),
+            }),
           );
         }
-
-        const mgmt = secretKey
-          ? new GrowthbookClient({ baseUrl, secretKey })
-          : undefined;
-        const sdk = sdkKeysConfig
-          ? createSdkFlagsSource({
-              baseUrl,
-              resolveKey: gbEnv => {
-                try {
-                  return sdkKeysConfig.getString(gbEnv);
-                } catch {
-                  return undefined;
-                }
-              },
-            })
-          : undefined;
-
-        http.use(createRouter({ logger, appUrl, mgmt, sdk }));
         logger.info(
           `GrowthBook Flags plugin initialized at /api/backstage-community-growthbook (mode: ${
             secretKey ? 'management API' : 'SDK API'

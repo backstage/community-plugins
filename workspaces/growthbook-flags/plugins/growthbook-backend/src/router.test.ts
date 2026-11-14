@@ -17,7 +17,7 @@ import express from 'express';
 import request from 'supertest';
 import { mockServices } from '@backstage/backend-test-utils';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
-import { createRouter } from './router';
+import { createManagementRouter, createSdkRouter } from './router';
 import { GrowthbookApiError } from './client';
 import type { GrowthbookClient } from './client';
 import type { SdkFlagsSource } from './sdkSource';
@@ -48,12 +48,13 @@ function appFor(options: {
 }) {
   const app = express();
   app.use(
-    createRouter({
-      logger: mockServices.logger.mock(),
-      appUrl: 'https://gb.example.com',
-      mgmt: options.mgmt as unknown as GrowthbookClient,
-      sdk: options.sdk,
-    }),
+    options.mgmt
+      ? createManagementRouter({
+          logger: mockServices.logger.mock(),
+          appUrl: 'https://gb.example.com',
+          client: options.mgmt as unknown as GrowthbookClient,
+        })
+      : createSdkRouter({ sdk: options.sdk! }),
   );
   app.use(
     MiddlewareFactory.create({
