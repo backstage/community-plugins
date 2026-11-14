@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Grid } from '@backstage/ui';
 import type { BookmarkViewerLayoutProps } from '../BookmarksViewer';
 import { TEST_IDS } from '../../../consts/testids';
+import styles from './BookmarkDesktopView.module.css';
 
 export const BookmarkDesktopView = ({
   toc,
@@ -26,24 +26,23 @@ export const BookmarkDesktopView = ({
   openInNewTab,
   nextButton,
 }: BookmarkViewerLayoutProps) => (
-  <Grid
-    direction="row"
-    container
-    spacing={2}
-    sx={{ height: '100%' }}
+  <Grid.Root
+    columns="12"
+    gap="4"
+    className={styles.root}
     data-testid={TEST_IDS.BookmarkDesktopView.wrapper}
   >
-    <Grid item md={2} sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Grid.Item colSpan="2" className={styles.column}>
       {toc}
       {previousButton}
-    </Grid>
-    <Grid item md={8} sx={{ display: 'flex', flexDirection: 'column' }}>
+    </Grid.Item>
+    <Grid.Item colSpan="8" className={styles.column}>
       {viewer}
-    </Grid>
-    <Grid item md={2} sx={{ display: 'flex', flexDirection: 'column' }}>
+    </Grid.Item>
+    <Grid.Item colSpan="2" className={styles.column}>
       {openInNewTab}
-      <Box sx={{ flexGrow: 1 }} />
+      <div className={styles.spacer} />
       {nextButton}
-    </Grid>
-  </Grid>
+    </Grid.Item>
+  </Grid.Root>
 );

@@ -1,0 +1,14 @@
+@layer components {
+  .label {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .next {
+    text-align: right;
+  }
+
+  .previous {
+    text-align: left;
+  }
+}
