@@ -1767,6 +1767,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-linguist-common@workspace:plugins/linguist-common"
   dependencies:
+    "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/plugin-permission-common": "backstage:^"
   languageName: unknown
