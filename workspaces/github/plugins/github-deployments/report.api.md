@@ -5,7 +5,6 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public (undocumented)
@@ -15,7 +14,8 @@ export const EntityGithubDeploymentsCard: (props: {
   lastStatuses?: number;
 }) => JSX_2.Element;
 
-export { GITHUB_PROJECT_SLUG_ANNOTATION };
+// @public @deprecated (undocumented)
+export const GITHUB_PROJECT_SLUG_ANNOTATION = 'github.com/project-slug';
 
 // @public (undocumented)
 export type GithubDeployment = {

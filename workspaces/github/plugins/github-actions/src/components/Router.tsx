@@ -24,12 +24,12 @@ import { buildRouteRef } from '../routes';
 import { WorkflowRunDetails } from './WorkflowRunDetails';
 import { WorkflowRunsCard } from './WorkflowRunsCard';
 import { WorkflowRunsTable } from './WorkflowRunsTable';
-import { GITHUB_ACTIONS_ANNOTATION } from './getProjectNameFromEntity';
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 import { RouterProps } from '../api/types';
 
 /** @public */
 export const isGithubActionsAvailable = (entity: Entity) =>
-  Boolean(entity.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION]);
+  Boolean(entity.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION]);
 
 /** @public */
 export const Router = (props: RouterProps) => {
@@ -38,7 +38,9 @@ export const Router = (props: RouterProps) => {
 
   if (!isGithubActionsAvailable(entity)) {
     return (
-      <MissingAnnotationEmptyState annotation={GITHUB_ACTIONS_ANNOTATION} />
+      <MissingAnnotationEmptyState
+        annotation={GITHUB_PROJECT_SLUG_ANNOTATION}
+      />
     );
   }
 

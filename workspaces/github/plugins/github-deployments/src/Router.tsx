@@ -16,11 +16,17 @@
 
 import { Entity } from '@backstage/catalog-model';
 
-import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
+import { GITHUB_PROJECT_SLUG_ANNOTATION as COMMON_GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 
-/** @public */
-export { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
+/**
+ * @public
+ * @deprecated Use `GITHUB_PROJECT_SLUG_ANNOTATION` from `@backstage-community/plugin-github-common` instead.
+ */
+export const GITHUB_PROJECT_SLUG_ANNOTATION =
+  COMMON_GITHUB_PROJECT_SLUG_ANNOTATION;
 
 /** @public */
 export const isGithubDeploymentsAvailable = (entity: Entity) =>
-  Boolean(entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION]);
+  Boolean(
+    entity?.metadata.annotations?.[COMMON_GITHUB_PROJECT_SLUG_ANNOTATION],
+  );
