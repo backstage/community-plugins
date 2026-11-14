@@ -28,8 +28,6 @@ export {
 
 export type { WikiArticleSearchResultListItemProps } from './components/WikiArticleSearchResultListItem';
 
-export { AzurePullRequestsIcon } from './components/AzurePullRequestsIcon';
-
 export * from './api';
 
 export { FilterType } from './components/PullRequestsPage';
