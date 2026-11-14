@@ -16,8 +16,10 @@
 
 import { Entity } from '@backstage/catalog-model';
 
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
+
 /** @public */
-export const GITHUB_PROJECT_SLUG_ANNOTATION = 'github.com/project-slug';
+export { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 
 /** @public */
 export const isGithubDeploymentsAvailable = (entity: Entity) =>

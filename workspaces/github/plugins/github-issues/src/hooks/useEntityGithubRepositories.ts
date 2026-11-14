@@ -24,7 +24,7 @@ import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Repository } from '../api';
 
-const GITHUB_PROJECT_SLUG_ANNOTATION = 'github.com/project-slug';
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 
 export const getProjectNameFromEntity = (entity: Entity): string => {
   return entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] ?? '';

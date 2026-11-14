@@ -27,13 +27,16 @@ import {
 } from './types';
 import { COLUMNS } from './constants';
 
-const GITHUB_PULL_REQUESTS_ANNOTATION = 'github.com/project-slug';
-const GITHUB_USER_LOGIN_ANNOTATION = 'github.com/user-login';
+import {
+  GITHUB_PROJECT_SLUG_ANNOTATION,
+  GITHUB_TEAM_SLUG_ANNOTATION,
+  GITHUB_USER_LOGIN_ANNOTATION,
+} from '@backstage-community/plugin-github-common';
 
 export const getProjectNameFromEntity = (
   entity: Entity,
 ): string | undefined => {
-  return entity?.metadata.annotations?.[GITHUB_PULL_REQUESTS_ANNOTATION];
+  return entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION];
 };
 
 export const getUserNameFromEntity = (entity: Entity): string | undefined => {
@@ -42,8 +45,9 @@ export const getUserNameFromEntity = (entity: Entity): string | undefined => {
 
 export const getGithubOrganizationFromEntity = (entity: Entity): string => {
   return (
-    entity?.metadata?.annotations?.['github.com/team-slug']?.split('/')?.[0] ??
-    ''
+    entity?.metadata?.annotations?.[GITHUB_TEAM_SLUG_ANNOTATION]?.split(
+      '/',
+    )?.[0] ?? ''
   );
 };
 
