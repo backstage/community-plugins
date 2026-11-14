@@ -21,7 +21,7 @@ import {
 import { githubCatalogModelLayer } from './catalogModel';
 
 describe('githubCatalogModelLayer', () => {
-  it('compiles alongside the default model and declares all annotations', () => {
+  it('compiles alongside the default model and declares all annotations with their schemas', () => {
     const model = compileCatalogModel([
       defaultCatalogEntityModel,
       githubCatalogModelLayer,
@@ -38,5 +38,33 @@ describe('githubCatalogModelLayer', () => {
       'github.com/team-slug',
       'github.com/user-login',
     ]);
+
+    const kind = model.getKind({
+      kind: 'Component',
+      apiVersion: 'backstage.io/v1alpha1',
+      spec: { type: 'service' },
+    });
+
+    expect(kind?.jsonSchema).toMatchObject({
+      properties: {
+        metadata: {
+          properties: {
+            annotations: {
+              properties: {
+                'github.com/project-slug': {
+                  type: 'string',
+                  pattern: '^[^/]+/[^/]+$',
+                },
+                'github.com/team-slug': {
+                  type: 'string',
+                  pattern: '^[^/]+/[^/]+$',
+                },
+                'github.com/user-login': { type: 'string', minLength: 1 },
+              },
+            },
+          },
+        },
+      },
+    });
   });
 });
