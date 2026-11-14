@@ -33,8 +33,9 @@ export const linguistCatalogModelLayer = createCatalogModelLayer({
       schema: {
         jsonSchema: {
           type: 'string',
-          // An absolute URL with any scheme, e.g. https://github.com/org/repo
-          pattern: '^[a-zA-Z][a-zA-Z0-9+.-]*://\\S+$',
+          // An absolute URL with any scheme, optionally prefixed with `url:`,
+          // e.g. https://github.com/org/repo or url:https://github.com/org/repo
+          pattern: '^(url:)?[a-zA-Z][a-zA-Z0-9+.-]*://\\S+$',
         },
       },
     });
