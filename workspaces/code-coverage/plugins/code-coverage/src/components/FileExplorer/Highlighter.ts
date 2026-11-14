@@ -44,6 +44,11 @@ export const highlightLines = (fileExtension: string, lines: Array<string>) => {
     fileformat = 'kotlin';
   }
 
+  // Unsupported languages (e.g. rego) fall back to plaintext, which still escapes HTML.
+  if (!hljs.getLanguage(fileformat)) {
+    fileformat = 'plaintext';
+  }
+
   lines.forEach(line => {
     const result = hljs.highlight(line, {
       language: fileformat,
