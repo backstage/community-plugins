@@ -2,18 +2,4 @@
 '@backstage-community/plugin-growthbook': minor
 ---
 
-**BREAKING** The `GrowthbookFlagsApi` interface has three new required methods: `getExperiments`, `getExperimentResults` and `getFlagDetail`. They back the new experiments and flag details views. This only affects you if you provide your own implementation of `GrowthbookFlagsApi`, for example a custom API factory or a test mock; the default client already implements them.
-
-To migrate, add the methods to your implementation. A minimal version that keeps the new views empty:
-
-```ts
-getExperiments: async () => [],
-getExperimentResults: async () => ({ available: false, variations: [] }),
-getFlagDetail: async key => ({
-  key,
-  archived: false,
-  tags: [],
-  isStale: false,
-  environments: [],
-}),
-```
+**BREAKING** `growthbookFlagsApiRef` and the `GrowthbookFlagsApi` type are no longer exported. The API between the frontend plugin and its backend is now an internal detail, so it can grow without breaking adopters. This only affects you if you replaced the default client, for example with a custom API factory or a test mock. There is no replacement; if you need to customize it, please open an issue describing your use case.
