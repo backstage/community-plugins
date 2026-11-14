@@ -422,7 +422,11 @@ To get the Azure Pull Request Dashboard page working you'll need to do the follo
            host: dev.azure.com
    ```
 
-3. Third, add the page to your sidebar navigation:
+3. Third, add the page to your sidebar navigation. The example uses an icon from `@remixicon/react`, so add it to your app first:
+
+   ```sh
+   yarn --cwd packages/app add @remixicon/react
+   ```
 
    ```tsx
    // In packages/app/src/components/Root/Root.tsx
