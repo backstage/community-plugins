@@ -85,7 +85,7 @@ export class CodeCoverageRestApi implements CodeCoverageApi {
   ): Promise<string> {
     const entity = encodeURIComponent(stringifyEntityRef(entityName));
     return await this.fetch<string>(
-      `/file-content?entity=${entity}&path=${encodeURI(filePath)}`,
+      `/file-content?entity=${entity}&path=${encodeURIComponent(filePath)}`,
     );
   }
 
