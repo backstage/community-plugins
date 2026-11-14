@@ -1257,6 +1257,7 @@ __metadata:
     "@types/express": "npm:^4.17.6"
     "@types/supertest": "npm:^7.0.0"
     express: "npm:^4.17.1"
+    express-promise-router: "npm:^4.1.0"
     supertest: "npm:^7.0.0"
   languageName: unknown
   linkType: soft

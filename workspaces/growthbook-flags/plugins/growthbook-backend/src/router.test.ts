@@ -16,7 +16,9 @@
 import express from 'express';
 import request from 'supertest';
 import { mockServices } from '@backstage/backend-test-utils';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { createRouter } from './router';
+import { GrowthbookApiError } from './client';
 import type { GrowthbookClient } from './client';
 import type { SdkFlagsSource } from './sdkSource';
 
@@ -53,6 +55,12 @@ function appFor(options: {
       sdk: options.sdk,
     }),
   );
+  app.use(
+    MiddlewareFactory.create({
+      config: mockServices.rootConfig(),
+      logger: mockServices.rootLogger(),
+    }).error(),
+  );
   return app;
 }
 
@@ -77,13 +85,17 @@ describe('router (management mode)', () => {
     expect(res.status).toBe(400);
   });
 
-  it('returns 502 with a generic message when GrowthBook fails', async () => {
+  it('passes GrowthBook failures to the error middleware as 500', async () => {
     const mgmt = makeMgmt({
-      getFlags: jest.fn().mockRejectedValue(new Error('boom: secret detail')),
+      getFlags: jest
+        .fn()
+        .mockRejectedValue(
+          new GrowthbookApiError(500, 'GrowthBook features API returned 500'),
+        ),
     });
     const res = await request(appFor({ mgmt })).get('/flags');
-    expect(res.status).toBe(502);
-    expect(JSON.stringify(res.body)).not.toContain('secret detail');
+    expect(res.status).toBe(500);
+    expect(res.body.error.message).toBe('GrowthBook features API returned 500');
   });
 
   it('answers unknown paths and non-GET methods with 404', async () => {

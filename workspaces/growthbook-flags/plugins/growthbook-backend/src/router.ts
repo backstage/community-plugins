@@ -15,7 +15,12 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { Router, RequestHandler, Response } from 'express';
+import Router from 'express-promise-router';
+import type {
+  RequestHandler,
+  Response,
+  Router as ExpressRouter,
+} from 'express';
 import type { GrowthbookClient } from './client';
 import type { SdkFlagsSource } from './sdkSource';
 import {
@@ -37,22 +42,9 @@ export type RouterOptions = {
 const MGMT_REQUIRED =
   'This endpoint requires growthbook.secretKey to be configured';
 
-export function createRouter(options: RouterOptions): Router {
+export function createRouter(options: RouterOptions): ExpressRouter {
   const { logger, appUrl, mgmt, sdk } = options;
   const router = Router();
-
-  const guarded =
-    (what: string, handler: RequestHandler): RequestHandler =>
-    async (req, res, next) => {
-      try {
-        await handler(req, res, next);
-      } catch (err) {
-        logger.error(`Failed to fetch GrowthBook ${what}: ${err}`);
-        res
-          .status(502)
-          .json({ error: `Failed to fetch ${what} from GrowthBook` });
-      }
-    };
 
   const requireMgmt =
     (handler: (client: GrowthbookClient) => RequestHandler): RequestHandler =>
@@ -85,99 +77,87 @@ export function createRouter(options: RouterOptions): Router {
     return { id };
   }
 
-  router.get(
-    '/projects',
-    guarded('projects', async (_req, res) => {
-      if (!mgmt) {
-        res.json({ projects: [] });
-        return;
-      }
-      const projects = await mgmt.listProjects();
-      res.json({ projects: projects.map(p => p.name) });
-    }),
-  );
+  router.get('/projects', async (_req, res) => {
+    if (!mgmt) {
+      res.json({ projects: [] });
+      return;
+    }
+    const projects = await mgmt.listProjects();
+    res.json({ projects: projects.map(p => p.name) });
+  });
 
-  router.get(
-    '/flags',
-    guarded('flags', async (req, res) => {
-      const env = (req.query.env as string) || 'prod';
-      const projectName = req.query.project as string | undefined;
+  router.get('/flags', async (req, res) => {
+    const env = (req.query.env as string) || 'prod';
+    const projectName = req.query.project as string | undefined;
 
-      if (mgmt) {
-        const project = await resolveProjectOrReject(mgmt, projectName, res);
-        if (!project) return;
-        res.json(await mgmt.getFlags(env, project.id));
-        return;
-      }
+    if (mgmt) {
+      const project = await resolveProjectOrReject(mgmt, projectName, res);
+      if (!project) return;
+      res.json(await mgmt.getFlags(env, project.id));
+      return;
+    }
 
-      if (projectName) {
-        res
-          .status(400)
-          .json({ error: 'Project filtering is not supported in SDK mode' });
-        return;
-      }
-      if (!sdk) {
-        res.status(500).json({ error: 'SDK keys not configured' });
-        return;
-      }
-      const flags = await sdk.getFlags(env);
-      if (!flags) {
-        res.status(400).json({ error: 'Unknown environment' });
-        return;
-      }
-      res.json(flags);
-    }),
-  );
+    if (projectName) {
+      res
+        .status(400)
+        .json({ error: 'Project filtering is not supported in SDK mode' });
+      return;
+    }
+    if (!sdk) {
+      res.status(500).json({ error: 'SDK keys not configured' });
+      return;
+    }
+    const flags = await sdk.getFlags(env);
+    if (!flags) {
+      res.status(400).json({ error: 'Unknown environment' });
+      return;
+    }
+    res.json(flags);
+  });
 
   router.get(
     '/flags/:key',
-    requireMgmt(client =>
-      guarded('flag details', async (req, res) => {
-        const key = req.params.key;
-        const feature = await client.getFeature(key);
-        if (!feature) {
-          res.status(404).json({ error: 'Flag not found' });
-          return;
-        }
-        const stale = await client.getStale(key).catch(err => {
-          logger.warn(
-            `Failed to fetch GrowthBook stale status for ${key}: ${err}`,
-          );
-          return undefined;
-        });
-        res.json(normalizeFlagDetail(feature, stale));
-      }),
-    ),
+    requireMgmt(client => async (req, res) => {
+      const key = req.params.key;
+      const feature = await client.getFeature(key);
+      if (!feature) {
+        res.status(404).json({ error: 'Flag not found' });
+        return;
+      }
+      const stale = await client.getStale(key).catch(err => {
+        logger.warn(
+          `Failed to fetch GrowthBook stale status for ${key}: ${err}`,
+        );
+        return undefined;
+      });
+      res.json(normalizeFlagDetail(feature, stale));
+    }),
   );
 
   router.get(
     '/experiments',
-    requireMgmt(client =>
-      guarded('experiments', async (req, res) => {
-        const project = await resolveProjectOrReject(
-          client,
-          req.query.project as string | undefined,
-          res,
-        );
-        if (!project) return;
-        const experiments = await client.listExperiments(project.id);
-        res.json(experiments.map(e => normalizeExperiment(e, appUrl)));
-      }),
-    ),
+    requireMgmt(client => async (req, res) => {
+      const project = await resolveProjectOrReject(
+        client,
+        req.query.project as string | undefined,
+        res,
+      );
+      if (!project) return;
+      const experiments = await client.listExperiments(project.id);
+      res.json(experiments.map(e => normalizeExperiment(e, appUrl)));
+    }),
   );
 
   router.get(
     '/experiments/:id/results',
-    requireMgmt(client =>
-      guarded('experiment results', async (req, res) => {
-        const found = await client.getExperimentResults(req.params.id);
-        res.json(
-          found
-            ? normalizeResults(found.experiment, found.result)
-            : { available: false, variations: [] },
-        );
-      }),
-    ),
+    requireMgmt(client => async (req, res) => {
+      const found = await client.getExperimentResults(req.params.id);
+      res.json(
+        found
+          ? normalizeResults(found.experiment, found.result)
+          : { available: false, variations: [] },
+      );
+    }),
   );
 
   router.use((_req, res) => {
