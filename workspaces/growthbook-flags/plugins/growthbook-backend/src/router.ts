@@ -15,12 +15,9 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
+import { InputError, NotFoundError } from '@backstage/errors';
 import Router from 'express-promise-router';
-import type {
-  RequestHandler,
-  Response,
-  Router as ExpressRouter,
-} from 'express';
+import type { RequestHandler, Router as ExpressRouter } from 'express';
 import type { GrowthbookClient } from './client';
 import type { SdkFlagsSource } from './sdkSource';
 import {
@@ -56,25 +53,20 @@ export function createRouter(options: RouterOptions): ExpressRouter {
       return handler(mgmt)(req, res, next);
     };
 
-  /**
-   * Resolves an optional `?project=` name to a project id. Responds with 400
-   * itself and returns `undefined` when the project is unknown.
-   */
-  async function resolveProjectOrReject(
+  /** Resolves an optional `?project=` name to a project id. */
+  async function resolveProject(
     client: GrowthbookClient,
     name: string | undefined,
-    res: Response,
-  ): Promise<{ id?: string } | undefined> {
-    if (!name) return {};
+  ): Promise<string | undefined> {
+    if (!name) return undefined;
     const projects = await client.listProjects();
     const id = projects.find(
       p => p.name.toLowerCase() === name.toLowerCase(),
     )?.id;
     if (!id) {
-      res.status(400).json({ error: 'Unknown project' });
-      return undefined;
+      throw new InputError('Unknown project');
     }
-    return { id };
+    return id;
   }
 
   router.get('/projects', async (_req, res) => {
@@ -91,17 +83,13 @@ export function createRouter(options: RouterOptions): ExpressRouter {
     const projectName = req.query.project as string | undefined;
 
     if (mgmt) {
-      const project = await resolveProjectOrReject(mgmt, projectName, res);
-      if (!project) return;
-      res.json(await mgmt.getFlags(env, project.id));
+      const projectId = await resolveProject(mgmt, projectName);
+      res.json(await mgmt.getFlags(env, projectId));
       return;
     }
 
     if (projectName) {
-      res
-        .status(400)
-        .json({ error: 'Project filtering is not supported in SDK mode' });
-      return;
+      throw new InputError('Project filtering is not supported in SDK mode');
     }
     if (!sdk) {
       res.status(500).json({ error: 'SDK keys not configured' });
@@ -109,8 +97,7 @@ export function createRouter(options: RouterOptions): ExpressRouter {
     }
     const flags = await sdk.getFlags(env);
     if (!flags) {
-      res.status(400).json({ error: 'Unknown environment' });
-      return;
+      throw new InputError('Unknown environment');
     }
     res.json(flags);
   });
@@ -121,8 +108,7 @@ export function createRouter(options: RouterOptions): ExpressRouter {
       const key = req.params.key;
       const feature = await client.getFeature(key);
       if (!feature) {
-        res.status(404).json({ error: 'Flag not found' });
-        return;
+        throw new NotFoundError('Flag not found');
       }
       const stale = await client.getStale(key).catch(err => {
         logger.warn(
@@ -137,13 +123,11 @@ export function createRouter(options: RouterOptions): ExpressRouter {
   router.get(
     '/experiments',
     requireMgmt(client => async (req, res) => {
-      const project = await resolveProjectOrReject(
+      const projectId = await resolveProject(
         client,
         req.query.project as string | undefined,
-        res,
       );
-      if (!project) return;
-      const experiments = await client.listExperiments(project.id);
+      const experiments = await client.listExperiments(projectId);
       res.json(experiments.map(e => normalizeExperiment(e, appUrl)));
     }),
   );

@@ -1254,6 +1254,7 @@ __metadata:
     "@backstage/backend-test-utils": "npm:^1.10.4"
     "@backstage/cli": "npm:^0.35.3"
     "@backstage/config": "npm:^1.3.6"
+    "@backstage/errors": "npm:^1.2.7"
     "@types/express": "npm:^4.17.6"
     "@types/supertest": "npm:^7.0.0"
     express: "npm:^4.17.1"
