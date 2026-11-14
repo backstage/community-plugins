@@ -14,7 +14,7 @@ export const EntityGithubDeploymentsCard: (props: {
   lastStatuses?: number;
 }) => JSX_2.Element;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const GITHUB_PROJECT_SLUG_ANNOTATION = 'github.com/project-slug';
 
 // @public (undocumented)

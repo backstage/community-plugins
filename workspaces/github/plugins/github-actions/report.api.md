@@ -55,7 +55,7 @@ export const EntityRecentGithubActionsRunsCard: (props: {
   limit?: number;
 }) => JSX_2.Element;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const GITHUB_ACTIONS_ANNOTATION = 'github.com/project-slug';
 
 // @public

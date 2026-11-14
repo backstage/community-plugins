@@ -24,8 +24,10 @@ import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { EntityTeamPullRequestsContent } from '../src';
 import { githubAuthApiRef } from '@backstage/frontend-plugin-api';
 
-const GITHUB_PULL_REQUESTS_ANNOTATION = 'github.com/project-slug';
-const GITHUB_USER_LOGIN_ANNOTATION = 'github.com/user-login';
+import {
+  GITHUB_PROJECT_SLUG_ANNOTATION,
+  GITHUB_USER_LOGIN_ANNOTATION,
+} from '@backstage-community/plugin-github-common';
 
 const teamEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -89,7 +91,7 @@ const components: Entity[] = [
     metadata: {
       name: 'repo1',
       annotations: {
-        [GITHUB_PULL_REQUESTS_ANNOTATION]: 'backstage/community-plugins',
+        [GITHUB_PROJECT_SLUG_ANNOTATION]: 'backstage/community-plugins',
       },
     },
     spec: {
@@ -110,7 +112,7 @@ const components: Entity[] = [
     metadata: {
       name: 'repo2',
       annotations: {
-        [GITHUB_PULL_REQUESTS_ANNOTATION]: 'backstage/backstage',
+        [GITHUB_PROJECT_SLUG_ANNOTATION]: 'backstage/backstage',
       },
     },
     spec: {

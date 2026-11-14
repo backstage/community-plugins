@@ -26,7 +26,7 @@ import {
 } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import { useEffect } from 'react';
-import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunsTable } from '../WorkflowRunsTable';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
@@ -88,7 +88,7 @@ export const LatestWorkflowRunCard = (props: { branch?: string }) => {
   const errorApi = useApi(errorApiRef);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (
-    entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
+    entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] ?? '/'
   ).split('/');
   const defaultBranch = useDefaultBranch({
     hostname,
@@ -132,7 +132,7 @@ export const LatestWorkflowsForBranchCard = (props: { branch?: string }) => {
   const { entity } = useEntity();
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (
-    entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
+    entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] ?? '/'
   ).split('/');
   const defaultBranch = useDefaultBranch({
     hostname,

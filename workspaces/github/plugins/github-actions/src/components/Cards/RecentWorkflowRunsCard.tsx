@@ -16,7 +16,7 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import {
@@ -111,7 +111,7 @@ export const RecentWorkflowRunsCard = (props: {
   const hostname = getHostnameFromEntity(entity);
 
   const [owner, repo] = (
-    entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
+    entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] ?? '/'
   ).split('/');
 
   const [{ runs = [], loading, error }] = useWorkflowRuns({
