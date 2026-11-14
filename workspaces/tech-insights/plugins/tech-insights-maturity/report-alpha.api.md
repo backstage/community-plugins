@@ -42,15 +42,13 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
     'entity-card:tech-insights-maturity/maturity-summary': OverridableExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'maturity-summary';
       config: {
         filter: FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         filter?: FilterPredicate | undefined;
-        type?: 'content' | 'info' | undefined;
+        type?: 'content' | 'info' | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -76,6 +74,8 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'entity-card';
+      name: 'maturity-summary';
       params: {
         loader: () => Promise<JSX.Element>;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);
@@ -83,8 +83,6 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
       };
     }>;
     'entity-content:tech-insights-maturity/maturity': OverridableExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'maturity';
       config: {
         path: string | undefined;
         title: string | undefined;
@@ -93,11 +91,11 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
         icon: string | undefined;
       };
       configInput: {
-        path?: string | undefined;
-        title?: string | undefined;
+        path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
         filter?: FilterPredicate | undefined;
-        group?: string | false | undefined;
-        icon?: string | undefined;
+        group?: string | false | undefined | undefined;
+        icon?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -139,6 +137,8 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'entity-content';
+      name: 'maturity';
       params: {
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
@@ -162,8 +162,6 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
       };
     }>;
     'entity-content:tech-insights-maturity/summary': OverridableExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'summary';
       config: {
         path: string | undefined;
         title: string | undefined;
@@ -172,11 +170,11 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
         icon: string | undefined;
       };
       configInput: {
-        path?: string | undefined;
-        title?: string | undefined;
+        path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
         filter?: FilterPredicate | undefined;
-        group?: string | false | undefined;
-        icon?: string | undefined;
+        group?: string | false | undefined | undefined;
+        icon?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -218,6 +216,8 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'entity-content';
+      name: 'summary';
       params: {
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
@@ -241,15 +241,13 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
       };
     }>;
     'page:tech-insights-maturity': OverridableExtensionDefinition<{
-      kind: 'page';
-      name: undefined;
       config: {
         path: string | undefined;
         title: string | undefined;
       };
       configInput: {
-        path?: string | undefined;
-        title?: string | undefined;
+        path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -307,6 +305,8 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
           }
         >;
       };
+      kind: 'page';
+      name: undefined;
       params: {
         path: string;
         title?: string;
