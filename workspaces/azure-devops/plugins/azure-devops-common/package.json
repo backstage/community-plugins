@@ -11,10 +11,7 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.cjs.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "keywords": [
     "backstage"
@@ -61,6 +58,7 @@
     "@backstage/plugin-permission-common": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "backstage:^"
+    "@backstage/cli": "backstage:^",
+    "ajv": "^8.10.0"
   }
 }

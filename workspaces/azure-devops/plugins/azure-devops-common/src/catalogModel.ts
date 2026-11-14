@@ -84,11 +84,10 @@ export const azureDevOpsCatalogModelLayer = createCatalogModelLayer({
       name: AZURE_DEVOPS_README_ANNOTATION,
       title: 'Azure DevOps README Path',
       description:
-        'The path to the README file in the Azure DevOps repository of the entity. Defaults to the README in the source location or repository root.',
+        'The path to the README file in the Azure DevOps repository of the entity. Defaults to the README in the source location or repository root. An empty value disables this auto-detection.',
       schema: {
         jsonSchema: {
           type: 'string',
-          minLength: 1,
         },
       },
     });
