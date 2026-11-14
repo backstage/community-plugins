@@ -1,0 +1,5 @@
+@layer components {
+  .trigger {
+    border-bottom: 1px solid var(--bui-border-1);
+  }
+}
