@@ -5,6 +5,9 @@
 ```ts
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import type { ExperimentResultSummary } from '@backstage-community/plugin-growthbook-common';
+import type { ExperimentRow } from '@backstage-community/plugin-growthbook-common';
+import type { FlagDetail } from '@backstage-community/plugin-growthbook-common';
 import type { FlagRow } from '@backstage-community/plugin-growthbook-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
@@ -22,6 +25,11 @@ export const GROWTHBOOK_PROJECT_ANNOTATION = 'growthbook.io/project';
 
 // @public (undocumented)
 export interface GrowthbookFlagsApi {
+  // (undocumented)
+  getExperimentResults(id: string): Promise<ExperimentResultSummary>;
+  getExperiments(project?: string): Promise<ExperimentRow[]>;
+  // (undocumented)
+  getFlagDetail(key: string): Promise<FlagDetail>;
   // (undocumented)
   getFlags(env: string, project?: string): Promise<FlagRow[]>;
   // (undocumented)
