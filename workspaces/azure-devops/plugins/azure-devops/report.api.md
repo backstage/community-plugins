@@ -20,7 +20,6 @@ import { ReactNode } from 'react';
 import { Readme } from '@backstage-community/plugin-azure-devops-common';
 import { ReadmeConfig } from '@backstage-community/plugin-azure-devops-common';
 import { ResultHighlight } from '@backstage/plugin-search-common';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { Team } from '@backstage-community/plugin-azure-devops-common';
 
 // @public (undocumented)
@@ -203,9 +202,6 @@ export const azureDevOpsPlugin: BackstagePlugin<{}, {}, {}>;
 export const AzureDevOpsWikiArticleSearchResultListItem: (
   props: WikiArticleSearchResultListItemProps,
 ) => React.JSX.Element | null;
-
-// @public @deprecated (undocumented)
-export const AzurePullRequestsIcon: (props: SvgIconProps) => JSX_2.Element;
 
 // @public (undocumented)
 export const AzurePullRequestsPage: (props: {
