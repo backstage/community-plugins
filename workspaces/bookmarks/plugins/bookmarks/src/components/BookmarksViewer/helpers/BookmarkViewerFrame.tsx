@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Text } from '@backstage/ui';
+import { RiLoader4Line } from '@remixicon/react';
 import { memo, useRef } from 'react';
 import { useIsIframeLoading } from '../../../hooks/useIsIframeLoading';
 import { TEST_IDS } from '../../../consts/testids';
-import Typography from '@mui/material/Typography';
 import { useTranslation } from '../../../hooks/useTranslation';
+import styles from './BookmarkViewerFrame.module.css';
 
 type FrameProps = {
   src: string;
@@ -43,44 +43,36 @@ export const BookmarkViewerFrame = memo(({ src, title }: FrameProps) => {
   return (
     <>
       {isIframeLoading && (
-        <Box
-          sx={{
-            mt: 5,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <CircularProgress />
+        <div className={styles.loading}>
+          <div role="progressbar" className={styles.spinner}>
+            <RiLoader4Line size={40} aria-hidden />
+          </div>
 
           {isDevEnv && (
-            <Typography
-              variant="body2"
-              sx={{ color: theme => theme.palette.text.primary, mt: 2 }}
+            <Text
+              variant="body-small"
+              color="primary"
+              className={styles.devWarning}
             >
               {t('bookmarkViewerFrame.devModeWarning')}
-            </Typography>
+            </Text>
           )}
-        </Box>
+        </div>
       )}
 
-      <Box
+      <iframe
+        title={title}
         aria-label={title}
-        component="iframe"
+        className={styles.frame}
+        style={{ visibility: isIframeLoading ? 'hidden' : 'visible' }}
         data-testid={TEST_IDS.BookmarkViewerFrame.iframe}
         ref={iframeRef}
         referrerPolicy="no-referrer"
         src={src}
         // disallow top-navigation, top-navigation-by-user-activation, popups-to-escape-sandbox
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation allow-modals allow-orientation-lock allow-pointer-lock"
-        sx={{
-          flexGrow: 1,
-          border: 'none',
-          background: 'white',
-          visibility: isIframeLoading ? 'hidden' : 'visible',
-          width: '100%',
-          height: '100%',
-        }}
+        // keeps the embedded page keyboard-focusable
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
       />
     </>

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem } from '@mui/x-tree-view/TreeItem';
+import { Button } from '@backstage/ui';
+import { RiArrowDownSLine, RiArrowRightSLine } from '@remixicon/react';
 import { useEffect, useState } from 'react';
 import { UrlTree } from '../../../types';
 import { PATH_SEPARATOR } from '../../../consts/consts';
@@ -24,45 +24,90 @@ import {
   useUnorderedFlattenedTree,
 } from '../../../hooks/useFlattenTree';
 import { TEST_IDS } from '../../../consts/testids';
+import styles from './TableOfContents.module.css';
+
+type TreeItemsProps = {
+  /** the tree (or subtree) whose entries are rendered */
+  subTree: UrlTree;
+  /** keys leading to this subtree */
+  path?: string[];
+  selectedId: string;
+  expandedItems: string[];
+  onToggle: (itemId: string) => void;
+  onSelect: (itemId: string) => void;
+};
 
 /** Recursively render a portion of a UrlTree */
-const RecursiveTreeItem = ({
-  treeKey,
+const TreeItems = ({
   subTree,
   path = [],
-}: {
-  treeKey: string;
-  subTree: UrlTree;
-  path?: string[];
-}) => {
-  const value = subTree[treeKey];
-  const currentPath = [...path, treeKey];
-  const itemId = currentPath.join(PATH_SEPARATOR);
+  selectedId,
+  expandedItems,
+  onToggle,
+  onSelect,
+}: TreeItemsProps) => (
+  <>
+    {Object.keys(subTree).map(treeKey => {
+      const value = subTree[treeKey];
+      const currentPath = [...path, treeKey];
+      const itemId = currentPath.join(PATH_SEPARATOR);
 
-  if (typeof value === 'string') {
-    return (
-      <TreeItem
-        itemId={itemId}
-        label={treeKey}
-        data-testid={TEST_IDS.TableOfContents.leaf}
-      />
-    );
-  }
+      if (typeof value === 'string') {
+        const isSelected = itemId === selectedId;
+        return (
+          <li key={treeKey} role="treeitem" aria-selected={isSelected}>
+            <Button
+              variant="tertiary"
+              size="small"
+              className={`${styles.item} ${styles.leaf} ${
+                isSelected ? styles.selected : ''
+              }`}
+              onPress={() => onSelect(itemId)}
+              data-testid={TEST_IDS.TableOfContents.leaf}
+            >
+              {treeKey}
+            </Button>
+          </li>
+        );
+      }
 
-  // if the value is not a string this must be a subtree
-  return (
-    <TreeItem itemId={itemId} label={treeKey}>
-      {Object.keys(value).map(subKey => (
-        <RecursiveTreeItem
-          key={subKey}
-          treeKey={subKey}
-          subTree={value}
-          path={currentPath}
-        />
-      ))}
-    </TreeItem>
-  );
-};
+      // if the value is not a string this must be a subtree
+      const isExpanded = expandedItems.includes(itemId);
+      return (
+        <li
+          key={treeKey}
+          role="treeitem"
+          aria-expanded={isExpanded}
+          aria-selected={false}
+        >
+          <Button
+            variant="tertiary"
+            size="small"
+            className={styles.item}
+            iconStart={
+              isExpanded ? <RiArrowDownSLine /> : <RiArrowRightSLine />
+            }
+            onPress={() => onToggle(itemId)}
+          >
+            {treeKey}
+          </Button>
+          {isExpanded && (
+            <ul role="group" className={styles.group}>
+              <TreeItems
+                subTree={value}
+                path={currentPath}
+                selectedId={selectedId}
+                expandedItems={expandedItems}
+                onToggle={onToggle}
+                onSelect={onSelect}
+              />
+            </ul>
+          )}
+        </li>
+      );
+    })}
+  </>
+);
 
 /** Component to render a table of contents from a UrlTree */
 export const TableOfContents = ({
@@ -88,29 +133,27 @@ export const TableOfContents = ({
   }, [pathKey]);
 
   return (
-    <SimpleTreeView
-      selectedItems={pathKey}
-      onSelectedItemsChange={(_, itemId: string | null) => {
-        if (!itemId || !urlLookup[itemId]) return;
-        setCurrentNode({ value: urlLookup[itemId], key: itemId });
-      }}
-      expandedItems={expandedItems}
-      onItemExpansionToggle={(_, itemId: string) => {
-        setExpandedItems(prev =>
-          prev.includes(itemId)
-            ? prev.filter(id => id !== itemId)
-            : [...prev, itemId],
-        );
-      }}
-      sx={{
-        color: theme => theme.palette.text.primary,
-        flexGrow: 1,
-      }}
+    <ul
+      role="tree"
+      className={styles.tree}
       data-testid={TEST_IDS.TableOfContents.wrapper}
     >
-      {Object.keys(tree).map(key => (
-        <RecursiveTreeItem key={key} treeKey={key} subTree={tree} />
-      ))}
-    </SimpleTreeView>
+      <TreeItems
+        subTree={tree}
+        selectedId={pathKey}
+        expandedItems={expandedItems}
+        onToggle={itemId =>
+          setExpandedItems(prev =>
+            prev.includes(itemId)
+              ? prev.filter(id => id !== itemId)
+              : [...prev, itemId],
+          )
+        }
+        onSelect={itemId => {
+          if (!urlLookup[itemId]) return;
+          setCurrentNode({ value: urlLookup[itemId], key: itemId });
+        }}
+      />
+    </ul>
   );
 };

@@ -68,10 +68,8 @@
     "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
-    "@mui/icons-material": "^5.18.0",
-    "@mui/material": "^5.18.0",
-    "@mui/system": "^5.18.0",
-    "@mui/x-tree-view": "^8.23.0"
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": ">=4.6.0 <4.9.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "*",
@@ -80,7 +78,6 @@
     "@backstage/frontend-defaults": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@backstage/ui": "backstage:^",
     "@playwright/test": "*",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
