@@ -86,9 +86,9 @@ describe('router (management mode)', () => {
     expect(JSON.stringify(res.body)).not.toContain('secret detail');
   });
 
-  it('answers non-GET methods with 405 and unknown paths with 404', async () => {
+  it('answers unknown paths and non-GET methods with 404', async () => {
     const app = appFor({ mgmt: makeMgmt() });
-    expect((await request(app).post('/flags')).status).toBe(405);
+    expect((await request(app).post('/flags')).status).toBe(404);
     expect((await request(app).get('/nope')).status).toBe(404);
   });
 

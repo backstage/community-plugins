@@ -85,14 +85,6 @@ export function createRouter(options: RouterOptions): Router {
     return { id };
   }
 
-  router.use((req, res, next) => {
-    if (req.method !== 'GET') {
-      res.status(405).json({ error: 'Method not allowed' });
-      return;
-    }
-    next();
-  });
-
   router.get(
     '/projects',
     guarded('projects', async (_req, res) => {
