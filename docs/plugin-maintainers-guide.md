@@ -60,6 +60,7 @@ If you are no longer maintaining a plugin, please take the following steps to fo
 
    - Edit the [CODEOWNERS](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file to remove your GitHub handle from the plugin or workspace you no longer maintain.
    - Open a pull request with a description stating that you are stepping down as a maintainer.
+   - In the same pull request, add yourself to the [Emeritus Plugin Owners](../GOVERNANCE.md#emeritus-plugin-owners) list, along with the workspace(s) you owned.
 
 2. Leave any associated GitHub teams:
 
