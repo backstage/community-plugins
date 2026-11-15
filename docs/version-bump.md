@@ -33,13 +33,35 @@ To run the script:
 2. Then run `node ./scripts/list-maintainer-workspaces.js`
 3. You can then copy the arrays as needed
 
-### Generate List of All Workspaces
+## Reviewing and Merging Version Bump PRs
 
-> [!WARNING]
-> Do not use the entire list as you will hit rate limits, chunks of 5-10 work best
+This section is for Community Plugins Maintainers working through the version bump PRs for the workspaces they own.
 
-If you want to run the Version Bump workflow against all the workspaces in this repo you can do the following to generate the proper JSON array:
+### Step 1: Make sure the PRs were generated
 
-1. Navigate into the `/workspaces` folder
-2. Run: `ls | jq -R '[.]' | jq -s -c 'add'`
-3. Copy the output and use it as the Workspace value for Step 3 in the [Process section](#process) above
+The [Auto Version Bump Scheduler](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump-scheduler.yml) runs every Tuesday at 13:00 UTC. If a Backstage minor release came out in the last 7 days, it triggers the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) workflow, which opens version bump PRs in batches, 5 minutes apart.
+
+If the PRs you expected aren't there:
+
+1. Check the latest [Auto Version Bump Scheduler](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump-scheduler.yml) run. If it decided not to trigger (for example, the release is more than 7 days old), you can run the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) workflow by hand from `main`.
+2. If the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) run, or one of the [Version Bump](https://github.com/backstage/community-plugins/actions/workflows/version-bump.yml) runs it starts, failed, look at the logs. Concurrency issues between runs are the usual cause, and re-running the failed jobs once the other runs have finished normally fixes it.
+3. If only a few workspaces are missing, run the [Version Bump](https://github.com/backstage/community-plugins/actions/workflows/version-bump.yml) workflow for just those workspaces, as described in the [Process section](#process) above.
+
+### Step 2: Work through the PRs
+
+Use this search: [open maintainer version bump and Version Packages PRs, oldest first](https://github.com/backstage/community-plugins/pulls?q=is%3Aopen+is%3Apr+label%3Aowner%2Farea-maintainers+(in%3Atitle+"version%3Abump"+OR+in%3Atitle+"Version+Packages")+sort%3Acreated-asc)
+
+It uses these filters:
+
+```text
+is:open is:pr label:owner/area-maintainers (in:title "version:bump" OR in:title "Version Packages") sort:created-asc
+```
+
+Then work down the list from the top:
+
+- **Oldest first.** Sorting by creation date means older Version Packages PRs get merged before the new version bump PRs, so releases don't pile up into a single Version Packages PR.
+- **Ten at a time.** Batches of 10 have worked best: big enough to make progress, small enough to keep track of.
+- **Approve and merge each PR before moving on.** Approving all 10 first and then merging them is now very slow in GitHub.
+- **Then do the Version Packages PRs.** Once the version bump PRs are merged, the matching Version Packages PRs will have been created. Refresh the search and handle them the same way, 10 at a time.
+
+If a PR fails CI or needs migration changes, skip it, carry on with the rest, and come back to it afterwards.
