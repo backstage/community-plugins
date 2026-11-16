@@ -563,7 +563,33 @@ export async function createRouter(
       throw new InputError('Invalid buildId parameter');
     }
 
-    await authorizeEntityRequest(req, azureDevOpsPipelineReadPermission);
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsPipelineReadPermission,
+    );
+
+    // The build must belong to one of the entity's annotated build
+    // definitions or, when none are annotated, to its annotated repository
+    const build = await azureDevOpsApi.getBuild(
+      projectName,
+      buildId,
+      host,
+      org,
+    );
+    if (!build) {
+      res.status(200).json({ log: [] });
+      return;
+    }
+    const belongsToEntity =
+      target.definitions.length > 0
+        ? target.definitions.includes(build.definition?.name ?? '')
+        : target.repo !== undefined &&
+          build.repository?.name?.toLowerCase() === target.repo.toLowerCase();
+    if (!belongsToEntity) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
+    }
 
     const logForBuild = await azureDevOpsApi.getBuildRunLog(
       projectName,

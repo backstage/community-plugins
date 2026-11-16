@@ -46,7 +46,6 @@ describe('AzureDevOpsApi', () => {
   const mockConfig = new ConfigReader({
     azureDevOps: {
       host: 'dev.azure.com',
-      token: 'token',
       organization: 'org',
     },
     integrations: {
@@ -131,7 +130,7 @@ describe('AzureDevOpsApi', () => {
     ]);
   });
 
-  it('should not send the fallback token to an unconfigured host', async () => {
+  it('should not fall back to the removed azureDevOps.token setting', async () => {
     const api = AzureDevOpsApi.fromConfig(
       new ConfigReader({
         azureDevOps: {

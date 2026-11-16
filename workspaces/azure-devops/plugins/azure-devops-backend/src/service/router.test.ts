@@ -70,13 +70,13 @@ describe('createRouter', () => {
       getTeamMembers: jest.fn(),
       getReadme: jest.fn(),
       getBuildRunLog: jest.fn(),
+      getBuild: jest.fn(),
       getProjects: jest.fn(),
       getDashboardPullRequests: jest.fn(),
     } as any;
 
     const config = new ConfigReader({
       azureDevOps: {
-        token: 'foo',
         host: 'host.com',
         organization: 'myOrg',
         top: 5,
@@ -944,6 +944,9 @@ describe('createRouter', () => {
         'Section 4 - Step 4',
       ];
 
+      azureDevOpsApi.getBuild.mockResolvedValueOnce({
+        definition: { name: 'myDefinition' },
+      });
       azureDevOpsApi.getBuildRunLog.mockResolvedValueOnce(buildLog);
 
       mockedAuthorize.mockImplementationOnce(async () => [
@@ -965,7 +968,7 @@ describe('createRouter', () => {
     });
 
     it('returns empty log array if build id does not exist', async () => {
-      azureDevOpsApi.getBuildRunLog.mockResolvedValueOnce([]);
+      azureDevOpsApi.getBuild.mockResolvedValueOnce(undefined);
 
       mockedAuthorize.mockImplementationOnce(async () => [
         { result: AuthorizeResult.ALLOW },
@@ -975,14 +978,23 @@ describe('createRouter', () => {
         .get('/builds/myProject/build/22/log')
         .query({ entityRef: 'component:default/mycomponent' });
 
-      expect(azureDevOpsApi.getBuildRunLog).toHaveBeenCalledWith(
-        'myProject',
-        22,
-        undefined,
-        undefined,
-      );
+      expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ log: [] });
+    });
+
+    it('rejects builds from pipelines not annotated on the entity', async () => {
+      azureDevOpsApi.getBuild.mockResolvedValueOnce({
+        definition: { name: 'otherDefinition' },
+        repository: { name: 'myRepo' },
+      });
+
+      const response = await request(app)
+        .get('/builds/myProject/build/9/log')
+        .query({ entityRef: 'component:default/mycomponent' });
+
+      expect(response.status).toEqual(403);
+      expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
     });
 
     it('throws InputError when invalid buildId passed', async () => {

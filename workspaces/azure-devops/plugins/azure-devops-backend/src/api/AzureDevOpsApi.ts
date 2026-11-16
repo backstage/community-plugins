@@ -46,11 +46,7 @@ import {
 
 import { TeamMember as AdoTeamMember } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 import { PolicyEvaluationRecord } from 'azure-devops-node-api/interfaces/PolicyInterfaces';
-import {
-  getHandlerFromToken,
-  getPersonalAccessTokenHandler,
-  WebApi,
-} from 'azure-devops-node-api';
+import { getHandlerFromToken, WebApi } from 'azure-devops-node-api';
 import {
   TeamProjectReference,
   WebApiTeam,
@@ -65,7 +61,7 @@ import {
 import { mappedBuildRun, mappedGitTag, mappedPullRequest } from './mappers';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-/** @public */
+/** @internal */
 export class AzureDevOpsApi {
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -118,30 +114,13 @@ export class AzureDevOpsApi {
       url,
     });
 
-    let authHandler;
     if (!credentials) {
-      // No credentials found for the provided host and org in the `integrations.azure` config section
-      // use the fall back personal access token from `azureDevOps.token`,
-      // but never send it to a host other than the one it was configured for
-      if (validHost !== this.config.getOptionalString('azureDevOps.host')) {
-        throw new Error(
-          `No credentials found in 'integrations.azure' for host '${validHost}', unable to proceed`,
-        );
-      }
-      const token = this.config.getOptionalString('azureDevOps.token');
-      if (!token) {
-        throw new Error(
-          "No 'azureDevOps.token' provided in configuration and credentials were not found in 'integrations.azure', unable to proceed",
-        );
-      }
-      this.logger.warn(
-        "Using the token from 'azureDevOps.token' has been deprecated, use 'integrations.azure' instead, for more details see: https://backstage.io/docs/integrations/azure/locations",
+      throw new Error(
+        `No credentials found in 'integrations.azure' for host '${validHost}', unable to proceed`,
       );
-      authHandler = getPersonalAccessTokenHandler(token);
-    } else {
-      authHandler = getHandlerFromToken(credentials.token);
     }
 
+    const authHandler = getHandlerFromToken(credentials.token);
     const webApi = new WebApi(url, authHandler);
     return webApi;
   }
@@ -574,6 +553,17 @@ export class AzureDevOpsApi {
       buffer.toString(),
     );
     return { url, content };
+  }
+
+  public async getBuild(
+    projectName: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<Build | undefined> {
+    const webApi = await this.getWebApi(host, org);
+    const client = await webApi.getBuildApi();
+    return (await client.getBuild(projectName, buildId)) ?? undefined;
   }
 
   public async getBuildRunLog(
