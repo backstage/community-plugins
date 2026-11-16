@@ -256,6 +256,27 @@ const rbacTranslationJa = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'デフォルトでは、選択したリソースタイプが、追加されたすべてのユーザーに表示されます。特定のプラグインルールに対する権限を制限または付与する場合は、そのルールを選択してパラメーターを追加してください。',
     'common.tableAction': 'テーブルアクション',
+    'permissionsMatrix.tabs.label': 'RBAC ビュー',
+    'permissionsMatrix.tabs.roles': 'ロール',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'プラグイン別の権限',
+    'permissionsMatrix.title': 'プラグイン別の権限',
+    'permissionsMatrix.description':
+      '各ロールに付与された権限をプラグインごとにまとめた読み取り専用の概要です。',
+    'permissionsMatrix.roleColumn': 'ロール',
+    'permissionsMatrix.filterRoles': 'ロールをフィルター',
+    'permissionsMatrix.plugin': 'プラグイン',
+    'permissionsMatrix.allPlugins': 'すべてのプラグイン',
+    'permissionsMatrix.legend': '凡例',
+    'permissionsMatrix.viewOnlyRole': '表示専用ロール',
+    'permissionsMatrix.conditionalRules': '条件付きアクセスのルール',
+    'permissionsMatrix.emptyRoles': 'ロールが見つかりません',
+    'permissionsMatrix.emptyPermissions': 'プラグインの権限が見つかりません',
+    'permissionsMatrix.decisions.allow': '許可',
+    'permissionsMatrix.decisions.deny': '拒否',
+    'permissionsMatrix.decisions.conditional': '条件付き',
+    'permissionsMatrix.decisions.none': '未設定',
+    'permissionsMatrix.errors.fetchPermissions':
+      'プラグインの権限の取得中に問題が発生しました',
   },
 });
 

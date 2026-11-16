@@ -267,6 +267,28 @@ const rbacTranslationIt = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'Per impostazione predefinita, il tipo di risorsa selezionato è visibile a tutti gli utenti aggiunti. Per limitare o concedere autorizzazioni a regole specifiche del plugin, selezionarle e aggiungere i parametri.',
     'common.tableAction': 'Azione tabella',
+    'permissionsMatrix.tabs.label': 'Viste RBAC',
+    'permissionsMatrix.tabs.roles': 'Ruoli',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'Autorizzazioni per plugin',
+    'permissionsMatrix.title': 'Autorizzazioni per plugin',
+    'permissionsMatrix.description':
+      'Panoramica in sola lettura delle autorizzazioni concesse a ciascun ruolo, raggruppate per plugin.',
+    'permissionsMatrix.roleColumn': 'Ruolo',
+    'permissionsMatrix.filterRoles': 'Filtra ruoli',
+    'permissionsMatrix.plugin': 'Plugin',
+    'permissionsMatrix.allPlugins': 'Tutti i plugin',
+    'permissionsMatrix.legend': 'Legenda',
+    'permissionsMatrix.viewOnlyRole': 'Ruolo in sola lettura',
+    'permissionsMatrix.conditionalRules': 'Regole di accesso condizionale',
+    'permissionsMatrix.emptyRoles': 'Nessun ruolo trovato',
+    'permissionsMatrix.emptyPermissions':
+      'Nessuna autorizzazione dei plugin trovata',
+    'permissionsMatrix.decisions.allow': 'Consenti',
+    'permissionsMatrix.decisions.deny': 'Nega',
+    'permissionsMatrix.decisions.conditional': 'Condizionale',
+    'permissionsMatrix.decisions.none': 'Non impostato',
+    'permissionsMatrix.errors.fetchPermissions':
+      'Si è verificato un errore durante il recupero delle autorizzazioni dei plugin',
   },
 });
 

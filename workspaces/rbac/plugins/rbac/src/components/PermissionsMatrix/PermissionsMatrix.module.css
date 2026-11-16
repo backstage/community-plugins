@@ -1,0 +1,111 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--bui-space-3);
+}
+
+.filters > * {
+  flex: 0 1 260px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bui-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bui-space-1);
+}
+
+/* Horizontal scroll for many permission columns; the role column stays visible. */
+.scroll {
+  overflow: auto;
+  max-height: 70vh;
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  font-size: var(--bui-font-size-2);
+}
+
+.table th,
+.table td {
+  padding: var(--bui-space-2) var(--bui-space-3);
+  border-bottom: 1px solid var(--bui-border-1);
+  white-space: nowrap;
+  background: var(--bui-bg-app);
+}
+
+.table thead th {
+  font-weight: var(--bui-font-weight-bold);
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.pluginHeader {
+  border-left: 1px solid var(--bui-border-1);
+}
+
+.permissionAction {
+  display: block;
+}
+
+.roleCell {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  border-right: 1px solid var(--bui-border-1);
+}
+
+.table thead .roleCell {
+  z-index: 2;
+  text-align: left;
+}
+
+.decisionCell {
+  text-align: center;
+}
+
+.decision {
+  vertical-align: middle;
+}
+
+.allow {
+  color: var(--bui-fg-success);
+}
+
+.deny {
+  color: var(--bui-fg-danger);
+}
+
+.conditional {
+  color: var(--bui-fg-warning);
+}
+
+.tooltipTarget {
+  display: inline-flex;
+  cursor: help;
+}
+
+.none {
+  color: var(--bui-fg-secondary);
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  padding: var(--bui-space-4);
+}

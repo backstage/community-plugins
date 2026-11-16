@@ -273,6 +273,28 @@ const rbacTranslationDe = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'Standardmäßig ist der ausgewählte Ressourcentyp für alle hinzugefügten Benutzer sichtbar. Wenn Sie bestimmte Plugin-Regeln einschränken oder Berechtigungen dafür erteilen möchten, wählen Sie diese aus, und fügen Sie die Parameter hinzu.',
     'common.tableAction': 'Tabellenaktion',
+    'permissionsMatrix.tabs.label': 'RBAC-Ansichten',
+    'permissionsMatrix.tabs.roles': 'Rollen',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'Berechtigungen nach Plugin',
+    'permissionsMatrix.title': 'Berechtigungen nach Plugin',
+    'permissionsMatrix.description':
+      'Schreibgeschützte Übersicht der Berechtigungen jeder Rolle, gruppiert nach Plugin.',
+    'permissionsMatrix.roleColumn': 'Rolle',
+    'permissionsMatrix.filterRoles': 'Rollen filtern',
+    'permissionsMatrix.plugin': 'Plugin',
+    'permissionsMatrix.allPlugins': 'Alle Plugins',
+    'permissionsMatrix.legend': 'Legende',
+    'permissionsMatrix.viewOnlyRole': 'Schreibgeschützte Rolle',
+    'permissionsMatrix.conditionalRules': 'Regeln für bedingten Zugriff',
+    'permissionsMatrix.emptyRoles': 'Keine Rollen gefunden',
+    'permissionsMatrix.emptyPermissions':
+      'Keine Plugin-Berechtigungen gefunden',
+    'permissionsMatrix.decisions.allow': 'Erlauben',
+    'permissionsMatrix.decisions.deny': 'Verweigern',
+    'permissionsMatrix.decisions.conditional': 'Bedingt',
+    'permissionsMatrix.decisions.none': 'Nicht festgelegt',
+    'permissionsMatrix.errors.fetchPermissions':
+      'Beim Abrufen der Plugin-Berechtigungen ist ein Fehler aufgetreten',
   },
 });
 

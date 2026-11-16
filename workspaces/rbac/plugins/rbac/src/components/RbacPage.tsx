@@ -15,7 +15,7 @@
  */
 import { Content, Header, Page, Progress } from '@backstage/core-components';
 
-import { RolesList } from './RolesList/RolesList';
+import { RbacPageContent } from './RbacPageContent';
 import { useApi } from '@backstage/core-plugin-api';
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { useAsync } from 'react-use';
@@ -37,7 +37,7 @@ export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
         {useHeader && <Header title={t('page.title')} />}
         <Content>
           <DeleteDialogContextProvider>
-            <RolesList />
+            <RbacPageContent />
           </DeleteDialogContextProvider>
         </Content>
       </Page>
