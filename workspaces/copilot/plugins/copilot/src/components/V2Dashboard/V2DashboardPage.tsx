@@ -216,9 +216,6 @@ export const V2DashboardPage = () => {
     configApi.getOptionalBoolean('copilot.ingestTeams') ?? false;
   const ingestCostCenters =
     configApi.getOptionalBoolean('copilot.ingestCostCenters') ?? false;
-  const enterpriseOrganizationTeams =
-    configApi.getOptionalBoolean('copilot.enterpriseOrganizationTeams') ??
-    false;
   const defaultView = configApi.getOptionalString('copilot.defaultView') as
     | 'enterprise'
     | 'organization'
@@ -245,9 +242,7 @@ export const V2DashboardPage = () => {
     ingestCostCenters &&
     (type === 'enterprise' || Boolean(enterprise && organization));
   const organizationTeamScopeEnabled =
-    type === 'enterprise' &&
-    enterpriseOrganizationTeams &&
-    Boolean(enterprise && organization && ingestTeams);
+    type === 'enterprise' && Boolean(enterprise && organization && ingestTeams);
   const defaultTeamTarget: FilterTarget =
     type === 'enterprise' ? 'enterpriseTeam' : 'team';
   const teamTargets = useMemo<FilterTarget[]>(

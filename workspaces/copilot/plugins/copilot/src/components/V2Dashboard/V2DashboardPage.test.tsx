@@ -118,7 +118,6 @@ type DashboardConfig = {
   defaultView?: 'enterprise' | 'organization';
   ingestCostCenters?: boolean;
   ingestTeams?: boolean;
-  enterpriseOrganizationTeams?: boolean;
 };
 
 const createDashboard = (
@@ -133,7 +132,6 @@ const createDashboard = (
   const copilotConfig: Record<string, string | boolean> = {
     ingestCostCenters: config.ingestCostCenters,
     ingestTeams: config.ingestTeams,
-    enterpriseOrganizationTeams: config.enterpriseOrganizationTeams ?? false,
   };
   if (config.enterprise) {
     copilotConfig.enterprise = config.enterprise;
@@ -214,7 +212,6 @@ describe('V2DashboardPage filter targets', () => {
       organization: 'my-org',
       ingestCostCenters: false,
       ingestTeams: true,
-      enterpriseOrganizationTeams: true,
     });
 
     expect(getFilterToggleButtons()).toHaveLength(2);
@@ -299,23 +296,32 @@ describe('V2DashboardPage filter targets', () => {
     );
   });
 
-  it('keeps organization teams opt-in to enterprise view and leaves organization labels unchanged', async () => {
-    const api = createApi();
-    const enterpriseRendered = await renderDashboard(api, {
-      enterprise: 'my-enterprise',
-      ingestCostCenters: false,
-      ingestTeams: true,
-      enterpriseOrganizationTeams: true,
-    });
-
-    expect(getFilterToggleButtons()).toHaveLength(0);
-    expect(
-      await screen.findByRole('button', { name: /Enterprise team/ }),
-    ).toBeVisible();
-    expect(
-      screen.queryByRole('button', { name: 'Organization team' }),
-    ).not.toBeInTheDocument();
-    enterpriseRendered.unmount();
+  it('requires enterprise, organization, and team ingestion to offer organization teams in enterprise view', async () => {
+    const unavailableScopes: DashboardConfig[] = [
+      {
+        organization: 'my-org',
+        ingestCostCenters: false,
+        ingestTeams: true,
+      },
+      {
+        enterprise: 'my-enterprise',
+        ingestCostCenters: false,
+        ingestTeams: true,
+      },
+      {
+        enterprise: 'my-enterprise',
+        organization: 'my-org',
+        ingestCostCenters: false,
+        ingestTeams: false,
+      },
+    ];
+    for (const scope of unavailableScopes) {
+      const rendered = await renderDashboard(createApi(), scope);
+      expect(
+        screen.queryByRole('button', { name: 'Organization team' }),
+      ).not.toBeInTheDocument();
+      rendered.unmount();
+    }
 
     const organizationApi = createApi();
     const user = userEvent.setup();
@@ -325,7 +331,6 @@ describe('V2DashboardPage filter targets', () => {
       defaultView: 'organization',
       ingestCostCenters: true,
       ingestTeams: true,
-      enterpriseOrganizationTeams: true,
     });
     expect(await screen.findByRole('button', { name: /Team/ })).toBeVisible();
     await user.hover(getFilterToggleButton('Team'));
