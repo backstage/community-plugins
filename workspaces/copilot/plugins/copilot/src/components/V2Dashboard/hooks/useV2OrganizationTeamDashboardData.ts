@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import useAsync from 'react-use/lib/useAsync';
+import useAsyncRetry from 'react-use/lib/useAsyncRetry';
 import { useApi } from '@backstage/core-plugin-api';
 import { V2DashboardData } from '@backstage-community/plugin-copilot-common';
 import { copilotApiV2Ref } from '../../../api';
@@ -40,12 +40,12 @@ export function useV2OrganizationTeamDashboardData(
   enabled = true,
 ) {
   const api = useApi(copilotApiV2Ref);
-  const { value, loading, error } = useAsync(
+  const { value, loading, error, retry } = useAsyncRetry(
     () =>
       enabled
         ? api.getOrganizationTeamDashboardData(params)
         : Promise.resolve(EMPTY_DASHBOARD),
     [api, enabled, params.from, params.to, params.organization, params.team],
   );
-  return { data: value ?? EMPTY_DASHBOARD, loading, error };
+  return { data: value ?? EMPTY_DASHBOARD, loading, error, retry };
 }

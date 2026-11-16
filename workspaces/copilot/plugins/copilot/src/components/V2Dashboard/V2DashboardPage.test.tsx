@@ -403,10 +403,10 @@ describe('V2DashboardPage filter targets', () => {
     rendered.unmount();
   });
 
-  it('shows successful pending discovery separately from organization-options errors', async () => {
+  it('does not warn while organization team reports are pending', async () => {
     const api = createApi();
     api.getOrganizationTeamOptions.mockResolvedValue({
-      organizations: [],
+      organizations: ['accessible-org'],
       teams: [],
       teamsReady: false,
       allOrganizationsReady: false,
@@ -423,12 +423,21 @@ describe('V2DashboardPage filter targets', () => {
     await user.click(getFilterToggleButton('Organization team'));
 
     expect(
-      await screen.findByText(
-        'Organization team data is still being prepared.',
-      ),
-    ).toBeVisible();
+      screen.queryByText('Organization team data is still being prepared.'),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText('Unable to load organization team options.'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /all teams/i })).toBeDisabled();
+
+    await user.click(
+      screen.getByRole('button', { name: /all organizations/i }),
+    );
+    expect(
+      await screen.findByRole('option', { name: 'accessible-org' }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('option', { name: 'inaccessible-org' }),
     ).not.toBeInTheDocument();
   });
 
@@ -479,6 +488,49 @@ describe('V2DashboardPage filter targets', () => {
     await waitFor(() =>
       expect(
         screen.queryByText('Unable to load organization team options.'),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
+  it('reports organization-dashboard failures and lets users retry without exposing backend errors', async () => {
+    const api = createApi();
+    const backendErrorMessage = 'Private organization dashboard details';
+    let failDashboardRequest = true;
+    api.getOrganizationTeamDashboardData.mockImplementation(async () => {
+      if (failDashboardRequest) {
+        throw new Error(backendErrorMessage);
+      }
+      return EMPTY_DASHBOARD;
+    });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+
+    expect(
+      await screen.findByText('Unable to load organization team dashboard.'),
+    ).toBeVisible();
+    expect(screen.getByText(/dashboard request failed/i)).toBeVisible();
+    expect(screen.queryByText(backendErrorMessage)).not.toBeInTheDocument();
+
+    const callsBeforeRetry =
+      api.getOrganizationTeamDashboardData.mock.calls.length;
+    failDashboardRequest = false;
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+
+    await waitFor(() =>
+      expect(
+        api.getOrganizationTeamDashboardData.mock.calls.length,
+      ).toBeGreaterThan(callsBeforeRetry),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Unable to load organization team dashboard.'),
       ).not.toBeInTheDocument(),
     );
   });

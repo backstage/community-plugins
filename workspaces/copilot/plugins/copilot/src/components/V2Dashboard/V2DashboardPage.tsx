@@ -666,18 +666,12 @@ export const V2DashboardPage = () => {
   const showFilter =
     filterTarget !== undefined &&
     (filterTargetToggleAvailable || filterTargetHasOptions);
-  let organizationTeamAlertStatus: 'danger' | 'info' | 'warning' = 'warning';
-  let organizationTeamAlertTitle =
-    'Organization team data is unavailable for the selected period.';
-  if (organizationTeamOptions.hasPendingOrganizations) {
-    organizationTeamAlertStatus = 'info';
-    organizationTeamAlertTitle =
-      'Organization team data is still being prepared.';
-  }
-  if (organizationTeamOptions.error) {
-    organizationTeamAlertStatus = 'danger';
-    organizationTeamAlertTitle = 'Unable to load organization team options.';
-  }
+  const organizationTeamAlertTitle = organizationTeamOptions.error
+    ? 'Unable to load organization team options.'
+    : 'Unable to load organization team dashboard.';
+  const organizationTeamAlertDescription = organizationTeamOptions.error
+    ? 'The organization team options request failed. Try again, or contact your Backstage administrator if the problem persists.'
+    : 'The organization team dashboard request failed. Try again, or contact your Backstage administrator if the problem persists.';
 
   const onDateRangeChange = useCallback(
     (value: RangeValue<DateValue> | null) => {
@@ -833,29 +827,26 @@ export const V2DashboardPage = () => {
           </Flex>
           {filterTarget === 'organizationTeam' &&
             (organizationTeamOptions.error ||
-              (!organizationTeamOptions.loading &&
-                !organizationTeamOptions.teamsReady) ||
               organizationTeamDashboard.error) && (
               <Alert
-                status={organizationTeamAlertStatus}
-                isPending={organizationTeamOptions.hasPendingOrganizations}
+                status="danger"
                 title={organizationTeamAlertTitle}
-                description={
-                  organizationTeamOptions.error
-                    ? 'The organization team options request failed. Try again, or contact your Backstage administrator if the problem persists.'
-                    : undefined
-                }
+                description={organizationTeamAlertDescription}
                 customActions={
-                  (organizationTeamOptions.error ||
-                    organizationTeamOptions.hasPendingOrganizations) && (
-                    <Button
-                      size="small"
-                      variant="secondary"
-                      onPress={organizationTeamOptions.retry}
-                    >
-                      Retry
-                    </Button>
-                  )
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onPress={() => {
+                      if (organizationTeamOptions.error) {
+                        organizationTeamOptions.retry();
+                      }
+                      if (organizationTeamDashboard.error) {
+                        organizationTeamDashboard.retry();
+                      }
+                    }}
+                  >
+                    Retry
+                  </Button>
                 }
               />
             )}
