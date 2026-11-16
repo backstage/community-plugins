@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr
 
+## 0.32.1
+
+### Patch Changes
+
+- e496cc4: Fixed unnecessary directory requests and resulting errors when opening the ADR tab before an ADR is selected.
+
 ## 0.32.0
 
 ### Minor Changes
