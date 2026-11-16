@@ -39,21 +39,107 @@ describe('ReviewStep', () => {
   };
 
   it('renders "Review and create" for new roles', () => {
-    render(<ReviewStep values={mockValues} isEditing={false} />);
+    render(
+      <ReviewStep
+        values={mockValues}
+        initialValues={mockValues}
+        isEditing={false}
+      />,
+    );
     expect(screen.getByText('Review and create')).toBeInTheDocument();
   });
 
   it('renders "Review and save" for editing existing roles', () => {
-    render(<ReviewStep values={mockValues} isEditing />);
+    render(
+      <ReviewStep values={mockValues} initialValues={mockValues} isEditing />,
+    );
     expect(screen.getByText('Review and save')).toBeInTheDocument();
   });
 
   it('passes the correct metadata to StructuredMetadataTable', () => {
-    render(<ReviewStep values={mockValues} isEditing={false} />);
+    render(
+      <ReviewStep
+        values={mockValues}
+        initialValues={mockValues}
+        isEditing={false}
+      />,
+    );
 
     expect(screen.getByText('Users and groups (1 user)')).toBeInTheDocument();
     expect(screen.getByText('Permission policies (1)')).toBeInTheDocument();
     expect(screen.getByText(mockValues.name)).toBeInTheDocument();
     expect(screen.getByText(mockValues.description)).toBeInTheDocument();
+  });
+
+  it('does not show a changes summary when creating a role', () => {
+    render(
+      <ReviewStep
+        values={mockValues}
+        initialValues={{
+          ...mockValues,
+          name: '',
+          selectedMembers: [],
+          permissionPoliciesRows: [],
+        }}
+        isEditing={false}
+      />,
+    );
+
+    expect(screen.queryByText('Changes to this role')).not.toBeInTheDocument();
+  });
+
+  it('states that nothing changed when editing without changes', () => {
+    render(
+      <ReviewStep values={mockValues} initialValues={mockValues} isEditing />,
+    );
+
+    expect(screen.getByText('Changes to this role')).toBeInTheDocument();
+    expect(
+      screen.getByText('No changes have been made to this role.'),
+    ).toBeInTheDocument();
+  });
+
+  it('lists added, removed and changed items when editing a role', () => {
+    const values = {
+      ...mockValues,
+      description: 'New Description',
+      selectedMembers: [
+        { label: 'Group 1', etag: 'etag2', type: 'Group', ref: 'Group One' },
+      ],
+      permissionPoliciesRows: [
+        {
+          plugin: 'policy1',
+          permission: 'permission2',
+          policies: [{ policy: 'Update', effect: 'allow' }],
+        },
+      ],
+    };
+
+    render(<ReviewStep values={values} initialValues={mockValues} isEditing />);
+
+    expect(
+      screen.queryByText('No changes have been made to this role.'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Description: from "Test Description" to "New Description"',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Group 1 (Group)')).toBeInTheDocument();
+    expect(screen.getByText('User 1 (User)')).toBeInTheDocument();
+    expect(screen.getByText('permission2: update (allow)')).toBeInTheDocument();
+    expect(
+      screen.getByText('permission1: policy1 (allow)'),
+    ).toBeInTheDocument();
+
+    // Change types are announced as text, not conveyed by color alone.
+    expect(screen.getAllByText('Added')).toHaveLength(2);
+    expect(screen.getAllByText('Removed')).toHaveLength(2);
+    expect(screen.getByText('Changed')).toBeInTheDocument();
+
+    const userItem = screen.getByText('User 1 (User)').closest('li');
+    expect(userItem).toHaveTextContent('Removed');
+    const groupItem = screen.getByText('Group 1 (Group)').closest('li');
+    expect(groupItem).toHaveTextContent('Added');
   });
 });
