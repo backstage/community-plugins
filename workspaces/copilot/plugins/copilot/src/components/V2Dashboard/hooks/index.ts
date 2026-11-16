@@ -17,3 +17,5 @@
 export { useV2Teams } from './useV2Teams';
 export { useV2CostCenters } from './useV2CostCenters';
 export { useV2DashboardData } from './useV2DashboardData';
+export { useV2OrganizationTeamOptions } from './useV2OrganizationTeamOptions';
+export { useV2OrganizationTeamDashboardData } from './useV2OrganizationTeamDashboardData';

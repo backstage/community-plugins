@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { GithubClientV2 } from './GithubClientV2';
+import {
+  GithubClientV2,
+  InaccessibleEnterpriseOrganizationError,
+} from './GithubClientV2';
 import { Octokit } from '@octokit/rest';
 
 const mockRequest = jest.fn();
@@ -664,6 +667,84 @@ describe('GithubClientV2', () => {
     expect(mockRequest).toHaveBeenCalledWith(
       'GET /orgs/my-org/copilot/metrics/reports/user-teams-1-day?day=2026-01-04',
     );
+  });
+
+  it('discovers and deduplicates all enterprise organizations across pages', async () => {
+    mockRequest
+      .mockResolvedValueOnce(
+        githubResponse(
+          [{ login: 'Org-A' }, { login: 'org-a' }],
+          '<https://api.github.com/enterprises/my-enterprise/organizations?per_page=100&page=2>; rel="next"',
+        ),
+      )
+      .mockResolvedValueOnce(githubResponse([{ login: 'Org-B' }]));
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).resolves.toEqual([
+      'Org-A',
+      'Org-B',
+    ]);
+
+    const pages = mockRequest.mock.calls.map(([route]) =>
+      parseMockRequestUrl(route),
+    );
+    expect(pages.map(url => url.searchParams.get('page'))).toEqual(['1', '2']);
+    expect(pages.every(url => url.searchParams.get('per_page') === '100')).toBe(
+      true,
+    );
+  });
+
+  it('classifies organization report 404 as inaccessible without hiding transient failures', async () => {
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    mockRequest.mockRejectedValueOnce(httpError(404));
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      ),
+    ).rejects.toBeInstanceOf(InaccessibleEnterpriseOrganizationError);
+
+    const transientError = httpError(500);
+    mockRequest.mockRejectedValueOnce(transientError);
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      ),
+    ).rejects.toBe(transientError);
+  });
+
+  it('resolves a per-organization installation before fetching its report', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      if (route === 'GET /enterprises/my-enterprise/installation') {
+        return { data: { id: 100 } };
+      }
+      if (route === 'GET https://api.github.com/orgs/org-a/installation') {
+        return { data: { id: 200 } };
+      }
+      if (
+        route ===
+        'GET /orgs/org-a/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+      ) {
+        return { data: { download_links: [] } };
+      }
+      throw new Error(`Unexpected GitHub request: ${route}`);
+    });
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await client.fetchEnterpriseOrganizationReportLinks('org-a', '2026-01-01');
+
+    expect(mockRequest.mock.calls.map(([route]) => route)).toEqual([
+      'GET /enterprises/my-enterprise/installation',
+      'GET https://api.github.com/orgs/org-a/installation',
+      'GET /orgs/org-a/copilot/metrics/reports/organization-1-day?day=2026-01-01',
+    ]);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.at(-1)?.[0].auth.installationId).toBe(200);
   });
 
   it('discovers an enterprise GitHub App installation with the App-JWT endpoint', async () => {

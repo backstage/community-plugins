@@ -171,6 +171,58 @@ describe('CopilotClientV2', () => {
     );
   });
 
+  it('builds organization-team option and dashboard URLs', async () => {
+    mockFetch
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            organizations: ['org-1'],
+            teams: ['platform'],
+            teamsReady: true,
+            allOrganizationsReady: true,
+            hasPendingOrganizations: false,
+          }),
+          { status: 200 },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            daily: [],
+            byFeature: [],
+            byLanguage: [],
+            byModelFeature: [],
+            byLanguageModel: [],
+            prMetrics: [],
+            customizationMetrics: [],
+            customizationSummaries: [],
+          }),
+          { status: 200 },
+        ),
+      );
+
+    await client.getOrganizationTeamOptions({
+      from: '2026-05-01',
+      to: '2026-05-21',
+      organization: 'org-1',
+    });
+    await client.getOrganizationTeamDashboardData({
+      from: '2026-05-01',
+      to: '2026-05-21',
+      organization: 'org-1',
+      team: 'platform',
+    });
+
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      1,
+      'http://localhost/api/copilot/v2/organization-team/options?from=2026-05-01&to=2026-05-21&organization=org-1',
+    );
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      2,
+      'http://localhost/api/copilot/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-21&organization=org-1&team=platform',
+    );
+  });
+
   it('getNoCostCenterDashboardData uses its explicit dashboard route', async () => {
     mockFetch.mockResolvedValueOnce(
       new Response(

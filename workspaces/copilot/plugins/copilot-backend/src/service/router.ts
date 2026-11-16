@@ -57,6 +57,8 @@ import {
   v2MeDashboardQuerySchema,
   v2CostCentersQuerySchema,
   v2NoCostCenterDashboardQuerySchema,
+  v2OrganizationTeamDashboardQuerySchema,
+  v2OrganizationTeamOptionsQuerySchema,
   V2MetricsQuery,
   v2MetricsQuerySchema,
   v2PeriodRangeQuerySchema,
@@ -341,6 +343,14 @@ async function createRouter(
   const configuredOrganization = config.getOptionalString(
     'copilot.organization',
   );
+  const organizationTeamIngestionEnabled =
+    config.getOptionalBoolean('copilot.ingestOrganizationTeamReports') ?? false;
+  const configuredOrganizationTeamFilteringEnabled =
+    Boolean(configuredEnterprise && configuredOrganization) &&
+    (config.getOptionalBoolean('copilot.ingestTeams') ?? false);
+  const organizationTeamFilteringEnabled =
+    organizationTeamIngestionEnabled ||
+    configuredOrganizationTeamFilteringEnabled;
   const costCenterIngestionEnabled =
     config.getOptionalBoolean('copilot.ingestCostCenters') ?? false;
   const isCostCenterScopeEnabled = (
@@ -690,6 +700,251 @@ async function createRouter(
   );
 
   v2Router.get(
+    '/organization-team/options',
+    validateQuery(v2OrganizationTeamOptionsQuerySchema),
+    async (req, res, next) => {
+      try {
+        if (!organizationTeamFilteringEnabled || !configuredEnterprise) {
+          return res.status(404).json({
+            error: 'Organization-team filtering is not enabled.',
+          });
+        }
+
+        const { from, to, organization } = req.query;
+        if (from > to) {
+          throw new InputError('from must be less than or equal to to');
+        }
+        if (!organizationTeamIngestionEnabled) {
+          if (
+            !configuredOrganizationTeamFilteringEnabled ||
+            !configuredOrganization ||
+            (organization &&
+              organization.toLowerCase() !==
+                configuredOrganization.toLowerCase())
+          ) {
+            return res.status(404).json({
+              error: 'Organization is not available for team filtering.',
+            });
+          }
+
+          return res.json({
+            organizations: [configuredOrganization],
+            teams: await dbV2.getTeams(
+              'organization',
+              configuredOrganization,
+              from,
+              to,
+            ),
+            teamsReady: true,
+            allOrganizationsReady: true,
+            hasPendingOrganizations: false,
+          });
+        }
+
+        const directory = await dbV2.getEnterpriseOrganizationDirectory(
+          configuredEnterprise,
+        );
+        if (!directory.complete) {
+          return res.status(503).json({
+            error: 'Organization-team filters are being refreshed.',
+          });
+        }
+
+        const selectedOrganization = organization
+          ? directory.organizations.find(
+              item => item.toLowerCase() === organization.toLowerCase(),
+            )
+          : undefined;
+        if (organization && !selectedOrganization) {
+          return res.status(404).json({
+            error: 'Organization is not available for team filtering.',
+          });
+        }
+
+        const organizations = selectedOrganization
+          ? [selectedOrganization]
+          : directory.organizations;
+        const allOrganizationsReady =
+          !directory.hasPendingOrganizations &&
+          organizations.length > 0 &&
+          (await dbV2.areOrganizationTeamReportsComplete(
+            organizations,
+            from,
+            to,
+          ));
+        const teamsReady =
+          organizations.length > 0 &&
+          (!directory.hasPendingOrganizations ||
+            Boolean(selectedOrganization)) &&
+          (await dbV2.areOrganizationTeamReportsComplete(
+            organizations,
+            from,
+            to,
+          ));
+        const teams = teamsReady
+          ? await dbV2.getAccessibleOrganizationTeams(organizations, from, to)
+          : [];
+
+        return res.json({
+          organizations: directory.organizations,
+          teams,
+          teamsReady,
+          allOrganizationsReady,
+          hasPendingOrganizations: directory.hasPendingOrganizations,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/organization-team/dashboard',
+    validateQuery(v2OrganizationTeamDashboardQuerySchema),
+    async (req, res, next) => {
+      try {
+        if (!organizationTeamFilteringEnabled || !configuredEnterprise) {
+          return res.status(404).json({
+            error: 'Organization-team filtering is not enabled.',
+          });
+        }
+
+        const { from, to, organization, team } = req.query;
+        if (from > to) {
+          throw new InputError('from must be less than or equal to to');
+        }
+        if (!organization && !team) {
+          const result = await dbV2.getDashboardData(
+            'enterprise',
+            configuredEnterprise,
+            from,
+            to,
+          );
+          return res.json(result);
+        }
+        if (!organizationTeamIngestionEnabled) {
+          if (
+            !configuredOrganizationTeamFilteringEnabled ||
+            !configuredOrganization ||
+            (organization &&
+              organization.toLowerCase() !==
+                configuredOrganization.toLowerCase())
+          ) {
+            return res.status(404).json({
+              error: 'Organization is not available for team filtering.',
+            });
+          }
+          if (team) {
+            const teams = await dbV2.getTeams(
+              'organization',
+              configuredOrganization,
+              from,
+              to,
+            );
+            if (!teams.includes(team)) {
+              throw new InputError(
+                'Team is not eligible for the requested organization and period.',
+              );
+            }
+          }
+          const result = await dbV2.getDashboardData(
+            'organization',
+            configuredOrganization,
+            from,
+            to,
+            team,
+          );
+          return res.json(result);
+        }
+
+        const directory = await dbV2.getEnterpriseOrganizationDirectory(
+          configuredEnterprise,
+        );
+        if (!directory.complete) {
+          return res.status(503).json({
+            error: 'Organization-team reports are being refreshed.',
+          });
+        }
+
+        const selectedOrganization = organization
+          ? directory.organizations.find(
+              item => item.toLowerCase() === organization.toLowerCase(),
+            )
+          : undefined;
+        if (organization && !selectedOrganization) {
+          return res.status(404).json({
+            error: 'Organization is not available for team filtering.',
+          });
+        }
+
+        if (selectedOrganization) {
+          if (team) {
+            const teams = await dbV2.getAccessibleOrganizationTeams(
+              [selectedOrganization],
+              from,
+              to,
+            );
+            if (!teams.includes(team)) {
+              throw new InputError(
+                'Team is not eligible for the requested organization and period.',
+              );
+            }
+          }
+          const result = await dbV2.getDashboardData(
+            'organization',
+            selectedOrganization,
+            from,
+            to,
+            team,
+          );
+          return res.json(result);
+        }
+
+        if (directory.hasPendingOrganizations) {
+          return res.status(503).json({
+            error:
+              'Organization-team reports are incomplete across the enterprise.',
+          });
+        }
+        const organizations = directory.organizations;
+        if (
+          organizations.length === 0 ||
+          !(await dbV2.areOrganizationTeamReportsComplete(
+            organizations,
+            from,
+            to,
+          ))
+        ) {
+          return res.status(503).json({
+            error:
+              'Organization-team reports are incomplete for the requested period.',
+          });
+        }
+        const teams = await dbV2.getAccessibleOrganizationTeams(
+          organizations,
+          from,
+          to,
+        );
+        if (!teams.includes(team!)) {
+          throw new InputError(
+            'Team is not eligible across the requested organizations and period.',
+          );
+        }
+
+        const result = await dbV2.getOrganizationTeamDashboardData(
+          organizations,
+          from,
+          to,
+          team!,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
     '/metrics/period-range',
     validateQuery(v2PeriodRangeQuerySchema),
     async (req, res, next) => {
@@ -751,6 +1006,60 @@ async function createRouter(
       }
 
       const effectiveToDate = toDate ?? yesterday;
+      if (fromDate > effectiveToDate) {
+        return res.status(400).json({
+          error: 'fromDate must be less than or equal to toDate',
+        });
+      }
+
+      if (
+        type === 'organization' &&
+        entityId !== configuredOrganization &&
+        organizationTeamIngestionEnabled
+      ) {
+        if (!configuredEnterprise) {
+          return res.status(400).json({
+            error: 'Organization-team backfill requires copilot.enterprise.',
+          });
+        }
+        const directory = await dbV2.getEnterpriseOrganizationDirectory(
+          configuredEnterprise,
+        );
+        if (
+          !directory.complete ||
+          !(await dbV2.isCurrentAccessibleEnterpriseOrganization(
+            configuredEnterprise,
+            entityId,
+          ))
+        ) {
+          return res.status(404).json({
+            error: 'Organization is not available for backfill.',
+          });
+        }
+        void taskV2
+          .runOrganizationBackfill(entityId, fromDate, effectiveToDate)
+          .catch(error =>
+            logger.error(
+              '[router:v2] Organization-team backfill failed',
+              error,
+            ),
+          );
+        return res.status(202).json({
+          message: 'Organization-team backfill started',
+          from: fromDate,
+          to: effectiveToDate,
+        });
+      }
+
+      if (
+        (type === 'enterprise' && entityId !== configuredEnterprise) ||
+        (type === 'organization' && entityId !== configuredOrganization)
+      ) {
+        return res.status(404).json({
+          error: 'Metrics scope is not available for backfill.',
+        });
+      }
+
       void taskV2
         .runBackfill(fromDate, effectiveToDate, type, entityId)
         .catch(error => logger.error('[router:v2] Backfill failed', error));

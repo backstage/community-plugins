@@ -33,28 +33,31 @@ const EMPTY_DASHBOARD: V2DashboardData = {
 export function useV2DashboardData(
   params: V2MetricsParams,
   withoutCostCenter = false,
+  enabled = true,
 ) {
   const api = useApi(copilotApiV2Ref);
-  const { value, loading, error } = useAsync(
-    () =>
-      withoutCostCenter
-        ? api.getNoCostCenterDashboardData({
-            type: params.type,
-            entityId: params.entityId,
-            from: params.from,
-            to: params.to,
-          })
-        : api.getDashboardData(params),
-    [
-      api,
-      withoutCostCenter,
-      params.type,
-      params.entityId,
-      params.from,
-      params.to,
-      params.team,
-      params.costCenter,
-    ],
-  );
+  const { value, loading, error } = useAsync(() => {
+    if (!enabled) {
+      return Promise.resolve(EMPTY_DASHBOARD);
+    }
+    return withoutCostCenter
+      ? api.getNoCostCenterDashboardData({
+          type: params.type,
+          entityId: params.entityId,
+          from: params.from,
+          to: params.to,
+        })
+      : api.getDashboardData(params);
+  }, [
+    api,
+    withoutCostCenter,
+    enabled,
+    params.type,
+    params.entityId,
+    params.from,
+    params.to,
+    params.team,
+    params.costCenter,
+  ]);
   return { data: value ?? EMPTY_DASHBOARD, loading, error };
 }

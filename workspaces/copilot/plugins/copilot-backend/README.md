@@ -76,8 +76,9 @@ Configure the following `app-config.yaml` values:
 - `copilot.schedule`: Optional Backstage scheduler configuration for recurring ingestion.
 - `copilot.backfillFromDate`: Optional earliest V2 date to ingest. Must be `2025-10-10` or later. Default: `2025-10-10`.
 - `copilot.backfillDelayMs`: Optional delay between per-day backfill requests. Default: `200`.
-- `copilot.ingestTeams`: Optional flag that enables user and user-team ingestion for V2 team filtering. The setting is also frontend-visible so the dashboard can expose the Team filter target. When enabled with both `copilot.enterprise` and `copilot.organization` configured, the enterprise view also offers organization teams. Default: `false`.
+- `copilot.ingestTeams`: Optional flag that enables user and user-team ingestion for Enterprise team filtering and the configured organization's existing team path. The setting is also frontend-visible so the dashboard can expose the Enterprise team filter target. When enabled with both `copilot.enterprise` and `copilot.organization` configured, the enterprise view also offers teams from that configured organization. The `copilot.ingestOrganizationTeamReports` setting also enables team reports for the configured organization. Default: `false`.
 - `copilot.ingestCostCenters`: Optional flag that enables enterprise cost-center ingestion and organization cost-center reporting when both `copilot.enterprise` and `copilot.organization` are configured. The setting is also frontend-visible so the dashboard can expose the Cost center filter target. Default: `false`.
+- `copilot.ingestOrganizationTeamReports`: Optional flag that discovers enterprise organizations and incrementally ingests organization totals, user metrics, and team memberships for organization-team filtering. The configured `copilot.organization` remains on the existing ingestion path, which also ingests its user and team reports when this flag is enabled. Requires `copilot.enterprise` and credentials with access to list its organizations and read Copilot metrics for each organization. Newly discovered organizations bootstrap the latest 30 days; older dates require a manual backfill. Default: `false`.
 
 At least one of `copilot.enterprise` or `copilot.organization` must be configured.
 
@@ -99,6 +100,7 @@ copilot:
   backfillDelayMs: 200
   ingestTeams: true
   ingestCostCenters: true
+  ingestOrganizationTeamReports: true
   defaultView: enterprise
   showLegacyView: true
 ```
@@ -145,6 +147,30 @@ per day and combine the remaining additive report counters into `others`.
 Pair breakdowns rank full pairs. These breakdown tables contain additive
 counters rather than distinct-user, average, or median fields; PR median
 metrics are not bucketed. Full breakdown detail remains stored in the database.
+
+### Organization Teams
+
+Set `copilot.ingestOrganizationTeamReports: true` to enable organization-team
+filtering in the enterprise view. The setting is disabled by default and
+requires `copilot.enterprise` plus credentials that can list its organizations
+and read Copilot reports in each accessible organization. The configured
+`copilot.organization`, when present, stays on the existing ingestion path;
+the opt-in also makes that path ingest its user and team reports, so the
+organization is not imported a second time.
+
+The `Filter by` selector offers **Organization team** alongside the available
+Cost center and Enterprise team filters. It defaults to **All organizations**
+and **All teams**. Selecting an organization limits team choices to that
+organization and resets the team selection. **All organizations** with **All
+teams** keeps the enterprise totals; one organization with **All teams** shows
+that organization's totals. Selecting a team with **All organizations**
+combines matching team slugs across accessible organizations. Additive usage
+metrics are summed, while distinct user counts are deduplicated by GitHub user
+ID.
+
+Inaccessible organizations are omitted from the selectors without deleting
+their imported history. Newly discovered organizations bootstrap the latest
+30 days; older history requires a manual backfill.
 
 ### GitHub Enterprise Cloud With Data Residency (GHE.com)
 
@@ -378,6 +404,14 @@ With `copilot.ingestCostCenters` enabled, cost-center and enterprise-team lookup
 - **Classic PAT:** `read:enterprise` to read cost centers and enterprise teams, and `read:org` to read members of organizations included as cost-center `Org` resources. The token owner must also be an active member of each such organization; a scope alone does not grant access to concealed members. If active membership cannot be verified, the snapshot is marked incomplete.
 
 If an organization roster, enterprise-team list or membership, or direct-user lookup cannot be resolved, the snapshot is marked incomplete. No cost-center memberships or aggregates are replaced for any affected day, and the next ingestion run retries. An empty or unverifiable organization roster also blocks the snapshot; for fine-grained PATs, a missing scopes header means roster completeness cannot be verified. A direct `User` resource that returns HTTP 404 is the exception: it is treated as permanently unresolvable and skipped because that user cannot contribute metrics. Other direct-user lookup failures, including permission and transient errors, block the snapshot.
+
+### Organization teams
+
+Set `copilot.ingestOrganizationTeamReports: true` to opt in to organization discovery and multi-organization report ingestion. The enterprise organization list is paginated, and each accessible organization's totals, per-user metrics, and team memberships are ingested incrementally. The existing configured organization remains owned by the standard ingestion task to prevent duplicate imports. Newly discovered organizations start with the latest 30 days; use the V2 backfill endpoint to import older dates. Organizations that become inaccessible are hidden from filters, while their previously imported history is retained.
+
+The enterprise dashboard offers an **Organization team** filter with **All organizations** and **All teams** as its defaults. All organizations plus all teams continues to use enterprise totals; selecting one organization uses that organization's totals. Team selection across organizations matches by team slug, sums additive usage metrics, and deduplicates user counts by stable GitHub user ID. Inaccessible organizations are not included in the selectable set. The filter is also available for the configured organization through the existing `copilot.ingestTeams` path when multi-organization ingestion is disabled.
+
+The enterprise credential must be able to list organizations for the enterprise and read organization Copilot metrics. For GitHub Apps, install the App on the enterprise and on each organization whose reports should be included, with the permissions required by GitHub's [Copilot usage metrics API](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage-metrics). Classic PATs need enterprise access to list organizations and organization access to read their reports. API or permission failures are logged and do not become successful zero-valued reports.
 
 ## Run
 

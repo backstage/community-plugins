@@ -16,6 +16,7 @@
 
 import { TestDatabaseId, TestDatabases } from '@backstage/backend-test-utils';
 import { Knex } from 'knex';
+import { DateTime } from 'luxon';
 import {
   V2DailyTotal,
   V2CustomizationMetricRow,
@@ -32,7 +33,10 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
 import type { CostCenterAggregateRows } from './DatabaseHandlerV2';
-import { DatabaseHandlerV2 } from './DatabaseHandlerV2';
+import {
+  DatabaseHandlerV2,
+  OrganizationIngestionLeaseLostError,
+} from './DatabaseHandlerV2';
 
 const costCenterMigration = jest.requireActual<{
   up(knex: Knex): Promise<void>;
@@ -217,6 +221,220 @@ describe('DatabaseHandlerV2', () => {
 
     afterEach(async () => {
       await knex?.destroy();
+    });
+
+    it('fences organization work, hides inaccessible orgs, and retains history', async () => {
+      const now = new Date();
+      const nextAttemptAt = new Date(now.getTime() + 60_000);
+      await handler.syncEnterpriseOrganizations(
+        'ent-1',
+        ['Org-A', 'org-a', 'Org-B'],
+        now,
+      );
+
+      const workItems = await handler.getEnterpriseOrganizationWorkItems(
+        'ent-1',
+        now,
+        5,
+        1,
+        'org-b',
+      );
+      expect(workItems.map(item => item.login)).toEqual(['Org-A']);
+
+      const firstLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        'worker-one',
+        now,
+        nextAttemptAt,
+      );
+      expect(firstLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          'worker-two',
+          now,
+          nextAttemptAt,
+        ),
+      ).resolves.toBeUndefined();
+
+      await handler.withOrganizationIngestionLease(firstLease!, async tx => {
+        await handler.updateEnterpriseOrganizationState(
+          firstLease!,
+          {
+            accessState: 'accessible',
+            reportsReady: true,
+            cursorDay: '2026-11-15',
+            lastAttemptedAt: new Date(),
+          },
+          tx,
+        );
+      });
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+
+      const secondLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        'worker-two',
+        new Date(),
+        new Date(Date.now() + 60_000),
+      );
+      expect(secondLease?.fencingToken).toBeGreaterThan(
+        firstLease!.fencingToken,
+      );
+      await expect(
+        handler.withOrganizationIngestionLease(firstLease!, async () => {}),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await handler.releaseEnterpriseOrganizationLease(secondLease!);
+
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-B', team_slug: '' }),
+      ]);
+      const inaccessibleLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-B',
+        'worker-three',
+        new Date(),
+        new Date(Date.now() + 60_000),
+      );
+      expect(inaccessibleLease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(inaccessibleLease!, {
+        accessState: 'inaccessible',
+        reportsReady: false,
+        lastAttemptedAt: new Date(),
+        nextAttemptAt: new Date(Date.now() + 60_000),
+      });
+      await handler.releaseEnterpriseOrganizationLease(inaccessibleLease!);
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], new Date());
+      await expect(
+        knex('copilot_daily_totals').where({
+          metrics_type: 'organization',
+          entity_id: 'Org-B',
+        }),
+      ).resolves.toHaveLength(1);
+    });
+
+    it('sums matching organization teams by slug and deduplicates users by GitHub ID', async () => {
+      const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
+      const organizations = ['Org-A', 'Org-B'];
+      for (const entityId of organizations) {
+        await handler.upsertIngestionLog(
+          buildIngestionLog({
+            day,
+            entity_id: entityId,
+            components_loaded: '["totals","users","teams"]',
+          }),
+        );
+      }
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          day,
+          entity_id: 'Org-A',
+          team_slug: 'shared',
+          daily_active_users: 2,
+          code_acceptance_activity_count: 10,
+        }),
+        buildDailyTotal({
+          day,
+          entity_id: 'Org-B',
+          team_slug: 'shared',
+          daily_active_users: 2,
+          code_acceptance_activity_count: 20,
+        }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({ day, entity_id: 'Org-A', user_id: 1 }),
+        buildUserMetric({ day, entity_id: 'Org-A', user_id: 2 }),
+        buildUserMetric({ day, entity_id: 'Org-B', user_id: 1 }),
+        buildUserMetric({ day, entity_id: 'Org-B', user_id: 3 }),
+      ]);
+      await knex('copilot_user_teams').insert([
+        buildUserTeam({
+          day,
+          entity_id: 'Org-A',
+          user_id: 1,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-A',
+          user_id: 2,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-B',
+          user_id: 1,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-B',
+          user_id: 3,
+          team_slug: 'shared',
+        }),
+      ]);
+
+      await expect(
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 3),
+      ).resolves.toEqual(['shared']);
+      await expect(
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 4),
+      ).resolves.toEqual([]);
+
+      const dashboard = await handler.getOrganizationTeamDashboardData(
+        organizations,
+        day,
+        day,
+        'shared',
+      );
+      expect(dashboard.daily).toHaveLength(1);
+      expect(dashboard.daily[0]).toMatchObject({
+        metrics_type: 'organization',
+        entity_id: 'all-organizations',
+        team_slug: 'shared',
+        daily_active_users: 3,
+        code_acceptance_activity_count: 30,
+      });
+      await expect(
+        handler.getDashboardData('enterprise', 'ent-1', day, day),
+      ).resolves.toMatchObject({ daily: [] });
+    });
+
+    it('does not return an empty cross-organization dashboard for incomplete reports', async () => {
+      const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
+      await handler.upsertIngestionLog(
+        buildIngestionLog({
+          day,
+          entity_id: 'Org-A',
+          components_loaded: '["totals","users","teams"]',
+        }),
+      );
+
+      await expect(
+        handler.getOrganizationTeamDashboardData(
+          ['Org-A', 'Org-B'],
+          day,
+          day,
+          'shared',
+        ),
+      ).rejects.toThrow(/reports are incomplete/i);
+      await expect(
+        handler.areOrganizationTeamReportsComplete(
+          ['Org-A', 'Org-B'],
+          day,
+          day,
+        ),
+      ).resolves.toBe(false);
     });
 
     it('re-ingests incomplete reports from the customization availability date', async () => {
