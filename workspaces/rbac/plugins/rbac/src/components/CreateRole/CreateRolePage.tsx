@@ -15,13 +15,7 @@
  */
 import { useAsync } from 'react-use';
 
-import {
-  Content,
-  ErrorPage,
-  Header,
-  Page,
-  Progress,
-} from '@backstage/core-components';
+import { Content, ErrorPage, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { rbacApiRef } from '../../api/RBACBackendClient';
@@ -29,8 +23,13 @@ import { MemberEntity } from '../../types';
 import { RoleForm } from './RoleForm';
 import { RoleFormValues } from './types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { HeaderVariant, RolePageLayout } from '../RolePageLayout';
 
-export const CreateRolePage = () => {
+export const CreateRolePage = ({
+  headerVariant = 'legacy',
+}: {
+  headerVariant?: HeaderVariant;
+}) => {
   const rbacApi = useApi(rbacApiRef);
   const { t } = useTranslation();
   const {
@@ -62,8 +61,7 @@ export const CreateRolePage = () => {
   }
 
   return canReadUsersAndGroups ? (
-    <Page themeId="tool">
-      <Header title={t('page.createRole')} type="RBAC" typeLink=".." />
+    <RolePageLayout headerVariant={headerVariant} title={t('page.createRole')}>
       <Content>
         <RoleForm
           initialValues={initialValues}
@@ -83,7 +81,7 @@ export const CreateRolePage = () => {
           }}
         />
       </Content>
-    </Page>
+    </RolePageLayout>
   ) : (
     <ErrorPage statusMessage={t('errors.unauthorized')} />
   );
