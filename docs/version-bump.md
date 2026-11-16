@@ -39,12 +39,12 @@ This section is for Community Plugins Maintainers working through the version bu
 
 ### Step 1: Make sure the PRs were generated
 
-The [Auto Version Bump Scheduler](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump-scheduler.yml) runs every Tuesday at 13:00 UTC. If a Backstage minor release came out in the last 7 days, it triggers the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) workflow, which opens version bump PRs in batches, 5 minutes apart.
+The [Auto Version Bump Scheduler](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump-scheduler.yml) runs every Tuesday at 13:00 UTC. If a Backstage minor release came out in the last 10 days, it triggers the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) workflow, which opens version bump PRs in batches, 5 minutes apart.
 
 If the PRs you expected aren't there:
 
-1. Check the latest [Auto Version Bump Scheduler](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump-scheduler.yml) run. If it decided not to trigger (for example, the release is more than 7 days old), you can run the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) workflow by hand from `main`.
-2. If the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) run, or one of the [Version Bump](https://github.com/backstage/community-plugins/actions/workflows/version-bump.yml) runs it starts, failed, look at the logs. Concurrency issues between runs are the usual cause, and re-running the failed jobs once the other runs have finished normally fixes it.
+1. Check the latest [Auto Version Bump Scheduler](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump-scheduler.yml) run. If it decided not to trigger (for example, the release is more than 10 days old), you can run the [Auto Version Bump](https://github.com/backstage/community-plugins/actions/workflows/auto-version-bump.yml) workflow by hand from `main`.
+2. Check the [Version Bump](https://github.com/backstage/community-plugins/actions/workflows/version-bump.yml) runs it started, not just the Auto Version Bump run itself, which only dispatches them and can succeed even when they don't. Version Bump only allows one run at a time, so an earlier batch can get cancelled when a later one starts. Once all runs have finished, re-run any cancelled or failed ones one at a time. Read the logs before re-running a failed one: a workspace that is already on the target version fails on purpose and doesn't need a re-run.
 3. If only a few workspaces are missing, run the [Version Bump](https://github.com/backstage/community-plugins/actions/workflows/version-bump.yml) workflow for just those workspaces, as described in the [Process section](#process) above.
 
 ### Step 2: Work through the PRs
