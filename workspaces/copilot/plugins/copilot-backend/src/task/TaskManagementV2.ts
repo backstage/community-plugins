@@ -1105,6 +1105,7 @@ export class TaskManagementV2 {
     }
 
     const now = DateTime.utc();
+    const reportWindowStartDate = getReportWindowStartDate();
     const lease = await db.claimEnterpriseOrganizationLease(
       enterprise,
       organization,
@@ -1132,16 +1133,24 @@ export class TaskManagementV2 {
         }
 
         try {
+          const includeUserAndTeamReports = day >= reportWindowStartDate;
           const loaded = await this.ingestOrganizationTeamDay(
             lease,
             organization,
             day,
             'backfill',
+            includeUserAndTeamReports,
           );
           if (!loaded) {
-            logger.warn(
-              `[TaskManagementV2] Organization-team backfill is incomplete for organization:${organization} on ${day}; the day will be retried.`,
-            );
+            if (includeUserAndTeamReports) {
+              logger.warn(
+                `[TaskManagementV2] Organization-team backfill is incomplete for organization:${organization} on ${day}; the day will be retried.`,
+              );
+            } else {
+              logger.info(
+                `[TaskManagementV2] Stored totals only for organization:${organization} on ${day}; per-user and user-team reports are outside GitHub's report window.`,
+              );
+            }
           }
         } catch (error) {
           if (error instanceof InaccessibleEnterpriseOrganizationError) {
@@ -1424,6 +1433,7 @@ export class TaskManagementV2 {
     organization: string,
     day: string,
     source: IngestSource,
+    includeUserAndTeamReports = true,
   ): Promise<boolean> {
     const { api, db, logger } = this.options;
     const totalsEnvelope = await api.fetchEnterpriseOrganizationReportLinks(
@@ -1487,6 +1497,17 @@ export class TaskManagementV2 {
         `[TaskManagementV2] Parsed no organization totals for organization:${organization} on ${day}; preserving existing rows.`,
       );
       return false;
+    }
+
+    if (!includeUserAndTeamReports) {
+      return this.storeOrganizationTotalsWithoutTeams(
+        lease,
+        organization,
+        day,
+        totals,
+        source,
+        "Per-user and user-team reports are outside GitHub's report window.",
+      );
     }
 
     const userEnvelope = await api.fetchEnterpriseOrganizationUserReportLinks(
@@ -1610,6 +1631,7 @@ export class TaskManagementV2 {
     day: string,
     totals: ParsedEnterpriseDocument,
     source: IngestSource,
+    errorMessage = 'Missing per-user or user-team report links.',
   ): Promise<boolean> {
     const { db } = this.options;
     const storedAt = DateTime.utc();
@@ -1627,7 +1649,7 @@ export class TaskManagementV2 {
           entity_id: organization,
           status: 'partial',
           components_loaded: JSON.stringify(['totals']),
-          error_message: 'Missing per-user or user-team report links.',
+          error_message: errorMessage,
           source,
         },
         transaction,

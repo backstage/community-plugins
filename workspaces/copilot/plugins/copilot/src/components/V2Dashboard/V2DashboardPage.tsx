@@ -24,6 +24,7 @@ import {
 } from 'react';
 import {
   Alert,
+  Button,
   DateRangePicker,
   Flex,
   Grid,
@@ -481,6 +482,7 @@ export const V2DashboardPage = () => {
     knownEmpty:
       !organizationTeamOptions.loading &&
       !organizationTeamOptions.error &&
+      !organizationTeamOptions.hasPendingOrganizations &&
       organizationTeamOptions.organizations.length === 0,
     hasOptions:
       !organizationTeamOptions.loading &&
@@ -664,6 +666,18 @@ export const V2DashboardPage = () => {
   const showFilter =
     filterTarget !== undefined &&
     (filterTargetToggleAvailable || filterTargetHasOptions);
+  let organizationTeamAlertStatus: 'danger' | 'info' | 'warning' = 'warning';
+  let organizationTeamAlertTitle =
+    'Organization team data is unavailable for the selected period.';
+  if (organizationTeamOptions.hasPendingOrganizations) {
+    organizationTeamAlertStatus = 'info';
+    organizationTeamAlertTitle =
+      'Organization team data is still being prepared.';
+  }
+  if (organizationTeamOptions.error) {
+    organizationTeamAlertStatus = 'danger';
+    organizationTeamAlertTitle = 'Unable to load organization team options.';
+  }
 
   const onDateRangeChange = useCallback(
     (value: RangeValue<DateValue> | null) => {
@@ -823,10 +837,25 @@ export const V2DashboardPage = () => {
                 !organizationTeamOptions.teamsReady) ||
               organizationTeamDashboard.error) && (
               <Alert
-                title={
-                  organizationTeamOptions.hasPendingOrganizations
-                    ? 'Organization team data is still being prepared.'
-                    : 'Organization team data is unavailable for the selected period.'
+                status={organizationTeamAlertStatus}
+                isPending={organizationTeamOptions.hasPendingOrganizations}
+                title={organizationTeamAlertTitle}
+                description={
+                  organizationTeamOptions.error
+                    ? 'The organization team options request failed. Try again, or contact your Backstage administrator if the problem persists.'
+                    : undefined
+                }
+                customActions={
+                  (organizationTeamOptions.error ||
+                    organizationTeamOptions.hasPendingOrganizations) && (
+                    <Button
+                      size="small"
+                      variant="secondary"
+                      onPress={organizationTeamOptions.retry}
+                    >
+                      Retry
+                    </Button>
+                  )
                 }
               />
             )}

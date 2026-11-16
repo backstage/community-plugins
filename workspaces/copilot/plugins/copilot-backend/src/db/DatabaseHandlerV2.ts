@@ -459,6 +459,29 @@ export class DatabaseHandlerV2 {
     return Boolean(row);
   }
 
+  async getCurrentAccessibleEnterpriseOrganizationLogin(
+    enterpriseId: string,
+    organization: string,
+  ): Promise<string | undefined> {
+    const row = await this.db('copilot_enterprise_organizations as org')
+      .join(
+        'copilot_enterprise_organization_directory as directory',
+        'directory.enterprise_id',
+        'org.enterprise_id',
+      )
+      .where({
+        'org.enterprise_id': enterpriseId,
+        'org.organization_key': organization.trim().toLowerCase(),
+        'org.is_current': true,
+        'org.access_state': 'accessible',
+        'directory.is_complete': true,
+      })
+      .first('org.organization_login');
+    return typeof row?.organization_login === 'string'
+      ? row.organization_login
+      : undefined;
+  }
+
   async getEnterpriseOrganizationWorkItems(
     enterpriseId: string,
     now: Date,

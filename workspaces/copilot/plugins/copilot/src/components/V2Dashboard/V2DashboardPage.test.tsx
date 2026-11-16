@@ -403,6 +403,86 @@ describe('V2DashboardPage filter targets', () => {
     rendered.unmount();
   });
 
+  it('shows successful pending discovery separately from organization-options errors', async () => {
+    const api = createApi();
+    api.getOrganizationTeamOptions.mockResolvedValue({
+      organizations: [],
+      teams: [],
+      teamsReady: false,
+      allOrganizationsReady: false,
+      hasPendingOrganizations: true,
+    });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+
+    expect(
+      await screen.findByText(
+        'Organization team data is still being prepared.',
+      ),
+    ).toBeVisible();
+    expect(
+      screen.queryByText('Unable to load organization team options.'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('reports organization-options failures and lets users retry without exposing backend errors', async () => {
+    const api = createApi();
+    const backendErrorMessage = 'Private GraphQL failure details';
+    let failOptionsRequest = true;
+    api.getOrganizationTeamOptions.mockImplementation(async () => {
+      if (failOptionsRequest) {
+        throw new Error(backendErrorMessage);
+      }
+      return {
+        organizations: ['my-org'],
+        teams: ['platform'],
+        teamsReady: true,
+        allOrganizationsReady: true,
+        hasPendingOrganizations: false,
+      };
+    });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+
+    expect(
+      await screen.findByText('Unable to load organization team options.'),
+    ).toBeVisible();
+    expect(screen.getByText(/Try again/)).toBeVisible();
+    expect(screen.queryByText(backendErrorMessage)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Organization team data is still being prepared.'),
+    ).not.toBeInTheDocument();
+
+    const callsBeforeRetry = api.getOrganizationTeamOptions.mock.calls.length;
+    failOptionsRequest = false;
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions.mock.calls.length).toBeGreaterThan(
+        callsBeforeRetry,
+      ),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Unable to load organization team options.'),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
   it('renders only the unchanged team dropdown when only team filtering is configured', async () => {
     const api = createApi();
     const user = userEvent.setup();

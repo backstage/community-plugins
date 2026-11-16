@@ -588,6 +588,31 @@ export class GithubClientV2 {
     }
   }
 
+  private async invalidateEnterpriseOrganizationOctokit(
+    organization: string,
+    staleClient: Octokit,
+  ): Promise<void> {
+    const cacheKey = organization.toLowerCase();
+    const cachedPromise = this.enterpriseOrganizationOctokits.get(cacheKey);
+    if (!cachedPromise) {
+      return;
+    }
+
+    try {
+      const cachedClient = await cachedPromise;
+      if (
+        cachedClient === staleClient &&
+        this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise
+      ) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+    } catch {
+      if (this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+    }
+  }
+
   private async fetchPaginatedList<T>(
     octokit: Octokit,
     path: string,
@@ -1132,27 +1157,93 @@ export class GithubClientV2 {
 
     const octokit = await this.getEnterpriseOctokit();
     const organizations: string[] = [];
-    let page = 1;
-    let hasNextPage = true;
-    while (hasNextPage) {
+    const seenCursors = new Set<string>();
+    let cursor: string | null = null;
+    for (let page = 1; ; page += 1) {
       if (page > 100) {
         throw new Error(
-          'Enterprise organization discovery exceeded its safe pagination limit.',
+          'Enterprise organization discovery exceeded its safe GraphQL pagination limit.',
         );
       }
-      const url = buildApiUrl(
-        this.copilotConfig.apiBaseUrl,
-        `/enterprises/${encodeURIComponent(enterprise)}/organizations`,
-        { per_page: 100, page },
+      const response: { data: unknown } = await octokit.request(
+        'POST /graphql',
+        {
+          query: `
+            query EnterpriseOrganizations(
+              $slug: String!
+              $first: Int!
+              $after: String
+            ) {
+              enterprise(slug: $slug) {
+                organizations(first: $first, after: $after) {
+                  nodes {
+                    login
+                  }
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            slug: enterprise,
+            first: 100,
+            after: cursor,
+          },
+        },
       );
-      const response = await octokit.request(`GET ${url}`);
-      if (!Array.isArray(response.data)) {
+      const responseData: unknown = response.data;
+      if (!isRecord(responseData) || Array.isArray(responseData)) {
         throw new Error(
           'Unexpected GitHub response while listing enterprise organizations.',
         );
       }
 
-      for (const value of response.data) {
+      const graphQlResponse: Record<string, unknown> = responseData;
+      const graphQlErrors = graphQlResponse.errors;
+      if (
+        (graphQlErrors !== undefined &&
+          (!Array.isArray(graphQlErrors) || graphQlErrors.length > 0)) ||
+        !isRecord(graphQlResponse.data) ||
+        Array.isArray(graphQlResponse.data)
+      ) {
+        throw new Error(
+          'GitHub returned an error while listing enterprise organizations.',
+        );
+      }
+
+      const graphQlData: Record<string, unknown> = graphQlResponse.data;
+      const enterpriseData: unknown = graphQlData.enterprise;
+      const connection: unknown =
+        isRecord(enterpriseData) && !Array.isArray(enterpriseData)
+          ? enterpriseData.organizations
+          : undefined;
+      if (
+        !isRecord(connection) ||
+        Array.isArray(connection) ||
+        !Array.isArray((connection as Record<string, unknown>).nodes) ||
+        !isRecord((connection as Record<string, unknown>).pageInfo) ||
+        Array.isArray((connection as Record<string, unknown>).pageInfo)
+      ) {
+        throw new Error(
+          'Unexpected GitHub response while listing enterprise organizations.',
+        );
+      }
+      const organizationConnection = connection as Record<string, unknown>;
+      const nodes = organizationConnection.nodes as unknown[];
+      const pageInfo = organizationConnection.pageInfo as Record<
+        string,
+        unknown
+      >;
+      if (typeof pageInfo.hasNextPage !== 'boolean') {
+        throw new Error(
+          'Unexpected GitHub response while listing enterprise organizations.',
+        );
+      }
+
+      for (const value of nodes) {
         if (!isRecord(value) || typeof value.login !== 'string') {
           throw new Error(
             'Unexpected organization entry in enterprise organization list.',
@@ -1164,8 +1255,21 @@ export class GithubClientV2 {
         }
       }
 
-      hasNextPage = hasNextLink(response.headers);
-      page += 1;
+      if (!pageInfo.hasNextPage) {
+        break;
+      }
+      const nextCursor: unknown = pageInfo.endCursor;
+      if (
+        typeof nextCursor !== 'string' ||
+        nextCursor.length === 0 ||
+        seenCursors.has(nextCursor)
+      ) {
+        throw new Error(
+          'Unexpected pagination cursor while listing enterprise organizations.',
+        );
+      }
+      seenCursors.add(nextCursor);
+      cursor = nextCursor;
     }
 
     const uniqueOrganizations = new Map<string, string>();
@@ -1187,6 +1291,9 @@ export class GithubClientV2 {
     day: string,
   ): Promise<ReportEnvelope> {
     const octokit = await this.getEnterpriseOrganizationOctokit(organization);
+    const hasCachedInstallationClient = this.enterpriseOrganizationOctokits.has(
+      organization.toLowerCase(),
+    );
     const path = `/orgs/${encodeURIComponent(
       organization,
     )}/copilot/metrics/reports/${reportType}?day=${encodeURIComponent(day)}`;
@@ -1195,7 +1302,37 @@ export class GithubClientV2 {
     } catch (error) {
       const status = getHttpStatus(error);
       if ((status === 403 || status === 404) && !isRateLimitError(error)) {
-        throw new InaccessibleEnterpriseOrganizationError();
+        if (hasCachedInstallationClient) {
+          await this.invalidateEnterpriseOrganizationOctokit(
+            organization,
+            octokit,
+          );
+          const refreshedOctokit = await this.getEnterpriseOrganizationOctokit(
+            organization,
+          );
+          try {
+            return await this.fetchReportLinks(refreshedOctokit, path);
+          } catch (retryError) {
+            const retryStatus = getHttpStatus(retryError);
+            if (retryStatus === 403 && !isRateLimitError(retryError)) {
+              await this.invalidateEnterpriseOrganizationOctokit(
+                organization,
+                refreshedOctokit,
+              );
+              throw new InaccessibleEnterpriseOrganizationError();
+            }
+            if (retryStatus === 404 && !isRateLimitError(retryError)) {
+              await this.invalidateEnterpriseOrganizationOctokit(
+                organization,
+                refreshedOctokit,
+              );
+            }
+            throw retryError;
+          }
+        }
+        if (status === 403) {
+          throw new InaccessibleEnterpriseOrganizationError();
+        }
       }
       throw error;
     }

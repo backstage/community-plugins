@@ -104,6 +104,39 @@ describe('TaskManagementV2', () => {
     expect(db.claimEnterpriseOrganizationLease).not.toHaveBeenCalled();
   });
 
+  it('does not replace the directory when enterprise discovery fails', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const discoveryError = new Error('GraphQL page request failed');
+    db.getMissingDays.mockResolvedValue([]);
+    api.fetchEnterpriseOrganizations.mockRejectedValue(discoveryError);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.syncEnterpriseOrganizations).not.toHaveBeenCalled();
+    expect(db.markEnterpriseOrganizationDirectoryFailed).toHaveBeenCalledWith(
+      'ent-1',
+      expect.any(Date),
+    );
+    expect(db.getEnterpriseOrganizationWorkItems).not.toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Failed to refresh the enterprise organization directory',
+      ),
+      discoveryError,
+    );
+  });
+
   it('ingests configured-organization teams through the existing path when multi-org is enabled', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -193,6 +226,113 @@ describe('TaskManagementV2', () => {
       expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 5);
     } finally {
       setTimeoutSpy.mockRestore();
+    }
+  });
+
+  it('keeps organization totals outside the user-report window without querying old user reports', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2027-02-01T00:00:00Z'));
+    try {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'org-1',
+        owner: 'worker',
+        fencingToken: 1,
+      };
+      const reportWindowStart = DateTime.utc()
+        .startOf('day')
+        .minus({ years: 1 })
+        .toISODate()!;
+      const outsideWindowDay = DateTime.fromISO(reportWindowStart, {
+        zone: 'utc',
+      })
+        .minus({ days: 1 })
+        .toISODate()!;
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      api.fetchEnterpriseOrganizationReportLinks.mockImplementation(
+        async (_organization: string, day: string) => ({
+          download_links: [`https://downloads.github.com/totals-${day}.json`],
+        }),
+      );
+      api.downloadDocument.mockImplementation(async (url: string) => {
+        const day = url.match(/totals-(\d{4}-\d{2}-\d{2})/)![1];
+        return [{ day, daily_active_users: 1, weekly_active_users: 1 }];
+      });
+      api.fetchEnterpriseOrganizationUserReportLinks.mockImplementation(
+        async (_organization: string, day: string) => {
+          if (day === outsideWindowDay) {
+            throw new InaccessibleEnterpriseOrganizationError();
+          }
+          return {
+            download_links: ['https://downloads.github.com/users.json'],
+          };
+        },
+      );
+      api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/user-teams.json'],
+      });
+      api.downloadNdjsonDocument.mockImplementation(async (url: string) =>
+        url.endsWith('/users.json')
+          ? makeUserMetricsDocument(reportWindowStart)
+          : makeUserTeamsDocument(reportWindowStart),
+      );
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.backfillDelayMs': 0,
+          'copilot.ingestOrganizationTeamReports': true,
+        }),
+        logger,
+      });
+
+      await task.runOrganizationBackfill(
+        'org-1',
+        outsideWindowDay,
+        reportWindowStart,
+      );
+
+      expect(
+        api.fetchEnterpriseOrganizationUserReportLinks,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        api.fetchEnterpriseOrganizationUserReportLinks,
+      ).toHaveBeenCalledWith('org-1', reportWindowStart);
+      expect(
+        api.fetchEnterpriseOrganizationUserTeamsLinks,
+      ).toHaveBeenCalledWith('org-1', reportWindowStart);
+      expect(db.replaceOrganizationReportDay).toHaveBeenCalledTimes(2);
+      expect(db.replaceOrganizationUserReportDay).toHaveBeenCalledTimes(1);
+      expect(db.replaceTeamAggregates).toHaveBeenCalledTimes(1);
+      expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          day: outsideWindowDay,
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          status: 'partial',
+          components_loaded: '["totals"]',
+        }),
+        {},
+      );
+      expect(
+        db.updateEnterpriseOrganizationState.mock.calls.some(
+          ([, state]) => state.accessState === 'inaccessible',
+        ),
+      ).toBe(false);
+      expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+        lease,
+        expect.objectContaining({
+          accessState: 'accessible',
+          reportsReady: true,
+        }),
+        {},
+      );
+    } finally {
+      jest.useRealTimers();
     }
   });
 

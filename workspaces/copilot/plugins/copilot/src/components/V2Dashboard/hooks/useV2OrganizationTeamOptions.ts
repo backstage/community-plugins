@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import useAsync from 'react-use/lib/useAsync';
+import useAsyncRetry from 'react-use/lib/useAsyncRetry';
 import { useApi } from '@backstage/core-plugin-api';
 import { copilotApiV2Ref } from '../../../api';
 
@@ -36,37 +36,38 @@ export function useV2OrganizationTeamOptions(
 ) {
   const api = useApi(copilotApiV2Ref);
   const queryKey = JSON.stringify([from, to, organization, enabled]);
-  const { value, loading } = useAsync(async (): Promise<OptionsResult> => {
-    if (!enabled) {
-      return {
-        queryKey,
-        organizations: [],
-        teams: [],
-        teamsReady: false,
-        allOrganizationsReady: false,
-        hasPendingOrganizations: false,
-      };
-    }
+  const { value, loading, retry } =
+    useAsyncRetry(async (): Promise<OptionsResult> => {
+      if (!enabled) {
+        return {
+          queryKey,
+          organizations: [],
+          teams: [],
+          teamsReady: false,
+          allOrganizationsReady: false,
+          hasPendingOrganizations: false,
+        };
+      }
 
-    try {
-      const options = await api.getOrganizationTeamOptions({
-        from,
-        to,
-        organization,
-      });
-      return { queryKey, ...options };
-    } catch (error) {
-      return {
-        queryKey,
-        organizations: [],
-        teams: [],
-        teamsReady: false,
-        allOrganizationsReady: false,
-        hasPendingOrganizations: true,
-        error: error instanceof Error ? error : new Error(String(error)),
-      };
-    }
-  }, [api, from, to, organization, enabled]);
+      try {
+        const options = await api.getOrganizationTeamOptions({
+          from,
+          to,
+          organization,
+        });
+        return { queryKey, ...options };
+      } catch (error) {
+        return {
+          queryKey,
+          organizations: [],
+          teams: [],
+          teamsReady: false,
+          allOrganizationsReady: false,
+          hasPendingOrganizations: false,
+          error: error instanceof Error ? error : new Error(String(error)),
+        };
+      }
+    }, [api, from, to, organization, enabled]);
   const hasCurrentResult = value?.queryKey === queryKey;
 
   return {
@@ -77,5 +78,6 @@ export function useV2OrganizationTeamOptions(
     hasPendingOrganizations: hasCurrentResult && value.hasPendingOrganizations,
     loading: loading || !hasCurrentResult,
     error: hasCurrentResult ? value.error : undefined,
+    retry,
   };
 }

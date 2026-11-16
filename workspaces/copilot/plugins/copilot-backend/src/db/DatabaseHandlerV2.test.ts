@@ -323,6 +323,44 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toHaveLength(1);
     });
 
+    it('resolves an accessible organization key to its canonical login', async () => {
+      const now = new Date();
+      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
+      const lease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        'worker',
+        now,
+        new Date(now.getTime() + 60_000),
+      );
+      expect(lease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(lease!, {
+        accessState: 'accessible',
+        reportsReady: false,
+        lastAttemptedAt: now,
+      });
+
+      await expect(
+        handler.getCurrentAccessibleEnterpriseOrganizationLogin(
+          'ent-1',
+          'oRg-a',
+        ),
+      ).resolves.toBe('Org-A');
+
+      await handler.updateEnterpriseOrganizationState(lease!, {
+        accessState: 'inaccessible',
+        reportsReady: false,
+        lastAttemptedAt: new Date(),
+      });
+      await expect(
+        handler.getCurrentAccessibleEnterpriseOrganizationLogin(
+          'ent-1',
+          'oRg-a',
+        ),
+      ).resolves.toBeUndefined();
+      await handler.releaseEnterpriseOrganizationLease(lease!);
+    });
+
     it('sums matching organization teams by slug and deduplicates users by GitHub ID', async () => {
       const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
       const organizations = ['Org-A', 'Org-B'];
