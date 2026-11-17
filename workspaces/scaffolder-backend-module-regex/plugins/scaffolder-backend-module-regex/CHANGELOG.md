@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-regex
 
+## 2.18.1
+
+### Patch Changes
+
+- af11cde: Rename the plugin source folder so it matches the published package name.
+
 ## 2.18.0
 
 ### Minor Changes
