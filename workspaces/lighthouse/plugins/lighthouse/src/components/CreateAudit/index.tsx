@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Button, Flex, TextField } from '@backstage/ui';
-import styles from './CreateAudit.module.css';
+import { Button, Flex, Grid, Select, TextField } from '@backstage/ui';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -97,8 +96,8 @@ export const CreateAuditContent = () => {
       >
         <LighthouseSupportButton />
       </ContentHeader>
-      <Flex direction="column">
-        <div className={styles.formContainer}>
+      <Grid.Root columns="12">
+        <Grid.Item colSpan={{ initial: '12', sm: '6' }}>
           <InfoCard>
             <form
               onSubmit={ev => {
@@ -106,37 +105,29 @@ export const CreateAuditContent = () => {
                 triggerAudit();
               }}
             >
-              <Flex direction="column" style={{ gap: 'var(--bui-space-4)' }}>
-                <div className={styles.input}>
-                  <TextField
-                    label="URL"
-                    placeholder="https://spotify.com"
-                    isRequired
-                    isDisabled={submitting}
-                    onChange={setUrl}
-                    value={url}
-                  />
-                </div>
-                <div className={styles.input}>
-                  <label htmlFor="lighthouse-create-audit-form-factor">
-                    Emulated Form Factor
-                  </label>
-                  <select
-                    id="lighthouse-create-audit-form-factor"
-                    value={formFactor}
-                    disabled={submitting}
-                    onChange={ev =>
-                      setFormFactor(ev.target.value as FormFactor)
-                    }
-                  >
-                    <option value="mobile">Mobile</option>
-                    <option value="desktop">Desktop</option>
-                  </select>
-                </div>
-                <div className={styles.buttonList}>
+              <Flex direction="column" gap="4">
+                <TextField
+                  label="URL"
+                  placeholder="https://spotify.com"
+                  isRequired
+                  isDisabled={submitting}
+                  onChange={setUrl}
+                  value={url}
+                />
+                <Select
+                  label="Emulated Form Factor"
+                  options={[
+                    { id: 'mobile', label: 'Mobile' },
+                    { id: 'desktop', label: 'Desktop' },
+                  ]}
+                  value={formFactor}
+                  isDisabled={submitting}
+                  onChange={key => setFormFactor(key as FormFactor)}
+                />
+                <Flex gap="2">
                   <Button
                     variant="secondary"
-                    onClick={() => navigate('..')}
+                    onPress={() => navigate('..')}
                     isDisabled={submitting}
                   >
                     Cancel
@@ -148,12 +139,12 @@ export const CreateAuditContent = () => {
                   >
                     Create Audit
                   </Button>
-                </div>
+                </Flex>
               </Flex>
             </form>
           </InfoCard>
-        </div>
-      </Flex>
+        </Grid.Item>
+      </Grid.Root>
     </>
   );
 };

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import Alert from '@material-ui/lab/Alert';
 import { ReactNode, useEffect, useState } from 'react';
 import {
   generatePath,
-  Link,
   resolvePath,
   useNavigate,
   useParams,
@@ -29,7 +27,7 @@ import { lighthouseApiRef } from '../../api';
 import { formatTime } from '../../utils';
 import AuditStatusIcon from '../AuditStatusIcon';
 import LighthouseSupportButton from '../SupportButton';
-import { Button } from '@backstage/ui';
+import { Alert, Box, Button, Grid, List, ListRow } from '@backstage/ui';
 import styles from './AuditView.module.css';
 
 import {
@@ -53,29 +51,30 @@ interface AuditLinkListProps {
 const AuditLinkList = ({ audits = [], selectedId }: AuditLinkListProps) => {
   const fromPath = useRouteRef(rootRouteRef)?.() ?? '../';
   return (
-    <nav data-testid="audit-sidebar" aria-label="lighthouse audit history">
-      <ul className={styles.auditList}>
-        {audits.map(audit => (
-          <li key={audit.id} className={styles.auditListItem}>
-            <Link
-              replace
-              to={resolvePath(
-                generatePath('audit/:id', { id: audit.id }),
-                fromPath,
-              )}
-              className={`${styles.auditListItemLink}${
-                audit.id === selectedId ? ` ${styles.selected}` : ''
-              }`}
-            >
-              <span className={styles.auditListItemIcon}>
-                <AuditStatusIcon audit={audit} />
-              </span>
-              <span>{formatTime(audit.timeCreated)}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <List
+      data-testid="audit-sidebar"
+      aria-label="lighthouse audit history"
+      items={audits}
+      selectionMode="single"
+      selectionBehavior="replace"
+      disallowEmptySelection
+      selectedKeys={[selectedId]}
+    >
+      {audit => (
+        <ListRow
+          id={audit.id}
+          textValue={formatTime(audit.timeCreated)}
+          icon={<AuditStatusIcon audit={audit} />}
+          href={
+            resolvePath(generatePath('audit/:id', { id: audit.id }), fromPath)
+              .pathname
+          }
+          routerOptions={{ replace: true }}
+        >
+          {formatTime(audit.timeCreated)}
+        </ListRow>
+      )}
+    </List>
   );
 };
 
@@ -86,11 +85,11 @@ const AuditView = ({ audit }: { audit?: Audit }) => {
   if (audit?.status === 'RUNNING') return <Progress />;
   if (audit?.status === 'FAILED')
     return (
-      <Alert severity="error">
-        This audit failed when attempting to run after several retries. Check
-        that your instance of lighthouse-audit-service can successfully connect
-        to your website and try again.
-      </Alert>
+      <Alert
+        status="danger"
+        icon
+        title="This audit failed when attempting to run after several retries. Check that your instance of lighthouse-audit-service can successfully connect to your website and try again."
+      />
     );
 
   return (
@@ -128,14 +127,14 @@ export const AuditViewContent = () => {
   let content: ReactNode = null;
   if (value) {
     content = (
-      <div className={styles.contentGrid}>
-        <div className={styles.sidebar}>
+      <Grid.Root columns="12" gap="4" className={styles.contentGrid}>
+        <Grid.Item colSpan={{ initial: '12', md: '3' }}>
           <AuditLinkList audits={value?.audits} selectedId={params.id} />
-        </div>
-        <div className={styles.main}>
+        </Grid.Item>
+        <Grid.Item colSpan={{ initial: '12', md: '9' }}>
           <AuditView audit={value?.audits.find(a => a.id === params.id)} />
-        </div>
-      </div>
+        </Grid.Item>
+      </Grid.Root>
     );
   } else if (loading) {
     content = <Progress />;
@@ -143,11 +142,10 @@ export const AuditViewContent = () => {
     content = (
       <Alert
         data-testid="error-message"
-        severity="error"
-        className={styles.errorOutput}
-      >
-        {error.message}
-      </Alert>
+        status="danger"
+        icon
+        title={<Box className={styles.errorOutput}>{error.message}</Box>}
+      />
     );
   }
 
@@ -164,7 +162,7 @@ export const AuditViewContent = () => {
       >
         <Button
           variant="primary"
-          onClick={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
+          onPress={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
         >
           Create New Audit
         </Button>

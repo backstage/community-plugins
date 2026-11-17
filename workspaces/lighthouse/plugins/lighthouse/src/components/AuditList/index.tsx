@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import Pagination from '@material-ui/lab/Pagination';
-import { Button } from '@backstage/ui';
-import { ChangeEvent, ReactNode, useMemo, useState } from 'react';
+import { Button, TablePagination } from '@backstage/ui';
+import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAsync from 'react-use/esm/useAsync';
 import useLocalStorage from 'react-use/esm/useLocalStorage';
@@ -64,11 +63,9 @@ const AuditList = () => {
     [page],
   );
 
-  const pageCount: number = useMemo(() => {
-    if (value?.total && value?.limit)
-      return Math.ceil(value?.total / value?.limit);
-    return 0;
-  }, [value?.total, value?.limit]);
+  const pageSize = value?.limit || LIMIT;
+  const totalCount = value?.total ?? 0;
+  const pageCount = Math.ceil(totalCount / pageSize);
 
   const navigate = useNavigate();
 
@@ -78,12 +75,15 @@ const AuditList = () => {
       <>
         <AuditListTable items={value?.items || []} />
         {pageCount > 1 && (
-          <Pagination
-            page={page}
-            count={pageCount}
-            onChange={(_event: ChangeEvent<unknown>, newPage: number) => {
-              navigate(`?page=${newPage}`);
-            }}
+          <TablePagination
+            pageSize={pageSize}
+            offset={(page - 1) * pageSize}
+            totalCount={totalCount}
+            hasPreviousPage={page > 1}
+            hasNextPage={page < pageCount}
+            onPreviousPage={() => navigate(`?page=${page - 1}`)}
+            onNextPage={() => navigate(`?page=${page + 1}`)}
+            showPageSizeOptions={false}
           />
         )}
       </>
@@ -113,7 +113,7 @@ const AuditList = () => {
           title="Audits"
           description="View all audits run for your website through Backstage here. Track the trend of your most recent audits."
         >
-          <Button variant="primary" onClick={() => navigate('create-audit')}>
+          <Button variant="primary" onPress={() => navigate('create-audit')}>
             Create Audit
           </Button>
           {dismissed && <LighthouseSupportButton />}

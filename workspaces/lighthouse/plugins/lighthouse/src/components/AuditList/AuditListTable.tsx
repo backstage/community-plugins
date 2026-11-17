@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { useState, useEffect } from 'react';
+import { Text } from '@backstage/ui';
 import { Website } from '@backstage-community/plugin-lighthouse-common';
 import { lighthouseApiRef } from '../../api';
 import useInterval from 'react-use/esm/useInterval';
@@ -113,7 +114,9 @@ export const AuditListTable = ({ items }: { items: Website[] }) => {
       lastReport: (
         <>
           <AuditStatusIcon audit={website.lastAudit} />{' '}
-          <span>{website.lastAudit.status.toLocaleUpperCase('en-US')}</span>
+          <Text as="span">
+            {website.lastAudit.status.toLocaleUpperCase('en-US')}
+          </Text>
         </>
       ),
       lastAuditTriggered: formatTime(website.lastAudit.timeCreated),

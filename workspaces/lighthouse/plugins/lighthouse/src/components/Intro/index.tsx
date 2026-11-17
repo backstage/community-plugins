@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-import { Button, Flex, Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
+import {
+  Button,
+  Flex,
+  Grid,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+} from '@backstage/ui';
 import { RiCloseLine } from '@remixicon/react';
 import useLocalStorage from 'react-use/esm/useLocalStorage';
 import LighthouseSupportButton from '../SupportButton';
@@ -122,28 +130,25 @@ export default function LighthouseIntro({ onDismiss = () => {} }: Props) {
       <ContentHeader title="Welcome to Lighthouse in Backstage!">
         <LighthouseSupportButton />
       </ContentHeader>
-      <div className={styles.introGrid}>
-        <div className={styles.introCardItem}>
+      <Grid.Root columns="12" gap="6" mb="4">
+        <Grid.Item colSpan={{ initial: '12', sm: '6', md: '4' }}>
           <GettingStartedCard />
-        </div>
-        {/* TODO add link and image for blog post here */}
-        {/* <div>
-          <InfoCard>Blog</InfoCard>
-        </div> */}
-        <div className={styles.introCloseItem}>
-          <Flex justify="end" align="end" style={{ height: '100%' }}>
+        </Grid.Item>
+        <Grid.Item colSpan={{ initial: '12', sm: '6', md: '8' }}>
+          <Flex justify="end" align="end" className={styles.fullHeight}>
             <Button
               variant="secondary"
-              onClick={() => {
+              iconStart={<RiCloseLine />}
+              onPress={() => {
                 onDismiss();
                 setDismissed(true);
               }}
             >
-              <RiCloseLine size={16} /> Hide intro
+              Hide intro
             </Button>
           </Flex>
-        </div>
-      </div>
+        </Grid.Item>
+      </Grid.Root>
     </>
   );
 }

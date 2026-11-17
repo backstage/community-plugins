@@ -50,7 +50,7 @@ export const AuditListForEntity = () => {
       <ContentHeader title="Latest Audit">
         <Button
           variant="primary"
-          onClick={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
+          onPress={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
         >
           Create New Audit
         </Button>

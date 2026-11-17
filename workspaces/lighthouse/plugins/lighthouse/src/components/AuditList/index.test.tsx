@@ -85,7 +85,9 @@ describe('AuditList', () => {
             <AuditList />
           </ApiProvider>,
         );
-        expect(screen.queryByLabelText(/Go to page/)).not.toBeInTheDocument();
+        expect(
+          screen.queryByLabelText('Next table page'),
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -105,7 +107,9 @@ describe('AuditList', () => {
             <AuditList />
           </ApiProvider>,
         );
-        expect(await screen.findByLabelText(/Go to page/)).toBeInTheDocument();
+        expect(
+          await screen.findByLabelText('Next table page'),
+        ).toBeInTheDocument();
       });
 
       it('changes the page on click', async () => {
@@ -115,7 +119,7 @@ describe('AuditList', () => {
           </ApiProvider>,
           { routeEntries: ['?page=2'] },
         );
-        const element = await screen.findByLabelText(/Go to page 1/);
+        const element = await screen.findByLabelText('Previous table page');
         fireEvent.click(element);
 
         expect(useNavigate()).toHaveBeenCalledWith(`?page=1`);

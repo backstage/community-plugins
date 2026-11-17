@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import type { ReactNode } from 'react';
+import { Text } from '@backstage/ui';
 import {
   Audit,
   AuditCompleted,
@@ -58,7 +59,7 @@ const LighthouseCategoryScoreStatus = (props: { score: number }) => {
         </>
       );
     default:
-      return <span>N/A</span>;
+      return <Text as="span">N/A</Text>;
   }
 };
 

@@ -160,9 +160,10 @@ describe('CreateAudit', () => {
       fireEvent.change(screen.getByLabelText(/URL/), {
         target: { value: 'https://spotify.com' },
       });
-      fireEvent.change(screen.getByLabelText(/Emulated Form Factor/i), {
-        target: { value: 'desktop' },
-      });
+      fireEvent.click(
+        screen.getByRole('button', { name: /Emulated Form Factor/i }),
+      );
+      fireEvent.click(await screen.findByRole('option', { name: 'Desktop' }));
       fireEvent.click(screen.getByText(/Create Audit/));
 
       await waitFor(() =>
