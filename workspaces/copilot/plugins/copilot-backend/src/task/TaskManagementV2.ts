@@ -42,10 +42,6 @@ import {
   parseUserTeamsDocument,
   UserBreakdownData,
 } from '../utils/reportParser';
-import type {
-  ParsedEnterpriseDocument,
-  ParsedUserDocument,
-} from '../utils/reportParser';
 import {
   aggregateCostCenterMetrics,
   aggregateTeamMetrics,
@@ -60,6 +56,7 @@ type IngestContext = {
   ingestCostCenters: boolean;
   source: IngestSource;
   organizationLease?: OrganizationIngestionLease;
+  organizationReportTarget?: string;
 };
 
 type IngestPlan = {
@@ -84,7 +81,7 @@ const GITHUB_REPORTS_EARLIEST_DATE = '2025-10-10';
 const ORGANIZATION_TEAM_BOOTSTRAP_DAYS = 30;
 const ORGANIZATION_TEAM_MAX_ORGANIZATIONS_PER_RUN = 6;
 const ORGANIZATION_TEAM_MAX_BACKLOG_DAYS_PER_RUN = 3;
-const ORGANIZATION_TEAM_REFETCH_DAYS = 3;
+const ORGANIZATION_TEAM_REFRESH_DAYS = 3;
 const ORGANIZATION_TEAM_LEASE_MINUTES = 10;
 const ORGANIZATION_TEAM_RETRY_HOURS = 23;
 const ORGANIZATION_PERMISSIONS_DOCS_URL =
@@ -837,12 +834,22 @@ export class TaskManagementV2 {
     metricsType: MetricsScope,
     entityId: string,
     organizationLease?: OrganizationIngestionLease,
+    organizationReportTarget?: string,
   ): Promise<boolean> {
     const { api, db, logger } = this.options;
-    const reportEnvelope =
-      metricsType === 'enterprise'
-        ? await api.fetchEnterpriseReportLinks(day)
-        : await api.fetchOrganizationReportLinks(day);
+    let reportEnvelope: Awaited<
+      ReturnType<GithubClientV2['fetchEnterpriseReportLinks']>
+    >;
+    if (metricsType === 'enterprise') {
+      reportEnvelope = await api.fetchEnterpriseReportLinks(day);
+    } else if (organizationReportTarget) {
+      reportEnvelope = await api.fetchEnterpriseOrganizationReportLinks(
+        organizationReportTarget,
+        day,
+      );
+    } else {
+      reportEnvelope = await api.fetchOrganizationReportLinks(day);
+    }
 
     const totalLinks = reportEnvelope.download_links ?? [];
     if (totalLinks.length === 0) {
@@ -905,6 +912,7 @@ export class TaskManagementV2 {
     metricsType: MetricsScope,
     entityId: string,
     organizationLease?: OrganizationIngestionLease,
+    organizationReportTarget?: string,
   ): Promise<{
     loaded: boolean;
     userMetrics: V2UserMetricRow[];
@@ -915,10 +923,17 @@ export class TaskManagementV2 {
       ReturnType<GithubClientV2['fetchEnterpriseUserReportLinks']>
     >;
     try {
-      userReportEnvelope =
-        metricsType === 'enterprise'
-          ? await api.fetchEnterpriseUserReportLinks(day)
-          : await api.fetchOrganizationUserReportLinks(day);
+      if (metricsType === 'enterprise') {
+        userReportEnvelope = await api.fetchEnterpriseUserReportLinks(day);
+      } else if (organizationReportTarget) {
+        userReportEnvelope =
+          await api.fetchEnterpriseOrganizationUserReportLinks(
+            organizationReportTarget,
+            day,
+          );
+      } else {
+        userReportEnvelope = await api.fetchOrganizationUserReportLinks(day);
+      }
     } catch (error) {
       if (
         metricsType === 'organization' &&
@@ -1001,16 +1016,23 @@ export class TaskManagementV2 {
     userBreakdowns: UserBreakdownData[],
     userReportLoaded: boolean,
     organizationLease?: OrganizationIngestionLease,
+    organizationReportTarget?: string,
   ): Promise<boolean> {
     const { api, db, logger } = this.options;
     let userTeamsEnvelope: Awaited<
       ReturnType<GithubClientV2['fetchEnterpriseUserTeamsLinks']>
     >;
     try {
-      userTeamsEnvelope =
-        metricsType === 'enterprise'
-          ? await api.fetchEnterpriseUserTeamsLinks(day)
-          : await api.fetchOrganizationUserTeamsLinks(day);
+      if (metricsType === 'enterprise') {
+        userTeamsEnvelope = await api.fetchEnterpriseUserTeamsLinks(day);
+      } else if (organizationReportTarget) {
+        userTeamsEnvelope = await api.fetchEnterpriseOrganizationUserTeamsLinks(
+          organizationReportTarget,
+          day,
+        );
+      } else {
+        userTeamsEnvelope = await api.fetchOrganizationUserTeamsLinks(day);
+      }
     } catch (error) {
       if (
         metricsType === 'organization' &&
@@ -1211,7 +1233,12 @@ export class TaskManagementV2 {
     metricsType: MetricsScope,
     entityId: string,
     context: IngestContext,
-  ): Promise<{ loaded: boolean; refreshed: boolean }> {
+  ): Promise<{
+    loaded: boolean;
+    refreshed: boolean;
+    complete: boolean;
+    totalsLoaded: boolean;
+  }> {
     const { db, logger } = this.options;
     const requiredComponents = getRequiredComponents(
       context.ingestUsers,
@@ -1239,6 +1266,7 @@ export class TaskManagementV2 {
           metricsType,
           entityId,
           context.organizationLease,
+          context.organizationReportTarget,
         ))
       ) {
         componentsLoaded.add('totals');
@@ -1266,6 +1294,7 @@ export class TaskManagementV2 {
               metricsType,
               entityId,
               context.organizationLease,
+              context.organizationReportTarget,
             );
         userReportsLoaded = userReport.loaded;
         userReportsRefreshed = userReport.loaded && !reuseStoredReport;
@@ -1295,6 +1324,7 @@ export class TaskManagementV2 {
             userReport.userBreakdowns,
             userReport.loaded,
             context.organizationLease,
+            context.organizationReportTarget,
           ))
         ) {
           componentsLoaded.add('teams');
@@ -1309,7 +1339,14 @@ export class TaskManagementV2 {
         [...componentsLoaded],
         requiredComponents,
       );
-      return { loaded: userReportsLoaded, refreshed: userReportsRefreshed };
+      return {
+        loaded: userReportsLoaded,
+        refreshed: userReportsRefreshed,
+        complete: requiredComponents.every(component =>
+          componentsLoaded.has(component),
+        ),
+        totalsLoaded: componentsLoaded.has('totals'),
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       logger.error(
@@ -1333,7 +1370,18 @@ export class TaskManagementV2 {
             transaction,
           ),
       );
-      return { loaded: userReportsLoaded, refreshed: userReportsRefreshed };
+      if (
+        context.organizationReportTarget &&
+        error instanceof InaccessibleEnterpriseOrganizationError
+      ) {
+        throw error;
+      }
+      return {
+        loaded: userReportsLoaded,
+        refreshed: userReportsRefreshed,
+        complete: false,
+        totalsLoaded: componentsLoaded.has('totals'),
+      };
     }
   }
 
@@ -1342,9 +1390,7 @@ export class TaskManagementV2 {
     fromDate: string,
     toDate: string,
   ): Promise<void> {
-    const { config, db, logger } = this.options;
-    const backfillDelayMs =
-      config.getOptionalNumber('copilot.backfillDelayMs') ?? 200;
+    const { api, config, db, logger } = this.options;
     const enterprise = config.getOptionalString('copilot.enterprise');
     const enabled =
       config.getOptionalBoolean('copilot.ingestOrganizationTeamReports') ??
@@ -1363,8 +1409,36 @@ export class TaskManagementV2 {
       throw new Error('Organization is not available for team backfill.');
     }
 
-    const now = DateTime.utc();
+    const requestedDays = this.getDayRange(fromDate, toDate);
+    if (requestedDays.length === 0) {
+      return;
+    }
+    const requestedFrom = requestedDays[0];
+    const requestedTo = requestedDays[requestedDays.length - 1];
     const reportWindowStartDate = getReportWindowStartDate();
+    const missingFromDate =
+      requestedFrom < reportWindowStartDate
+        ? reportWindowStartDate
+        : requestedFrom;
+    const { missingDays } = await this.getMissingIngestionDays(
+      'organization',
+      canonicalOrganization,
+      requestedFrom,
+      missingFromDate,
+      requestedTo,
+      getRequiredComponents(true, true),
+      true,
+    );
+    if (missingDays.length === 0) {
+      logger.info(
+        `[TaskManagementV2] No missing days for organization-team backfill ${canonicalOrganization} in range ${requestedFrom}..${requestedTo}.`,
+      );
+      return;
+    }
+
+    const backfillDelayMs =
+      config.getOptionalNumber('copilot.backfillDelayMs') ?? 200;
+    const now = DateTime.utc();
     const lease = await db.claimEnterpriseOrganizationLease(
       enterprise,
       canonicalOrganization,
@@ -1376,49 +1450,69 @@ export class TaskManagementV2 {
       throw new Error('Organization-team ingestion is already in progress.');
     }
 
+    let incomplete = false;
+    let reportsReady = false;
     try {
-      const days = this.getDayRange(fromDate, toDate);
-      for (const [index, day] of days.entries()) {
-        await this.renewOrganizationIngestionLease(lease);
+      const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
+      if (!yesterday) {
+        throw new Error('Unable to compute yesterday date.');
+      }
+      await api.verifyEnterpriseOrganizationAccess(
+        canonicalOrganization,
+        yesterday,
+      );
 
-        try {
-          const includeUserAndTeamReports = day >= reportWindowStartDate;
-          const loaded = await this.ingestOrganizationTeamDay(
-            lease,
-            canonicalOrganization,
-            day,
-            'backfill',
-            includeUserAndTeamReports,
-          );
-          if (!loaded) {
-            if (includeUserAndTeamReports) {
-              logger.warn(
-                `[TaskManagementV2] Organization-team backfill is incomplete for organization:${canonicalOrganization} on ${day}; the day will be retried.`,
-              );
-            } else {
-              logger.info(
-                `[TaskManagementV2] Stored totals only for organization:${canonicalOrganization} on ${day}; per-user and user-team reports are outside GitHub's report window.`,
-              );
-            }
-          }
-        } catch (error) {
-          if (error instanceof InaccessibleEnterpriseOrganizationError) {
-            const failedAt = DateTime.utc();
-            await db.updateEnterpriseOrganizationState(lease, {
-              accessState: 'inaccessible',
-              reportsReady: false,
-              lastAttemptedAt: failedAt.toJSDate(),
-              nextAttemptAt: failedAt.plus({ hours: 24 }).toJSDate(),
-            });
-            throw new Error('Organization is no longer available.');
-          }
-          throw error;
+      for (const [index, day] of missingDays.entries()) {
+        await this.renewOrganizationIngestionLease(lease);
+        const includeUserAndTeamReports = day >= reportWindowStartDate;
+        const result = await this.ingestDay(
+          day,
+          'organization',
+          canonicalOrganization,
+          {
+            ingestTeams: includeUserAndTeamReports,
+            ingestUsers: includeUserAndTeamReports,
+            ingestCostCenters: false,
+            source: 'backfill',
+            organizationLease: lease,
+            organizationReportTarget: canonicalOrganization,
+          },
+        );
+        if (!result.complete) {
+          incomplete = true;
+        }
+        if (result.totalsLoaded) {
+          reportsReady = true;
         }
 
-        if (backfillDelayMs > 0 && index < days.length - 1) {
+        if (backfillDelayMs > 0 && index < missingDays.length - 1) {
           await delay(backfillDelayMs);
         }
       }
+
+      const completedAt = DateTime.utc();
+      await db.updateEnterpriseOrganizationState(lease, {
+        accessState: 'accessible',
+        ...(reportsReady ? { reportsReady: true } : {}),
+        lastAttemptedAt: completedAt.toJSDate(),
+        nextAttemptAt: completedAt
+          .plus({
+            hours: incomplete ? 1 : ORGANIZATION_TEAM_RETRY_HOURS,
+          })
+          .toJSDate(),
+      });
+    } catch (error) {
+      if (error instanceof InaccessibleEnterpriseOrganizationError) {
+        const failedAt = DateTime.utc();
+        await db.updateEnterpriseOrganizationState(lease, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: failedAt.toJSDate(),
+          nextAttemptAt: failedAt.plus({ hours: 24 }).toJSDate(),
+        });
+        throw new Error('Organization is no longer available.');
+      }
+      throw error;
     } finally {
       await db.releaseEnterpriseOrganizationLease(lease);
     }
@@ -1583,7 +1677,7 @@ export class TaskManagementV2 {
     lease: OrganizationIngestionLease,
     organization: string,
   ): Promise<void> {
-    const { db, logger } = this.options;
+    const { api, config, db } = this.options;
     const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
     const bootstrapStart = DateTime.utc()
       .startOf('day')
@@ -1601,15 +1695,22 @@ export class TaskManagementV2 {
       throw new Error('Unable to compute the organization-team start date.');
     }
 
-    const missingDays = await db.getMissingDays(
+    const reportWindowStartDate = getReportWindowStartDate();
+    const missingFromDate =
+      effectiveStart < reportWindowStartDate
+        ? reportWindowStartDate
+        : effectiveStart;
+    const { missingDays } = await this.getMissingIngestionDays(
       'organization',
       organization,
       effectiveStart,
+      missingFromDate,
       yesterday,
-      ['totals', 'users', 'teams'],
+      getRequiredComponents(true, true),
+      true,
     );
     const trailingStart = DateTime.fromISO(yesterday)
-      .minus({ days: ORGANIZATION_TEAM_REFETCH_DAYS - 1 })
+      .minus({ days: ORGANIZATION_TEAM_REFRESH_DAYS - 1 })
       .toISODate();
     if (!trailingStart) {
       throw new Error('Unable to compute the organization-team retry window.');
@@ -1628,276 +1729,46 @@ export class TaskManagementV2 {
       return;
     }
 
+    await api.verifyEnterpriseOrganizationAccess(organization, yesterday);
+
+    const backfillDelayMs =
+      config.getOptionalNumber('copilot.backfillDelayMs') ?? 200;
     let incomplete = false;
+    let reportsReady = false;
     for (const day of days) {
       await this.renewOrganizationIngestionLease(lease);
 
-      try {
-        const loaded = await this.ingestOrganizationTeamDay(
-          lease,
-          organization,
-          day,
-          'scheduled',
-        );
-        if (!loaded) {
-          incomplete = true;
-        }
-      } catch (error) {
-        if (error instanceof InaccessibleEnterpriseOrganizationError) {
-          throw error;
-        }
+      const includeUserAndTeamReports = day >= reportWindowStartDate;
+      const result = await this.ingestDay(day, 'organization', organization, {
+        ingestTeams: includeUserAndTeamReports,
+        ingestUsers: includeUserAndTeamReports,
+        ingestCostCenters: false,
+        source: 'scheduled',
+        organizationLease: lease,
+        organizationReportTarget: organization,
+      });
+      if (!result.complete) {
         incomplete = true;
-        logger.error(
-          `[TaskManagementV2] Failed organization-team report ingestion for organization:${organization} on ${day}.`,
-          error,
-        );
       }
-      await delay(200);
+      if (result.totalsLoaded) {
+        reportsReady = true;
+      }
+
+      if (backfillDelayMs > 0) {
+        await delay(backfillDelayMs);
+      }
     }
 
     const completedAt = DateTime.utc();
     await db.updateEnterpriseOrganizationState(lease, {
+      accessState: 'accessible',
+      ...(reportsReady ? { reportsReady: true } : {}),
       lastAttemptedAt: completedAt.toJSDate(),
       nextAttemptAt: completedAt
-        .plus({ hours: incomplete ? 1 : 23 })
+        .plus({
+          hours: incomplete ? 1 : ORGANIZATION_TEAM_RETRY_HOURS,
+        })
         .toJSDate(),
     });
-  }
-
-  private async ingestOrganizationTeamDay(
-    lease: OrganizationIngestionLease,
-    organization: string,
-    day: string,
-    source: IngestSource,
-    includeUserAndTeamReports = true,
-  ): Promise<boolean> {
-    const { api, db, logger } = this.options;
-    const totalsEnvelope = await api.fetchEnterpriseOrganizationReportLinks(
-      organization,
-      day,
-    );
-    const totalsLinks = totalsEnvelope.download_links ?? [];
-    if (totalsLinks.length === 0) {
-      const now = DateTime.utc();
-      await db.withOrganizationIngestionLease(lease, async transaction => {
-        await db.updateEnterpriseOrganizationState(
-          lease,
-          {
-            accessState: 'accessible',
-            lastAttemptedAt: now.toJSDate(),
-            nextAttemptAt: now.plus({ hours: 1 }).toJSDate(),
-          },
-          transaction,
-        );
-      });
-      return false;
-    }
-
-    const totals: ParsedEnterpriseDocument = {
-      dailyTotals: [],
-      prMetrics: [],
-      byFeature: [],
-      byIde: [],
-      byLanguageFeature: [],
-      byModelFeature: [],
-      byLanguageModel: [],
-      byCli: [],
-      byVscodeAgent: [],
-      customizationMetrics: [],
-      customizationSummaries: [],
-    };
-    for (const url of totalsLinks) {
-      const parsed = parseOrganizationDocument(
-        await api.downloadDocument(url),
-        'organization',
-        organization,
-      );
-      totals.dailyTotals.push(...parsed.dailyTotals);
-      totals.prMetrics.push(...parsed.prMetrics);
-      totals.byFeature.push(...parsed.byFeature);
-      totals.byIde.push(...parsed.byIde);
-      totals.byLanguageFeature.push(...parsed.byLanguageFeature);
-      totals.byModelFeature.push(...parsed.byModelFeature);
-      totals.byLanguageModel.push(...parsed.byLanguageModel);
-      totals.byCli.push(...parsed.byCli);
-      totals.byVscodeAgent.push(...parsed.byVscodeAgent);
-      totals.customizationMetrics.push(...parsed.customizationMetrics);
-      totals.customizationSummaries.push(...parsed.customizationSummaries);
-    }
-    if (
-      !totals.dailyTotals.some(
-        row => row.day === day && row.entity_id === organization,
-      )
-    ) {
-      logger.warn(
-        `[TaskManagementV2] Parsed no organization totals for organization:${organization} on ${day}; preserving existing rows.`,
-      );
-      return false;
-    }
-
-    if (!includeUserAndTeamReports) {
-      return this.storeOrganizationTotalsWithoutTeams(
-        lease,
-        organization,
-        day,
-        totals,
-        source,
-        "Per-user and user-team reports are outside GitHub's report window.",
-      );
-    }
-
-    const userEnvelope = await api.fetchEnterpriseOrganizationUserReportLinks(
-      organization,
-      day,
-    );
-    const userLinks = userEnvelope.download_links ?? [];
-    if (userLinks.length === 0) {
-      return this.storeOrganizationTotalsWithoutTeams(
-        lease,
-        organization,
-        day,
-        totals,
-        source,
-      );
-    }
-
-    const userTeamsEnvelope =
-      await api.fetchEnterpriseOrganizationUserTeamsLinks(organization, day);
-    const userTeamLinks = userTeamsEnvelope.download_links ?? [];
-    if (userTeamLinks.length === 0) {
-      return this.storeOrganizationTotalsWithoutTeams(
-        lease,
-        organization,
-        day,
-        totals,
-        source,
-      );
-    }
-
-    const userReport: ParsedUserDocument = {
-      userMetrics: [],
-      userBreakdowns: [],
-      customizationMetrics: [],
-      customizationSummaries: [],
-    };
-    for (const url of userLinks) {
-      const parsed = parseUserDocument(
-        await api.downloadNdjsonDocument(url),
-        'organization',
-        organization,
-      );
-      userReport.userMetrics.push(...parsed.userMetrics);
-      userReport.userBreakdowns.push(...parsed.userBreakdowns);
-      userReport.customizationMetrics.push(...parsed.customizationMetrics);
-      userReport.customizationSummaries.push(...parsed.customizationSummaries);
-    }
-
-    const userTeams: V2UserTeamRow[] = [];
-    for (const url of userTeamLinks) {
-      userTeams.push(
-        ...parseUserTeamsDocument(
-          await api.downloadNdjsonDocument(url),
-          'organization',
-          organization,
-        ),
-      );
-    }
-    const teamAggregates = aggregateTeamMetrics(
-      userReport.userMetrics,
-      userTeams,
-      userReport.userBreakdowns,
-      day,
-      'organization',
-      organization,
-    );
-    const storedAt = DateTime.utc();
-
-    await db.withOrganizationIngestionLease(lease, async transaction => {
-      await db.replaceOrganizationReportDay(
-        day,
-        organization,
-        totals,
-        transaction,
-      );
-      await db.replaceOrganizationUserReportDay(
-        day,
-        organization,
-        userReport,
-        transaction,
-      );
-      await db.replaceTeamAggregates(
-        day,
-        'organization',
-        organization,
-        userTeams,
-        teamAggregates,
-        transaction,
-      );
-      await db.upsertIngestionLog(
-        {
-          day,
-          metrics_type: 'organization',
-          entity_id: organization,
-          status: 'success',
-          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
-          source,
-        },
-        transaction,
-      );
-      await db.updateEnterpriseOrganizationState(
-        lease,
-        {
-          accessState: 'accessible',
-          reportsReady: true,
-          lastAttemptedAt: storedAt.toJSDate(),
-          nextAttemptAt: storedAt.plus({ hours: 23 }).toJSDate(),
-        },
-        transaction,
-      );
-    });
-    return true;
-  }
-
-  private async storeOrganizationTotalsWithoutTeams(
-    lease: OrganizationIngestionLease,
-    organization: string,
-    day: string,
-    totals: ParsedEnterpriseDocument,
-    source: IngestSource,
-    errorMessage = 'Missing per-user or user-team report links.',
-  ): Promise<boolean> {
-    const { db } = this.options;
-    const storedAt = DateTime.utc();
-    await db.withOrganizationIngestionLease(lease, async transaction => {
-      await db.replaceOrganizationReportDay(
-        day,
-        organization,
-        totals,
-        transaction,
-      );
-      await db.upsertIngestionLog(
-        {
-          day,
-          metrics_type: 'organization',
-          entity_id: organization,
-          status: 'partial',
-          components_loaded: JSON.stringify(['totals']),
-          error_message: errorMessage,
-          source,
-        },
-        transaction,
-      );
-      await db.updateEnterpriseOrganizationState(
-        lease,
-        {
-          accessState: 'accessible',
-          reportsReady: true,
-          lastAttemptedAt: storedAt.toJSDate(),
-          nextAttemptAt: storedAt.plus({ hours: 1 }).toJSDate(),
-        },
-        transaction,
-      );
-    });
-    return false;
   }
 }
