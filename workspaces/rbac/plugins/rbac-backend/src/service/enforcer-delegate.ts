@@ -29,6 +29,13 @@ import { PoliciesData } from '../auditor/auditor';
 import { AuditorService } from '@backstage/backend-plugin-api';
 import { ConditionalStorage } from '../database/conditional-storage';
 
+/**
+ * Each filter passed to `loadFilteredPolicy` is turned into its own condition in
+ * a single query. Some drivers, e.g. sqlite, reject queries with too many of
+ * them, so filters are batched and the results merged.
+ */
+const MAX_FILTERS_PER_QUERY = 100;
+
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {
   on(event: T, listener: (roleEntityRef: string | string[]) => void): this;
@@ -163,64 +170,60 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     fieldIndex: number,
     ...filter: string[] | string[][]
   ): Promise<string[][]> {
-    const tempModel = newModelFromString(MODEL);
-
-    let twoLevelFilter: string[][];
-    if (filter.length > 0 && typeof filter[0] === 'string') {
-      twoLevelFilter = [filter as string[]];
-    } else {
-      twoLevelFilter = filter as string[][];
-    }
-
-    const filterArgs: Record<string, string>[] = [];
-    for (const nestedFilter of twoLevelFilter) {
-      const filterObj: Record<string, string> = { ptype: 'p' };
-      for (let i = 0; i < nestedFilter.length; i++) {
-        if (nestedFilter[i]) {
-          filterObj[`v${i + fieldIndex}`] = nestedFilter[i];
-        }
-      }
-      filterArgs.push(filterObj);
-    }
-
-    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
-      tempModel,
-      filterArgs,
-    );
-
-    return await tempModel.getPolicy('p', 'p');
+    return await this.loadFilteredPolicies('p', fieldIndex, filter);
   }
 
   async getFilteredGroupingPolicy(
     fieldIndex: number,
     ...filter: string[] | string[][]
   ): Promise<string[][]> {
-    const tempModel = newModelFromString(MODEL);
+    return await this.loadFilteredPolicies('g', fieldIndex, filter);
+  }
 
-    let twoLevelFilter: string[][];
-    if (filter.length > 0 && typeof filter[0] === 'string') {
-      twoLevelFilter = [filter as string[]];
-    } else {
-      twoLevelFilter = filter as string[][];
-    }
+  /**
+   * Loads policies matching any of the given filters. Duplicate filters are
+   * dropped, and the remaining ones are sent in batches, because a single query
+   * with too many of them is rejected by some drivers. A policy matched by more
+   * than one batch is returned only once, since adapters do not deduplicate
+   * what they load into a model.
+   */
+  private async loadFilteredPolicies(
+    ptype: 'p' | 'g',
+    fieldIndex: number,
+    filter: string[] | string[][],
+  ): Promise<string[][]> {
+    const twoLevelFilter: string[][] =
+      filter.length > 0 && typeof filter[0] === 'string'
+        ? [filter as string[]]
+        : (filter as string[][]);
 
     const filterArgs: Record<string, string>[] = [];
+    const seenFilters = new Set<string>();
+
     for (const nestedFilter of twoLevelFilter) {
-      const filterObj: Record<string, string> = { ptype: 'g' };
+      const filterObj: Record<string, string> = { ptype };
       for (let i = 0; i < nestedFilter.length; i++) {
         if (nestedFilter[i]) {
           filterObj[`v${i + fieldIndex}`] = nestedFilter[i];
         }
       }
-      filterArgs.push(filterObj);
+      const key = JSON.stringify(filterObj);
+      if (!seenFilters.has(key)) {
+        seenFilters.add(key);
+        filterArgs.push(filterObj);
+      }
     }
 
-    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
-      tempModel,
-      filterArgs,
-    );
+    const tempModel = newModelFromString(MODEL);
 
-    return await tempModel.getPolicy('g', 'g');
+    for (let i = 0; i < filterArgs.length; i += MAX_FILTERS_PER_QUERY) {
+      await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+        tempModel,
+        filterArgs.slice(i, i + MAX_FILTERS_PER_QUERY),
+      );
+    }
+
+    return await tempModel.getPolicy(ptype, ptype);
   }
 
   async addPolicy(
