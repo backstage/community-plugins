@@ -1049,6 +1049,105 @@ describe('V2DashboardPage filter targets', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('clears organization-team selection and late metrics when the scope changes', async () => {
+    const oldDashboard = {
+      ...EMPTY_DASHBOARD,
+      daily: [createDailyTotal('2026-05-01', 8)],
+    };
+    const newDashboard = {
+      ...EMPTY_DASHBOARD,
+      daily: [createDailyTotal('2026-05-02', 3)],
+    };
+    const lateOrganizationDashboard = createDeferred<V2DashboardData>();
+    const pendingCurrentDashboard = createDeferred<V2DashboardData>();
+    const api = createApi({
+      organizations: ['org-old', 'org-new'],
+      organizationTeams: [
+        { organization: 'org-old', team: 'platform' },
+        { organization: 'org-new', team: 'platform' },
+      ],
+    });
+    api.getDashboardData.mockImplementation(async params => {
+      if (params.entityId === 'org-old') {
+        return lateOrganizationDashboard.promise;
+      }
+      if (params.entityId === 'enterprise-2') {
+        return pendingCurrentDashboard.promise;
+      }
+      return oldDashboard;
+    });
+    const user = userEvent.setup();
+    const rendered = await renderDashboard(api, {
+      enterprise: 'enterprise-1',
+      organization: 'parent-1',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+    const dailyChart = screen.getByTestId('ide-active-users-daily');
+    await waitFor(() =>
+      expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(
+        oldDashboard.daily,
+      ),
+    );
+
+    await user.click(getFilterToggleButton('Organization team'));
+    await user.click(screen.getByRole('button', { name: /All teams/ }));
+    await user.click(
+      await screen.findByRole('option', { name: 'org-old / platform' }),
+    );
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'org-old',
+          team: 'platform',
+        }),
+      ),
+    );
+
+    rendered.rerender(
+      createDashboard(api, {
+        enterprise: 'enterprise-2',
+        organization: 'parent-2',
+        ingestCostCenters: false,
+        ingestTeams: true,
+        ingestOrganizationTeamReports: true,
+      }),
+    );
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'enterprise',
+          entityId: 'enterprise-2',
+          team: undefined,
+        }),
+      ),
+    );
+    expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual([]);
+
+    await user.click(getFilterToggleButton('Organization team'));
+    expect(
+      await screen.findByRole('button', { name: /All organizations/ }),
+    ).toBeVisible();
+
+    await act(async () => {
+      pendingCurrentDashboard.resolve(newDashboard);
+    });
+    await waitFor(() =>
+      expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(
+        newDashboard.daily,
+      ),
+    );
+
+    await act(async () => {
+      lateOrganizationDashboard.resolve(oldDashboard);
+    });
+    expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(
+      newDashboard.daily,
+    );
+  });
+
   it('supports organization cost centers when enterprise and organization are configured', async () => {
     const api = createApi({
       costCenters: [{ id: 'cc-platform', name: 'Platform' }],

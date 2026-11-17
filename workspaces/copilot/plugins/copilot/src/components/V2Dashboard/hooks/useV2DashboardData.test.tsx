@@ -80,4 +80,44 @@ describe('useV2DashboardData', () => {
     await act(async () => pending.resolve(secondData));
     await waitFor(() => expect(result.current.data).toBe(secondData));
   });
+
+  it('hides data from the previous date range until the current query resolves', async () => {
+    const firstParams: V2MetricsParams = {
+      type: 'organization',
+      entityId: 'org-1',
+      from: '2026-05-01',
+      to: '2026-05-20',
+      team: 'platform',
+    };
+    const secondParams = { ...firstParams, from: '2026-05-10' };
+    const firstData = emptyDashboard();
+    const secondData = emptyDashboard();
+    const pending = deferred<V2DashboardData>();
+    const api = {
+      getDashboardData: jest.fn(),
+      getNoCostCenterDashboardData: jest.fn(),
+    } as unknown as jest.Mocked<CopilotApiV2>;
+    api.getDashboardData.mockImplementation(async params =>
+      params.from === firstParams.from ? firstData : pending.promise,
+    );
+    const wrapper = ({ children }: PropsWithChildren) => (
+      <TestApiProvider apis={[[copilotApiV2Ref, api]]}>
+        {children}
+      </TestApiProvider>
+    );
+    const { result, rerender } = renderHook(
+      ({ params }: { params: V2MetricsParams }) => useV2DashboardData(params),
+      { initialProps: { params: firstParams }, wrapper },
+    );
+
+    await waitFor(() => expect(result.current.data).toBe(firstData));
+    rerender({ params: secondParams });
+
+    expect(result.current.loading).toBe(true);
+    expect(result.current.data).not.toBe(firstData);
+    expect(api.getDashboardData).toHaveBeenLastCalledWith(secondParams);
+
+    await act(async () => pending.resolve(secondData));
+    await waitFor(() => expect(result.current.data).toBe(secondData));
+  });
 });

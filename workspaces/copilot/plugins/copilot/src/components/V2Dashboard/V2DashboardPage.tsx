@@ -113,6 +113,25 @@ type CostCenterSelection =
   | { kind: 'all' }
   | { kind: 'costCenter'; id: string }
   | { kind: 'noCostCenter' };
+type OrganizationTeamSelection =
+  | {
+      target: 'organizationTeam';
+      organization: undefined;
+      team: undefined;
+    }
+  | {
+      target: 'organizationTeam';
+      organization: string;
+      team: string | undefined;
+    };
+type FilterSelection =
+  | { target: 'team' | 'enterpriseTeam'; team: string | undefined }
+  | OrganizationTeamSelection
+  | { target: 'costCenter'; costCenter: CostCenterSelection };
+type ScopedFilterSelection = {
+  scopeKey: string;
+  value: FilterSelection;
+};
 
 const ALL_COST_CENTERS_OPTION = 'all';
 const ALL_ORGANIZATIONS_OPTION = 'all-organizations';
@@ -127,6 +146,16 @@ const TEAM_TARGET_LABELS: Record<TeamFilterTarget, string> = {
 
 const getCostCenterOptionValue = (id: string) =>
   `${COST_CENTER_OPTION_PREFIX}${id}`;
+
+const createEmptyFilterSelection = (target: FilterTarget): FilterSelection => {
+  if (target === 'costCenter') {
+    return { target, costCenter: { kind: 'all' } };
+  }
+  if (target === 'organizationTeam') {
+    return { target, organization: undefined, team: undefined };
+  }
+  return { target, team: undefined };
+};
 
 const getOrganizationTeamOptionValue = (organization: string, team: string) =>
   `${organization}/${team}`;
@@ -285,34 +314,19 @@ export const V2DashboardPage = () => {
   );
   const [to, setTo] = useState(DateTime.now().toFormat('yyyy-MM-dd'));
   const scopeKey = JSON.stringify([type, entityId]);
-  const [filterTargetSelection, setFilterTargetSelection] = useState<{
-    scopeKey: string;
-    value: FilterTarget;
-  }>({ scopeKey, value: defaultTeamTarget });
-  const selectedFilterTarget =
-    filterTargetSelection.scopeKey === scopeKey &&
-    filterTargets.includes(filterTargetSelection.value)
-      ? filterTargetSelection.value
-      : fallbackTeamTarget;
-  const organizationTeamSelectionScopeKey = JSON.stringify([
-    scopeKey,
-    'organizationTeam',
-  ]);
-  const [
-    organizationTeamOrganizationSelection,
-    setOrganizationTeamOrganizationSelection,
-  ] = useState<{
-    scopeKey: string;
-    value: string | undefined;
-  }>({
-    scopeKey: organizationTeamSelectionScopeKey,
-    value: undefined,
-  });
-  const selectedOrganizationTeamOrganization =
-    organizationTeamOrganizationSelection.scopeKey ===
-    organizationTeamSelectionScopeKey
-      ? organizationTeamOrganizationSelection.value
+  const [filterSelection, setFilterSelection] = useState<ScopedFilterSelection>(
+    {
+      scopeKey,
+      value: createEmptyFilterSelection(defaultTeamTarget),
+    },
+  );
+  const currentFilterSelection =
+    filterSelection.scopeKey === scopeKey &&
+    filterTargets.includes(filterSelection.value.target)
+      ? filterSelection.value
       : undefined;
+  const selectedFilterTarget =
+    currentFilterSelection?.target ?? fallbackTeamTarget;
   let filterTarget: FilterTarget | undefined;
   if (filterTargetToggleAvailable) {
     filterTarget = selectedFilterTarget;
@@ -326,36 +340,24 @@ export const V2DashboardPage = () => {
   const isPartialOrganizationTeamMode =
     filterTarget === 'organizationTeam' ||
     (type === 'organization' && filterTarget === 'team');
-  const teamSelectionScopeKey = JSON.stringify([
-    scopeKey,
-    filterTarget,
-    filterTarget === 'organizationTeam'
-      ? selectedOrganizationTeamOrganization
-      : undefined,
-  ]);
-  const [teamSelection, setTeamSelection] = useState<{
-    scopeKey: string;
-    value: string | undefined;
-  }>({ scopeKey, value: undefined });
-  const [costCenterSelection, setCostCenterSelection] = useState<{
-    scopeKey: string;
-    value: CostCenterSelection;
-  }>({ scopeKey, value: { kind: 'all' } });
+  const activeFilterSelection =
+    currentFilterSelection?.target === filterTarget
+      ? currentFilterSelection
+      : undefined;
+  const selectedOrganizationTeamOrganization =
+    activeFilterSelection?.target === 'organizationTeam'
+      ? activeFilterSelection.organization
+      : undefined;
   const selectedTeam =
-    teamSelection.scopeKey === teamSelectionScopeKey
-      ? teamSelection.value
+    activeFilterSelection && activeFilterSelection.target !== 'costCenter'
+      ? activeFilterSelection.team
       : undefined;
   const selectedCostCenter = useMemo<CostCenterSelection>(
     () =>
-      costCenterScopeEnabled && costCenterSelection.scopeKey === scopeKey
-        ? costCenterSelection.value
+      costCenterScopeEnabled && activeFilterSelection?.target === 'costCenter'
+        ? activeFilterSelection.costCenter
         : { kind: 'all' },
-    [
-      costCenterScopeEnabled,
-      costCenterSelection.scopeKey,
-      costCenterSelection.value,
-      scopeKey,
-    ],
+    [activeFilterSelection, costCenterScopeEnabled],
   );
   const isTeamTarget =
     filterTarget === 'team' ||
@@ -370,60 +372,67 @@ export const V2DashboardPage = () => {
     filterTarget === 'costCenter' && selectedCostCenter.kind === 'noCostCenter';
   const setSelectedTeam = useCallback(
     (value: string | undefined) => {
-      setTeamSelection({ scopeKey: teamSelectionScopeKey, value });
-      setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
+      if (filterTarget === 'organizationTeam') {
+        setFilterSelection({
+          scopeKey,
+          value:
+            selectedOrganizationTeamOrganization === undefined
+              ? {
+                  target: 'organizationTeam',
+                  organization: undefined,
+                  team: undefined,
+                }
+              : {
+                  target: 'organizationTeam',
+                  organization: selectedOrganizationTeamOrganization,
+                  team: value,
+                },
+        });
+      } else if (filterTarget === 'team' || filterTarget === 'enterpriseTeam') {
+        setFilterSelection({
+          scopeKey,
+          value: { target: filterTarget, team: value },
+        });
+      }
     },
-    [scopeKey, teamSelectionScopeKey],
+    [filterTarget, scopeKey, selectedOrganizationTeamOrganization],
   );
   const setSelectedCostCenter = useCallback(
     (value: CostCenterSelection) => {
-      setCostCenterSelection({ scopeKey, value });
-      setTeamSelection({
-        scopeKey: teamSelectionScopeKey,
-        value: undefined,
+      setFilterSelection({
+        scopeKey,
+        value: { target: 'costCenter', costCenter: value },
       });
     },
-    [scopeKey, teamSelectionScopeKey],
+    [scopeKey],
   );
   const setSelectedOrganizationTeamOrganization = useCallback(
     (value: string | undefined, team?: string) => {
-      setOrganizationTeamOrganizationSelection({
-        scopeKey: organizationTeamSelectionScopeKey,
-        value,
-      });
-      setTeamSelection({
-        scopeKey: JSON.stringify([scopeKey, 'organizationTeam', value]),
-        value: team,
+      setFilterSelection({
+        scopeKey,
+        value:
+          value === undefined
+            ? {
+                target: 'organizationTeam',
+                organization: undefined,
+                team: undefined,
+              }
+            : { target: 'organizationTeam', organization: value, team },
       });
     },
-    [organizationTeamSelectionScopeKey, scopeKey],
+    [scopeKey],
   );
   const selectFilterTarget = useCallback(
     (value: FilterTarget) => {
       if (value === selectedFilterTarget) {
         return;
       }
-      setFilterTargetSelection({ scopeKey, value });
-      if (value !== 'costCenter') {
-        setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
-      }
-      setTeamSelection({
-        scopeKey: JSON.stringify([scopeKey, value, undefined]),
-        value: undefined,
+      setFilterSelection({
+        scopeKey,
+        value: createEmptyFilterSelection(value),
       });
-      if (value === 'organizationTeam') {
-        setOrganizationTeamOrganizationSelection({
-          scopeKey: organizationTeamSelectionScopeKey,
-          value: undefined,
-        });
-      }
     },
-    [
-      organizationTeamSelectionScopeKey,
-      setOrganizationTeamOrganizationSelection,
-      scopeKey,
-      selectedFilterTarget,
-    ],
+    [scopeKey, selectedFilterTarget],
   );
 
   let dashboardType = type;
@@ -561,23 +570,13 @@ export const V2DashboardPage = () => {
   }, [costCenters.hasUsersWithoutCostCenter, costCenters.items]);
 
   useEffect(() => {
-    if (teamSelection.scopeKey !== teamSelectionScopeKey) {
-      setTeamSelection({ scopeKey: teamSelectionScopeKey, value: undefined });
+    if (filterSelection.scopeKey !== scopeKey) {
+      setFilterSelection({
+        scopeKey,
+        value: createEmptyFilterSelection(defaultTeamTarget),
+      });
     }
-    if (costCenterSelection.scopeKey !== scopeKey) {
-      setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
-    }
-    if (filterTargetSelection.scopeKey !== scopeKey) {
-      setFilterTargetSelection({ scopeKey, value: defaultTeamTarget });
-    }
-  }, [
-    scopeKey,
-    teamSelectionScopeKey,
-    defaultTeamTarget,
-    teamSelection.scopeKey,
-    costCenterSelection.scopeKey,
-    filterTargetSelection.scopeKey,
-  ]);
+  }, [scopeKey, defaultTeamTarget, filterSelection.scopeKey]);
 
   useEffect(() => {
     if (
