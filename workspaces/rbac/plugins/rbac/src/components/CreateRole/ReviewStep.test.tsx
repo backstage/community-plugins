@@ -15,6 +15,7 @@
  */
 import { render, screen } from '@testing-library/react';
 
+import { conditionalPolicyRow as conditionalRow } from '../../__fixtures__/mockConditionalPolicyRow';
 import { ReviewStep } from './ReviewStep';
 
 import '@testing-library/jest-dom';
@@ -144,21 +145,6 @@ describe('ReviewStep', () => {
   });
 
   it('lists added, removed and changed conditional policies when editing a role', () => {
-    const conditionalRow = (id: number | undefined, label: string) => ({
-      id,
-      plugin: 'catalog',
-      permission: 'catalog.entity.delete',
-      resourceType: 'catalog-entity',
-      isResourced: true,
-      policies: [{ policy: 'Delete', effect: 'allow' }],
-      conditions: {
-        condition: {
-          rule: 'HAS_LABEL',
-          resourceType: 'catalog-entity',
-          params: { label },
-        },
-      },
-    });
     const initialValues = {
       ...mockValues,
       permissionPoliciesRows: [
@@ -180,12 +166,14 @@ describe('ReviewStep', () => {
 
     expect(screen.getByText('Conditional access policies')).toBeInTheDocument();
     // The new condition, the removed one and the edited one all render with
-    // the same "plugin: permission (actions)" format.
-    expect(
-      screen.getAllByText('catalog: catalog.entity.delete (delete)'),
-    ).toHaveLength(3);
-    expect(screen.getByText('Added')).toBeInTheDocument();
-    expect(screen.getByText('Removed')).toBeInTheDocument();
-    expect(screen.getByText('Changed')).toBeInTheDocument();
+    // the same "plugin: permission (actions)" format, each with its own label.
+    const items = screen
+      .getAllByText('catalog: catalog.entity.delete (delete)')
+      .map(text => text.closest('li')?.textContent);
+    expect(items).toEqual([
+      expect.stringContaining('Added'),
+      expect.stringContaining('Removed'),
+      expect.stringContaining('Changed'),
+    ]);
   });
 });

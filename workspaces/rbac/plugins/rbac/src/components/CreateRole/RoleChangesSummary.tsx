@@ -97,14 +97,13 @@ const formatConditionRow = (row: PermissionsData): string =>
     getPolicyString(row.policies).toLocaleLowerCase('en-US'),
   );
 
-const getChangeGroups = (changes: RoleChanges, t: Translate): ChangeGroup[] => {
-  const toItems = <T,>(
-    changeType: ChangeType,
-    entries: T[],
-    format: (entry: T) => string,
-  ): ChangeItem[] =>
-    entries.map(entry => ({ changeType, text: format(entry) }));
+const toItems = <T,>(
+  changeType: ChangeType,
+  entries: T[],
+  format: (entry: T) => string,
+): ChangeItem[] => entries.map(entry => ({ changeType, text: format(entry) }));
 
+const getChangeGroups = (changes: RoleChanges, t: Translate): ChangeGroup[] => {
   return [
     {
       title: t('roleForm.review.nameDescriptionOwner'),

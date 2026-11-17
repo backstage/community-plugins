@@ -23,6 +23,7 @@ import { mockApis, MockErrorApi, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useFormik } from 'formik';
 
+import { conditionalPolicyRow as conditionalRow } from '../../__fixtures__/mockConditionalPolicyRow';
 import { mockUseLanguage } from '../../test-utils/mockTranslations';
 import { RoleForm } from './RoleForm';
 
@@ -477,58 +478,39 @@ describe('Edit RoleForm', () => {
     ).toBeInTheDocument();
   });
 
-  it('saves only the computed changes when submitting an edited role', async () => {
-    const conditionalRow = (id: number | undefined, label: string) => ({
-      id,
-      plugin: 'catalog',
-      permission: 'catalog.entity.delete',
-      resourceType: 'catalog-entity',
-      isResourced: true,
-      policies: [{ policy: 'Delete', effect: 'allow' }],
-      conditions: {
-        condition: {
-          rule: 'HAS_LABEL',
-          resourceType: 'catalog-entity',
-          params: { label },
-        },
-      },
+  // The submit tests replace the lean member API mock; restore it so the
+  // rendering-only tests above keep working whatever the outcome.
+  afterEach(() => {
+    (useApi as jest.Mock).mockReturnValue({
+      searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+      getMemberNamespaces: jest.fn().mockResolvedValue([]),
     });
-    const initialValues = {
-      kind: 'role',
-      namespace: 'default',
-      name: 'admins',
-      description: 'Admin role',
-      selectedMembers: [
-        { ref: 'user:default/alice', label: 'Alice', etag: 'e1', type: 'User' },
-      ],
-      selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
-      permissionPoliciesRows: [
-        {
-          plugin: 'catalog',
-          permission: 'catalog.entity.read',
-          policies: [{ policy: 'Read', effect: 'allow' }],
-        },
-        conditionalRow(1, 'keep'),
-        conditionalRow(2, 'remove-me'),
-      ],
-    };
-    const values = {
-      ...initialValues,
-      description: 'Updated description',
-      permissionPoliciesRows: [
-        {
-          plugin: 'catalog',
-          permission: 'catalog.entity.create',
-          policies: [{ policy: 'Create', effect: 'allow' }],
-        },
-        conditionalRow(1, 'edited'),
-        conditionalRow(undefined, 'brand-new'),
-      ],
-    };
+  });
 
+  const editInitialValues = {
+    kind: 'role',
+    namespace: 'default',
+    name: 'admins',
+    description: 'Admin role',
+    selectedMembers: [
+      { ref: 'user:default/alice', label: 'Alice', etag: 'e1', type: 'User' },
+    ],
+    selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
+    permissionPoliciesRows: [
+      {
+        plugin: 'catalog',
+        permission: 'catalog.entity.read',
+        policies: [{ policy: 'Read', effect: 'allow' }],
+      },
+      conditionalRow(1, 'keep'),
+      conditionalRow(2, 'remove-me'),
+    ],
+  };
+
+  /** Renders the edit form, submits `values` and waits for the save to finish. */
+  const submitEditedRole = async (values: typeof editInitialValues) => {
     const navigateFn = jest.fn();
     (useNavigate as jest.Mock).mockReturnValue(navigateFn);
-    const useApiMock = useApi as jest.Mock;
     const rbacApi = {
       searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
       getMemberNamespaces: jest.fn().mockResolvedValue([]),
@@ -539,8 +521,8 @@ describe('Edit RoleForm', () => {
       updateConditionalPolicies: jest.fn().mockResolvedValue({ status: 200 }),
       createConditionalPermission: jest.fn().mockResolvedValue({ status: 200 }),
     };
-    useApiMock.mockReturnValue(rbacApi);
-    useFormikMock.mockReturnValue({ errors: {}, values: initialValues });
+    (useApi as jest.Mock).mockReturnValue(rbacApi);
+    useFormikMock.mockReturnValue({ errors: {}, values: editInitialValues });
 
     render(
       <TestApiProvider
@@ -552,7 +534,7 @@ describe('Edit RoleForm', () => {
         <RoleForm
           membersData={{ members: [], loading: false, error: {} as Error }}
           roleName="role:default/admins"
-          initialValues={initialValues}
+          initialValues={editInitialValues}
           titles={{
             formTitle: 'Edit Role',
             nameAndDescriptionTitle: 'Edit name and description of role ',
@@ -567,8 +549,27 @@ describe('Edit RoleForm', () => {
     const setStatus = jest.fn();
     await onSubmit(values, { setStatus });
 
+    // onSubmit fires the save without awaiting it, so wait for its last step.
     await waitFor(() => expect(navigateFn).toHaveBeenCalled());
     expect(setStatus).not.toHaveBeenCalled();
+    return rbacApi;
+  };
+
+  it('saves only the computed changes when submitting an edited role', async () => {
+    const rbacApi = await submitEditedRole({
+      ...editInitialValues,
+      description: 'Updated description',
+      permissionPoliciesRows: [
+        {
+          plugin: 'catalog',
+          permission: 'catalog.entity.create',
+          policies: [{ policy: 'Create', effect: 'allow' }],
+        },
+        conditionalRow(1, 'edited'),
+        conditionalRow(undefined, 'brand-new'),
+      ],
+    });
+
     expect(rbacApi.updateRole).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'role:default/admins',
@@ -599,11 +600,35 @@ describe('Edit RoleForm', () => {
         conditions: expect.objectContaining({ params: { label: 'brand-new' } }),
       }),
     );
+  });
 
-    // Restore the lean member API used by the rendering-only tests above.
-    useApiMock.mockReturnValue({
-      searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
-      getMemberNamespaces: jest.fn().mockResolvedValue([]),
+  it('leaves unchanged policies alone when the role is only renamed', async () => {
+    const rbacApi = await submitEditedRole({
+      ...editInitialValues,
+      name: 'platform-admins',
     });
+
+    expect(rbacApi.updateRole).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'role:default/admins' }),
+      expect.objectContaining({ name: 'role:default/platform-admins' }),
+    );
+    expect(rbacApi.deletePolicies).not.toHaveBeenCalled();
+    expect(rbacApi.createPolicies).not.toHaveBeenCalled();
+    expect(rbacApi.deleteConditionalPolicies).not.toHaveBeenCalled();
+    expect(rbacApi.createConditionalPermission).not.toHaveBeenCalled();
+    // Existing conditional policies are re-sent carrying the new role ref;
+    // the backend moves everything else during the role update.
+    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({
+        roleEntityRef: 'role:default/platform-admins',
+      }),
+    );
+    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({
+        roleEntityRef: 'role:default/platform-admins',
+      }),
+    );
   });
 });

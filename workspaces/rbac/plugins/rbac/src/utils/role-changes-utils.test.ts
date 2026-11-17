@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { conditionalPolicyRow as conditionalRow } from '../__fixtures__/mockConditionalPolicyRow';
 import { RoleFormValues } from '../components/CreateRole/types';
 import { PermissionsData } from '../types';
 import { getRoleChanges } from './role-changes-utils';
@@ -46,25 +47,6 @@ const catalogCreateRow: PermissionsData = {
   permission: 'catalog.entity.create',
   policies: [{ policy: 'Create', effect: 'allow' }],
 };
-const conditionalRow = (
-  id: number | undefined,
-  label: string,
-): PermissionsData => ({
-  id,
-  plugin: 'catalog',
-  permission: 'catalog.entity.delete',
-  resourceType: 'catalog-entity',
-  isResourced: true,
-  policies: [{ policy: 'Delete', effect: 'allow' }],
-  conditions: {
-    condition: {
-      rule: 'HAS_LABEL',
-      resourceType: 'catalog-entity',
-      params: { label },
-    },
-  },
-});
-
 const initialValues: RoleFormValues = {
   kind: 'role',
   namespace: 'default',

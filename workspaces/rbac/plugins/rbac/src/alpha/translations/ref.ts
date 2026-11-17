@@ -120,6 +120,8 @@ export const rbacMessages = {
         added: 'Added',
         removed: 'Removed',
         changed: 'Changed',
+        // `as const` keeps the literal type so `t()` can type the
+        // {{placeholder}} params without a cast at the call site.
         valueChanged:
           '{{field}}: from "{{previous}}" to "{{current}}"' as const,
         permissionPolicies: 'Permission policies',
