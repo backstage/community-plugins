@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import { forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { errorApiRef } from '@backstage/core-plugin-api';
+import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { mockApis, MockErrorApi, TestApiProvider } from '@backstage/test-utils';
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useFormik } from 'formik';
 
 import { mockUseLanguage } from '../../test-utils/mockTranslations';
@@ -474,5 +475,135 @@ describe('Edit RoleForm', () => {
     expect(
       screen.getByText(/unable to edit the role. unexpected error/i),
     ).toBeInTheDocument();
+  });
+
+  it('saves only the computed changes when submitting an edited role', async () => {
+    const conditionalRow = (id: number | undefined, label: string) => ({
+      id,
+      plugin: 'catalog',
+      permission: 'catalog.entity.delete',
+      resourceType: 'catalog-entity',
+      isResourced: true,
+      policies: [{ policy: 'Delete', effect: 'allow' }],
+      conditions: {
+        condition: {
+          rule: 'HAS_LABEL',
+          resourceType: 'catalog-entity',
+          params: { label },
+        },
+      },
+    });
+    const initialValues = {
+      kind: 'role',
+      namespace: 'default',
+      name: 'admins',
+      description: 'Admin role',
+      selectedMembers: [
+        { ref: 'user:default/alice', label: 'Alice', etag: 'e1', type: 'User' },
+      ],
+      selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
+      permissionPoliciesRows: [
+        {
+          plugin: 'catalog',
+          permission: 'catalog.entity.read',
+          policies: [{ policy: 'Read', effect: 'allow' }],
+        },
+        conditionalRow(1, 'keep'),
+        conditionalRow(2, 'remove-me'),
+      ],
+    };
+    const values = {
+      ...initialValues,
+      description: 'Updated description',
+      permissionPoliciesRows: [
+        {
+          plugin: 'catalog',
+          permission: 'catalog.entity.create',
+          policies: [{ policy: 'Create', effect: 'allow' }],
+        },
+        conditionalRow(1, 'edited'),
+        conditionalRow(undefined, 'brand-new'),
+      ],
+    };
+
+    const navigateFn = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(navigateFn);
+    const useApiMock = useApi as jest.Mock;
+    const rbacApi = {
+      searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+      getMemberNamespaces: jest.fn().mockResolvedValue([]),
+      updateRole: jest.fn().mockResolvedValue({ status: 200 }),
+      deletePolicies: jest.fn().mockResolvedValue({ status: 204 }),
+      createPolicies: jest.fn().mockResolvedValue({ status: 200 }),
+      deleteConditionalPolicies: jest.fn().mockResolvedValue({ status: 200 }),
+      updateConditionalPolicies: jest.fn().mockResolvedValue({ status: 200 }),
+      createConditionalPermission: jest.fn().mockResolvedValue({ status: 200 }),
+    };
+    useApiMock.mockReturnValue(rbacApi);
+    useFormikMock.mockReturnValue({ errors: {}, values: initialValues });
+
+    render(
+      <TestApiProvider
+        apis={[
+          [translationApiRef, mockApis.translation()],
+          [errorApiRef, new MockErrorApi()],
+        ]}
+      >
+        <RoleForm
+          membersData={{ members: [], loading: false, error: {} as Error }}
+          roleName="role:default/admins"
+          initialValues={initialValues}
+          titles={{
+            formTitle: 'Edit Role',
+            nameAndDescriptionTitle: 'Edit name and description of role ',
+            usersAndGroupsTitle: 'Edit users and groups',
+            permissionPoliciesTitle: 'Edit permission policies',
+          }}
+        />
+      </TestApiProvider>,
+    );
+
+    const { onSubmit } = useFormikMock.mock.calls.at(-1)![0];
+    const setStatus = jest.fn();
+    await onSubmit(values, { setStatus });
+
+    await waitFor(() => expect(navigateFn).toHaveBeenCalled());
+    expect(setStatus).not.toHaveBeenCalled();
+    expect(rbacApi.updateRole).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'role:default/admins',
+        metadata: expect.objectContaining({ description: 'Admin role' }),
+      }),
+      expect.objectContaining({
+        name: 'role:default/admins',
+        metadata: expect.objectContaining({
+          description: 'Updated description',
+        }),
+      }),
+    );
+    expect(rbacApi.deletePolicies).toHaveBeenCalledWith('role:default/admins', [
+      expect.objectContaining({ permission: 'catalog.entity.read' }),
+    ]);
+    expect(rbacApi.createPolicies).toHaveBeenCalledWith([
+      expect.objectContaining({ permission: 'catalog.entity.create' }),
+    ]);
+    expect(rbacApi.deleteConditionalPolicies).toHaveBeenCalledWith(2);
+    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({
+        conditions: expect.objectContaining({ params: { label: 'edited' } }),
+      }),
+    );
+    expect(rbacApi.createConditionalPermission).toHaveBeenCalledWith(
+      expect.objectContaining({
+        conditions: expect.objectContaining({ params: { label: 'brand-new' } }),
+      }),
+    );
+
+    // Restore the lean member API used by the rendering-only tests above.
+    useApiMock.mockReturnValue({
+      searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+      getMemberNamespaces: jest.fn().mockResolvedValue([]),
+    });
   });
 });

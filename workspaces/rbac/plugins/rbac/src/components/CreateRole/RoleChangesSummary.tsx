@@ -193,9 +193,9 @@ export const RoleChangesSummary = ({
               {group.title}
             </Typography>
             <List dense disablePadding>
-              {group.items.map(item => (
+              {group.items.map((item, index) => (
                 <ListItem
-                  key={`${item.changeType}-${item.text}`}
+                  key={`${item.changeType}-${item.text}-${index}`}
                   disableGutters
                   sx={{ gap: 1, alignItems: 'baseline' }}
                 >

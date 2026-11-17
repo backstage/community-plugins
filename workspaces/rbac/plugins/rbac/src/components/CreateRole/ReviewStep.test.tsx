@@ -142,4 +142,50 @@ describe('ReviewStep', () => {
     const groupItem = screen.getByText('Group 1 (Group)').closest('li');
     expect(groupItem).toHaveTextContent('Added');
   });
+
+  it('lists added, removed and changed conditional policies when editing a role', () => {
+    const conditionalRow = (id: number | undefined, label: string) => ({
+      id,
+      plugin: 'catalog',
+      permission: 'catalog.entity.delete',
+      resourceType: 'catalog-entity',
+      isResourced: true,
+      policies: [{ policy: 'Delete', effect: 'allow' }],
+      conditions: {
+        condition: {
+          rule: 'HAS_LABEL',
+          resourceType: 'catalog-entity',
+          params: { label },
+        },
+      },
+    });
+    const initialValues = {
+      ...mockValues,
+      permissionPoliciesRows: [
+        conditionalRow(1, 'keep'),
+        conditionalRow(2, 'remove-me'),
+      ],
+    };
+    const values = {
+      ...mockValues,
+      permissionPoliciesRows: [
+        conditionalRow(1, 'edited'),
+        conditionalRow(undefined, 'brand-new'),
+      ],
+    };
+
+    render(
+      <ReviewStep values={values} initialValues={initialValues} isEditing />,
+    );
+
+    expect(screen.getByText('Conditional access policies')).toBeInTheDocument();
+    // The new condition, the removed one and the edited one all render with
+    // the same "plugin: permission (actions)" format.
+    expect(
+      screen.getAllByText('catalog: catalog.entity.delete (delete)'),
+    ).toHaveLength(3);
+    expect(screen.getByText('Added')).toBeInTheDocument();
+    expect(screen.getByText('Removed')).toBeInTheDocument();
+    expect(screen.getByText('Changed')).toBeInTheDocument();
+  });
 });
