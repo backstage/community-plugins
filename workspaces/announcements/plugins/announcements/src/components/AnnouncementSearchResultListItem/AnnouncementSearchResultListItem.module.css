@@ -1,0 +1,14 @@
+@layer components {
+  .itemText {
+    word-break: break-all;
+  }
+
+  .createdAt {
+    margin-top: var(--bui-space-1);
+    margin-bottom: var(--bui-space-3);
+  }
+
+  .excerpt {
+    line-height: 1.55;
+  }
+}

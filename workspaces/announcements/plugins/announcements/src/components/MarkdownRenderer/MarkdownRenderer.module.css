@@ -1,0 +1,50 @@
+/* Custom styles for the MDEditor to match the Backstage UI theme.
+   Not in a layer: MDEditor's own CSS is unlayered and would win otherwise. */
+.mdEditor {
+  background-color: transparent;
+  color: var(--bui-fg-primary);
+  font-family: var(--bui-font-regular);
+}
+
+.mdEditor a {
+  color: var(--bui-accent-bg);
+}
+
+.mdEditor code {
+  background-color: var(--bui-bg-app);
+  color: var(--bui-fg-primary);
+  border-radius: var(--bui-radius-2);
+}
+
+.mdEditor pre {
+  background-color: var(--bui-bg-app);
+  padding: var(--bui-space-2);
+  border-radius: var(--bui-radius-2);
+}
+
+.mdEditor blockquote {
+  padding-left: var(--bui-space-2);
+  color: var(--bui-fg-secondary);
+}
+
+.mdEditor table thead th {
+  color: var(--bui-fg-primary);
+  background-color: var(--bui-bg-neutral-1);
+}
+
+.mdEditor table th,
+.mdEditor table td {
+  border: 0;
+}
+
+.mdEditor table tbody tr:nth-of-type(odd) {
+  background-color: var(--bui-bg-neutral-2);
+}
+
+.mdEditor table tbody tr:nth-of-type(even) {
+  background-color: var(--bui-bg-neutral-1);
+}
+
+.mdEditor table tbody td {
+  border-top: 1px solid var(--bui-border-1);
+}

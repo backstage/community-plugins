@@ -21,7 +21,6 @@ import {
   NewAnnouncementBanner,
 } from '../src/plugin';
 
-import { Content, Header, Page } from '@backstage/core-components';
 import { createApiFactory, createPlugin } from '@backstage/core-plugin-api';
 import {
   CatalogApi,
@@ -29,7 +28,7 @@ import {
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
 import { signalsPlugin } from '@backstage/plugin-signals';
-import { Grid, Typography } from '@material-ui/core';
+import { Container, Flex, Header, Text } from '@backstage/ui';
 
 const mockCatalogApi = {
   getEntityByRef: async (entityRef: string) => {
@@ -75,22 +74,26 @@ createDevApp()
   })
   .addPage({
     element: (
-      <Page themeId="home">
+      <>
         <Header title="Announcement components" />
 
-        <Content>
-          <Grid container spacing={8} direction="column">
-            <Grid item md={12}>
-              <Typography variant="h4">Banner</Typography>
+        <Container>
+          <Flex direction="column" gap="8">
+            <Flex direction="column">
+              <Text as="h2" variant="title-small">
+                Banner
+              </Text>
               <NewAnnouncementBanner max={2} />
-            </Grid>
-            <Grid item md={12}>
-              <Typography variant="h4">Homepage component</Typography>
+            </Flex>
+            <Flex direction="column">
+              <Text as="h2" variant="title-small">
+                Homepage component
+              </Text>
               <AnnouncementsCard max={2} />
-            </Grid>
-          </Grid>
-        </Content>
-      </Page>
+            </Flex>
+          </Flex>
+        </Container>
+      </>
     ),
     title: 'Components',
     path: '/announcements/card',
