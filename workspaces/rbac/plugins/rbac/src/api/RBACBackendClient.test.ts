@@ -178,6 +178,27 @@ const handlers = [
     }
     return res(ctx.status(404));
   }),
+  rest.get(`${LOCAL_ADDR}/api/catalog/entity-facets`, (req, res, ctx) => {
+    const authorizationHeader = req.headers.get('Authorization');
+    lastRequest = {
+      url: req.url.toString(),
+      authorizationHeader: authorizationHeader,
+    };
+    if (authorizationHeader === 'Bearer test-token') {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          facets: {
+            'metadata.namespace': [
+              { value: 'default', count: 10 },
+              { value: 'guests', count: 2 },
+            ],
+          },
+        }),
+      );
+    }
+    return res(ctx.status(404));
+  }),
   rest.get(`${LOCAL_ADDR}/api/permission/plugins/policies`, (req, res, ctx) => {
     const authorizationHeader = req.headers.get('Authorization');
     lastRequest = {
@@ -592,10 +613,15 @@ describe('RBACBackendClient', () => {
 
   describe('searchMembers', () => {
     it('should search with fullTextFilterTerm when search term is provided', async () => {
-      const response = await rbacApi.searchMembers('john');
+      const response = await rbacApi.searchMembers({ searchTerm: 'john' });
 
-      expect(Array.isArray(response)).toBe(true);
-      expect((response as any[]).length).toBe(1);
+      expect(response).toEqual(
+        expect.objectContaining({
+          items: expect.any(Array),
+          totalItems: 1,
+        }),
+      );
+      expect((response as { items: unknown[] }).items).toHaveLength(1);
       expect(lastRequest.url).toContain('/api/catalog/entities/by-query');
       expect(lastRequest.url).toContain('fullTextFilterTerm=john');
       expect(lastRequest.url).toContain('filter=kind%3Duser');
@@ -604,12 +630,59 @@ describe('RBACBackendClient', () => {
     });
 
     it('should fetch without fullTextFilterTerm when search term is empty', async () => {
-      const response = await rbacApi.searchMembers('');
+      const response = await rbacApi.searchMembers({});
 
-      expect(Array.isArray(response)).toBe(true);
+      expect(response).toEqual(
+        expect.objectContaining({
+          items: expect.any(Array),
+          totalItems: 1,
+        }),
+      );
       expect(lastRequest.url).toContain('/api/catalog/entities/by-query');
       expect(lastRequest.url).not.toContain('fullTextFilterTerm');
       expect(lastRequest.url).not.toContain('fullTextFilterFields');
+    });
+
+    it('should AND kind and namespace within a single filter set', async () => {
+      await rbacApi.searchMembers({
+        kind: 'user',
+        namespace: 'default',
+        limit: 10,
+        offset: 20,
+      });
+
+      expect(lastRequest.url).toContain(
+        'filter=kind%3Duser%2Cmetadata.namespace%3Ddefault',
+      );
+      expect(lastRequest.url).not.toContain('filter=kind%3Dgroup');
+      expect(lastRequest.url).toContain('limit=10');
+      expect(lastRequest.url).toContain('offset=20');
+      expect(lastRequest.url).toContain('orderField=metadata.name%2Casc');
+    });
+
+    it('should pass catalog orderField for type and namespace sorts', async () => {
+      await rbacApi.searchMembers({
+        orderBy: 'type',
+        orderDirection: 'desc',
+      });
+      expect(lastRequest.url).toContain('orderField=kind%2Cdesc');
+
+      await rbacApi.searchMembers({
+        orderBy: 'namespace',
+        orderDirection: 'asc',
+      });
+      expect(lastRequest.url).toContain('orderField=metadata.namespace%2Casc');
+    });
+
+    it('should OR user and group filter sets when kind is omitted with namespace', async () => {
+      await rbacApi.searchMembers({ namespace: 'default' });
+
+      expect(lastRequest.url).toContain(
+        'filter=kind%3Duser%2Cmetadata.namespace%3Ddefault',
+      );
+      expect(lastRequest.url).toContain(
+        'filter=kind%3Dgroup%2Cmetadata.namespace%3Ddefault',
+      );
     });
 
     it('should handle unauthorized response', async () => {
@@ -622,7 +695,36 @@ describe('RBACBackendClient', () => {
         ),
       );
 
-      await expect(rbacApi.searchMembers('test')).resolves.toEqual(
+      await expect(
+        rbacApi.searchMembers({ searchTerm: 'test' }),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          status: 404,
+        }),
+      );
+    });
+  });
+
+  describe('getMemberNamespaces', () => {
+    it('should return sorted namespace facet values', async () => {
+      const response = await rbacApi.getMemberNamespaces();
+
+      expect(response).toEqual(['default', 'guests']);
+      expect(lastRequest.url).toContain('/api/catalog/entity-facets');
+      expect(lastRequest.url).toContain('facet=metadata.namespace');
+    });
+
+    it('should handle unauthorized response', async () => {
+      server.use(
+        rest.get(
+          `${LOCAL_ADDR}/api/catalog/entity-facets`,
+          (_req, res, ctx) => {
+            return res(ctx.status(404));
+          },
+        ),
+      );
+
+      await expect(rbacApi.getMemberNamespaces()).resolves.toEqual(
         expect.objectContaining({
           status: 404,
         }),

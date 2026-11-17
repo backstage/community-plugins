@@ -46,10 +46,11 @@ describe('CopilotClientV2', () => {
       from: '2026-05-01',
       to: '2026-05-21',
       team: 'platform',
+      costCenter: 'cc-1',
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost/api/copilot/v2/metrics/daily?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21&team=platform',
+      'http://localhost/api/copilot/v2/metrics/daily?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21&team=platform&costCenter=cc-1',
     );
     expect(result).toEqual(payload);
   });
@@ -86,6 +87,28 @@ describe('CopilotClientV2', () => {
     expect(mockFetch).toHaveBeenCalledWith(
       'http://localhost/api/copilot/v2/teams?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21',
     );
+  });
+
+  it('fetchCostCenters builds the scoped URL and returns cost centers', async () => {
+    const payload = {
+      costCenters: [{ id: 'cc-1', name: 'Platform' }],
+      hasUsersWithoutCostCenter: true,
+    };
+    mockFetch.mockResolvedValueOnce(
+      new Response(JSON.stringify(payload), { status: 200 }),
+    );
+
+    const result = await client.fetchCostCenters({
+      type: 'enterprise',
+      entityId: 'ent-1',
+      from: '2026-05-01',
+      to: '2026-05-21',
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://localhost/api/copilot/v2/cost-centers?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21',
+    );
+    expect(result).toEqual(payload);
   });
 
   it('getPeriodRange returns null on 404 and throws on other errors', async () => {
@@ -145,6 +168,33 @@ describe('CopilotClientV2', () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       'http://localhost/api/copilot/v2/dashboard?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21&team=platform',
+    );
+  });
+
+  it('getNoCostCenterDashboardData uses its explicit dashboard route', async () => {
+    mockFetch.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          daily: [],
+          byFeature: [],
+          byLanguage: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          prMetrics: [],
+        }),
+        { status: 200 },
+      ),
+    );
+
+    await client.getNoCostCenterDashboardData({
+      type: 'enterprise',
+      entityId: 'ent-1',
+      from: '2026-05-01',
+      to: '2026-05-21',
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://localhost/api/copilot/v2/no-cost-center/dashboard?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21',
     );
   });
 });

@@ -3,7 +3,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import express, { Router } from 'express';
-import { Issuer, generators } from 'openid-client';
+import { BaseClient, Issuer, generators } from 'openid-client';
 import { isTokenExpired } from './utils';
 import { DataBaseEntityApplicationStorage } from './database/storage';
 import dotenv from 'dotenv';
@@ -45,13 +45,29 @@ export const mtaPlugin = createBackendPlugin({
         const clientID = config.getString('mta.providerAuth.clientID');
         const secret = config.getString('mta.providerAuth.secret');
         const baseURLAuth = `${baseUrl}/auth/realms/${realm}`;
-        const mtaAuthIssuer = await Issuer.discover(baseURLAuth);
 
-        const authClient = new mtaAuthIssuer.Client({
-          client_id: clientID,
-          client_secret: secret,
-          response_types: ['code'],
-        });
+        // Discover lazily so an unreachable MTA does not fail backend startup.
+        // A failed discovery is not cached, so the next request retries it.
+        let authClientPromise: Promise<BaseClient> | undefined;
+        const getAuthClient = (): Promise<BaseClient> => {
+          if (!authClientPromise) {
+            const pending = Issuer.discover(baseURLAuth).then(
+              issuer =>
+                new issuer.Client({
+                  client_id: clientID,
+                  client_secret: secret,
+                  response_types: ['code'],
+                }),
+            );
+            authClientPromise = pending;
+            pending.catch(() => {
+              if (authClientPromise === pending) {
+                authClientPromise = undefined;
+              }
+            });
+          }
+          return authClientPromise;
+        };
 
         dotenv.config();
 
@@ -103,6 +119,7 @@ export const mtaPlugin = createBackendPlugin({
                 if (isTokenExpired(refreshToken)) {
                   logger.warn(`Refresh token expired for user: ${userId}`);
                 } else {
+                  const authClient = await getAuthClient();
                   const tokenSet = await authClient.refresh(
                     String(refreshToken),
                   );
@@ -132,6 +149,7 @@ export const mtaPlugin = createBackendPlugin({
             }
 
             if (!accessToken) {
+              const authClient = await getAuthClient();
               const authorizationURL = authClient.authorizationUrl({
                 redirect_uri: `${backstageBaseURL}/api/mta/cb/${encodeURIComponent(userId)}`,
                 code_challenge,
@@ -164,6 +182,7 @@ export const mtaPlugin = createBackendPlugin({
 
             const encodedUser = request.params.username;
             const user = decodeURIComponent(encodedUser);
+            const authClient = await getAuthClient();
             const params = authClient.callbackParams(request);
             logger.info(
               `OAuth callback params received: ${JSON.stringify(params)}`,

@@ -270,7 +270,7 @@ export function MyMetricsContent() {
             <TabList>
               <Tab id="copilot-usage">Copilot Usage</Tab>
               <Tab id="code-generation">Code Generation</Tab>
-              <Tab id="customizations">Customizations</Tab>
+              <Tab id="customizations">Agent Harness</Tab>
               <Tab id="consumption">Consumption</Tab>
             </TabList>
 
@@ -368,6 +368,8 @@ export function MyMetricsContent() {
                 <CustomizationMetrics
                   metrics={data.customizationMetrics}
                   summaries={data.customizationSummaries}
+                  from={from}
+                  to={to}
                 />
               </Flex>
             </TabPanel>

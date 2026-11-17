@@ -20,32 +20,53 @@ import {
   V2CustomizationMetricRow,
   V2CustomizationSummaryRow,
 } from '@backstage-community/plugin-copilot-common';
+import {
+  CustomizationUsageByDayChart,
+  CustomizationUsageDonutChart,
+} from './charts';
 
 type Props = {
   metrics: V2CustomizationMetricRow[];
   summaries: V2CustomizationSummaryRow[];
+  from: string;
+  to: string;
 };
 
 function displayCategory(category: string): string {
   return category
     .split('_')
-    .map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .map(word =>
+      word === 'mcp'
+        ? 'MCP'
+        : `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
+    )
     .join(' ');
+}
+
+function pluralizeCategory(category: string): string {
+  const displayName = displayCategory(category);
+  return category.endsWith('s') ? displayName : `${displayName}s`;
 }
 
 /**
  * Renders every customization category returned by the backend. Categories
  * are report data, so GitHub can add another one without a frontend release.
  */
-export function CustomizationMetrics({ metrics, summaries }: Props) {
-  const categories = new Map<string, Map<string, number>>();
+export function CustomizationMetrics({
+  metrics,
+  summaries,
+  from,
+  to,
+}: Readonly<Props>) {
+  const categories = new Map<string, V2CustomizationMetricRow[]>();
   for (const metric of metrics) {
-    const items = categories.get(metric.category) ?? new Map<string, number>();
-    items.set(
-      metric.item_name,
-      (items.get(metric.item_name) ?? 0) + metric.interaction_count,
-    );
-    categories.set(metric.category, items);
+    if (metric.interaction_count <= 0) {
+      continue;
+    }
+
+    const categoryMetrics = categories.get(metric.category) ?? [];
+    categoryMetrics.push(metric);
+    categories.set(metric.category, categoryMetrics);
   }
 
   if (!categories.size) {
@@ -68,16 +89,15 @@ export function CustomizationMetrics({ metrics, summaries }: Props) {
     <Grid.Root columns="12" gap="4">
       {[...categories.entries()]
         .sort(([left], [right]) => left.localeCompare(right))
-        .map(([category, items]) => {
+        .map(([category, categoryMetrics]) => {
           const distinctCount = latestDistinctCounts.get(category);
-          const rankedItems = [...items.entries()].sort(
-            ([leftName, leftCount], [rightName, rightCount]) =>
-              rightCount - leftCount || leftName.localeCompare(rightName),
-          );
 
           return (
-            <Grid.Item key={category} colSpan={{ initial: '12', md: '6' }}>
-              <InfoCard title={displayCategory(category)} variant="fullHeight">
+            <Grid.Item key={category} colSpan="12">
+              <InfoCard
+                title={pluralizeCategory(category)}
+                variant="fullHeight"
+              >
                 <Flex direction="column" gap="2">
                   {distinctCount && (
                     <Text variant="body-small" color="secondary">
@@ -85,15 +105,18 @@ export function CustomizationMetrics({ metrics, summaries }: Props) {
                       {distinctCount.day}
                     </Text>
                   )}
-                  <ol style={{ margin: 0, paddingLeft: '24px' }}>
-                    {rankedItems.map(([itemName, interactionCount]) => (
-                      <li key={itemName}>
-                        <Text variant="body-small">
-                          {itemName}: {interactionCount.toLocaleString()}
-                        </Text>
-                      </li>
-                    ))}
-                  </ol>
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <CustomizationUsageDonutChart data={categoryMetrics} />
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <CustomizationUsageByDayChart
+                        data={categoryMetrics}
+                        from={from}
+                        to={to}
+                      />
+                    </Grid.Item>
+                  </Grid.Root>
                 </Flex>
               </InfoCard>
             </Grid.Item>

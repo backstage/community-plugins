@@ -35,6 +35,49 @@ import {
 } from '../types';
 
 /**
+ * Catalog field to sort members by in {@link SearchMembersOptions}.
+ *
+ * @public
+ */
+export type SearchMembersOrderBy = 'name' | 'type' | 'namespace';
+
+/**
+ * Sort direction for {@link SearchMembersOptions}.
+ *
+ * @public
+ */
+export type SearchMembersOrderDirection = 'asc' | 'desc';
+
+/**
+ * Options for searching catalog users and groups.
+ *
+ * @public
+ */
+export type SearchMembersOptions = {
+  searchTerm?: string;
+  limit?: number;
+  offset?: number;
+  /** When set, only entities of this kind are returned. When omitted, both users and groups are returned. */
+  kind?: 'user' | 'group';
+  /** When set, only entities in this namespace are returned. */
+  namespace?: string;
+  /** Field to order by. Defaults to `name`. */
+  orderBy?: SearchMembersOrderBy;
+  /** Sort direction. Defaults to `asc`. */
+  orderDirection?: SearchMembersOrderDirection;
+};
+
+/**
+ * Paginated result from searching catalog users and groups.
+ *
+ * @public
+ */
+export type SearchMembersResult = {
+  items: MemberEntity[];
+  totalItems: number;
+};
+
+/**
  * @public
  */
 export type RBACAPI = {
@@ -53,7 +96,10 @@ export type RBACAPI = {
   getMembersByRefs: (
     entityRefs: string[],
   ) => Promise<(MemberEntity | undefined)[] | Response>;
-  searchMembers: (searchTerm: string) => Promise<MemberEntity[] | Response>;
+  searchMembers: (
+    options?: SearchMembersOptions,
+  ) => Promise<SearchMembersResult | Response>;
+  getMemberNamespaces: () => Promise<string[] | Response>;
   listPermissions: () => Promise<PluginPermissionMetaData[] | Response>;
   createRole: (role: Role) => Promise<RoleError | Response>;
   updateRole: (oldRole: Role, newRole: Role) => Promise<RoleError | Response>;
@@ -266,14 +312,41 @@ export class RBACBackendClient implements RBACAPI {
     return results;
   }
 
-  async searchMembers(searchTerm: string) {
+  async searchMembers(options: SearchMembersOptions = {}) {
+    const {
+      searchTerm = '',
+      limit = 100,
+      offset = 0,
+      kind,
+      namespace,
+      orderBy = 'name',
+      orderDirection = 'asc',
+    } = options;
     const { token: idToken } = await this.identityApi.getCredentials();
     const backendUrl = this.configApi.getString('backend.baseUrl');
     const params = new URLSearchParams();
-    params.append('filter', 'kind=user');
-    params.append('filter', 'kind=group');
-    params.append('limit', '100');
-    params.append('orderField', 'metadata.name,asc');
+    // Each `filter` query param is an OR set; conditions within a set are AND.
+    // e.g. kind=group,metadata.namespace=default → groups in that namespace only.
+    const kinds = kind ? [kind] : ['user', 'group'];
+    for (const entityKind of kinds) {
+      params.append(
+        'filter',
+        namespace
+          ? `kind=${entityKind},metadata.namespace=${namespace}`
+          : `kind=${entityKind}`,
+      );
+    }
+    params.append('limit', String(limit));
+    params.append('offset', String(offset));
+    const orderFieldByColumn: Record<SearchMembersOrderBy, string> = {
+      name: 'metadata.name',
+      type: 'kind',
+      namespace: 'metadata.namespace',
+    };
+    params.append(
+      'orderField',
+      `${orderFieldByColumn[orderBy]},${orderDirection}`,
+    );
     if (searchTerm.trim()) {
       params.append('fullTextFilterTerm', searchTerm.trim());
       params.append('fullTextFilterFields', 'metadata.name');
@@ -292,7 +365,37 @@ export class RBACBackendClient implements RBACAPI {
       return jsonResponse;
     }
     const data = await jsonResponse.json();
-    return data.items as MemberEntity[];
+    return {
+      items: (data.items ?? []) as MemberEntity[],
+      totalItems: data.totalItems ?? 0,
+    };
+  }
+
+  async getMemberNamespaces() {
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const backendUrl = this.configApi.getString('backend.baseUrl');
+    const params = new URLSearchParams();
+    params.append('facet', 'metadata.namespace');
+    params.append('filter', 'kind=user');
+    params.append('filter', 'kind=group');
+    const jsonResponse = await fetch(
+      `${backendUrl}/api/catalog/entity-facets?${params.toString()}`,
+      {
+        headers: {
+          ...(idToken && { Authorization: `Bearer ${idToken}` }),
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (jsonResponse.status !== 200 && jsonResponse.status !== 204) {
+      return jsonResponse;
+    }
+    const data = await jsonResponse.json();
+    const facetValues = data?.facets?.['metadata.namespace'] ?? [];
+    return (facetValues as { value: string }[])
+      .map(entry => entry.value)
+      .filter(Boolean)
+      .sort();
   }
 
   async listPermissions() {

@@ -1,0 +1,21 @@
+# Example CSV-sourced roles for local RBAC UI development.
+# Source column label: CSV (backend source: csv-file)
+# These roles are immutable in the UI — edit this file and reload/redeploy.
+
+# role:default/admin — catalog admin via CSV
+g, user:default/xyz, role:default/admin
+g, group:default/admins, role:default/admin
+p, role:default/admin, catalog-entity, read, allow
+p, role:default/admin, catalog-entity, update, allow
+p, role:default/admin, catalog.entity.create, create, allow
+p, role:default/admin, catalog-entity, delete, allow
+
+# role:default/viewer — read-only catalog access via CSV
+g, user:default/amelia.park, role:default/viewer
+g, group:default/team-d, role:default/viewer
+p, role:default/viewer, catalog-entity, read, allow
+
+# role:default/scaffolder-user — scaffolder + catalog read via CSV
+g, user:default/guest, role:default/scaffolder-user
+p, role:default/scaffolder-user, catalog-entity, read, allow
+p, role:default/scaffolder-user, scaffolder.template.read, read, allow

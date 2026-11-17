@@ -34,9 +34,32 @@ const rbacTranslationEs = createTranslationMessages({
     'table.title': 'Todos los roles',
     'table.titleWithCount': 'Todos los roles ({{count}})',
     'table.headers.name': 'Nombre',
+    'table.headers.source': 'Origen',
     'table.headers.usersAndGroups': 'Usuarios y grupos',
     'table.headers.accessiblePlugins': 'Complementos accesibles',
     'table.headers.actions': 'Acciones',
+    'table.sources.appConfig': 'Config. de la app',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'Formulario',
+    'table.sources.legacy': 'Legado',
+    'table.sources.tooltips.appConfig':
+      'Definido en permission.rbac.admin en app-config.yaml.',
+    'table.sources.tooltips.csv':
+      'Definido en el archivo de políticas CSV referenciado por permission.rbac.policies-csv-file en app-config.yaml.',
+    'table.sources.tooltips.form':
+      'Creado mediante el formulario de RBAC en la IU. También se puede gestionar a través de la API REST.',
+    'table.sources.tooltips.legacy':
+      'Creado antes de que se registraran los orígenes de roles. Se puede gestionar a través de la API REST o el archivo de políticas CSV.',
+    'table.sources.tooltips.generic':
+      'Este rol lo gestiona su origen y no se puede cambiar en la IU.',
+    'table.sources.actionTooltips.appConfig':
+      'Este rol se gestiona mediante la configuración de la aplicación (permission.rbac.admin en app-config.yaml). Actualice la configuración y vuelva a implementar para realizar cambios.',
+    'table.sources.actionTooltips.csv':
+      'Este rol se gestiona mediante un archivo de políticas CSV. Actualice el archivo CSV y vuelva a implementar para realizar cambios.',
+    'table.sources.actionTooltips.legacy':
+      'Este es un rol legado y no se puede cambiar en la IU. Actualícelo a través de la API REST o el archivo de políticas CSV.',
+    'table.sources.actionTooltips.generic':
+      'Este rol lo gestiona su origen y no se puede cambiar en la IU.',
     'table.defaultRoleUsersAndGroups': 'Todos los usuarios y todos los grupos',
     'table.emptyContent': 'No se encontraron registros',
     'toolbar.createButton': 'Crear',
@@ -168,6 +191,16 @@ const rbacTranslationEs = createTranslationMessages({
     'common.unauthorizedToEdit': 'No tiene autorización para modificar',
     'common.noRecordsFound': 'No se encontraron registros',
     'common.selectUsersAndGroups': 'Seleccionar usuarios y grupos',
+    'common.addMembersAndGroups': 'Agregar miembros y grupos',
+    'common.searchMembers': 'Buscar',
+    'common.searchByName': 'Buscar por nombre',
+    'common.kind': 'Tipo',
+    'common.kindAll': 'Todos',
+    'common.namespace': 'Espacio de nombres',
+    'common.namespaceAll': 'Todos',
+    'common.allResults': 'Todos ({{count}})',
+    'common.selectedCount': '{{count}} seleccionados',
+    'common.add': 'Agregar',
     'common.clearSearch': 'borrar búsqueda',
     'common.closeDrawer': 'Cerrar el panel',
     'common.remove': 'Eliminar',
@@ -217,7 +250,10 @@ const rbacTranslationEs = createTranslationMessages({
     'common.childGroupsCount': '{{count}} grupos secundarios',
     'common.searchAndSelectUsersGroups':
       'Busque y seleccione los usuarios y grupos que desea agregar. Los usuarios y grupos seleccionados aparecerán en la tabla a continuación.',
+    'common.searchAndFilterCatalog':
+      'Busque y filtre el catálogo para agregar usuarios y grupos. Esto reemplaza un menú desplegable de 100 elementos para listas grandes de miembros.',
     'common.noUsersAndGroupsFound': 'No se encontraron usuarios ni grupos.',
+    'common.noMembersMatchSearch': 'Ningún miembro coincide con su búsqueda.',
     'common.errorFetchingUserGroups':
       'Error al extraer usuarios y grupos: {{error}}',
     'common.nameRequired': 'El nombre es obligatorio',

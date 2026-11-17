@@ -890,17 +890,18 @@ export interface V2DailyTotal {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   daily_active_users: number;
   /**
    * Weekly rolling window active users count.
-   * Only available for organization/enterprise-level aggregates.
-   * Undefined for team-level aggregates (which use daily user data only).
+   * Organization/enterprise aggregates use GitHub's reported value; team and
+   * cost-center scopes derive it from per-user activity and daily membership.
    */
   weekly_active_users?: number;
   /**
    * Monthly rolling window active users count.
-   * Only available for organization/enterprise-level aggregates.
-   * Undefined for team-level aggregates (which use daily user data only).
+   * Organization/enterprise aggregates use GitHub's reported value; team and
+   * cost-center scopes derive it from per-user activity and daily membership.
    */
   monthly_active_users?: number;
   daily_active_cli_users?: number;
@@ -935,6 +936,7 @@ export interface V2PrMetricsRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   total_created: number;
   total_merged: number;
   total_reviewed: number;
@@ -958,6 +960,7 @@ export interface V2MetricsByFeatureRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   feature: string;
   code_acceptance_activity_count: number;
   code_generation_activity_count: number;
@@ -975,6 +978,7 @@ export interface V2MetricsByIdeRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   ide: string;
   code_acceptance_activity_count: number;
   code_generation_activity_count: number;
@@ -992,6 +996,7 @@ export interface V2MetricsByLanguageFeatureRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   language: string;
   feature: string;
   code_acceptance_activity_count: number;
@@ -1009,6 +1014,7 @@ export interface V2MetricsByModelFeatureRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   model_id: string;
   feature: string;
   user_initiated_interaction_count: number;
@@ -1027,6 +1033,7 @@ export interface V2MetricsByLanguageModelRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   language: string;
   model_id: string;
   /** @deprecated use code_generation_activity_count */
@@ -1046,6 +1053,7 @@ export interface V2MetricsByCliRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   prompt_count: number;
   request_count: number;
   session_count: number;
@@ -1067,6 +1075,7 @@ export interface V2MetricsByVscodeAgentRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   session_count: number;
   total_user_messages: number;
 }
@@ -1311,6 +1320,39 @@ export interface V2UserTeamRow {
   user_login: string;
   team_id: number;
   team_slug: string;
+}
+
+/** @public */
+export interface V2CostCenterRow {
+  id?: number;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  cost_center_id: string;
+  name: string;
+  updated_at?: string | Date;
+}
+
+/** @public */
+export interface V2CostCenterOption {
+  id: string;
+  name: string | null;
+}
+
+/** @public */
+export interface V2CostCenterListResponse {
+  costCenters: V2CostCenterOption[];
+  hasUsersWithoutCostCenter: boolean;
+}
+
+/** @public */
+export interface V2UserCostCenterRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  cost_center_id: string;
 }
 
 /** @public */

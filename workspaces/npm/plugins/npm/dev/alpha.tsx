@@ -14,14 +14,38 @@
  * limitations under the License.
  */
 import { createDevApp } from '@backstage/frontend-dev-utils';
+
+import { mockApis } from '@backstage/frontend-test-utils';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 
 // eslint-disable-next-line @backstage/no-relative-monorepo-imports
 import { allExamples } from '../../../examples';
 
 import npmPlugin, { npmTranslationsModule } from '../src/alpha';
+
+// Only needed so that the app doesn't call `/api/permission/authorize` call
+const appOverrides = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => mockApis.permission(),
+        }),
+    }),
+  ],
+});
 
 const catalogPluginOverrides = catalogPlugin.withOverrides({
   extensions: [
@@ -37,5 +61,11 @@ const catalogPluginOverrides = catalogPlugin.withOverrides({
 });
 
 createDevApp({
-  features: [catalogPluginOverrides, npmPlugin, npmTranslationsModule],
+  features: [
+    appOverrides,
+    catalogPluginOverrides,
+    userSettingsPlugin,
+    npmPlugin,
+    npmTranslationsModule,
+  ],
 });

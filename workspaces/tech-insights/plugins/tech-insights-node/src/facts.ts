@@ -98,6 +98,11 @@ export type FactRetrieverContext<TExtension = {}> = {
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
+  /**
+   * Aborts when the retriever run times out or the backend shuts down.
+   * When it fires, the retriever should stop and return as soon as it can.
+   */
+  signal?: AbortSignal;
 } & TExtension;
 
 /**

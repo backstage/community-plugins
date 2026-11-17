@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  BackstageCredentials,
-  BackstageUserPrincipal,
-} from '@backstage/backend-plugin-api';
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 
 import { NpmRegistryPackageInfo } from '@backstage-community/plugin-npm-common';
 
 export interface NpmRegistryService {
+  /**
+   * Resolves the catalog entity for the given ref and loads the
+   * npm package info from the configured registry.
+   */
   getPackageInfo(
     entityRef: string,
     options: {
-      credentials: BackstageCredentials<BackstageUserPrincipal>;
+      credentials: BackstageCredentials;
     },
   ): Promise<NpmRegistryPackageInfo>;
+
+  /**
+   * Loads the npm package info for an already resolved catalog entity
+   * from the configured registry.
+   */
+  getPackageInfoForEntity(entity: Entity): Promise<NpmRegistryPackageInfo>;
 }
