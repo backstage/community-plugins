@@ -308,6 +308,8 @@ describe('TaskManagementV2', () => {
         'copilot.enterprise': 'ent-1',
         'copilot.backfillDelayMs': 5,
         'copilot.ingestOrganizationTeamReports': true,
+        'copilot.ingestCostCenters': true,
+        'copilot.organization': 'configured-org',
       }),
       logger,
     });
@@ -356,7 +358,10 @@ describe('TaskManagementV2', () => {
         'Org-1',
         expect.any(Date),
         expect.any(Date),
+        false,
       );
+      expect(api.fetchCostCenterMemberships).not.toHaveBeenCalled();
+      expect(db.getDaysMissingCostCenterAggregation).not.toHaveBeenCalled();
       expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
         'Org-1',
         expect.any(String),
@@ -599,6 +604,51 @@ describe('TaskManagementV2', () => {
         nextAttemptAt: expect.any(Date),
       }),
     );
+  });
+
+  it('marks a discovered organization inaccessible when a manual backfill fails access verification', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([day]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.verifyEnterpriseOrganizationAccess.mockRejectedValue(
+      new InaccessibleEnterpriseOrganizationError(),
+    );
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await expect(
+      task.runOrganizationBackfill('org-a', day, day),
+    ).rejects.toThrow('Organization is no longer available.');
+
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'inaccessible',
+        reportsReady: false,
+        nextAttemptAt: expect.any(Date),
+      }),
+    );
+    expect(api.fetchEnterpriseOrganizationReportLinks).not.toHaveBeenCalled();
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
   });
 
   it('limits each organization run to three backlog days plus the recent refresh window', async () => {
