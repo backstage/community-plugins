@@ -108,7 +108,6 @@ describe('TaskManagementV2', () => {
     expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
       'ent-1',
       'org-1',
-      expect.stringMatching(/^org-legacy-/),
       expect.any(Date),
       expect.any(Date),
       true,
@@ -156,7 +155,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'org-1',
       owner: 'worker',
-      fencingToken: 1,
     };
     const day = DateTime.utc().minus({ days: 1 }).toISODate()!;
     db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
@@ -222,7 +220,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'Org-1',
       owner: 'worker',
-      fencingToken: 1,
     };
     db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
       'Org-1',
@@ -266,7 +263,6 @@ describe('TaskManagementV2', () => {
     expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
       'ent-1',
       'Org-1',
-      expect.stringMatching(/^org-backfill-legacy-/),
       expect.any(Date),
       expect.any(Date),
       true,
@@ -303,7 +299,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'Org-1',
       owner: 'worker',
-      fencingToken: 1,
     };
     db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
     const task = TaskManagementV2.create({
@@ -359,7 +354,6 @@ describe('TaskManagementV2', () => {
       expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
         'ent-1',
         'Org-1',
-        expect.any(String),
         expect.any(Date),
         expect.any(Date),
       );
@@ -386,7 +380,6 @@ describe('TaskManagementV2', () => {
         enterpriseId: 'ent-1',
         organization: 'Org-1',
         owner: 'worker',
-        fencingToken: 1,
       };
       const reportWindowStart = DateTime.utc()
         .startOf('day')
@@ -541,7 +534,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'Org-A',
       owner: 'worker',
-      fencingToken: 1,
     };
     db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
       'Org-A',
@@ -635,7 +627,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'org-a',
       owner: 'worker',
-      fencingToken: 1,
     });
     api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a']);
     api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
@@ -688,7 +679,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'org-a',
       owner: 'worker',
-      fencingToken: 1,
     };
     db.getMissingDays.mockResolvedValue([]);
     db.getIngestionLog.mockResolvedValue([
@@ -782,7 +772,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'org-a',
       owner: 'worker',
-      fencingToken: 1,
     };
     db.getMissingDays.mockResolvedValue([]);
     db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a', 'org-b']);
@@ -1288,7 +1277,6 @@ describe('TaskManagementV2', () => {
       enterpriseId: 'ent-1',
       organization: 'org-1',
       owner: 'worker',
-      fencingToken: 1,
     };
     const days = ['2026-05-10', '2026-05-11'];
     db.getMissingDays.mockResolvedValue([]);

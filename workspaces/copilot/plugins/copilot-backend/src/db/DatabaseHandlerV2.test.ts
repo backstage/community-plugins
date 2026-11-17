@@ -245,7 +245,6 @@ describe('DatabaseHandlerV2', () => {
       const firstLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-A',
-        'worker-one',
         now,
         nextAttemptAt,
       );
@@ -254,7 +253,6 @@ describe('DatabaseHandlerV2', () => {
         handler.claimEnterpriseOrganizationLease(
           'ent-1',
           'Org-A',
-          'worker-two',
           now,
           nextAttemptAt,
         ),
@@ -273,19 +271,58 @@ describe('DatabaseHandlerV2', () => {
       });
       await handler.releaseEnterpriseOrganizationLease(firstLease!);
 
+      const secondStartedAt = new Date();
+      const secondExpiresAt = new Date(secondStartedAt.getTime() + 60_000);
       const secondLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-A',
-        'worker-two',
-        new Date(),
-        new Date(Date.now() + 60_000),
+        secondStartedAt,
+        secondExpiresAt,
       );
-      expect(secondLease?.fencingToken).toBeGreaterThan(
-        firstLease!.fencingToken,
-      );
+      expect(secondLease).toBeDefined();
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          firstLease!,
+          secondStartedAt,
+          secondExpiresAt,
+        ),
+      ).resolves.toBe(false);
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
       await expect(
         handler.withOrganizationIngestionLease(firstLease!, async () => {}),
       ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.updateEnterpriseOrganizationState(firstLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: secondStartedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          secondStartedAt,
+          secondExpiresAt,
+          firstLease!,
+        ),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      const currentOrganization = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('lease_owner', 'access_state', 'reports_ready');
+      expect(currentOrganization).toMatchObject({
+        lease_owner: secondLease!.owner,
+        access_state: 'accessible',
+      });
+      expect(Boolean(currentOrganization?.reports_ready)).toBe(true);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          secondLease!,
+          secondStartedAt,
+          new Date(secondExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
       await handler.releaseEnterpriseOrganizationLease(secondLease!);
 
       await handler.insertDailyTotals([
@@ -294,7 +331,6 @@ describe('DatabaseHandlerV2', () => {
       const inaccessibleLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-B',
-        'worker-three',
         new Date(),
         new Date(Date.now() + 60_000),
       );
@@ -323,6 +359,113 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toHaveLength(1);
     });
 
+    it('fences expired leases across directory revocation and reactivation', async () => {
+      const now = new Date();
+      const firstExpiresAt = new Date(now.getTime() + 60_000);
+      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
+
+      const firstLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        firstExpiresAt,
+      );
+      expect(firstLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          firstExpiresAt,
+        ),
+      ).resolves.toBeUndefined();
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          firstLease!,
+          now,
+          firstExpiresAt,
+        ),
+      ).resolves.toBe(true);
+
+      const takeoverAt = new Date(firstExpiresAt.getTime() + 1);
+      const secondExpiresAt = new Date(takeoverAt.getTime() + 60_000);
+      const secondLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        takeoverAt,
+        secondExpiresAt,
+      );
+      expect(secondLease).toBeDefined();
+
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+      await handler.updateEnterpriseOrganizationState(secondLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: takeoverAt,
+      });
+      await expect(
+        handler.updateEnterpriseOrganizationState(firstLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: takeoverAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          secondLease!,
+          takeoverAt,
+          new Date(secondExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+
+      const revokedAt = new Date(takeoverAt.getTime() + 1);
+      await handler.syncEnterpriseOrganizations('ent-1', [], revokedAt);
+      await expect(
+        handler.updateEnterpriseOrganizationState(secondLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: revokedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      const reactivatedAt = new Date(revokedAt.getTime() + 1);
+      await handler.syncEnterpriseOrganizations(
+        'ent-1',
+        ['Org-A'],
+        reactivatedAt,
+      );
+      const thirdExpiresAt = new Date(reactivatedAt.getTime() + 60_000);
+      const thirdLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        reactivatedAt,
+        thirdExpiresAt,
+      );
+      expect(thirdLease).toBeDefined();
+
+      await handler.releaseEnterpriseOrganizationLease(secondLease!);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          thirdLease!,
+          reactivatedAt,
+          new Date(thirdExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+      await expect(
+        handler.updateEnterpriseOrganizationState(secondLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: reactivatedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await handler.updateEnterpriseOrganizationState(thirdLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: reactivatedAt,
+      });
+      await handler.releaseEnterpriseOrganizationLease(thirdLease!);
+    });
+
     it('keeps configured-organization ownership behind the shared lease', async () => {
       const now = new Date('2026-11-17T00:00:00.000Z');
       const leaseExpiresAt = new Date(now.getTime() + 10 * 60_000);
@@ -331,7 +474,6 @@ describe('DatabaseHandlerV2', () => {
       const scheduledLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-A',
-        'scheduled-worker',
         now,
         leaseExpiresAt,
       );
@@ -348,7 +490,6 @@ describe('DatabaseHandlerV2', () => {
         handler.claimEnterpriseOrganizationLease(
           'ent-1',
           'Org-A',
-          'legacy-worker',
           configuredAt,
           leaseExpiresAt,
           true,
@@ -376,7 +517,6 @@ describe('DatabaseHandlerV2', () => {
         handler.claimEnterpriseOrganizationLease(
           'ent-1',
           'Org-A',
-          'scheduled-worker',
           legacyStart,
           leaseExpiresAt,
         ),
@@ -384,7 +524,6 @@ describe('DatabaseHandlerV2', () => {
       const legacyLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-A',
-        'legacy-worker',
         legacyStart,
         leaseExpiresAt,
         true,
@@ -399,7 +538,6 @@ describe('DatabaseHandlerV2', () => {
       const lease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-A',
-        'worker',
         now,
         new Date(now.getTime() + 60_000),
       );

@@ -42,6 +42,7 @@ import {
   V2UserTeamRow,
   MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
+import { randomUUID } from 'node:crypto';
 import { DateTime } from 'luxon';
 import { Knex } from 'knex';
 import { migrationsDir } from './DatabaseHandler';
@@ -124,7 +125,6 @@ export type OrganizationIngestionLease = {
   enterpriseId: string;
   organization: string;
   owner: string;
-  fencingToken: number;
 };
 
 export type EnterpriseOrganizationDirectory = {
@@ -331,10 +331,7 @@ export class DatabaseHandlerV2 {
     });
     if (lease) {
       query
-        .where({
-          lease_owner: lease.owner,
-          fencing_token: lease.fencingToken,
-        })
+        .where({ lease_owner: lease.owner })
         .andWhere('lease_expires_at', '>', now);
     } else {
       query.whereNull('lease_owner');
@@ -499,12 +496,12 @@ export class DatabaseHandlerV2 {
   async claimEnterpriseOrganizationLease(
     enterpriseId: string,
     organization: string,
-    owner: string,
     now: Date,
     leaseExpiresAt: Date,
     ignoreNextAttempt = false,
   ): Promise<OrganizationIngestionLease | undefined> {
     const key = organization.trim().toLowerCase();
+    const owner = randomUUID();
     const query = this.db('copilot_enterprise_organizations').where({
       enterprise_id: enterpriseId,
       organization_key: key,
@@ -526,7 +523,6 @@ export class DatabaseHandlerV2 {
       .update({
         lease_owner: owner,
         lease_expires_at: leaseExpiresAt,
-        fencing_token: this.db.raw('?? + 1', ['fencing_token']),
         last_attempted_at: now,
         updated_at: now,
       });
@@ -541,9 +537,8 @@ export class DatabaseHandlerV2 {
         is_current: true,
         lease_owner: owner,
       })
-      .first('fencing_token');
-    const fencingToken = Number(row?.fencing_token);
-    if (!Number.isSafeInteger(fencingToken) || fencingToken < 1) {
+      .first('lease_owner');
+    if (!row) {
       throw new Error('Organization-team ingestion lease is invalid.');
     }
 
@@ -551,7 +546,6 @@ export class DatabaseHandlerV2 {
       enterpriseId,
       organization: key,
       owner,
-      fencingToken,
     };
   }
 
@@ -566,7 +560,6 @@ export class DatabaseHandlerV2 {
         organization_key: lease.organization,
         is_current: true,
         lease_owner: lease.owner,
-        fencing_token: lease.fencingToken,
       })
       .andWhere('lease_expires_at', '>', now)
       .update({ lease_expires_at: leaseExpiresAt, updated_at: now });
@@ -581,7 +574,6 @@ export class DatabaseHandlerV2 {
         enterprise_id: lease.enterpriseId,
         organization_key: lease.organization,
         lease_owner: lease.owner,
-        fencing_token: lease.fencingToken,
       })
       .update({ lease_owner: null, lease_expires_at: null });
   }
@@ -598,11 +590,10 @@ export class DatabaseHandlerV2 {
           organization_key: lease.organization,
           is_current: true,
           lease_owner: lease.owner,
-          fencing_token: lease.fencingToken,
         })
         .andWhere('lease_expires_at', '>', now)
         .forUpdate()
-        .first('fencing_token');
+        .first('lease_owner');
       if (!row) {
         throw new OrganizationIngestionLeaseLostError();
       }
@@ -642,7 +633,6 @@ export class DatabaseHandlerV2 {
         organization_key: lease.organization,
         is_current: true,
         lease_owner: lease.owner,
-        fencing_token: lease.fencingToken,
       })
       .andWhere('lease_expires_at', '>', state.lastAttemptedAt)
       .update(update);

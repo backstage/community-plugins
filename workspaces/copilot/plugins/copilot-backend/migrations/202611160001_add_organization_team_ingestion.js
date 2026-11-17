@@ -39,7 +39,6 @@ exports.up = async function up(knex) {
     table.timestamp('next_attempt_at').nullable();
     table.string('lease_owner', 64).nullable();
     table.timestamp('lease_expires_at').nullable();
-    table.bigInteger('fencing_token').notNullable().defaultTo(0);
     table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
     table.primary(
       ['enterprise_id', 'organization_key'],

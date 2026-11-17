@@ -15,7 +15,6 @@
  */
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { randomUUID } from 'node:crypto';
 import { DateTime } from 'luxon';
 import type { Knex } from 'knex';
 import {
@@ -385,7 +384,6 @@ export class TaskManagementV2 {
       configuredOrganizationLease = await db.claimEnterpriseOrganizationLease(
         enterprise,
         organization,
-        `org-legacy-${process.pid}-${randomUUID()}`,
         leaseStartedAt.toJSDate(),
         leaseStartedAt
           .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
@@ -660,7 +658,6 @@ export class TaskManagementV2 {
       organizationLease = await db.claimEnterpriseOrganizationLease(
         enterprise,
         canonicalOrganization,
-        `org-backfill-legacy-${process.pid}-${randomUUID()}`,
         startedAt.toJSDate(),
         startedAt.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
         true,
@@ -1442,7 +1439,6 @@ export class TaskManagementV2 {
     const lease = await db.claimEnterpriseOrganizationLease(
       enterprise,
       canonicalOrganization,
-      `org-backfill-${process.pid}-${randomUUID()}`,
       now.toJSDate(),
       now.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
     );
@@ -1618,7 +1614,6 @@ export class TaskManagementV2 {
       const lease = await db.claimEnterpriseOrganizationLease(
         enterprise,
         organization,
-        `org-ingest-${process.pid}-${randomUUID()}`,
         leaseStartedAt.toJSDate(),
         leaseStartedAt
           .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
