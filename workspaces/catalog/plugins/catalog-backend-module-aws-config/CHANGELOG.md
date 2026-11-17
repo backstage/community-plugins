@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-aws-config
 
+## 0.4.1
+
+### Patch Changes
+
+- d5a3c22: Added optional `filters.excludeTags` to exclude AWS Config resources from catalog ingestion by tag key, exact value, or regular expression.
+
 ## 0.4.0
 
 ### Minor Changes
