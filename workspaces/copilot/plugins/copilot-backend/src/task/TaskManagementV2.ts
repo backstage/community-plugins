@@ -469,6 +469,9 @@ export class TaskManagementV2 {
               continue;
             }
             try {
+              if (organizationLease) {
+                await this.renewOrganizationIngestionLease(organizationLease);
+              }
               await this.ingestCostCenterAggregates(
                 day,
                 plan.entity.metricsType,

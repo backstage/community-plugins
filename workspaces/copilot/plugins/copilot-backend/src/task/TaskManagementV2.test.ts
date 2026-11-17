@@ -21,7 +21,10 @@ import {
   V2UserMetricRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
-import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
+import {
+  DatabaseHandlerV2,
+  OrganizationIngestionLeaseLostError,
+} from '../db/DatabaseHandlerV2';
 import {
   GithubClientV2,
   InaccessibleEnterpriseOrganizationError,
@@ -980,6 +983,63 @@ describe('TaskManagementV2', () => {
     const [, , , , aggregates] = db.replaceCostCenterAggregates.mock.calls[0];
     expect(aggregates.dailyTotals).toHaveLength(2);
     expect(logger.warn).not.toHaveBeenCalled();
+  });
+
+  it('stops scheduled cost-center aggregation when organization lease renewal fails', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-1',
+      owner: 'worker',
+      fencingToken: 1,
+    };
+    const days = ['2026-05-10', '2026-05-11'];
+    db.getMissingDays.mockResolvedValue([]);
+    db.getDaysMissingCostCenterAggregation.mockImplementation(
+      async metricsType => (metricsType === 'organization' ? days : []),
+    );
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    db.renewEnterpriseOrganizationLease
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-1',
+        'copilot.ingestCostCenters': true,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+    jest
+      .spyOn(task as any, 'runOrganizationTeamIngestion')
+      .mockResolvedValue(true);
+    jest
+      .spyOn(task as any, 'loadCostCenterSnapshot')
+      .mockResolvedValue(makeCostCenterSnapshot(new Map()));
+    const ingestCostCenterAggregates = jest
+      .spyOn(task as any, 'ingestCostCenterAggregates')
+      .mockResolvedValue(undefined);
+
+    await expect(task.runAsync()).rejects.toBeInstanceOf(
+      OrganizationIngestionLeaseLostError,
+    );
+
+    expect(db.renewEnterpriseOrganizationLease).toHaveBeenCalledTimes(2);
+    expect(ingestCostCenterAggregates).toHaveBeenCalledTimes(1);
+    expect(ingestCostCenterAggregates).toHaveBeenCalledWith(
+      days[0],
+      'organization',
+      'org-1',
+      expect.any(Object),
+      true,
+      lease,
+    );
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
   });
 
   it('shares one enterprise membership snapshot across enabled cost-center scopes', async () => {
