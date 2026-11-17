@@ -158,6 +158,23 @@ describe('PermissionsMatrix', () => {
     expect(await screen.findByText('No roles found')).toBeInTheDocument();
   });
 
+  it('filters the columns by plugin', async () => {
+    await renderMatrix(createRbacApi());
+    await screen.findByRole('table');
+
+    await userEvent.click(screen.getByRole('button', { name: /plugin/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: 'catalog' }),
+    );
+
+    expect(
+      screen.getByRole('columnheader', { name: 'catalog' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('columnheader', { name: 'scaffolder' }),
+    ).not.toBeInTheDocument();
+  });
+
   it('shows an error panel when a request fails', async () => {
     await renderMatrix(
       createRbacApi({

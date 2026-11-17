@@ -270,4 +270,52 @@ describe('permissions-matrix-utils', () => {
     expect(filtered.rows.map(r => r.roleName)).toEqual(['role:default/csv']);
     expect(filtered.plugins.map(p => p.pluginId)).toEqual(['scaffolder']);
   });
+
+  it('ignores malformed policies and policies without a role reference', () => {
+    const matrix = buildPermissionsMatrix({
+      roles: [
+        {
+          name: 'role:default/ui',
+          memberReferences: [],
+          metadata: { source: 'rest' },
+        },
+      ],
+      policies: [
+        {
+          entityReference: 'role:default/ui',
+          permission: 'catalog.entity.read',
+          policy: 'read',
+          effect: 'unknown',
+        },
+        {
+          entityReference: 'role:default/ui',
+          permission: '',
+          policy: 'read',
+          effect: 'allow',
+        },
+        {
+          permission: 'catalog.entity.read',
+          policy: 'read',
+          effect: 'allow',
+        },
+      ],
+      permissions: [
+        {
+          pluginId: 'catalog',
+          policies: [
+            {
+              name: 'catalog.entity.read',
+              policy: 'read',
+              resourceType: 'catalog-entity',
+            },
+          ],
+        },
+      ],
+      conditions: [],
+    });
+
+    expect(
+      getMatrixCell(matrix.rows[0], 'catalog:catalog.entity.read:read'),
+    ).toEqual({ decision: 'none' });
+  });
 });
