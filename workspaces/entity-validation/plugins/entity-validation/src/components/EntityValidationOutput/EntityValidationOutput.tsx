@@ -16,9 +16,9 @@
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { safeEntityDisplayName } from './safeEntityDisplayName';
-import { Alert, Box, List, Text } from '@backstage/ui';
+import { Alert, Box, Card, CardBody, Flex, List, Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
-import { InfoCard, Progress } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
 import {
   CatalogProcessorResult,
   ValidationOutput,
@@ -26,7 +26,6 @@ import {
   ValidationOutputOk,
 } from '../../types';
 import { EntityResult } from './EntityResult';
-import styles from './EntityValidationOutput.module.css';
 
 function sortResults(items: Array<ValidationOutputOk>) {
   return items.sort((a, b) =>
@@ -115,37 +114,39 @@ export const EntityValidationOutput = ({
   }
 
   return (
-    <InfoCard>
-      {results.length === 0 ? (
-        <Box className={styles.emptyState}>
-          <Text variant="body-medium">
-            No entity definitions found or validated yet
-          </Text>
-        </Box>
-      ) : (
-        <>
-          <List aria-label="validation results">
-            {results.map((item, key) => (
-              <EntityResult
-                key={key}
-                item={item}
-                isFirstError={key === firstErrorIndex}
-              />
-            ))}
-          </List>
-          <Box className={styles.summary}>
-            {results.every(r => r.response.valid) ? (
-              <Text variant="body-medium" className={styles.validationOk}>
-                All the entities are valid!
-              </Text>
-            ) : (
-              <Text variant="body-medium" className={styles.validationNotOk}>
-                One or more entities have validation errors
-              </Text>
-            )}
+    <Card>
+      <CardBody>
+        {results.length === 0 ? (
+          <Box p="4">
+            <Text variant="body-medium">
+              No entity definitions found or validated yet
+            </Text>
           </Box>
-        </>
-      )}
-    </InfoCard>
+        ) : (
+          <>
+            <List aria-label="validation results">
+              {results.map((item, key) => (
+                <EntityResult
+                  key={key}
+                  item={item}
+                  isFirstError={key === firstErrorIndex}
+                />
+              ))}
+            </List>
+            <Flex justify="center" mt="6">
+              {results.every(r => r.response.valid) ? (
+                <Text variant="body-medium" color="success">
+                  All the entities are valid!
+                </Text>
+              ) : (
+                <Text variant="body-medium" color="danger">
+                  One or more entities have validation errors
+                </Text>
+              )}
+            </Flex>
+          </>
+        )}
+      </CardBody>
+    </Card>
   );
 };

@@ -5,6 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
@@ -12,7 +13,7 @@ export const EntityValidationContent: (props: {
   defaultYaml?: string;
   defaultLocation?: string;
   hideFileLocationField?: boolean;
-  contentHead?: React.ReactNode;
+  contentHead?: ReactNode;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -20,7 +21,7 @@ export const EntityValidationPage: (props: {
   defaultYaml?: string;
   defaultLocation?: string;
   hideFileLocationField?: boolean;
-  contentHead?: React.ReactNode;
+  contentHead?: ReactNode;
 }) => JSX_2.Element;
 
 // @public (undocumented)

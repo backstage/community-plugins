@@ -15,9 +15,10 @@
  */
 
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { EntityTextArea } from '../EntityTextArea';
-import { Box, Button, Flex, TextField } from '@backstage/ui';
+import { Box, Button, Flex, Grid, TextField } from '@backstage/ui';
 import { CatalogProcessorResult } from '../../types';
 import { parseEntityYaml } from '../../utils';
 import { EntityValidationOutput } from '../EntityValidationOutput';
@@ -42,7 +43,7 @@ export const EntityValidationContent = (props: {
   defaultYaml?: string;
   defaultLocation?: string;
   hideFileLocationField?: boolean;
-  contentHead?: React.ReactNode;
+  contentHead?: ReactNode;
 }) => {
   const {
     defaultYaml = EXAMPLE_CATALOG_INFO_YAML,
@@ -68,45 +69,46 @@ export const EntityValidationContent = (props: {
   return (
     <Flex
       direction="column"
+      gap="4"
       className={styles.mainLayout}
       data-testid="main-grid"
     >
       {contentHead}
 
       {!hideFileLocationField && (
-        <Box className={styles.locationField}>
-          <TextField
-            isRequired
-            id="file-location"
-            label="File Location"
-            value={locationUrl}
-            placeholder={defaultLocation}
-            description="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
-            onChange={(newValue: string) => setLocationUrl(newValue)}
-          />
-        </Box>
+        <TextField
+          isRequired
+          id="file-location"
+          label="File Location"
+          value={locationUrl}
+          placeholder={defaultLocation}
+          description="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
+          onChange={setLocationUrl}
+        />
       )}
 
-      <Flex className={styles.contentRow}>
-        <Flex direction="column" className={styles.leftColumn}>
-          <Box className={styles.editorContainer}>
-            <EntityTextArea
-              onValidate={parseYaml}
-              onChange={(value: string) => setCatalogYaml(value)}
-              catalogYaml={catalogYaml}
-            />
-          </Box>
-          <Button variant="primary" onClick={parseYaml}>
-            Validate
-          </Button>
-        </Flex>
-        <Box className={styles.rightColumn}>
+      <Grid.Root columns="12" gap="4" className={styles.contentRow}>
+        <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+          <Flex direction="column" align="end" gap="2" className={styles.fill}>
+            <Box className={styles.editorContainer}>
+              <EntityTextArea
+                onValidate={parseYaml}
+                onChange={(value: string) => setCatalogYaml(value)}
+                catalogYaml={catalogYaml}
+              />
+            </Box>
+            <Button variant="primary" onPress={parseYaml}>
+              Validate
+            </Button>
+          </Flex>
+        </Grid.Item>
+        <Grid.Item colSpan={{ initial: '12', md: '6' }}>
           <EntityValidationOutput
             processorResults={yamlFiles}
             locationUrl={locationUrl}
           />
-        </Box>
-      </Flex>
+        </Grid.Item>
+      </Grid.Root>
     </Flex>
   );
 };
@@ -115,7 +117,7 @@ export const EntityValidationPage = (props: {
   defaultYaml?: string;
   defaultLocation?: string;
   hideFileLocationField?: boolean;
-  contentHead?: React.ReactNode;
+  contentHead?: ReactNode;
 }) => {
   const {
     defaultYaml = EXAMPLE_CATALOG_INFO_YAML,

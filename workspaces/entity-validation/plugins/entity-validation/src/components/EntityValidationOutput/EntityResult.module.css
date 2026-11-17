@@ -15,7 +15,7 @@
  */
 
 .validationOk {
-  color: var(--bui-fg-success, #1a7f5a);
+  color: var(--bui-fg-success);
 }
 
 .validationNotOk {
