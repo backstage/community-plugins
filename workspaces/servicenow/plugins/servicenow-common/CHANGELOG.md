@@ -1,5 +1,7 @@
 # @backstage-community/plugin-servicenow-common
 
+## 1.16.1
+
 ## 1.14.0
 
 ### Minor Changes

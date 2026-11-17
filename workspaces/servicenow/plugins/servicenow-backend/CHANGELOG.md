@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.16.1
+
+### Patch Changes
+
+- @backstage-community/plugin-servicenow-common@1.16.1
+
 ## 1.15.0
 
 ### Minor Changes
