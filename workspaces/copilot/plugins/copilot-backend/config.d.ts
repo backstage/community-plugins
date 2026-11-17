@@ -73,8 +73,9 @@ export interface Config {
      * snapshots fetched during ingestion are also applied to backfilled days.
      * The separate ingestOrganizationTeamReports option also enables
      * organization-team reports for the configured organization. With
-     * cost-center filtering, the dashboard shows a Cost center | Team toggle
-     * button group. Increases storage and ingestion time.
+     * cost-center filtering, the applicable team targets appear alongside
+     * Cost center in the dashboard's Filter by group. Increases storage and
+     * ingestion time.
      * @default false
      */
     ingestTeams?: boolean;
@@ -83,12 +84,13 @@ export interface Config {
      * Copilot metrics by cost center. Organization metrics are included when
      * both copilot.enterprise and copilot.organization are configured. This
      * ingests the users-1-day report even when ingestTeams is disabled;
-     * ingestTeams independently controls team-level filtering. With team
-     * filtering, the dashboard shows a Cost center | Team toggle button
-     * group. Enterprise App installations need Enterprise billing: read,
-     * Enterprise Copilot metrics: read, and Enterprise teams: read
-     * permissions. Org resources also require Members: read on each referenced
-     * organization. Classic PATs require read:enterprise and read:org.
+     * ingestTeams independently controls team-level filtering. Team targets
+     * appear alongside Cost center in the dashboard's Filter by group when
+     * team filtering is enabled. Enterprise App installations need Enterprise
+     * billing: read, Enterprise Copilot metrics: read, and Enterprise teams:
+     * read permissions. Org resources also require Members: read on each
+     * referenced organization. Classic PATs require read:enterprise and
+     * read:org.
      *
      * @default false
      */

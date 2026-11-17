@@ -850,10 +850,11 @@ async function createRouter(
         const organizations = selectedOrganization
           ? [selectedOrganization]
           : directory.organizations;
-        const teams =
-          organizations.length > 0
-            ? await dbV2.getAccessibleOrganizationTeams(organizations, from, to)
-            : [];
+        const teams = await dbV2.getAccessibleOrganizationTeams(
+          organizations,
+          from,
+          to,
+        );
 
         return res.json({
           organizations: directory.organizations,

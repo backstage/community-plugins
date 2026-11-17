@@ -50,7 +50,8 @@ export interface Config {
      * filtering for the configured organization. Organization-team filtering
      * across enterprise organizations is enabled by the separate
      * ingestOrganizationTeamReports option. When cost-center filtering is also
-     * enabled, the dashboard shows a Cost center | Team toggle button group.
+     * enabled, the applicable team targets appear alongside Cost center in
+     * the dashboard's Filter by group.
      * @visibility frontend
      */
     ingestTeams?: boolean;
@@ -58,8 +59,8 @@ export interface Config {
      * Whether backend ingestion enables cost-center filtering and the
      * separately scoped No cost center dashboard option. The latter is shown
      * only when enough users without a cost-center membership have data.
-     * When team filtering is also enabled, the dashboard shows a Cost center |
-     * Team toggle button group.
+     * When team filtering is also enabled, the applicable team targets appear
+     * alongside Cost center in the dashboard's Filter by group.
      * @visibility frontend
      */
     ingestCostCenters?: boolean;

@@ -1476,13 +1476,16 @@ export class TaskManagementV2 {
       throw new Error('Organization is not available for team backfill.');
     }
 
-    const requestedDays = this.getDayRange(fromDate, toDate);
-    if (requestedDays.length === 0) {
+    const from = DateTime.fromISO(fromDate, { zone: 'utc' }).startOf('day');
+    const to = DateTime.fromISO(toDate, { zone: 'utc' }).startOf('day');
+    const normalizedFrom = from.toISODate();
+    const normalizedTo = to.toISODate();
+    if (!normalizedFrom || !normalizedTo || from > to) {
       return;
     }
     await this.runBackfillInternal(
-      requestedDays[0],
-      requestedDays[requestedDays.length - 1],
+      normalizedFrom,
+      normalizedTo,
       'organization',
       canonicalOrganization,
       canonicalOrganization,

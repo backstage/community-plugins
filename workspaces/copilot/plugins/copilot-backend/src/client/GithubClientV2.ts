@@ -581,9 +581,6 @@ export class GithubClientV2 {
       ) {
         this.enterpriseOrganizationOctokits.delete(cacheKey);
       }
-      if (error instanceof MissingCostCenterOrganizationInstallationError) {
-        throw new InaccessibleEnterpriseOrganizationError();
-      }
       throw error;
     }
   }

@@ -656,18 +656,12 @@ export const V2DashboardPage = () => {
           }),
         )
       : teams.items.map(team => ({ value: team, label: team }));
-  const filterTargetHasOptions = (() => {
-    if (filterTarget === 'costCenter') {
-      return costCentersHaveOptions;
-    }
-    if (filterTarget === 'organizationTeam') {
-      return (
-        organizationTeamOptions.organizations.length > 0 ||
+  const filterTargetHasOptions =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.organizations.length > 0 ||
         organizationTeamOptions.loading
-      );
-    }
-    return teams.items.length > 0;
-  })();
+      : filterTarget !== undefined &&
+        targetAvailability[filterTarget].hasOptions;
   const showFilter =
     filterTarget !== undefined &&
     (filterTargetToggleAvailable || filterTargetHasOptions);
