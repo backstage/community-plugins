@@ -53,8 +53,8 @@ export type V2DashboardParams = Pick<
 export type V2OrganizationTeamOptions = {
   organizations: string[];
   teams: string[];
+  /** True when options were retrieved; it does not imply full date-range coverage. */
   teamsReady: boolean;
-  allOrganizationsReady: boolean;
   hasPendingOrganizations: boolean;
 };
 

@@ -453,6 +453,16 @@ export const V2DashboardPage = () => {
     filterTarget === 'organizationTeam'
       ? organizationTeamDashboard.data
       : dashboard.data;
+  const organizationTeamHasData = [
+    data.daily,
+    data.byFeature,
+    data.byLanguage,
+    data.byModelFeature,
+    data.byLanguageModel,
+    data.prMetrics,
+    data.customizationMetrics,
+    data.customizationSummaries,
+  ].some(rows => rows.length > 0);
   const costCenters = useV2CostCenters(type, entityId, from, to);
   const enterpriseTeams = useV2Teams(type, entityId, from, to);
   const organizationTeamOptions = useV2OrganizationTeamOptions(
@@ -461,6 +471,13 @@ export const V2DashboardPage = () => {
     selectedOrganizationTeamOrganization,
     organizationTeamScopeEnabled,
   );
+  const showOrganizationTeamEmptyState =
+    filterTarget === 'organizationTeam' &&
+    !organizationTeamOptions.loading &&
+    !organizationTeamOptions.error &&
+    !organizationTeamDashboard.loading &&
+    !organizationTeamDashboard.error &&
+    !organizationTeamHasData;
   const teams =
     filterTarget === 'organizationTeam'
       ? {
@@ -851,7 +868,25 @@ export const V2DashboardPage = () => {
               />
             )}
 
-          <Tabs defaultSelectedKey="copilot-usage">
+          {showOrganizationTeamEmptyState && (
+            <div
+              role="status"
+              style={{
+                padding: 16,
+                textAlign: 'center',
+                color: '#888',
+              }}
+            >
+              No organization-team data is available for this selection and date
+              range.
+            </div>
+          )}
+          <Tabs
+            defaultSelectedKey="copilot-usage"
+            style={{
+              display: showOrganizationTeamEmptyState ? 'none' : undefined,
+            }}
+          >
             <TabList>
               <Tab id="copilot-usage">Copilot Usage</Tab>
               <Tab id="code-generation">Code Generation</Tab>
@@ -884,6 +919,7 @@ export const V2DashboardPage = () => {
                         variant="daily"
                         from={from}
                         to={to}
+                        fillMissingDays={filterTarget !== 'organizationTeam'}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -894,6 +930,7 @@ export const V2DashboardPage = () => {
                         variant="weekly"
                         from={from}
                         to={to}
+                        fillMissingDays={filterTarget !== 'organizationTeam'}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -901,7 +938,12 @@ export const V2DashboardPage = () => {
 
                 {/* Average Chat Requests per Active User */}
                 <ChartCard title="Average Chat Requests per Active User">
-                  <AvgChatRequestsChart data={data.daily} from={from} to={to} />
+                  <AvgChatRequestsChart
+                    data={data.daily}
+                    from={from}
+                    to={to}
+                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                  />
                 </ChartCard>
 
                 {/* Requests per Chat Mode */}
@@ -910,6 +952,7 @@ export const V2DashboardPage = () => {
                     data={data.byFeature}
                     from={from}
                     to={to}
+                    fillMissingDays={filterTarget !== 'organizationTeam'}
                   />
                 </ChartCard>
 
@@ -921,6 +964,7 @@ export const V2DashboardPage = () => {
                         data={data.byFeature}
                         from={from}
                         to={to}
+                        fillMissingDays={filterTarget !== 'organizationTeam'}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -930,6 +974,7 @@ export const V2DashboardPage = () => {
                         data={data.byFeature}
                         from={from}
                         to={to}
+                        fillMissingDays={filterTarget !== 'organizationTeam'}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -941,6 +986,7 @@ export const V2DashboardPage = () => {
                     data={data.byModelFeature}
                     from={from}
                     to={to}
+                    fillMissingDays={filterTarget !== 'organizationTeam'}
                   />
                 </ChartCard>
 
@@ -964,6 +1010,7 @@ export const V2DashboardPage = () => {
                     data={data.byLanguage}
                     from={from}
                     to={to}
+                    fillMissingDays={filterTarget !== 'organizationTeam'}
                   />
                 </ChartCard>
 
@@ -1000,6 +1047,7 @@ export const V2DashboardPage = () => {
                   summaries={data.customizationSummaries}
                   from={from}
                   to={to}
+                  fillMissingDays={filterTarget !== 'organizationTeam'}
                 />
               </Flex>
             </TabPanel>
@@ -1028,7 +1076,12 @@ export const V2DashboardPage = () => {
                     Total lines of code added and deleted from the codebase
                     across all modes
                   </Text>
-                  <DailyLOCChart data={data.daily} from={from} to={to} />
+                  <DailyLOCChart
+                    data={data.daily}
+                    from={from}
+                    to={to}
+                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                  />
                 </ChartCard>
 
                 {/* Row 3: User-initiated vs Agent-initiated by feature */}
@@ -1146,6 +1199,7 @@ export const V2DashboardPage = () => {
                       data={data.daily}
                       from={from}
                       to={to}
+                      fillMissingDays={filterTarget !== 'organizationTeam'}
                     />
                   </ChartCard>
                 </Flex>

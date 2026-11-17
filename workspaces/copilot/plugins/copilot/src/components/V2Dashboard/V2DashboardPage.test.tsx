@@ -115,7 +115,6 @@ const createApi = ({
     organizations,
     teams,
     teamsReady: true,
-    allOrganizationsReady: true,
     hasPendingOrganizations: false,
   }),
   getOrganizationTeamDashboardData: jest
@@ -221,6 +220,25 @@ describe('V2DashboardPage filter targets', () => {
 
   it('supports all organizations and organization-team filtering in the enterprise view', async () => {
     const api = createApi({ teams: ['octo-team'] });
+    api.getOrganizationTeamDashboardData.mockResolvedValue({
+      ...EMPTY_DASHBOARD,
+      daily: [
+        {
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'all-organizations',
+          team_slug: 'octo-team',
+          daily_active_users: 5,
+          code_acceptance_activity_count: 7,
+          code_generation_activity_count: 0,
+          loc_added_sum: 0,
+          loc_deleted_sum: 0,
+          loc_suggested_to_add_sum: 0,
+          loc_suggested_to_delete_sum: 0,
+          user_initiated_interaction_count: 0,
+        },
+      ],
+    });
     const user = userEvent.setup();
     await renderDashboard(api, {
       enterprise: 'my-enterprise',
@@ -403,13 +421,12 @@ describe('V2DashboardPage filter targets', () => {
     rendered.unmount();
   });
 
-  it('does not warn while organization team reports are pending', async () => {
+  it('keeps known team options available while organization reports are pending', async () => {
     const api = createApi();
     api.getOrganizationTeamOptions.mockResolvedValue({
       organizations: ['accessible-org'],
-      teams: [],
-      teamsReady: false,
-      allOrganizationsReady: false,
+      teams: ['historic-only'],
+      teamsReady: true,
       hasPendingOrganizations: true,
     });
     const user = userEvent.setup();
@@ -428,7 +445,14 @@ describe('V2DashboardPage filter targets', () => {
     expect(
       screen.queryByText('Unable to load organization team options.'),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /all teams/i })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: /all teams/i }),
+    ).not.toBeDisabled();
+    await user.click(screen.getByRole('button', { name: /all teams/i }));
+    expect(
+      await screen.findByRole('option', { name: 'historic-only' }),
+    ).toBeVisible();
+    await user.keyboard('{Escape}');
 
     await user.click(
       screen.getByRole('button', { name: /all organizations/i }),
@@ -453,7 +477,6 @@ describe('V2DashboardPage filter targets', () => {
         organizations: ['my-org'],
         teams: ['platform'],
         teamsReady: true,
-        allOrganizationsReady: true,
         hasPendingOrganizations: false,
       };
     });
@@ -1044,5 +1067,29 @@ describe('V2DashboardPage filter targets', () => {
         to: expect.any(String),
       }),
     );
+  });
+
+  it('shows a no-data state for a known team with no qualifying metrics', async () => {
+    const api = createApi({ teams: ['historic-only'] });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+    await user.click(screen.getByRole('button', { name: /all teams/i }));
+    await user.click(
+      await screen.findByRole('option', { name: 'historic-only' }),
+    );
+
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'No organization-team data is available for this selection and date range.',
+    );
+    expect(
+      screen.queryByRole('tab', { name: 'Copilot Usage' }),
+    ).not.toBeInTheDocument();
   });
 });

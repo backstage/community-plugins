@@ -3385,16 +3385,9 @@ export class DatabaseHandlerV2 {
         organizations.map(value => [value.toLowerCase(), value]),
       ).values(),
     ];
-    if (
-      uniqueOrganizations.length === 0 ||
-      !(await this.areOrganizationTeamReportsComplete(
-        uniqueOrganizations,
-        from,
-        to,
-      ))
-    ) {
+    if (uniqueOrganizations.length === 0) {
       throw new Error(
-        'Organization-team reports are incomplete for the requested period.',
+        'Cannot aggregate organization-team metrics without accessible organizations.',
       );
     }
 

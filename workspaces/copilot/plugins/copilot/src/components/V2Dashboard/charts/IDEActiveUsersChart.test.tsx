@@ -73,4 +73,21 @@ describe('IDEActiveUsersChart', () => {
 
     expect(screen.getByTestId('chart-series')).toHaveTextContent('[0,0,0]');
   });
+
+  it('keeps unavailable team rolling values unknown when coverage may be partial', () => {
+    render(
+      <IDEActiveUsersChart
+        data={[
+          { ...BASE_ROW, team_slug: 'platform', day: '2026-08-07' },
+          { ...BASE_ROW, team_slug: 'platform', day: '2026-08-09' },
+        ]}
+        variant="weekly"
+        from="2026-08-07"
+        to="2026-08-09"
+        fillMissingDays={false}
+      />,
+    );
+
+    expect(screen.getByTestId('chart-series')).toHaveTextContent('[null,null]');
+  });
 });

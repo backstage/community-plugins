@@ -23,7 +23,6 @@ type OptionsResult = {
   organizations: string[];
   teams: string[];
   teamsReady: boolean;
-  allOrganizationsReady: boolean;
   hasPendingOrganizations: boolean;
   error?: Error;
 };
@@ -44,7 +43,6 @@ export function useV2OrganizationTeamOptions(
           organizations: [],
           teams: [],
           teamsReady: false,
-          allOrganizationsReady: false,
           hasPendingOrganizations: false,
         };
       }
@@ -62,7 +60,6 @@ export function useV2OrganizationTeamOptions(
           organizations: [],
           teams: [],
           teamsReady: false,
-          allOrganizationsReady: false,
           hasPendingOrganizations: false,
           error: error instanceof Error ? error : new Error(String(error)),
         };
@@ -74,7 +71,6 @@ export function useV2OrganizationTeamOptions(
     organizations: hasCurrentResult ? value.organizations : [],
     teams: hasCurrentResult ? value.teams : [],
     teamsReady: hasCurrentResult && value.teamsReady,
-    allOrganizationsReady: hasCurrentResult && value.allOrganizationsReady,
     hasPendingOrganizations: hasCurrentResult && value.hasPendingOrganizations,
     loading: loading || !hasCurrentResult,
     error: hasCurrentResult ? value.error : undefined,

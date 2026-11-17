@@ -179,7 +179,6 @@ describe('CopilotClientV2', () => {
             organizations: ['org-1'],
             teams: ['platform'],
             teamsReady: true,
-            allOrganizationsReady: true,
             hasPendingOrganizations: false,
           }),
           { status: 200 },

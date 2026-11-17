@@ -19,20 +19,22 @@ import { V2CustomizationMetricRow } from '@backstage-community/plugin-copilot-co
 import {
   compactNumber,
   DATE_TICK_LABEL_STYLE,
-  fillDateRange,
   formatDay,
+  getChartDays,
 } from './chartUtils';
 
 type Props = {
   data: V2CustomizationMetricRow[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 };
 
 export function CustomizationUsageByDayChart({
   data,
   from,
   to,
+  fillMissingDays = true,
 }: Readonly<Props>) {
   if (data.length === 0) {
     return (
@@ -42,7 +44,12 @@ export function CustomizationUsageByDayChart({
     );
   }
 
-  const days = fillDateRange(from, to);
+  const days = getChartDays(
+    data.filter(row => row.interaction_count > 0),
+    from,
+    to,
+    fillMissingDays,
+  );
   const totalsByItem = new Map<string, number>();
   const valuesByItemAndDay = new Map<string, number>();
   for (const row of data) {

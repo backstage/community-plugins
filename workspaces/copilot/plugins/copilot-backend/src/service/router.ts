@@ -36,6 +36,7 @@ import {
   Metric,
   PeriodRange,
   V2BackfillStatus,
+  V2DashboardData,
   V2MyDashboardResponse,
 } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
@@ -69,6 +70,17 @@ import {
   v2TeamsQuerySchema,
 } from './validation/schema';
 import { DateTime } from 'luxon';
+
+const EMPTY_V2_DASHBOARD_DATA: V2DashboardData = {
+  daily: [],
+  byFeature: [],
+  byLanguage: [],
+  byModelFeature: [],
+  byLanguageModel: [],
+  prMetrics: [],
+  customizationMetrics: [],
+  customizationSummaries: [],
+};
 
 /**
  * Options for configuring the Copilot plugin.
@@ -846,11 +858,11 @@ async function createRouter(
             teams: await dbV2.getTeams(
               'organization',
               configuredOrganization,
-              from,
-              to,
+              undefined,
+              undefined,
+              1,
             ),
             teamsReady: true,
-            allOrganizationsReady: true,
             hasPendingOrganizations: false,
           });
         }
@@ -878,32 +890,20 @@ async function createRouter(
         const organizations = selectedOrganization
           ? [selectedOrganization]
           : directory.organizations;
-        const allOrganizationsReady =
-          !directory.hasPendingOrganizations &&
-          organizations.length > 0 &&
-          (await dbV2.areOrganizationTeamReportsComplete(
-            organizations,
-            from,
-            to,
-          ));
-        const teamsReady =
-          organizations.length > 0 &&
-          (!directory.hasPendingOrganizations ||
-            Boolean(selectedOrganization)) &&
-          (await dbV2.areOrganizationTeamReportsComplete(
-            organizations,
-            from,
-            to,
-          ));
-        const teams = teamsReady
-          ? await dbV2.getAccessibleOrganizationTeams(organizations, from, to)
-          : [];
+        const teams =
+          organizations.length > 0
+            ? await dbV2.getAccessibleOrganizationTeams(
+                organizations,
+                undefined,
+                undefined,
+                1,
+              )
+            : [];
 
         return res.json({
           organizations: directory.organizations,
           teams,
-          teamsReady,
-          allOrganizationsReady,
+          teamsReady: true,
           hasPendingOrganizations: directory.hasPendingOrganizations,
         });
       } catch (err) {
@@ -956,9 +956,7 @@ async function createRouter(
               to,
             );
             if (!teams.includes(team)) {
-              throw new InputError(
-                'Team is not eligible for the requested organization and period.',
-              );
+              return res.json(EMPTY_V2_DASHBOARD_DATA);
             }
           }
           const result = await dbV2.getDashboardData(
@@ -993,27 +991,13 @@ async function createRouter(
 
         if (selectedOrganization) {
           if (team) {
-            if (
-              !(await dbV2.areOrganizationTeamReportsComplete(
-                [selectedOrganization],
-                from,
-                to,
-              ))
-            ) {
-              return res.status(503).json({
-                error:
-                  'Organization-team reports are incomplete for the requested period.',
-              });
-            }
             const teams = await dbV2.getAccessibleOrganizationTeams(
               [selectedOrganization],
               from,
               to,
             );
             if (!teams.includes(team)) {
-              throw new InputError(
-                'Team is not eligible for the requested organization and period.',
-              );
+              return res.json(EMPTY_V2_DASHBOARD_DATA);
             }
           }
           const result = await dbV2.getDashboardData(
@@ -1026,25 +1010,9 @@ async function createRouter(
           return res.json(result);
         }
 
-        if (directory.hasPendingOrganizations) {
-          return res.status(503).json({
-            error:
-              'Organization-team reports are incomplete across the enterprise.',
-          });
-        }
         const organizations = directory.organizations;
-        if (
-          organizations.length === 0 ||
-          !(await dbV2.areOrganizationTeamReportsComplete(
-            organizations,
-            from,
-            to,
-          ))
-        ) {
-          return res.status(503).json({
-            error:
-              'Organization-team reports are incomplete for the requested period.',
-          });
+        if (organizations.length === 0) {
+          return res.json(EMPTY_V2_DASHBOARD_DATA);
         }
         const teams = await dbV2.getAccessibleOrganizationTeams(
           organizations,
@@ -1052,9 +1020,7 @@ async function createRouter(
           to,
         );
         if (!teams.includes(team!)) {
-          throw new InputError(
-            'Team is not eligible across the requested organizations and period.',
-          );
+          return res.json(EMPTY_V2_DASHBOARD_DATA);
         }
 
         const result = await dbV2.getOrganizationTeamDashboardData(

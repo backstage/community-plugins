@@ -421,6 +421,17 @@ describe('DatabaseHandlerV2', () => {
           team_slug: 'shared',
         }),
       ]);
+      const historyDay = DateTime.utc()
+        .minus({ days: 2 })
+        .toFormat('yyyy-MM-dd');
+      await knex('copilot_user_teams').insert(
+        buildUserTeam({
+          day: historyDay,
+          entity_id: 'Org-A',
+          user_id: 1,
+          team_slug: 'historic-only',
+        }),
+      );
 
       await expect(
         handler.getAccessibleOrganizationTeams(organizations, day, day, 3),
@@ -428,6 +439,17 @@ describe('DatabaseHandlerV2', () => {
       await expect(
         handler.getAccessibleOrganizationTeams(organizations, day, day, 4),
       ).resolves.toEqual([]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(['Org-A'], day, day, 1),
+      ).resolves.toEqual(['shared']);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          undefined,
+          undefined,
+          1,
+        ),
+      ).resolves.toEqual(['historic-only', 'shared']);
 
       const dashboard = await handler.getOrganizationTeamDashboardData(
         organizations,
@@ -448,7 +470,7 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toMatchObject({ daily: [] });
     });
 
-    it('does not return an empty cross-organization dashboard for incomplete reports', async () => {
+    it('returns available cross-organization rows when report coverage is partial', async () => {
       const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
       await handler.upsertIngestionLog(
         buildIngestionLog({
@@ -457,15 +479,43 @@ describe('DatabaseHandlerV2', () => {
           components_loaded: '["totals","users","teams"]',
         }),
       );
-
-      await expect(
-        handler.getOrganizationTeamDashboardData(
-          ['Org-A', 'Org-B'],
+      await handler.insertDailyTotals([
+        buildDailyTotal({
           day,
-          day,
-          'shared',
+          entity_id: 'Org-A',
+          team_slug: 'shared',
+          code_acceptance_activity_count: 7,
+        }),
+      ]);
+      const userIds = [1, 2, 3, 4, 5];
+      await handler.insertUserMetrics(
+        userIds.map(user_id =>
+          buildUserMetric({ day, entity_id: 'Org-A', user_id }),
         ),
-      ).rejects.toThrow(/reports are incomplete/i);
+      );
+      await knex('copilot_user_teams').insert(
+        userIds.map(user_id =>
+          buildUserTeam({
+            day,
+            entity_id: 'Org-A',
+            user_id,
+            team_slug: 'shared',
+          }),
+        ),
+      );
+
+      const dashboard = await handler.getOrganizationTeamDashboardData(
+        ['Org-A', 'Org-B'],
+        day,
+        day,
+        'shared',
+      );
+      expect(dashboard.daily).toHaveLength(1);
+      expect(dashboard.daily[0]).toMatchObject({
+        code_acceptance_activity_count: 7,
+        daily_active_users: 5,
+      });
+      expect(dashboard.daily[0].weekly_active_users).toBeUndefined();
       await expect(
         handler.areOrganizationTeamReportsComplete(
           ['Org-A', 'Org-B'],
