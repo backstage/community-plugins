@@ -454,6 +454,8 @@ export const V2DashboardPage = () => {
   const enterpriseTeams = useV2Teams(type, entityId, from, to);
   const organizationTeamOptions = useV2OrganizationTeamOptions(
     selectedOrganizationTeamOrganization,
+    from,
+    to,
     organizationTeamScopeEnabled,
   );
   const teams =

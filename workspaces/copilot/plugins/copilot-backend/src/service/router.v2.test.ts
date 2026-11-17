@@ -1280,7 +1280,9 @@ describe('router v2 endpoints', () => {
       }),
     });
 
-    const options = await request(app).get('/v2/organization-team/options');
+    const options = await request(app).get(
+      '/v2/organization-team/options?from=2026-05-01&to=2026-05-20',
+    );
     expect(options.status).toBe(200);
     expect(options.body).toEqual({
       organizations: ['org-1'],
@@ -1290,21 +1292,19 @@ describe('router v2 endpoints', () => {
     expect(mockDbV2.getTeams).toHaveBeenCalledWith(
       'organization',
       'org-1',
-      undefined,
-      undefined,
-      1,
+      '2026-05-01',
+      '2026-05-20',
     );
     expect(mockDbV2.getEnterpriseOrganizationDirectory).not.toHaveBeenCalled();
   });
 
-  it('lists known teams by owning organization despite partial reports or pending organizations', async () => {
+  it('lists date-eligible teams by owning organization while organizations are pending', async () => {
     mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
       complete: true,
       hasPendingOrganizations: true,
       organizations: ['org-1', 'org-2'],
     });
     mockDbV2.getAccessibleOrganizationTeams.mockResolvedValue([
-      { organization: 'org-1', team: 'historic-only' },
       { organization: 'org-1', team: 'platform' },
       { organization: 'org-2', team: 'platform' },
     ]);
@@ -1319,13 +1319,14 @@ describe('router v2 endpoints', () => {
       }),
     });
 
-    const response = await request(app).get('/v2/organization-team/options');
+    const response = await request(app).get(
+      '/v2/organization-team/options?from=2026-05-01&to=2026-05-20',
+    );
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       organizations: ['org-1', 'org-2'],
       teams: [
-        { organization: 'org-1', team: 'historic-only' },
         { organization: 'org-1', team: 'platform' },
         { organization: 'org-2', team: 'platform' },
       ],
@@ -1333,9 +1334,88 @@ describe('router v2 endpoints', () => {
     });
     expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
       ['org-1', 'org-2'],
-      undefined,
-      undefined,
+      '2026-05-01',
+      '2026-05-20',
+    );
+  });
+
+  it('uses the organization-view date range and eligibility for enterprise organization-team options', async () => {
+    const from = '2026-05-01';
+    const to = '2026-05-20';
+    const memberships = [
+      {
+        organization: 'org-1',
+        team: 'eligible-team',
+        day: '2026-05-10',
+        members: ['user-1', 'user-2', 'user-3', 'user-4', 'user-5'],
+      },
+      {
+        organization: 'org-1',
+        team: 'below-threshold-team',
+        day: '2026-05-10',
+        members: ['user-1', 'user-2', 'user-3', 'user-4'],
+      },
+      {
+        organization: 'org-1',
+        team: 'outside-range-team',
+        day: '2026-04-30',
+        members: ['user-1', 'user-2', 'user-3', 'user-4', 'user-5'],
+      },
+    ];
+    mockDbV2.getAccessibleOrganizationTeams.mockImplementation(
+      async (
+        organizations: string[],
+        start: string,
+        end: string,
+        minMembers = 5,
+      ) =>
+        memberships
+          .filter(
+            team =>
+              organizations.includes(team.organization) &&
+              team.day >= start &&
+              team.day <= end &&
+              team.members.length >= minMembers,
+          )
+          .map(({ organization, team }) => ({ organization, team })),
+    );
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const options = await request(app).get(
+      `/v2/organization-team/options?organization=ORG-1&from=${from}&to=${to}`,
+    );
+    const organizationTeams = await request(app).get(
+      `/v2/teams?type=organization&entityId=ORG-1&from=${from}&to=${to}`,
+    );
+
+    expect(options.status).toBe(200);
+    expect(organizationTeams.status).toBe(200);
+    expect(options.body.teams).toEqual([
+      { organization: 'org-1', team: 'eligible-team' },
+    ]);
+    expect(organizationTeams.body).toEqual(
+      options.body.teams.map(({ team }: { team: string }) => team),
+    );
+    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenNthCalledWith(
       1,
+      ['org-1'],
+      from,
+      to,
+    );
+    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenNthCalledWith(
+      2,
+      ['org-1'],
+      from,
+      to,
     );
   });
 

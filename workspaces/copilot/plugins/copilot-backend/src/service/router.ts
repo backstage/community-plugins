@@ -797,7 +797,7 @@ async function createRouter(
           });
         }
 
-        const { organization } = req.query;
+        const { organization, from, to } = req.query;
         if (!organizationTeamIngestionEnabled) {
           if (
             !configuredOrganizationTeamFilteringEnabled ||
@@ -814,9 +814,8 @@ async function createRouter(
           const teams = await dbV2.getTeams(
             'organization',
             configuredOrganization,
-            undefined,
-            undefined,
-            1,
+            from,
+            to,
           );
           return res.json({
             organizations: [configuredOrganization],
@@ -853,12 +852,7 @@ async function createRouter(
           : directory.organizations;
         const teams =
           organizations.length > 0
-            ? await dbV2.getAccessibleOrganizationTeams(
-                organizations,
-                undefined,
-                undefined,
-                1,
-              )
+            ? await dbV2.getAccessibleOrganizationTeams(organizations, from, to)
             : [];
 
         return res.json({

@@ -91,6 +91,8 @@ export type V2TeamsQuery = z.infer<typeof v2TeamsQuerySchema>;
 export const v2OrganizationTeamOptionsQuerySchema = z
   .object({
     organization: z.string().trim().min(1).max(255).optional(),
+    from: v2MetricsQuerySchema.shape.from,
+    to: v2MetricsQuerySchema.shape.to,
   })
   .strict();
 export type V2OrganizationTeamOptionsQuery = z.infer<

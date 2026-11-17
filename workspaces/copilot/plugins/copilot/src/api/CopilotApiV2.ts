@@ -92,9 +92,11 @@ export interface CopilotApiV2 {
     params: V2MetricsParams,
   ): Promise<V2MetricsByLanguageModelRow[]>;
   getDashboardData(params: V2MetricsParams): Promise<V2DashboardData>;
-  getOrganizationTeamOptions(params: {
-    organization?: string;
-  }): Promise<V2OrganizationTeamOptions>;
+  getOrganizationTeamOptions(
+    params: Pick<V2MetricsParams, 'from' | 'to'> & {
+      organization?: string;
+    },
+  ): Promise<V2OrganizationTeamOptions>;
   getNoCostCenterDashboardData(
     params: V2DashboardParams,
   ): Promise<V2DashboardData>;

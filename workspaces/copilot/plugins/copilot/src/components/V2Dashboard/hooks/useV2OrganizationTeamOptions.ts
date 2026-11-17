@@ -25,11 +25,13 @@ type OptionsResult = V2OrganizationTeamOptions & {
 };
 
 export function useV2OrganizationTeamOptions(
-  organization?: string,
+  organization: string | undefined,
+  from: string,
+  to: string,
   enabled = true,
 ) {
   const api = useApi(copilotApiV2Ref);
-  const queryKey = JSON.stringify([organization, enabled]);
+  const queryKey = JSON.stringify([organization, from, to, enabled]);
   const { value, loading, retry } =
     useAsyncRetry(async (): Promise<OptionsResult> => {
       if (!enabled) {
@@ -44,6 +46,8 @@ export function useV2OrganizationTeamOptions(
       try {
         const options = await api.getOrganizationTeamOptions({
           organization,
+          from,
+          to,
         });
         return { queryKey, ...options };
       } catch (error) {
@@ -55,7 +59,7 @@ export function useV2OrganizationTeamOptions(
           error: error instanceof Error ? error : new Error(String(error)),
         };
       }
-    }, [api, organization, enabled]);
+    }, [api, organization, from, to, enabled]);
   const hasCurrentResult = value?.queryKey === queryKey;
 
   return {

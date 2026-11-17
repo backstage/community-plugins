@@ -201,6 +201,8 @@ describe('CopilotClientV2', () => {
 
     await client.getOrganizationTeamOptions({
       organization: 'org-1',
+      from: '2026-05-01',
+      to: '2026-05-21',
     });
     await client.getDashboardData({
       type: 'organization',
@@ -212,7 +214,7 @@ describe('CopilotClientV2', () => {
 
     expect(mockFetch).toHaveBeenNthCalledWith(
       1,
-      'http://localhost/api/copilot/v2/organization-team/options?organization=org-1',
+      'http://localhost/api/copilot/v2/organization-team/options?organization=org-1&from=2026-05-01&to=2026-05-21',
     );
     expect(mockFetch).toHaveBeenNthCalledWith(
       2,

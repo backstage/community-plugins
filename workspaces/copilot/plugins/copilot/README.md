@@ -23,10 +23,10 @@ The plugin now defaults to the V2 dashboard, backed by GitHub's report-based Cop
 - **Exclusive V2 Filters**: Filter by either cost center or team, never both. Organization teams are available in enterprise view when `copilot.ingestOrganizationTeamReports` is enabled, or when `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are configured. **All organizations** with **All teams** retains enterprise-wide totals; selecting a team scopes the dashboard to its owning organization. The dashboard identifies enterprise and organization teams separately in tooltips.
 - **Individual ("Me") Metrics**: A privacy-scoped view, mounted by default at `/copilot/me`, that shows only the signed-in user's own Copilot usage and consumption — see [Individual ("Me") Metrics](#individual-me-metrics) below.
 
-_The Enterprise team filter lists teams with at least five distinct users in
-the selected range. Organization-team names come from stored membership
-history; the organization-scoped dashboard still enforces the five-user
-privacy threshold._
+_Enterprise and organization-team filters list teams with at least five
+distinct users in the selected date range. Organization-team options remain
+qualified by their owning organization; partial report coverage can still
+produce partial metrics._
 
 _Cost-center views require at least five distinct Copilot users across the selected date range._
 

@@ -173,13 +173,17 @@ export class CopilotClientV2 implements CopilotApiV2 {
     );
   }
 
-  public async getOrganizationTeamOptions(params: {
-    organization?: string;
-  }): Promise<V2OrganizationTeamOptions> {
+  public async getOrganizationTeamOptions(
+    params: Pick<V2MetricsParams, 'from' | 'to'> & {
+      organization?: string;
+    },
+  ): Promise<V2OrganizationTeamOptions> {
     const queryString = new URLSearchParams();
     if (params.organization) {
       queryString.append('organization', params.organization);
     }
+    queryString.append('from', params.from);
+    queryString.append('to', params.to);
     return this.get<V2OrganizationTeamOptions>(
       `v2/organization-team/options?${queryString}`,
     );

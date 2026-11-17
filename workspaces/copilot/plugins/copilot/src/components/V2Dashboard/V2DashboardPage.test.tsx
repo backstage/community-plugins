@@ -308,6 +308,8 @@ describe('V2DashboardPage filter targets', () => {
       expect(api.getOrganizationTeamOptions).toHaveBeenCalledWith(
         expect.objectContaining({
           organization: undefined,
+          from: expect.any(String),
+          to: expect.any(String),
         }),
       ),
     );
@@ -467,11 +469,11 @@ describe('V2DashboardPage filter targets', () => {
     rendered.unmount();
   });
 
-  it('keeps known team options available while organization reports are pending', async () => {
+  it('keeps eligible team options available while organization reports are pending', async () => {
     const api = createApi();
     api.getOrganizationTeamOptions.mockResolvedValue({
       organizations: ['accessible-org'],
-      teams: [{ organization: 'accessible-org', team: 'historic-only' }],
+      teams: [{ organization: 'accessible-org', team: 'eligible-team' }],
       hasPendingOrganizations: true,
     });
     const user = userEvent.setup();
@@ -496,7 +498,7 @@ describe('V2DashboardPage filter targets', () => {
     await user.click(screen.getByRole('button', { name: /all teams/i }));
     expect(
       await screen.findByRole('option', {
-        name: 'accessible-org / historic-only',
+        name: 'accessible-org / eligible-team',
       }),
     ).toBeVisible();
     await user.keyboard('{Escape}');
