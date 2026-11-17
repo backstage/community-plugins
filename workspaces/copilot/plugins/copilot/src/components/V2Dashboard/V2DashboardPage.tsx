@@ -467,14 +467,14 @@ export const V2DashboardPage = () => {
     to,
     organizationTeamScopeEnabled,
   );
-  const teams =
+  const teamOptionsLoading =
     filterTarget === 'organizationTeam'
-      ? {
-          items: organizationTeamOptions.teams.map(option => option.team),
-          loading: organizationTeamOptions.loading,
-          error: organizationTeamOptions.error,
-        }
-      : enterpriseTeams;
+      ? organizationTeamOptions.loading
+      : enterpriseTeams.loading;
+  const teamOptionsError =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.error
+      : enterpriseTeams.error;
   const costCenterAvailability = getListAvailability(costCenters);
   const costCentersHaveOptions =
     costCenterAvailability.hasOptions ||
@@ -579,14 +579,28 @@ export const V2DashboardPage = () => {
   }, [scopeKey, defaultTeamTarget, filterSelection.scopeKey]);
 
   useEffect(() => {
-    if (
-      selectedTeam &&
-      !teams.loading &&
-      (teams.error || !teams.items.includes(selectedTeam))
-    ) {
+    if (!selectedTeam || teamOptionsLoading) {
+      return;
+    }
+
+    const teamExists =
+      filterTarget === 'organizationTeam'
+        ? organizationTeamOptions.teams.some(
+            ({ team }) => team === selectedTeam,
+          )
+        : enterpriseTeams.items.includes(selectedTeam);
+    if (teamOptionsError || !teamExists) {
       setSelectedTeam(undefined);
     }
-  }, [selectedTeam, setSelectedTeam, teams.error, teams.items, teams.loading]);
+  }, [
+    enterpriseTeams.items,
+    filterTarget,
+    organizationTeamOptions.teams,
+    selectedTeam,
+    setSelectedTeam,
+    teamOptionsError,
+    teamOptionsLoading,
+  ]);
 
   useEffect(() => {
     if (
@@ -655,7 +669,7 @@ export const V2DashboardPage = () => {
               : `${teamOrganization} / ${team}`,
           }),
         )
-      : teams.items.map(team => ({ value: team, label: team }));
+      : enterpriseTeams.items.map(team => ({ value: team, label: team }));
   const filterTargetHasOptions =
     filterTarget === 'organizationTeam'
       ? organizationTeamOptions.organizations.length > 0 ||
@@ -802,7 +816,7 @@ export const V2DashboardPage = () => {
                 {isTeamTarget && (
                   <Select
                     searchable
-                    isDisabled={teams.loading || Boolean(teams.error)}
+                    isDisabled={teamOptionsLoading || Boolean(teamOptionsError)}
                     label={teamSelectorLabel}
                     selectedKey={
                       filterTarget === 'organizationTeam' &&
