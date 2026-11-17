@@ -76,7 +76,7 @@ Configure the following `app-config.yaml` values:
 - `copilot.schedule`: Optional Backstage scheduler configuration for recurring ingestion.
 - `copilot.backfillFromDate`: Optional earliest V2 date to ingest. Must be `2025-10-10` or later. Default: `2025-10-10`.
 - `copilot.backfillDelayMs`: Optional delay between per-day backfill requests. Default: `200`.
-- `copilot.ingestTeams`: Optional flag that enables user and user-team ingestion for V2 team filtering. The setting is also frontend-visible so the dashboard can expose the Team filter target. Default: `false`.
+- `copilot.ingestTeams`: Optional flag that enables user and user-team ingestion for V2 team filtering. The setting is also frontend-visible so the dashboard can expose the Team filter target. When enabled with both `copilot.enterprise` and `copilot.organization` configured, the enterprise view also offers organization teams. Default: `false`.
 - `copilot.ingestCostCenters`: Optional flag that enables enterprise cost-center ingestion and organization cost-center reporting when both `copilot.enterprise` and `copilot.organization` are configured. The setting is also frontend-visible so the dashboard can expose the Cost center filter target. Default: `false`.
 
 At least one of `copilot.enterprise` or `copilot.organization` must be configured.
@@ -104,6 +104,11 @@ copilot:
 ```
 
 `defaultView` and `showLegacyView` are consumed by the frontend plugin, but they commonly live in the same `copilot` config block.
+
+When enterprise view is active and both `copilot.enterprise` and
+`copilot.organization` are configured, the frontend can request the
+organization's existing team list and metrics; no additional ingestion or
+storage is required.
 
 ### Cost Centers
 
