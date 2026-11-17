@@ -969,6 +969,13 @@ describe('RBACBackendClient', () => {
       );
       expect(lastRequest.authorizationHeader).toBe('Bearer test-token');
 
+      await expect(
+        rbacApi.getRoleConditions('role:default/one'),
+      ).resolves.toEqual(conditions);
+      expect(lastRequest.url).toBe(
+        'https://localhost:7007/api/permission/roles/conditions?roleEntityRef=role:default/one',
+      );
+
       server.use(
         rest.get(
           `${LOCAL_ADDR}/api/permission/roles/conditions`,

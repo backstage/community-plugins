@@ -150,7 +150,11 @@ const groupByRole = <T>(
 /**
  * Resolves the cell for a single permission. Conditional policies take
  * precedence (matching the backend default), then a policy targeting the
- * permission by name, then one targeting its resource type.
+ * permission by name, then one targeting its resource type. The name-first
+ * order mirrors the backend: when a named policy exists, enforcement uses the
+ * permission name as the object and the resource-type policy is not consulted
+ * (rbac-backend `permission-policy.ts`, "higher priority for permission
+ * specified by name").
  */
 const resolveCell = (
   column: MatrixColumn,

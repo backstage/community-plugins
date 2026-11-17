@@ -16,7 +16,6 @@
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { useCheckIfLicensePluginEnabled } from '../hooks/useCheckIfLicensePluginEnabled';
 import { useRoles } from '../hooks/useRoles';
@@ -31,10 +30,6 @@ jest.mock('@backstage/plugin-permission-react', () => ({
 
 jest.mock('../hooks/useRoles', () => ({
   useRoles: jest.fn(),
-}));
-
-jest.mock('../hooks/usePermissionsMatrix', () => ({
-  usePermissionsMatrix: () => ({ loading: true }),
 }));
 
 jest.mock('../hooks/useCheckIfLicensePluginEnabled', () => ({
@@ -95,6 +90,8 @@ describe('RbacPage', () => {
       </TestApiProvider>,
     );
     expect(screen.getByText('RBAC')).toBeInTheDocument();
+    // Both views are offered; switching and the URL behavior are covered by
+    // RbacPageContent.test.tsx.
     expect(screen.getByRole('tab', { name: 'Roles' })).toHaveAttribute(
       'aria-selected',
       'true',
@@ -102,31 +99,6 @@ describe('RbacPage', () => {
     expect(
       screen.getByRole('tab', { name: 'Permissions by plugin' }),
     ).toHaveAttribute('aria-selected', 'false');
-
-    await userEvent.click(
-      screen.getByRole('tab', { name: 'Permissions by plugin' }),
-    );
-    expect(
-      screen.getByRole('tab', { name: 'Permissions by plugin' }),
-    ).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('tab', { name: 'Roles' })).toHaveAttribute(
-      'aria-selected',
-      'false',
-    );
-  });
-
-  it('should open the permissions view from the URL', async () => {
-    useAsyncMockResult = { loading: false, value: { status: 'Authorized' } };
-
-    await renderInTestApp(
-      <TestApiProvider apis={[[rbacApiRef, mockRbacApi]]}>
-        <RbacPage />
-      </TestApiProvider>,
-      { routeEntries: ['/?view=permissions'] },
-    );
-    expect(
-      screen.getByRole('tab', { name: 'Permissions by plugin' }),
-    ).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should not render if not authorized', async () => {

@@ -24,7 +24,7 @@ import {
 } from '../utils/permissions-matrix-utils';
 import { useTranslation } from './useTranslation';
 
-type PermissionsMatrixError = { title: string; message: string };
+type PermissionsMatrixError = { title?: string; message: string };
 
 class MatrixFetchError extends Error {
   constructor(
@@ -77,10 +77,9 @@ export const usePermissionsMatrix = (): {
     loading,
     matrix: value,
     error: error && {
-      title:
-        error instanceof MatrixFetchError
-          ? error.title
-          : t('permissionsMatrix.errors.fetchPermissions'),
+      // An unexpected failure (e.g. a network error) has no specific title;
+      // the error panel then falls back to its generic one.
+      title: error instanceof MatrixFetchError ? error.title : undefined,
       message: error.message,
     },
   };

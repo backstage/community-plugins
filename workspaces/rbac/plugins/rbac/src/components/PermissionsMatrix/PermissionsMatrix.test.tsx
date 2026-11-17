@@ -175,6 +175,17 @@ describe('PermissionsMatrix', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('says so when there are no plugin permissions to show', async () => {
+    await renderMatrix(
+      createRbacApi({ listPermissions: jest.fn().mockResolvedValue([]) }),
+    );
+
+    expect(
+      await screen.findByText('No plugin permissions found'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
   it('shows an error panel when a request fails', async () => {
     await renderMatrix(
       createRbacApi({

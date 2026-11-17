@@ -203,9 +203,12 @@ export const PermissionsMatrix = () => {
     return <Progress />;
   }
 
-  const emptyMessage =
-    (!filtered.plugins.length && t('permissionsMatrix.emptyPermissions')) ||
-    (!filtered.rows.length && t('permissionsMatrix.emptyRoles'));
+  let emptyMessage: string | undefined;
+  if (!filtered.plugins.length) {
+    emptyMessage = t('permissionsMatrix.emptyPermissions');
+  } else if (!filtered.rows.length) {
+    emptyMessage = t('permissionsMatrix.emptyRoles');
+  }
 
   return (
     <Flex direction="column" gap="4">
