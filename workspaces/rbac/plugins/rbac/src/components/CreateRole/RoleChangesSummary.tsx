@@ -22,8 +22,10 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import { rbacTranslationRef } from '../../alpha/translations';
@@ -51,12 +53,11 @@ type ChangeGroup = {
   items: ChangeItem[];
 };
 
-const changeTypeStyles: Record<ChangeType, { symbol: string; color: string }> =
-  {
-    added: { symbol: '+', color: 'success.dark' },
-    removed: { symbol: '−', color: 'error.dark' },
-    changed: { symbol: '~', color: 'info.dark' },
-  };
+const changeTypeColors: Record<ChangeType, 'success' | 'error' | 'info'> = {
+  added: 'success',
+  removed: 'error',
+  changed: 'info',
+};
 
 const EMPTY_VALUE = '-';
 
@@ -148,18 +149,14 @@ const getChangeGroups = (changes: RoleChanges, t: Translate): ChangeGroup[] => {
 
 const ChangeTypeLabel = ({ changeType }: { changeType: ChangeType }) => {
   const { t } = useTranslation();
-  const { symbol, color } = changeTypeStyles[changeType];
   return (
-    <Typography
-      component="span"
-      variant="body2"
-      sx={{ color, fontWeight: 'bold', minWidth: '6rem', flexShrink: 0 }}
-    >
-      <Box component="span" aria-hidden="true">
-        {symbol}{' '}
-      </Box>
-      {t(`roleForm.review.changes.${changeType}`)}
-    </Typography>
+    <Chip
+      size="small"
+      variant="outlined"
+      color={changeTypeColors[changeType]}
+      label={t(`roleForm.review.changes.${changeType}`)}
+      sx={{ minWidth: '6rem', flexShrink: 0 }}
+    />
   );
 };
 
@@ -186,25 +183,27 @@ export const RoleChangesSummary = ({
         {t('roleForm.review.changes.title')}
       </Typography>
       {changeGroups.length > 0 ? (
-        changeGroups.map(group => (
-          <Box key={group.title} sx={{ marginTop: 1 }}>
-            <Typography variant="subtitle2" component="h4">
-              {group.title}
-            </Typography>
-            <List dense disablePadding>
-              {group.items.map((item, index) => (
-                <ListItem
-                  key={`${item.changeType}-${item.text}-${index}`}
-                  disableGutters
-                  sx={{ gap: 1, alignItems: 'baseline' }}
-                >
-                  <ChangeTypeLabel changeType={item.changeType} />
-                  <Typography variant="body2">{item.text}</Typography>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        ))
+        <Paper variant="outlined" sx={{ padding: 2, marginTop: 1 }}>
+          {changeGroups.map((group, groupIndex) => (
+            <Box key={group.title} sx={{ marginTop: groupIndex > 0 ? 1 : 0 }}>
+              <Typography variant="subtitle2" component="h4">
+                {group.title}
+              </Typography>
+              <List dense disablePadding>
+                {group.items.map((item, index) => (
+                  <ListItem
+                    key={`${item.changeType}-${item.text}-${index}`}
+                    disableGutters
+                    sx={{ gap: 1, alignItems: 'center' }}
+                  >
+                    <ChangeTypeLabel changeType={item.changeType} />
+                    <Typography variant="body2">{item.text}</Typography>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          ))}
+        </Paper>
       ) : (
         <Typography variant="body2">
           {t('roleForm.review.changes.noChanges')}
