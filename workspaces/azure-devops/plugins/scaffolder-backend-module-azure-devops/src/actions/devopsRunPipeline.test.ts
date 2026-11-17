@@ -286,33 +286,96 @@ describe('publish:azure', () => {
     ).rejects.toThrow(/Pipeline run failed/);
   });
 
-  it('should output pipelineRunStatus if available', async () => {
-    mockPipelineClient.runPipeline.mockImplementation(() => ({
-      _links: { web: { href: 'http://pipeline-run-url.com' } },
-      result: '1',
-    }));
-    mockPipelineClient.getRun.mockImplementation(() => ({
-      _links: { web: { href: 'http://pipeline-run-url.com' } },
-      result: '1',
-    }));
+  describe('pipeline run status', () => {
+    const statuses = [
+      [RunResult.Succeeded, 'succeeded'],
+      [RunResult.Failed, 'failed'],
+      [RunResult.Canceled, 'canceled'],
+      [RunResult.Unknown, 'unknown'],
+      [undefined, 'unknown'],
+      [999, 'unknown'],
+    ] as const;
 
-    await action.handler({
-      ...mockContext,
-      input: {
-        host: 'dev.azure.com',
-        organization: 'org',
-        pipelineId: '1',
-        project: 'project',
-      },
+    const run = {
+      id: 42,
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      state: RunState.Completed,
+    };
+
+    const input = {
+      host: 'dev.azure.com',
+      organization: 'org',
+      pipelineId: '1',
+      project: 'project',
+      pollingInterval: 0.001,
+    };
+
+    beforeEach(() => {
+      mockPipelineClient.runPipeline.mockResolvedValue(run);
     });
 
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'pipelineRunUrl',
-      'http://pipeline-run-url.com',
+    it.each([
+      ...statuses.flatMap(([result, expectedStatus]) =>
+        [undefined, false].map(failIfNotSuccessful => ({
+          result,
+          expectedStatus,
+          failIfNotSuccessful,
+        })),
+      ),
+      {
+        result: RunResult.Succeeded,
+        expectedStatus: 'succeeded',
+        failIfNotSuccessful: true,
+      },
+    ])(
+      'outputs $expectedStatus for result $result with failIfNotSuccessful=$failIfNotSuccessful',
+      async ({ result, expectedStatus, failIfNotSuccessful }) => {
+        mockPipelineClient.getRun.mockResolvedValue({ ...run, result });
+
+        await action.handler({
+          ...mockContext,
+          input: { ...input, failIfNotSuccessful },
+        });
+
+        expect(mockContext.output).toHaveBeenCalledWith(
+          'pipelineRunStatus',
+          expectedStatus,
+        );
+        expect(mockContext.output).toHaveBeenCalledWith('pipelineRunId', 42);
+        expect(mockContext.output).toHaveBeenCalledWith(
+          'pipelineRunUrl',
+          'http://pipeline-run-url.com',
+        );
+        expect(mockPipelineClient.getRun.mock.calls).toEqual([
+          ['project', 1, 42],
+          ['project', 1, 42],
+        ]);
+      },
     );
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'pipelineRunStatus',
-      'Succeeded',
+
+    it.each([
+      RunResult.Failed,
+      RunResult.Canceled,
+      RunResult.Unknown,
+      undefined,
+      999,
+    ])(
+      'rejects result %s without emitting outputs when failIfNotSuccessful is true',
+      async result => {
+        mockPipelineClient.getRun.mockResolvedValue({ ...run, result });
+
+        await expect(
+          action.handler({
+            ...mockContext,
+            input: { ...input, failIfNotSuccessful: true },
+          }),
+        ).rejects.toThrow('Pipeline run was not successful');
+        expect(mockContext.output).not.toHaveBeenCalled();
+        expect(mockPipelineClient.getRun.mock.calls).toEqual([
+          ['project', 1, 42],
+          ['project', 1, 42],
+        ]);
+      },
     );
   });
 
