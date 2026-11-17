@@ -21,12 +21,15 @@ import { CustomizationUsageByDayChart } from './CustomizationUsageByDayChart';
 jest.mock('@mui/x-charts/BarChart', () => ({
   BarChart: ({
     series,
+    xAxis,
   }: {
     series: Array<{
       valueFormatter: (value: number | null) => string | null;
     }>;
+    xAxis: Array<{ data: string[] }>;
   }) => (
     <>
+      <output data-testid="chart-days">{JSON.stringify(xAxis[0].data)}</output>
       <output data-testid="chart-series">{JSON.stringify(series)}</output>
       <output data-testid="zero-value-formatters">
         {JSON.stringify(series.map(item => item.valueFormatter(0)))}
@@ -77,6 +80,28 @@ describe('CustomizationUsageByDayChart', () => {
     );
     expect(screen.getByTestId('zero-value-formatters')).toHaveTextContent(
       '[null,null]',
+    );
+  });
+
+  it('keeps reported zero days on the axis and omits unreported gaps', () => {
+    render(
+      <CustomizationUsageByDayChart
+        data={[
+          { ...BASE_ROW, day: '2026-10-22', interaction_count: 2 },
+          { ...BASE_ROW, day: '2026-10-24', interaction_count: 0 },
+          { ...BASE_ROW, day: '2026-10-25', interaction_count: 3 },
+        ]}
+        from="2026-10-22"
+        to="2026-10-25"
+        fillMissingDays={false}
+      />,
+    );
+
+    expect(screen.getByTestId('chart-days')).toHaveTextContent(
+      '["2026-10-22","2026-10-24","2026-10-25"]',
+    );
+    expect(screen.getByTestId('chart-series')).toHaveTextContent(
+      '[{"data":[2,0,3],"label":"docs-search","stack":"total"}]',
     );
   });
 });

@@ -433,19 +433,6 @@ async function createRouter(
       validatedEntityId = organization;
 
       if (team !== undefined) {
-        if (
-          !from ||
-          !to ||
-          !(await dbV2.areOrganizationTeamReportsComplete(
-            [validatedEntityId],
-            from,
-            to,
-          ))
-        ) {
-          throw new ServiceUnavailableError(
-            'Organization-team reports are incomplete for the requested period.',
-          );
-        }
         const teams = await dbV2.getAccessibleOrganizationTeams(
           [validatedEntityId],
           from,
@@ -797,19 +784,6 @@ async function createRouter(
           to,
         });
         if (type === 'organization' && organizationTeamIngestionEnabled) {
-          if (
-            from &&
-            to &&
-            !(await dbV2.areOrganizationTeamReportsComplete(
-              [validatedEntityId],
-              from,
-              to,
-            ))
-          ) {
-            throw new ServiceUnavailableError(
-              'Organization-team reports are incomplete for the requested period.',
-            );
-          }
           const teams = await dbV2.getAccessibleOrganizationTeams(
             [validatedEntityId],
             from,

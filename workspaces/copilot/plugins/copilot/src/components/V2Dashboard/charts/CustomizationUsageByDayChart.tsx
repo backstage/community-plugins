@@ -44,12 +44,7 @@ export function CustomizationUsageByDayChart({
     );
   }
 
-  const days = getChartDays(
-    data.filter(row => row.interaction_count > 0),
-    from,
-    to,
-    fillMissingDays,
-  );
+  const days = getChartDays(data, from, to, fillMissingDays);
   const totalsByItem = new Map<string, number>();
   const valuesByItemAndDay = new Map<string, number>();
   for (const row of data) {
