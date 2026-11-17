@@ -77,6 +77,7 @@ const AuditList = () => {
         {pageCount > 1 && (
           <TablePagination
             pageSize={pageSize}
+            pageSizeOptions={[pageSize]}
             offset={(page - 1) * pageSize}
             totalCount={totalCount}
             hasPreviousPage={page > 1}

@@ -91,6 +91,25 @@ describe('AuditList', () => {
       });
     });
 
+    describe('when the page size is not a default option', () => {
+      beforeEach(() => {
+        const response = { ...websiteListResponse };
+        response.limit = 7;
+        response.offset = 0;
+        response.total = 14;
+        server.use(rest.get('*', (_req, res, ctx) => res(ctx.json(response))));
+      });
+
+      it('shows the range for the actual page size', async () => {
+        await renderInTestApp(
+          <ApiProvider apis={apis}>
+            <AuditList />
+          </ApiProvider>,
+        );
+        expect(await screen.findByText('1 - 7 of 14')).toBeInTheDocument();
+      });
+    });
+
     describe('when multiple pages are needed', () => {
       beforeEach(() => {
         const response = { ...websiteListResponse };
