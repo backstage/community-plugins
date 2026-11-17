@@ -4186,11 +4186,11 @@ __metadata:
   linkType: hard
 
 "@hono/node-server@npm:^1.19.9 || ^2.0.5":
-  version: 2.0.12
-  resolution: "@hono/node-server@npm:2.0.12"
+  version: 2.1.9
+  resolution: "@hono/node-server@npm:2.1.9"
   peerDependencies:
-    hono: ^4
-  checksum: 10/7900669baa2c62c97a25c2cd9dc4ba9e56bba572834fc392e8ce9d3d1aac7b78fdad6b72d2cb47bb668295253a964763a6098e546f0484cf9b96edb1d38ccdf3
+    hono: ^4 || ^5.0.0-0
+  checksum: 10/4abe31482162b9bfab865caa22704020229a032cd7d6c0bed721e1fc8b4f56f43315c9a9611f1c80760b8f0a56123f718cdcf80db28a4150927558da2dc13f0f
   languageName: node
   linkType: hard
 
