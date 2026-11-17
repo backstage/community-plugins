@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 2.4.1
+
+### Patch Changes
+
+- 5773754: Updated dependency `@testing-library/user-event` to `14.6.9`.
+
 ## 2.4.0
 
 ### Minor Changes
