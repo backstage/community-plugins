@@ -232,14 +232,15 @@ describe('DatabaseHandlerV2', () => {
         now,
       );
 
-      const workItems = await handler.getEnterpriseOrganizationWorkItems(
-        'ent-1',
-        now,
-        5,
-        1,
-        'org-b',
-      );
-      expect(workItems.map(item => item.login)).toEqual(['Org-A']);
+      const organizationsToIngest =
+        await handler.getEnterpriseOrganizationsToIngest(
+          'ent-1',
+          now,
+          5,
+          1,
+          'org-b',
+        );
+      expect(organizationsToIngest).toEqual(['Org-A']);
 
       const firstLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
@@ -265,7 +266,6 @@ describe('DatabaseHandlerV2', () => {
           {
             accessState: 'accessible',
             reportsReady: true,
-            cursorDay: '2026-11-15',
             lastAttemptedAt: new Date(),
           },
           tx,
@@ -323,6 +323,76 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toHaveLength(1);
     });
 
+    it('keeps configured-organization ownership behind the shared lease', async () => {
+      const now = new Date('2026-11-17T00:00:00.000Z');
+      const leaseExpiresAt = new Date(now.getTime() + 10 * 60_000);
+      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
+
+      const scheduledLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        'scheduled-worker',
+        now,
+        leaseExpiresAt,
+      );
+      expect(scheduledLease).toBeDefined();
+
+      const configuredAt = new Date(now.getTime() + 1_000);
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        configuredAt,
+        new Date(configuredAt.getTime() + 25 * 60 * 60_000),
+      );
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          'legacy-worker',
+          configuredAt,
+          leaseExpiresAt,
+          true,
+        ),
+      ).resolves.toBeUndefined();
+      await handler.updateEnterpriseOrganizationState(scheduledLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: new Date(configuredAt.getTime() + 1_000),
+      });
+      await handler.releaseEnterpriseOrganizationLease(scheduledLease!);
+
+      const legacyStart = new Date(configuredAt.getTime() + 2_000);
+      const nextAttemptAt = new Date(legacyStart.getTime() + 25 * 60 * 60_000);
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        legacyStart,
+        nextAttemptAt,
+      );
+      await expect(
+        handler.getEnterpriseOrganizationsToIngest('ent-1', legacyStart, 5, 1),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          'scheduled-worker',
+          legacyStart,
+          leaseExpiresAt,
+        ),
+      ).resolves.toBeUndefined();
+      const legacyLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        'legacy-worker',
+        legacyStart,
+        leaseExpiresAt,
+        true,
+      );
+      expect(legacyLease).toBeDefined();
+      await handler.releaseEnterpriseOrganizationLease(legacyLease!);
+    });
+
     it('resolves an accessible organization key to its canonical login', async () => {
       const now = new Date();
       await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
@@ -361,40 +431,9 @@ describe('DatabaseHandlerV2', () => {
       await handler.releaseEnterpriseOrganizationLease(lease!);
     });
 
-    it('sums matching organization teams by slug and deduplicates users by GitHub ID', async () => {
+    it('lists organization teams with their owning organization from membership history', async () => {
       const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
       const organizations = ['Org-A', 'Org-B'];
-      for (const entityId of organizations) {
-        await handler.upsertIngestionLog(
-          buildIngestionLog({
-            day,
-            entity_id: entityId,
-            components_loaded: '["totals","users","teams"]',
-          }),
-        );
-      }
-      await handler.insertDailyTotals([
-        buildDailyTotal({
-          day,
-          entity_id: 'Org-A',
-          team_slug: 'shared',
-          daily_active_users: 2,
-          code_acceptance_activity_count: 10,
-        }),
-        buildDailyTotal({
-          day,
-          entity_id: 'Org-B',
-          team_slug: 'shared',
-          daily_active_users: 2,
-          code_acceptance_activity_count: 20,
-        }),
-      ]);
-      await handler.insertUserMetrics([
-        buildUserMetric({ day, entity_id: 'Org-A', user_id: 1 }),
-        buildUserMetric({ day, entity_id: 'Org-A', user_id: 2 }),
-        buildUserMetric({ day, entity_id: 'Org-B', user_id: 1 }),
-        buildUserMetric({ day, entity_id: 'Org-B', user_id: 3 }),
-      ]);
       await knex('copilot_user_teams').insert([
         buildUserTeam({
           day,
@@ -434,14 +473,17 @@ describe('DatabaseHandlerV2', () => {
       );
 
       await expect(
-        handler.getAccessibleOrganizationTeams(organizations, day, day, 3),
-      ).resolves.toEqual(['shared']);
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 2),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
       await expect(
-        handler.getAccessibleOrganizationTeams(organizations, day, day, 4),
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 3),
       ).resolves.toEqual([]);
       await expect(
         handler.getAccessibleOrganizationTeams(['Org-A'], day, day, 1),
-      ).resolves.toEqual(['shared']);
+      ).resolves.toEqual([{ organization: 'Org-A', team: 'shared' }]);
       await expect(
         handler.getAccessibleOrganizationTeams(
           organizations,
@@ -449,80 +491,11 @@ describe('DatabaseHandlerV2', () => {
           undefined,
           1,
         ),
-      ).resolves.toEqual(['historic-only', 'shared']);
-
-      const dashboard = await handler.getOrganizationTeamDashboardData(
-        organizations,
-        day,
-        day,
-        'shared',
-      );
-      expect(dashboard.daily).toHaveLength(1);
-      expect(dashboard.daily[0]).toMatchObject({
-        metrics_type: 'organization',
-        entity_id: 'all-organizations',
-        team_slug: 'shared',
-        daily_active_users: 3,
-        code_acceptance_activity_count: 30,
-      });
-      await expect(
-        handler.getDashboardData('enterprise', 'ent-1', day, day),
-      ).resolves.toMatchObject({ daily: [] });
-    });
-
-    it('returns available cross-organization rows when report coverage is partial', async () => {
-      const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
-      await handler.upsertIngestionLog(
-        buildIngestionLog({
-          day,
-          entity_id: 'Org-A',
-          components_loaded: '["totals","users","teams"]',
-        }),
-      );
-      await handler.insertDailyTotals([
-        buildDailyTotal({
-          day,
-          entity_id: 'Org-A',
-          team_slug: 'shared',
-          code_acceptance_activity_count: 7,
-        }),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'historic-only' },
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
       ]);
-      const userIds = [1, 2, 3, 4, 5];
-      await handler.insertUserMetrics(
-        userIds.map(user_id =>
-          buildUserMetric({ day, entity_id: 'Org-A', user_id }),
-        ),
-      );
-      await knex('copilot_user_teams').insert(
-        userIds.map(user_id =>
-          buildUserTeam({
-            day,
-            entity_id: 'Org-A',
-            user_id,
-            team_slug: 'shared',
-          }),
-        ),
-      );
-
-      const dashboard = await handler.getOrganizationTeamDashboardData(
-        ['Org-A', 'Org-B'],
-        day,
-        day,
-        'shared',
-      );
-      expect(dashboard.daily).toHaveLength(1);
-      expect(dashboard.daily[0]).toMatchObject({
-        code_acceptance_activity_count: 7,
-        daily_active_users: 5,
-      });
-      expect(dashboard.daily[0].weekly_active_users).toBeUndefined();
-      await expect(
-        handler.areOrganizationTeamReportsComplete(
-          ['Org-A', 'Org-B'],
-          day,
-          day,
-        ),
-      ).resolves.toBe(false);
     });
 
     it('re-ingests incomplete reports from the customization availability date', async () => {

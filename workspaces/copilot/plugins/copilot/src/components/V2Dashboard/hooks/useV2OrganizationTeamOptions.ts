@@ -17,24 +17,19 @@
 import useAsyncRetry from 'react-use/lib/useAsyncRetry';
 import { useApi } from '@backstage/core-plugin-api';
 import { copilotApiV2Ref } from '../../../api';
+import type { V2OrganizationTeamOptions } from '../../../api';
 
-type OptionsResult = {
+type OptionsResult = V2OrganizationTeamOptions & {
   queryKey: string;
-  organizations: string[];
-  teams: string[];
-  teamsReady: boolean;
-  hasPendingOrganizations: boolean;
   error?: Error;
 };
 
 export function useV2OrganizationTeamOptions(
-  from: string,
-  to: string,
   organization?: string,
   enabled = true,
 ) {
   const api = useApi(copilotApiV2Ref);
-  const queryKey = JSON.stringify([from, to, organization, enabled]);
+  const queryKey = JSON.stringify([organization, enabled]);
   const { value, loading, retry } =
     useAsyncRetry(async (): Promise<OptionsResult> => {
       if (!enabled) {
@@ -42,15 +37,12 @@ export function useV2OrganizationTeamOptions(
           queryKey,
           organizations: [],
           teams: [],
-          teamsReady: false,
           hasPendingOrganizations: false,
         };
       }
 
       try {
         const options = await api.getOrganizationTeamOptions({
-          from,
-          to,
           organization,
         });
         return { queryKey, ...options };
@@ -59,18 +51,16 @@ export function useV2OrganizationTeamOptions(
           queryKey,
           organizations: [],
           teams: [],
-          teamsReady: false,
           hasPendingOrganizations: false,
           error: error instanceof Error ? error : new Error(String(error)),
         };
       }
-    }, [api, from, to, organization, enabled]);
+    }, [api, organization, enabled]);
   const hasCurrentResult = value?.queryKey === queryKey;
 
   return {
     organizations: hasCurrentResult ? value.organizations : [],
     teams: hasCurrentResult ? value.teams : [],
-    teamsReady: hasCurrentResult && value.teamsReady,
     hasPendingOrganizations: hasCurrentResult && value.hasPendingOrganizations,
     loading: loading || !hasCurrentResult,
     error: hasCurrentResult ? value.error : undefined,

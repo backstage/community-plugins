@@ -163,10 +163,10 @@ Cost center and Enterprise team filters. It defaults to **All organizations**
 and **All teams**. Selecting an organization limits team choices to that
 organization and resets the team selection. **All organizations** with **All
 teams** keeps the enterprise totals; one organization with **All teams** shows
-that organization's totals. Selecting a team with **All organizations**
-combines matching team slugs across accessible organizations. Additive usage
-metrics are summed, while distinct user counts are deduplicated by GitHub user
-ID.
+that organization's totals. With **All organizations** selected, team choices
+include their owning organization; selecting a team selects that organization
+and uses only its reports. Teams with the same slug in different organizations
+remain separate.
 
 Inaccessible organizations are omitted from the selectors without deleting
 their imported history. Newly discovered organizations bootstrap the latest
@@ -407,13 +407,14 @@ If an organization roster, enterprise-team list or membership, or direct-user lo
 
 ### Organization teams
 
-Set `copilot.ingestOrganizationTeamReports: true` to opt in to organization discovery and multi-organization report ingestion. The enterprise organization list is paginated, and each accessible organization's totals, per-user metrics, and team memberships are ingested incrementally. The existing configured organization remains owned by the standard ingestion task to prevent duplicate imports. Newly discovered organizations start with the latest 30 days; use the V2 backfill endpoint to import older dates. When GitHub provides them, totals outside the per-user/team report window are retained as totals-only days and are not eligible for organization-team dashboards. Organizations that become inaccessible are hidden from filters, while their previously imported history is retained.
-
-The selector lists teams found in imported membership history, regardless of the selected date range or its report completeness; teams never seen in imported reports are not discovered. Dashboards show available metric days only, leaving unreported days blank rather than filling them with zeroes. Teams without eligible data show an empty state, and the existing five-user privacy threshold is unchanged.
-
-The enterprise dashboard offers an **Organization team** filter with **All organizations** and **All teams** as its defaults. All organizations plus all teams continues to use enterprise totals; selecting one organization uses that organization's totals. Team selection across organizations matches by team slug, sums additive usage metrics, and deduplicates user counts by stable GitHub user ID. Inaccessible organizations are not included in the selectable set. The filter is also available for the configured organization through the existing `copilot.ingestTeams` path when multi-organization ingestion is disabled.
-
-The enterprise credential must be able to list organizations for the enterprise and read organization Copilot metrics. For GitHub Apps, install the App on the enterprise and on each organization whose reports should be included, with the permissions required by GitHub's [Copilot usage metrics API](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage-metrics). Classic PATs need enterprise access to list organizations and organization access to read their reports. API or permission failures are logged and do not become successful zero-valued reports.
+For `copilot.ingestOrganizationTeamReports`, the GitHub credential must be
+able to list enterprise organizations and read Copilot reports in each
+organization to include. Install GitHub Apps on the enterprise and target
+organizations with the permissions required by GitHub's
+[Copilot usage metrics API](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage-metrics);
+classic PATs need enterprise access to list organizations and organization
+access to read their reports. API or permission failures are logged and never
+stored as successful zero-valued reports.
 
 ## Run
 

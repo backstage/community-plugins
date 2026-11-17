@@ -52,7 +52,6 @@ import { CopilotPage } from '../Pages/CopilotPage';
 import {
   useV2CostCenters,
   useV2DashboardData,
-  useV2OrganizationTeamDashboardData,
   useV2OrganizationTeamOptions,
   useV2Teams,
 } from './hooks';
@@ -128,6 +127,9 @@ const TEAM_TARGET_LABELS: Record<TeamFilterTarget, string> = {
 
 const getCostCenterOptionValue = (id: string) =>
   `${COST_CENTER_OPTION_PREFIX}${id}`;
+
+const getOrganizationTeamOptionValue = (organization: string, team: string) =>
+  `${organization}/${team}`;
 
 const getCostCenterSelectionOptionValue = (
   selection: CostCenterSelection,
@@ -384,14 +386,14 @@ export const V2DashboardPage = () => {
     [scopeKey, teamSelectionScopeKey],
   );
   const setSelectedOrganizationTeamOrganization = useCallback(
-    (value: string | undefined) => {
+    (value: string | undefined, team?: string) => {
       setOrganizationTeamOrganizationSelection({
         scopeKey: organizationTeamSelectionScopeKey,
         value,
       });
       setTeamSelection({
         scopeKey: JSON.stringify([scopeKey, 'organizationTeam', value]),
-        value: undefined,
+        value: team,
       });
     },
     [organizationTeamSelectionScopeKey, scopeKey],
@@ -424,8 +426,16 @@ export const V2DashboardPage = () => {
     ],
   );
 
-  const dashboardType: MetricsScope = type;
-  const dashboardEntityId = entityId;
+  let dashboardType = type;
+  if (filterTarget === 'organizationTeam') {
+    dashboardType = selectedOrganizationTeamOrganization
+      ? 'organization'
+      : 'enterprise';
+  }
+  const dashboardEntityId =
+    filterTarget === 'organizationTeam'
+      ? selectedOrganizationTeamOrganization ?? entityId
+      : entityId;
   const params = useMemo(
     () => ({
       type: dashboardType,
@@ -438,56 +448,19 @@ export const V2DashboardPage = () => {
     [dashboardType, dashboardEntityId, from, to, activeTeam, activeCostCenter],
   );
 
-  const dashboard = useV2DashboardData(
-    params,
-    activeNoCostCenter,
-    filterTarget !== 'organizationTeam',
-  );
-  const organizationTeamDashboard = useV2OrganizationTeamDashboardData(
-    {
-      from,
-      to,
-      organization: selectedOrganizationTeamOrganization,
-      team: activeTeam,
-    },
-    filterTarget === 'organizationTeam',
-  );
-  const data =
-    filterTarget === 'organizationTeam'
-      ? organizationTeamDashboard.data
-      : dashboard.data;
-  const organizationTeamHasData = [
-    data.daily,
-    data.byFeature,
-    data.byLanguage,
-    data.byModelFeature,
-    data.byLanguageModel,
-    data.prMetrics,
-    data.customizationMetrics,
-    data.customizationSummaries,
-  ].some(rows => rows.length > 0);
+  const dashboard = useV2DashboardData(params, activeNoCostCenter);
+  const data = dashboard.data;
   const costCenters = useV2CostCenters(type, entityId, from, to);
   const enterpriseTeams = useV2Teams(type, entityId, from, to);
   const organizationTeamOptions = useV2OrganizationTeamOptions(
-    from,
-    to,
     selectedOrganizationTeamOrganization,
     organizationTeamScopeEnabled,
   );
-  const showOrganizationTeamEmptyState =
-    filterTarget === 'organizationTeam' &&
-    !organizationTeamOptions.loading &&
-    !organizationTeamOptions.error &&
-    !organizationTeamDashboard.loading &&
-    !organizationTeamDashboard.error &&
-    !organizationTeamHasData;
   const teams =
     filterTarget === 'organizationTeam'
       ? {
-          items: organizationTeamOptions.teams,
-          loading:
-            organizationTeamOptions.loading ||
-            !organizationTeamOptions.teamsReady,
+          items: organizationTeamOptions.teams.map(option => option.team),
+          loading: organizationTeamOptions.loading,
           error: organizationTeamOptions.error,
         }
       : enterpriseTeams;
@@ -539,7 +512,7 @@ export const V2DashboardPage = () => {
   const enterpriseTeamDescription =
     'Teams defined at the enterprise level in GitHub. They can include members from any organization in the enterprise.';
   const organizationTeamDescription =
-    'Teams defined in an organization. All organizations combines matching team slugs across the enterprise.';
+    'Teams defined in an organization. Each team is listed with its owning organization.';
   const teamTargetDescriptions: Partial<Record<TeamFilterTarget, string>> = {
     enterpriseTeam: enterpriseTeamDescription,
     organizationTeam: organizationTeamDescription,
@@ -671,6 +644,17 @@ export const V2DashboardPage = () => {
     filterTarget && filterTarget !== 'costCenter'
       ? TEAM_TARGET_LABELS[filterTarget]
       : 'Team';
+  const teamOptions =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.teams.map(
+          ({ organization: teamOrganization, team }) => ({
+            value: getOrganizationTeamOptionValue(teamOrganization, team),
+            label: selectedOrganizationTeamOrganization
+              ? team
+              : `${teamOrganization} / ${team}`,
+          }),
+        )
+      : teams.items.map(team => ({ value: team, label: team }));
   const filterTargetHasOptions = (() => {
     if (filterTarget === 'costCenter') {
       return costCentersHaveOptions;
@@ -823,22 +807,33 @@ export const V2DashboardPage = () => {
                 {isTeamTarget && (
                   <Select
                     searchable
-                    isDisabled={
-                      teams.loading ||
-                      (filterTarget === 'organizationTeam' &&
-                        !organizationTeamOptions.teamsReady)
-                    }
+                    isDisabled={teams.loading || Boolean(teams.error)}
                     label={teamSelectorLabel}
-                    selectedKey={activeTeam ?? ''}
-                    onChange={key =>
-                      setSelectedTeam(key ? String(key) : undefined)
+                    selectedKey={
+                      filterTarget === 'organizationTeam' &&
+                      selectedOrganizationTeamOrganization &&
+                      activeTeam
+                        ? getOrganizationTeamOptionValue(
+                            selectedOrganizationTeamOrganization,
+                            activeTeam,
+                          )
+                        : activeTeam ?? ''
                     }
+                    onChange={key => {
+                      const value = key ? String(key) : undefined;
+                      if (filterTarget === 'organizationTeam' && value) {
+                        const separator = value.indexOf('/');
+                        setSelectedOrganizationTeamOrganization(
+                          value.slice(0, separator),
+                          value.slice(separator + 1),
+                        );
+                      } else {
+                        setSelectedTeam(value);
+                      }
+                    }}
                     options={[
                       { value: '', label: 'All teams' },
-                      ...teams.items.map(team => ({
-                        value: team,
-                        label: team,
-                      })),
+                      ...teamOptions,
                     ]}
                   />
                 )}
@@ -846,8 +841,7 @@ export const V2DashboardPage = () => {
             )}
           </Flex>
           {filterTarget === 'organizationTeam' &&
-            (organizationTeamOptions.error ||
-              organizationTeamDashboard.error) && (
+            (organizationTeamOptions.error || dashboard.error) && (
               <Alert
                 status="danger"
                 title={organizationTeamAlertTitle}
@@ -860,8 +854,8 @@ export const V2DashboardPage = () => {
                       if (organizationTeamOptions.error) {
                         organizationTeamOptions.retry();
                       }
-                      if (organizationTeamDashboard.error) {
-                        organizationTeamDashboard.retry();
+                      if (dashboard.error) {
+                        dashboard.retry();
                       }
                     }}
                   >
@@ -871,25 +865,7 @@ export const V2DashboardPage = () => {
               />
             )}
 
-          {showOrganizationTeamEmptyState && (
-            <div
-              role="status"
-              style={{
-                padding: 16,
-                textAlign: 'center',
-                color: '#888',
-              }}
-            >
-              No organization-team data is available for this selection and date
-              range.
-            </div>
-          )}
-          <Tabs
-            defaultSelectedKey="copilot-usage"
-            style={{
-              display: showOrganizationTeamEmptyState ? 'none' : undefined,
-            }}
-          >
+          <Tabs defaultSelectedKey="copilot-usage">
             <TabList>
               <Tab id="copilot-usage">Copilot Usage</Tab>
               <Tab id="code-generation">Code Generation</Tab>

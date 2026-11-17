@@ -36,7 +36,6 @@ import {
   Metric,
   PeriodRange,
   V2BackfillStatus,
-  V2DashboardData,
   V2MyDashboardResponse,
 } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
@@ -62,7 +61,6 @@ import {
   v2MeDashboardQuerySchema,
   v2CostCentersQuerySchema,
   v2NoCostCenterDashboardQuerySchema,
-  v2OrganizationTeamDashboardQuerySchema,
   v2OrganizationTeamOptionsQuerySchema,
   V2MetricsQuery,
   v2MetricsQuerySchema,
@@ -70,17 +68,6 @@ import {
   v2TeamsQuerySchema,
 } from './validation/schema';
 import { DateTime } from 'luxon';
-
-const EMPTY_V2_DASHBOARD_DATA: V2DashboardData = {
-  daily: [],
-  byFeature: [],
-  byLanguage: [],
-  byModelFeature: [],
-  byLanguageModel: [],
-  prMetrics: [],
-  customizationMetrics: [],
-  customizationSummaries: [],
-};
 
 /**
  * Options for configuring the Copilot plugin.
@@ -431,18 +418,18 @@ async function createRouter(
         throw new NotFoundError('Metrics scope is not available.');
       }
       validatedEntityId = organization;
+    }
 
-      if (team !== undefined) {
-        const teams = await dbV2.getAccessibleOrganizationTeams(
-          [validatedEntityId],
-          from,
-          to,
+    if (type === 'organization' && team !== undefined) {
+      const teams = await dbV2.getAccessibleOrganizationTeams(
+        [validatedEntityId],
+        from,
+        to,
+      );
+      if (!teams.some(candidate => candidate.team === team)) {
+        throw new InputError(
+          'Team is not eligible for the requested organization and period.',
         );
-        if (!teams.includes(team)) {
-          throw new InputError(
-            'Team is not eligible for the requested organization and period.',
-          );
-        }
       }
     }
 
@@ -789,7 +776,7 @@ async function createRouter(
             from,
             to,
           );
-          return res.json(teams);
+          return res.json(teams.map(candidate => candidate.team));
         }
         const result = await dbV2.getTeams(type, validatedEntityId, from, to);
         return res.json(result);
@@ -810,10 +797,7 @@ async function createRouter(
           });
         }
 
-        const { from, to, organization } = req.query;
-        if (from > to) {
-          throw new InputError('from must be less than or equal to to');
-        }
+        const { organization } = req.query;
         if (!organizationTeamIngestionEnabled) {
           if (
             !configuredOrganizationTeamFilteringEnabled ||
@@ -827,16 +811,19 @@ async function createRouter(
             });
           }
 
+          const teams = await dbV2.getTeams(
+            'organization',
+            configuredOrganization,
+            undefined,
+            undefined,
+            1,
+          );
           return res.json({
             organizations: [configuredOrganization],
-            teams: await dbV2.getTeams(
-              'organization',
-              configuredOrganization,
-              undefined,
-              undefined,
-              1,
-            ),
-            teamsReady: true,
+            teams: teams.map(team => ({
+              organization: configuredOrganization,
+              team,
+            })),
             hasPendingOrganizations: false,
           });
         }
@@ -877,133 +864,8 @@ async function createRouter(
         return res.json({
           organizations: directory.organizations,
           teams,
-          teamsReady: true,
           hasPendingOrganizations: directory.hasPendingOrganizations,
         });
-      } catch (err) {
-        return next(err);
-      }
-    },
-  );
-
-  v2Router.get(
-    '/organization-team/dashboard',
-    validateQuery(v2OrganizationTeamDashboardQuerySchema),
-    async (req, res, next) => {
-      try {
-        if (!organizationTeamFilteringEnabled || !configuredEnterprise) {
-          return res.status(404).json({
-            error: 'Organization-team filtering is not enabled.',
-          });
-        }
-
-        const { from, to, organization, team } = req.query;
-        if (from > to) {
-          throw new InputError('from must be less than or equal to to');
-        }
-        if (!organization && !team) {
-          const result = await dbV2.getDashboardData(
-            'enterprise',
-            configuredEnterprise,
-            from,
-            to,
-          );
-          return res.json(result);
-        }
-        if (!organizationTeamIngestionEnabled) {
-          if (
-            !configuredOrganizationTeamFilteringEnabled ||
-            !configuredOrganization ||
-            (organization &&
-              organization.toLowerCase() !==
-                configuredOrganization.toLowerCase())
-          ) {
-            return res.status(404).json({
-              error: 'Organization is not available for team filtering.',
-            });
-          }
-          if (team) {
-            const teams = await dbV2.getTeams(
-              'organization',
-              configuredOrganization,
-              from,
-              to,
-            );
-            if (!teams.includes(team)) {
-              return res.json(EMPTY_V2_DASHBOARD_DATA);
-            }
-          }
-          const result = await dbV2.getDashboardData(
-            'organization',
-            configuredOrganization,
-            from,
-            to,
-            team,
-          );
-          return res.json(result);
-        }
-
-        const directory = await dbV2.getEnterpriseOrganizationDirectory(
-          configuredEnterprise,
-        );
-        if (!directory.complete) {
-          return res.status(503).json({
-            error: 'Organization-team reports are being refreshed.',
-          });
-        }
-
-        const selectedOrganization = organization
-          ? directory.organizations.find(
-              item => item.toLowerCase() === organization.toLowerCase(),
-            )
-          : undefined;
-        if (organization && !selectedOrganization) {
-          return res.status(404).json({
-            error: 'Organization is not available for team filtering.',
-          });
-        }
-
-        if (selectedOrganization) {
-          if (team) {
-            const teams = await dbV2.getAccessibleOrganizationTeams(
-              [selectedOrganization],
-              from,
-              to,
-            );
-            if (!teams.includes(team)) {
-              return res.json(EMPTY_V2_DASHBOARD_DATA);
-            }
-          }
-          const result = await dbV2.getDashboardData(
-            'organization',
-            selectedOrganization,
-            from,
-            to,
-            team,
-          );
-          return res.json(result);
-        }
-
-        const organizations = directory.organizations;
-        if (organizations.length === 0) {
-          return res.json(EMPTY_V2_DASHBOARD_DATA);
-        }
-        const teams = await dbV2.getAccessibleOrganizationTeams(
-          organizations,
-          from,
-          to,
-        );
-        if (!teams.includes(team!)) {
-          return res.json(EMPTY_V2_DASHBOARD_DATA);
-        }
-
-        const result = await dbV2.getOrganizationTeamDashboardData(
-          organizations,
-          from,
-          to,
-          team!,
-        );
-        return res.json(result);
       } catch (err) {
         return next(err);
       }

@@ -52,9 +52,7 @@ export type V2DashboardParams = Pick<
 
 export type V2OrganizationTeamOptions = {
   organizations: string[];
-  teams: string[];
-  /** True when options were retrieved; it does not imply full date-range coverage. */
-  teamsReady: boolean;
+  teams: Array<{ organization: string; team: string }>;
   hasPendingOrganizations: boolean;
 };
 
@@ -94,15 +92,9 @@ export interface CopilotApiV2 {
     params: V2MetricsParams,
   ): Promise<V2MetricsByLanguageModelRow[]>;
   getDashboardData(params: V2MetricsParams): Promise<V2DashboardData>;
-  getOrganizationTeamOptions(
-    params: Pick<V2MetricsParams, 'from' | 'to'> & { organization?: string },
-  ): Promise<V2OrganizationTeamOptions>;
-  getOrganizationTeamDashboardData(
-    params: Pick<V2MetricsParams, 'from' | 'to'> & {
-      organization?: string;
-      team?: string;
-    },
-  ): Promise<V2DashboardData>;
+  getOrganizationTeamOptions(params: {
+    organization?: string;
+  }): Promise<V2OrganizationTeamOptions>;
   getNoCostCenterDashboardData(
     params: V2DashboardParams,
   ): Promise<V2DashboardData>;

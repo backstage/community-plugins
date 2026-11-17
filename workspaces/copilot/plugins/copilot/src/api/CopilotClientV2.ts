@@ -173,39 +173,15 @@ export class CopilotClientV2 implements CopilotApiV2 {
     );
   }
 
-  public async getOrganizationTeamOptions(
-    params: Pick<V2MetricsParams, 'from' | 'to'> & {
-      organization?: string;
-    },
-  ): Promise<V2OrganizationTeamOptions> {
+  public async getOrganizationTeamOptions(params: {
+    organization?: string;
+  }): Promise<V2OrganizationTeamOptions> {
     const queryString = new URLSearchParams();
-    queryString.append('from', params.from);
-    queryString.append('to', params.to);
     if (params.organization) {
       queryString.append('organization', params.organization);
     }
     return this.get<V2OrganizationTeamOptions>(
       `v2/organization-team/options?${queryString}`,
-    );
-  }
-
-  public async getOrganizationTeamDashboardData(
-    params: Pick<V2MetricsParams, 'from' | 'to'> & {
-      organization?: string;
-      team?: string;
-    },
-  ): Promise<V2DashboardData> {
-    const queryString = new URLSearchParams();
-    queryString.append('from', params.from);
-    queryString.append('to', params.to);
-    if (params.organization) {
-      queryString.append('organization', params.organization);
-    }
-    if (params.team) {
-      queryString.append('team', params.team);
-    }
-    return this.get<V2DashboardData>(
-      `v2/organization-team/dashboard?${queryString}`,
     );
   }
 

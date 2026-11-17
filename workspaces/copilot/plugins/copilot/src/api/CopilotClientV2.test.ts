@@ -171,14 +171,13 @@ describe('CopilotClientV2', () => {
     );
   });
 
-  it('builds organization-team option and dashboard URLs', async () => {
+  it('builds organization-team options and scoped dashboard URLs', async () => {
     mockFetch
       .mockResolvedValueOnce(
         new Response(
           JSON.stringify({
             organizations: ['org-1'],
-            teams: ['platform'],
-            teamsReady: true,
+            teams: [{ organization: 'org-1', team: 'platform' }],
             hasPendingOrganizations: false,
           }),
           { status: 200 },
@@ -201,24 +200,23 @@ describe('CopilotClientV2', () => {
       );
 
     await client.getOrganizationTeamOptions({
-      from: '2026-05-01',
-      to: '2026-05-21',
       organization: 'org-1',
     });
-    await client.getOrganizationTeamDashboardData({
+    await client.getDashboardData({
+      type: 'organization',
+      entityId: 'org-1',
       from: '2026-05-01',
       to: '2026-05-21',
-      organization: 'org-1',
       team: 'platform',
     });
 
     expect(mockFetch).toHaveBeenNthCalledWith(
       1,
-      'http://localhost/api/copilot/v2/organization-team/options?from=2026-05-01&to=2026-05-21&organization=org-1',
+      'http://localhost/api/copilot/v2/organization-team/options?organization=org-1',
     );
     expect(mockFetch).toHaveBeenNthCalledWith(
       2,
-      'http://localhost/api/copilot/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-21&organization=org-1&team=platform',
+      'http://localhost/api/copilot/v2/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-21&team=platform',
     );
   });
 

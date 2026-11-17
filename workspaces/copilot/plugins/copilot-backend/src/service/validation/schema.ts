@@ -90,25 +90,11 @@ export type V2TeamsQuery = z.infer<typeof v2TeamsQuerySchema>;
 
 export const v2OrganizationTeamOptionsQuerySchema = z
   .object({
-    from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
-    to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
     organization: z.string().trim().min(1).max(255).optional(),
   })
   .strict();
 export type V2OrganizationTeamOptionsQuery = z.infer<
   typeof v2OrganizationTeamOptionsQuerySchema
->;
-
-export const v2OrganizationTeamDashboardQuerySchema = z
-  .object({
-    from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
-    to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
-    organization: z.string().trim().min(1).max(255).optional(),
-    team: z.string().trim().min(1).max(255).optional(),
-  })
-  .strict();
-export type V2OrganizationTeamDashboardQuery = z.infer<
-  typeof v2OrganizationTeamDashboardQuerySchema
 >;
 
 export const v2CostCentersQuerySchema = v2TeamsQuerySchema;

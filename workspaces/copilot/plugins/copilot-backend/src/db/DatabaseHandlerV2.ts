@@ -125,13 +125,6 @@ export type EnterpriseOrganizationAccessState =
   | 'accessible'
   | 'inaccessible';
 
-export type EnterpriseOrganizationWorkItem = {
-  login: string;
-  accessState: EnterpriseOrganizationAccessState;
-  reportsReady: boolean;
-  cursorDay: string | null;
-};
-
 export type OrganizationIngestionLease = {
   enterpriseId: string;
   organization: string;
@@ -280,7 +273,6 @@ export class DatabaseHandlerV2 {
               : {
                   access_state: 'pending',
                   reports_ready: false,
-                  cursor_day: null,
                   last_attempted_at: null,
                   next_attempt_at: null,
                   lease_owner: null,
@@ -323,6 +315,8 @@ export class DatabaseHandlerV2 {
     enterpriseId: string,
     organization: string,
     now: Date,
+    nextAttemptAt: Date,
+    lease?: OrganizationIngestionLease,
   ): Promise<void> {
     const key = organization.trim().toLowerCase();
     const existingReport = await this.db('copilot_daily_totals')
@@ -335,22 +329,33 @@ export class DatabaseHandlerV2 {
       })
       .first('day');
 
-    await this.db('copilot_enterprise_organizations')
-      .where({
-        enterprise_id: enterpriseId,
-        organization_key: key,
-        is_current: true,
-      })
-      .update({
-        organization_login: organization,
-        access_state: 'accessible',
-        reports_ready: Boolean(existingReport),
-        last_attempted_at: now,
-        next_attempt_at: null,
-        lease_owner: null,
-        lease_expires_at: null,
-        updated_at: now,
-      });
+    const query = this.db('copilot_enterprise_organizations').where({
+      enterprise_id: enterpriseId,
+      organization_key: key,
+      is_current: true,
+    });
+    if (lease) {
+      query
+        .where({
+          lease_owner: lease.owner,
+          fencing_token: lease.fencingToken,
+        })
+        .andWhere('lease_expires_at', '>', now);
+    } else {
+      query.whereNull('lease_owner');
+    }
+
+    const changed = await query.update({
+      organization_login: organization,
+      access_state: 'accessible',
+      reports_ready: Boolean(existingReport),
+      last_attempted_at: now,
+      next_attempt_at: nextAttemptAt,
+      updated_at: now,
+    });
+    if (lease && changed !== 1) {
+      throw new OrganizationIngestionLeaseLostError();
+    }
   }
 
   async markEnterpriseOrganizationInaccessible(
@@ -365,13 +370,12 @@ export class DatabaseHandlerV2 {
         organization_key: organization.trim().toLowerCase(),
         is_current: true,
       })
+      .whereNull('lease_owner')
       .update({
         access_state: 'inaccessible',
         reports_ready: false,
         last_attempted_at: now,
         next_attempt_at: nextAttemptAt,
-        lease_owner: null,
-        lease_expires_at: null,
         updated_at: now,
       });
   }
@@ -416,49 +420,6 @@ export class DatabaseHandlerV2 {
     };
   }
 
-  async isAccessibleEnterpriseOrganization(
-    enterpriseId: string,
-    organization: string,
-  ): Promise<boolean> {
-    const row = await this.db('copilot_enterprise_organizations as org')
-      .join(
-        'copilot_enterprise_organization_directory as directory',
-        'directory.enterprise_id',
-        'org.enterprise_id',
-      )
-      .where({
-        'org.enterprise_id': enterpriseId,
-        'org.organization_key': organization.trim().toLowerCase(),
-        'org.is_current': true,
-        'org.access_state': 'accessible',
-        'org.reports_ready': true,
-        'directory.is_complete': true,
-      })
-      .first('org.organization_key');
-    return Boolean(row);
-  }
-
-  async isCurrentAccessibleEnterpriseOrganization(
-    enterpriseId: string,
-    organization: string,
-  ): Promise<boolean> {
-    const row = await this.db('copilot_enterprise_organizations as org')
-      .join(
-        'copilot_enterprise_organization_directory as directory',
-        'directory.enterprise_id',
-        'org.enterprise_id',
-      )
-      .where({
-        'org.enterprise_id': enterpriseId,
-        'org.organization_key': organization.trim().toLowerCase(),
-        'org.is_current': true,
-        'org.access_state': 'accessible',
-        'directory.is_complete': true,
-      })
-      .first('org.organization_key');
-    return Boolean(row);
-  }
-
   async getCurrentAccessibleEnterpriseOrganizationLogin(
     enterpriseId: string,
     organization: string,
@@ -482,13 +443,13 @@ export class DatabaseHandlerV2 {
       : undefined;
   }
 
-  async getEnterpriseOrganizationWorkItems(
+  async getEnterpriseOrganizationsToIngest(
     enterpriseId: string,
     now: Date,
     limit: number,
     inaccessibleLimit: number,
     excludedOrganization?: string,
-  ): Promise<EnterpriseOrganizationWorkItem[]> {
+  ): Promise<string[]> {
     const dueRows = () => {
       let query = this.db('copilot_enterprise_organizations').where({
         enterprise_id: enterpriseId,
@@ -524,12 +485,7 @@ export class DatabaseHandlerV2 {
         ? await dueRows()
             .where('access_state', 'inaccessible')
             .limit(recheckCount)
-            .select(
-              'organization_login',
-              'access_state',
-              'reports_ready',
-              'cursor_day',
-            )
+            .select('organization_login')
         : [];
     const activeLimit = Math.max(0, limit - inaccessibleRows.length);
     const activeRows =
@@ -537,20 +493,12 @@ export class DatabaseHandlerV2 {
         ? await dueRows()
             .whereNot('access_state', 'inaccessible')
             .limit(activeLimit)
-            .select(
-              'organization_login',
-              'access_state',
-              'reports_ready',
-              'cursor_day',
-            )
+            .select('organization_login')
         : [];
 
-    return [...activeRows, ...inaccessibleRows].map(row => ({
-      login: row.organization_login,
-      accessState: row.access_state,
-      reportsReady: isDatabaseBoolean(row.reports_ready),
-      cursorDay: this.normalizeDay(row.cursor_day),
-    }));
+    return [...activeRows, ...inaccessibleRows].map(
+      row => row.organization_login,
+    );
   }
 
   async claimEnterpriseOrganizationLease(
@@ -559,14 +507,20 @@ export class DatabaseHandlerV2 {
     owner: string,
     now: Date,
     leaseExpiresAt: Date,
+    ignoreNextAttempt = false,
   ): Promise<OrganizationIngestionLease | undefined> {
     const key = organization.trim().toLowerCase();
-    const changed = await this.db('copilot_enterprise_organizations')
-      .where({
-        enterprise_id: enterpriseId,
-        organization_key: key,
-        is_current: true,
-      })
+    const query = this.db('copilot_enterprise_organizations').where({
+      enterprise_id: enterpriseId,
+      organization_key: key,
+      is_current: true,
+    });
+    if (!ignoreNextAttempt) {
+      query.andWhere(function dueForAttempt() {
+        this.whereNull('next_attempt_at').orWhere('next_attempt_at', '<=', now);
+      });
+    }
+    const changed = await query
       .andWhere(function leaseIsAvailable() {
         this.whereNull('lease_expires_at').orWhere(
           'lease_expires_at',
@@ -666,7 +620,6 @@ export class DatabaseHandlerV2 {
     state: {
       accessState?: EnterpriseOrganizationAccessState;
       reportsReady?: boolean;
-      cursorDay?: string | null;
       lastAttemptedAt: Date;
       nextAttemptAt?: Date | null;
     },
@@ -681,9 +634,6 @@ export class DatabaseHandlerV2 {
     }
     if (state.reportsReady !== undefined) {
       update.reports_ready = state.reportsReady;
-    }
-    if (state.cursorDay !== undefined) {
-      update.cursor_day = state.cursorDay;
     }
     if (state.nextAttemptAt !== undefined) {
       update.next_attempt_at = state.nextAttemptAt;
@@ -1522,6 +1472,7 @@ export class DatabaseHandlerV2 {
     userCostCenters: V2UserCostCenterRow[],
     aggregates: CostCenterAggregateRows,
     unassignedComplete: boolean = true,
+    outerTransaction?: Knex.Transaction,
   ): Promise<void> {
     const rowsByTable = {
       copilot_daily_totals: this.withDefaultCostCenter(aggregates.dailyTotals),
@@ -1561,7 +1512,7 @@ export class DatabaseHandlerV2 {
       );
     }
 
-    await this.db.transaction(async transaction => {
+    const replace = async (transaction: Knex.Transaction) => {
       await transaction('copilot_user_cost_centers')
         .where({ day, metrics_type: metricsType, entity_id: entityId })
         .del();
@@ -1601,7 +1552,13 @@ export class DatabaseHandlerV2 {
         })
         .onConflict(['day', 'metrics_type', 'entity_id'])
         .merge(['unassigned_complete', 'needs_reaggregation', 'aggregated_at']);
-    });
+    };
+
+    if (outerTransaction) {
+      await replace(outerTransaction);
+    } else {
+      await this.db.transaction(replace);
+    }
   }
 
   async insertUserMetricsByFeature(
@@ -1928,8 +1885,9 @@ export class DatabaseHandlerV2 {
     day: string,
     metricsType: MetricsScope,
     entityId: string,
+    transaction?: Knex.Transaction,
   ): Promise<void> {
-    await this.db('copilot_cost_center_aggregation_log')
+    await this.connection(transaction)('copilot_cost_center_aggregation_log')
       .where({ day, metrics_type: metricsType, entity_id: entityId })
       .update({ needs_reaggregation: true });
   }
@@ -3233,85 +3191,12 @@ export class DatabaseHandlerV2 {
     return Number(unassignedCount?.member_count ?? 0) >= minMembers;
   }
 
-  private async getCompleteOrganizationTeamDays(
-    organizations: string[],
-    from: string,
-    to: string,
-  ): Promise<Set<string>> {
-    if (organizations.length === 0) {
-      return new Set();
-    }
-
-    const rows = await this.db('copilot_ingestion_log')
-      .where('metrics_type', 'organization')
-      .whereIn('entity_id', organizations)
-      .whereBetween('day', [from, to])
-      .select('day', 'entity_id', 'components_loaded');
-    const completeByDay = new Map<string, Set<string>>();
-
-    for (const row of rows) {
-      const day = this.normalizeDay(row.day);
-      if (!day) {
-        continue;
-      }
-      const components = new Set(parseComponentsLoaded(row.components_loaded));
-      if (
-        !components.has('totals') ||
-        !components.has('users') ||
-        !components.has('teams')
-      ) {
-        continue;
-      }
-      const entities = completeByDay.get(day) ?? new Set<string>();
-      entities.add(row.entity_id);
-      completeByDay.set(day, entities);
-    }
-
-    return new Set(
-      [...completeByDay.entries()]
-        .filter(([, entities]) =>
-          organizations.every(organization => entities.has(organization)),
-        )
-        .map(([day]) => day),
-    );
-  }
-
-  async areOrganizationTeamReportsComplete(
-    organizations: string[],
-    from: string,
-    to: string,
-  ): Promise<boolean> {
-    const yesterday = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
-    const effectiveTo = to > yesterday ? yesterday : to;
-    if (organizations.length === 0 || from > effectiveTo) {
-      return false;
-    }
-
-    const completeDays = await this.getCompleteOrganizationTeamDays(
-      organizations,
-      from,
-      effectiveTo,
-    );
-    const start = DateTime.fromISO(from, { zone: 'utc' });
-    const end = DateTime.fromISO(effectiveTo, { zone: 'utc' });
-    if (!start.isValid || !end.isValid) {
-      return false;
-    }
-
-    for (let day = start; day <= end; day = day.plus({ days: 1 })) {
-      if (!completeDays.has(day.toFormat('yyyy-MM-dd'))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   async getAccessibleOrganizationTeams(
     organizations: string[],
     from?: string,
     to?: string,
     minMembers: number = 5,
-  ): Promise<string[]> {
+  ): Promise<Array<{ organization: string; team: string }>> {
     if (organizations.length === 0) {
       return [];
     }
@@ -3329,394 +3214,15 @@ export class DatabaseHandlerV2 {
     }
 
     const rows = await query
-      .groupBy('team_slug')
+      .groupBy('entity_id', 'team_slug')
       .havingRaw('COUNT(DISTINCT ??) >= ?', ['user_id', minMembers])
+      .orderBy('entity_id', 'asc')
       .orderBy('team_slug', 'asc')
-      .select('team_slug');
-    return rows.map(row => row.team_slug);
-  }
-
-  private async sumOrganizationTeamRows(
-    tableName: string,
-    organizations: string[],
-    teamSlug: string,
-    from: string,
-    to: string,
-    groupColumns: string[],
-    sumColumns: string[],
-    customization = false,
-  ): Promise<Array<Record<string, unknown>>> {
-    let query = this.db(tableName)
-      .where('metrics_type', 'organization')
-      .whereIn('entity_id', organizations)
-      .whereBetween('day', [from, to])
-      .where('team_slug', teamSlug);
-    if (customization) {
-      query = query.where('scope', 'team');
-    } else {
-      query = query
-        .where('cost_center_id', '')
-        .where('without_cost_center', false);
-    }
-
-    const sumExpressions = sumColumns.map(column =>
-      this.db.raw('SUM(??) as ??', [column, column]),
-    );
-    const rows = await query
-      .groupBy(groupColumns)
-      .orderBy(groupColumns[0], 'asc')
-      .select([...groupColumns, ...sumExpressions]);
-    return rows as Array<Record<string, unknown>>;
-  }
-
-  private numberFromDatabase(value: unknown): number {
-    const parsed = Number(value ?? 0);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  async getOrganizationTeamDashboardData(
-    organizations: string[],
-    from: string,
-    to: string,
-    teamSlug: string,
-  ): Promise<V2DashboardData> {
-    const uniqueOrganizations = [
-      ...new Map(
-        organizations.map(value => [value.toLowerCase(), value]),
-      ).values(),
-    ];
-    if (uniqueOrganizations.length === 0) {
-      throw new Error(
-        'Cannot aggregate organization-team metrics without accessible organizations.',
-      );
-    }
-
-    const activityStart = DateTime.fromISO(from, { zone: 'utc' })
-      .minus({ days: MONTHLY_ACTIVE_USERS_WINDOW_DAYS - 1 })
-      .toFormat('yyyy-MM-dd');
-    const [
-      dailyRows,
-      byFeatureRows,
-      byLanguageRows,
-      byModelFeatureRows,
-      byLanguageModelRows,
-      prRows,
-      customizationRows,
-      activityRows,
-      completeActivityDays,
-    ] = await Promise.all([
-      this.sumOrganizationTeamRows(
-        'copilot_daily_totals',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day'],
-        [
-          'code_acceptance_activity_count',
-          'code_generation_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-          'user_initiated_interaction_count',
-          'total_ai_credits_used',
-        ],
-      ),
-      this.sumOrganizationTeamRows(
-        'copilot_metrics_by_feature',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day', 'feature'],
-        [
-          'code_acceptance_activity_count',
-          'code_generation_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-          'user_initiated_interaction_count',
-        ],
-      ),
-      this.sumOrganizationTeamRows(
-        'copilot_metrics_by_language_feature',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day', 'language', 'feature'],
-        [
-          'code_acceptance_activity_count',
-          'code_generation_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-        ],
-      ),
-      this.sumOrganizationTeamRows(
-        'copilot_metrics_by_model_feature',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day', 'model_id', 'feature'],
-        [
-          'user_initiated_interaction_count',
-          'code_generation_activity_count',
-          'code_acceptance_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-        ],
-      ),
-      this.sumOrganizationTeamRows(
-        'copilot_metrics_by_language_model',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day', 'language', 'model_id'],
-        [
-          'request_count',
-          'code_generation_activity_count',
-          'code_acceptance_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-        ],
-      ),
-      this.sumOrganizationTeamRows(
-        'copilot_pr_metrics',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day'],
-        [
-          'total_created',
-          'total_merged',
-          'total_reviewed',
-          'total_created_by_copilot',
-          'total_merged_created_by_copilot',
-          'total_merged_reviewed_by_copilot',
-          'total_reviewed_by_copilot',
-          'total_suggestions',
-          'total_applied_suggestions',
-          'total_copilot_suggestions',
-          'total_copilot_applied_suggestions',
-        ],
-      ),
-      this.sumOrganizationTeamRows(
-        'copilot_customization_metrics',
-        uniqueOrganizations,
-        teamSlug,
-        from,
-        to,
-        ['day', 'category', 'item_name'],
-        ['interaction_count'],
-        true,
-      ),
-      this.db('copilot_user_metrics as m')
-        .join('copilot_user_teams as t', function joinUserTeam() {
-          this.on('m.day', '=', 't.day')
-            .andOn('m.metrics_type', '=', 't.metrics_type')
-            .andOn('m.entity_id', '=', 't.entity_id')
-            .andOn('m.user_id', '=', 't.user_id');
-        })
-        .where('m.metrics_type', 'organization')
-        .whereIn('m.entity_id', uniqueOrganizations)
-        .whereBetween('m.day', [activityStart, to])
-        .where('t.team_slug', teamSlug)
-        .select(
-          'm.day as day',
-          'm.user_id as user_id',
-          'm.used_agent as used_agent',
-          'm.used_chat as used_chat',
-          'm.used_cli as used_cli',
-          'm.used_vscode_agent as used_vscode_agent',
-        ),
-      this.getCompleteOrganizationTeamDays(
-        uniqueOrganizations,
-        activityStart,
-        to,
-      ),
-    ]);
-
-    const { activeByDay, agentByDay, chatByDay, cliByDay, vscodeAgentByDay } =
-      this.collectRollingUsersByDay(activityRows as TeamActivityRow[]);
-    const entityId = 'all-organizations';
-    const daily: V2DailyTotal[] = dailyRows.map(row => {
-      const day = this.normalizeRequiredDay(row.day);
-      const dailyTotal: V2DailyTotal = {
-        day,
-        metrics_type: 'organization',
-        entity_id: entityId,
-        team_slug: teamSlug,
-        daily_active_users: activeByDay.get(day)?.size ?? 0,
-        code_acceptance_activity_count: this.numberFromDatabase(
-          row.code_acceptance_activity_count,
-        ),
-        code_generation_activity_count: this.numberFromDatabase(
-          row.code_generation_activity_count,
-        ),
-        loc_added_sum: this.numberFromDatabase(row.loc_added_sum),
-        loc_deleted_sum: this.numberFromDatabase(row.loc_deleted_sum),
-        loc_suggested_to_add_sum: this.numberFromDatabase(
-          row.loc_suggested_to_add_sum,
-        ),
-        loc_suggested_to_delete_sum: this.numberFromDatabase(
-          row.loc_suggested_to_delete_sum,
-        ),
-        user_initiated_interaction_count: this.numberFromDatabase(
-          row.user_initiated_interaction_count,
-        ),
-        total_ai_credits_used: this.numberFromDatabase(
-          row.total_ai_credits_used,
-        ),
-      };
-      const weeklyComplete = this.isRollingWindowComplete(
-        completeActivityDays,
-        day,
-        WEEKLY_ACTIVE_USERS_WINDOW_DAYS,
-      );
-      const monthlyComplete = this.isRollingWindowComplete(
-        completeActivityDays,
-        day,
-        MONTHLY_ACTIVE_USERS_WINDOW_DAYS,
-      );
-      return {
-        ...dailyTotal,
-        daily_active_cli_users: completeActivityDays.has(day)
-          ? cliByDay.get(day)?.size ?? 0
-          : undefined,
-        daily_active_vscode_agent_users: completeActivityDays.has(day)
-          ? vscodeAgentByDay.get(day)?.size ?? 0
-          : undefined,
-        weekly_active_users: weeklyComplete
-          ? this.countDistinctUsersOverWindow(
-              activeByDay,
-              day,
-              WEEKLY_ACTIVE_USERS_WINDOW_DAYS,
-            )
-          : undefined,
-        monthly_active_users: monthlyComplete
-          ? this.countDistinctUsersOverWindow(
-              activeByDay,
-              day,
-              MONTHLY_ACTIVE_USERS_WINDOW_DAYS,
-            )
-          : undefined,
-        monthly_active_agent_users: monthlyComplete
-          ? this.countDistinctUsersOverWindow(
-              agentByDay,
-              day,
-              MONTHLY_ACTIVE_USERS_WINDOW_DAYS,
-            )
-          : undefined,
-        monthly_active_chat_users: monthlyComplete
-          ? this.countDistinctUsersOverWindow(
-              chatByDay,
-              day,
-              MONTHLY_ACTIVE_USERS_WINDOW_DAYS,
-            )
-          : undefined,
-      };
-    });
-
-    const normalizeBreakdown = <T extends object>(
-      rows: Array<Record<string, unknown>>,
-      sumColumns: string[],
-    ): T[] =>
-      rows.map(row => {
-        const normalized: Record<string, unknown> = {
-          ...row,
-          day: this.normalizeRequiredDay(row.day),
-          metrics_type: 'organization',
-          entity_id: entityId,
-          team_slug: teamSlug,
-        };
-        for (const column of sumColumns) {
-          normalized[column] = this.numberFromDatabase(row[column]);
-        }
-        return normalized as unknown as T;
-      });
-
-    const prMetricColumns = [
-      'total_created',
-      'total_merged',
-      'total_reviewed',
-      'total_created_by_copilot',
-      'total_merged_created_by_copilot',
-      'total_merged_reviewed_by_copilot',
-      'total_reviewed_by_copilot',
-      'total_suggestions',
-      'total_applied_suggestions',
-      'total_copilot_suggestions',
-      'total_copilot_applied_suggestions',
-    ];
-    const prMetrics = normalizeBreakdown<V2PrMetricsRow>(
-      prRows,
-      prMetricColumns,
-    );
-
-    return {
-      daily,
-      byFeature: normalizeBreakdown<V2MetricsByFeatureRow>(byFeatureRows, [
-        'code_acceptance_activity_count',
-        'code_generation_activity_count',
-        'loc_added_sum',
-        'loc_deleted_sum',
-        'loc_suggested_to_add_sum',
-        'loc_suggested_to_delete_sum',
-        'user_initiated_interaction_count',
-      ]),
-      byLanguage: normalizeBreakdown<V2MetricsByLanguageFeatureRow>(
-        byLanguageRows,
-        [
-          'code_acceptance_activity_count',
-          'code_generation_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-        ],
-      ),
-      byModelFeature: normalizeBreakdown<V2MetricsByModelFeatureRow>(
-        byModelFeatureRows,
-        [
-          'user_initiated_interaction_count',
-          'code_generation_activity_count',
-          'code_acceptance_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-        ],
-      ),
-      byLanguageModel: normalizeBreakdown<V2MetricsByLanguageModelRow>(
-        byLanguageModelRows,
-        [
-          'request_count',
-          'code_generation_activity_count',
-          'code_acceptance_activity_count',
-          'loc_added_sum',
-          'loc_deleted_sum',
-          'loc_suggested_to_add_sum',
-          'loc_suggested_to_delete_sum',
-        ],
-      ),
-      prMetrics,
-      customizationMetrics: normalizeBreakdown<V2CustomizationMetricRow>(
-        customizationRows,
-        ['interaction_count'],
-      ).map(row => ({ ...row, scope: 'team', user_id: 0, user_login: '' })),
-      customizationSummaries: [],
-    };
+      .select('entity_id', 'team_slug');
+    return rows.map(row => ({
+      organization: row.entity_id,
+      team: row.team_slug,
+    }));
   }
 
   async getTeams(

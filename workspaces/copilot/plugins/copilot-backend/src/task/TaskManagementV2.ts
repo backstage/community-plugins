@@ -17,6 +17,7 @@ import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { randomUUID } from 'node:crypto';
 import { DateTime } from 'luxon';
+import type { Knex } from 'knex';
 import {
   MetricsScope,
   V2UserTeamRow,
@@ -25,8 +26,10 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import {
   DatabaseHandlerV2,
+  OrganizationIngestionLeaseLostError,
   parseComponentsLoaded,
 } from '../db/DatabaseHandlerV2';
+import type { OrganizationIngestionLease } from '../db/DatabaseHandlerV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
 import {
   InaccessibleEnterpriseOrganizationError,
@@ -56,6 +59,7 @@ type IngestContext = {
   ingestUsers: boolean;
   ingestCostCenters: boolean;
   source: IngestSource;
+  organizationLease?: OrganizationIngestionLease;
 };
 
 type IngestPlan = {
@@ -82,6 +86,7 @@ const ORGANIZATION_TEAM_MAX_ORGANIZATIONS_PER_RUN = 6;
 const ORGANIZATION_TEAM_MAX_BACKLOG_DAYS_PER_RUN = 3;
 const ORGANIZATION_TEAM_REFETCH_DAYS = 3;
 const ORGANIZATION_TEAM_LEASE_MINUTES = 10;
+const ORGANIZATION_TEAM_RETRY_HOURS = 23;
 const ORGANIZATION_PERMISSIONS_DOCS_URL =
   'https://github.com/backstage/community-plugins/blob/main/workspaces/copilot/plugins/copilot-backend/README.md#required-github-permissions';
 
@@ -154,7 +159,11 @@ function isSupportedCostCenterScope(
   if (metricsType === 'enterprise') {
     return Boolean(enterprise && entityId === enterprise);
   }
-  return Boolean(enterprise && organization && entityId === organization);
+  return Boolean(
+    enterprise &&
+      organization &&
+      entityId.trim().toLowerCase() === organization.trim().toLowerCase(),
+  );
 }
 
 export async function runBackfill(
@@ -175,6 +184,31 @@ export class TaskManagementV2 {
   }
 
   private constructor(private readonly options: TaskManagementV2Options) {}
+
+  private withOrganizationIngestionLease<T>(
+    lease: OrganizationIngestionLease | undefined,
+    operation: (transaction?: Knex.Transaction) => Promise<T>,
+  ): Promise<T> {
+    return lease
+      ? this.options.db.withOrganizationIngestionLease(lease, transaction =>
+          operation(transaction),
+        )
+      : operation();
+  }
+
+  private async renewOrganizationIngestionLease(
+    lease: OrganizationIngestionLease,
+  ): Promise<void> {
+    const now = DateTime.utc();
+    const renewed = await this.options.db.renewEnterpriseOrganizationLease(
+      lease,
+      now.toJSDate(),
+      now.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
+    );
+    if (!renewed) {
+      throw new OrganizationIngestionLeaseLostError();
+    }
+  }
 
   async runAsync(): Promise<void> {
     const { config, db, logger } = this.options;
@@ -331,77 +365,148 @@ export class TaskManagementV2 {
       }
     }
 
-    for (const plan of plans) {
-      const loadedUserReportDays = new Set<string>();
-      const refreshedUserReportDays = new Set<string>();
-      for (const day of plan.missingDays) {
-        const userReport = await this.ingestDay(
-          day,
-          plan.entity.metricsType,
-          plan.entity.entityId,
-          {
-            ingestTeams: plan.ingestTeams && day >= reportWindowStartDate,
-            ingestUsers: plan.ingestUsers && day >= reportWindowStartDate,
-            ingestCostCenters: plan.ingestCostCenters,
-            source: 'scheduled',
-          },
-        );
-        if (userReport.loaded) {
-          loadedUserReportDays.add(day);
-        }
-        if (userReport.refreshed) {
-          refreshedUserReportDays.add(day);
-        }
-
-        if (backfillDelayMs > 0) {
-          await delay(backfillDelayMs);
-        }
-      }
-
-      if (!costCenterSnapshot?.complete || !plan.ingestCostCenters) {
-        continue;
-      }
-
-      const retryIncompleteDays = costCenterSnapshot.unassignedComplete
-        ? plan.incompleteCostCenterDays
-        : [];
-      const daysToAggregate = uniqueDays(
-        [...refreshedUserReportDays].filter(
-          day => day >= reportWindowStartDate,
-        ),
-        plan.missingCostCenterDays.filter(day => day >= reportWindowStartDate),
-        retryIncompleteDays.filter(day => day >= reportWindowStartDate),
-      );
-      for (const day of daysToAggregate) {
-        if (plan.missingDays.includes(day) && !loadedUserReportDays.has(day)) {
-          continue;
-        }
-        try {
-          await this.ingestCostCenterAggregates(
-            day,
-            plan.entity.metricsType,
-            plan.entity.entityId,
-            costCenterSnapshot,
-            plan.missingCostCenterDays.includes(day) ||
-              retryIncompleteDays.includes(day) ||
-              loadedUserReportDays.has(day),
-          );
-        } catch (error) {
-          logger.error(
-            `[TaskManagementV2] Failed cost-center aggregation for ${plan.entity.metricsType}:${plan.entity.entityId} on ${day}; the day will be retried.`,
-            error,
-          );
-        }
-      }
-    }
-
+    let configuredOrganizationAvailable = false;
     if (ingestOrganizationTeamReports) {
       if (!enterprise) {
         logger.warn(
           '[TaskManagementV2] copilot.ingestOrganizationTeamReports is enabled, but copilot.enterprise is not configured; skipping multi-organization team ingestion.',
         );
       } else {
-        await this.runOrganizationTeamIngestion(enterprise, organization);
+        configuredOrganizationAvailable =
+          await this.runOrganizationTeamIngestion(enterprise, organization);
+      }
+    }
+
+    let configuredOrganizationLease: OrganizationIngestionLease | undefined;
+    if (
+      ingestOrganizationTeamReports &&
+      enterprise &&
+      organization &&
+      configuredOrganizationAvailable
+    ) {
+      const leaseStartedAt = DateTime.utc();
+      configuredOrganizationLease = await db.claimEnterpriseOrganizationLease(
+        enterprise,
+        organization,
+        `org-legacy-${process.pid}-${randomUUID()}`,
+        leaseStartedAt.toJSDate(),
+        leaseStartedAt
+          .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
+          .toJSDate(),
+        true,
+      );
+      if (!configuredOrganizationLease) {
+        logger.warn(
+          `[TaskManagementV2] Skipping legacy ingestion for organization:${organization}; another worker owns its organization-team lease.`,
+        );
+      }
+    }
+
+    for (const plan of plans) {
+      const isConfiguredOrganization =
+        plan.entity.metricsType === 'organization';
+      const organizationLease = isConfiguredOrganization
+        ? configuredOrganizationLease
+        : undefined;
+      if (
+        ingestOrganizationTeamReports &&
+        enterprise &&
+        isConfiguredOrganization &&
+        !organizationLease
+      ) {
+        continue;
+      }
+
+      try {
+        const loadedUserReportDays = new Set<string>();
+        const refreshedUserReportDays = new Set<string>();
+        for (const day of plan.missingDays) {
+          if (organizationLease) {
+            await this.renewOrganizationIngestionLease(organizationLease);
+          }
+          const userReport = await this.ingestDay(
+            day,
+            plan.entity.metricsType,
+            plan.entity.entityId,
+            {
+              ingestTeams: plan.ingestTeams && day >= reportWindowStartDate,
+              ingestUsers: plan.ingestUsers && day >= reportWindowStartDate,
+              ingestCostCenters: plan.ingestCostCenters,
+              source: 'scheduled',
+              organizationLease,
+            },
+          );
+          if (userReport.loaded) {
+            loadedUserReportDays.add(day);
+          }
+          if (userReport.refreshed) {
+            refreshedUserReportDays.add(day);
+          }
+
+          if (backfillDelayMs > 0) {
+            await delay(backfillDelayMs);
+          }
+        }
+
+        if (costCenterSnapshot?.complete && plan.ingestCostCenters) {
+          const retryIncompleteDays = costCenterSnapshot.unassignedComplete
+            ? plan.incompleteCostCenterDays
+            : [];
+          const daysToAggregate = uniqueDays(
+            [...refreshedUserReportDays].filter(
+              day => day >= reportWindowStartDate,
+            ),
+            plan.missingCostCenterDays.filter(
+              day => day >= reportWindowStartDate,
+            ),
+            retryIncompleteDays.filter(day => day >= reportWindowStartDate),
+          );
+          for (const day of daysToAggregate) {
+            if (
+              plan.missingDays.includes(day) &&
+              !loadedUserReportDays.has(day)
+            ) {
+              continue;
+            }
+            try {
+              await this.ingestCostCenterAggregates(
+                day,
+                plan.entity.metricsType,
+                plan.entity.entityId,
+                costCenterSnapshot,
+                plan.missingCostCenterDays.includes(day) ||
+                  retryIncompleteDays.includes(day) ||
+                  loadedUserReportDays.has(day),
+                organizationLease,
+              );
+            } catch (error) {
+              if (error instanceof OrganizationIngestionLeaseLostError) {
+                throw error;
+              }
+              logger.error(
+                `[TaskManagementV2] Failed cost-center aggregation for ${plan.entity.metricsType}:${plan.entity.entityId} on ${day}; the day will be retried.`,
+                error,
+              );
+            }
+          }
+        }
+
+        if (organizationLease && enterprise && organization) {
+          const completedAt = DateTime.utc();
+          await db.markLegacyConfiguredOrganization(
+            enterprise,
+            organization,
+            completedAt.toJSDate(),
+            completedAt
+              .plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS })
+              .toJSDate(),
+            organizationLease,
+          );
+        }
+      } finally {
+        if (organizationLease) {
+          await db.releaseEnterpriseOrganizationLease(organizationLease);
+        }
       }
     }
 
@@ -424,17 +529,33 @@ export class TaskManagementV2 {
       false;
     const enterprise = config.getOptionalString('copilot.enterprise');
     const organization = config.getOptionalString('copilot.organization');
-    const ingestTeamsForScope =
-      ingestTeams ||
-      (ingestOrganizationTeamReports &&
-        Boolean(enterprise) &&
+    const isConfiguredOrganizationBackfill = Boolean(
+      ingestOrganizationTeamReports &&
+        enterprise &&
+        organization &&
         metricsType === 'organization' &&
-        entityId === organization);
+        entityId.toLowerCase() === organization.toLowerCase(),
+    );
+    let canonicalOrganization: string | undefined;
+    if (isConfiguredOrganizationBackfill && enterprise) {
+      canonicalOrganization =
+        await db.getCurrentAccessibleEnterpriseOrganizationLogin(
+          enterprise,
+          entityId,
+        );
+      if (!canonicalOrganization) {
+        throw new Error(
+          'Configured organization is not available for backfill.',
+        );
+      }
+    }
+    const backfillEntityId = canonicalOrganization ?? entityId;
+    const ingestTeamsForScope = ingestTeams || isConfiguredOrganizationBackfill;
     const costCenterIngestionAvailable =
       ingestCostCenters &&
       isSupportedCostCenterScope(
         metricsType,
-        entityId,
+        backfillEntityId,
         enterprise,
         organization,
       );
@@ -449,7 +570,7 @@ export class TaskManagementV2 {
       !costCenterIngestionAvailable
     ) {
       logger.warn(
-        `[TaskManagementV2] Organization cost-center ingestion requires copilot.enterprise and the configured copilot.organization; skipping cost-center ingestion for organization:${entityId}.`,
+        `[TaskManagementV2] Organization cost-center ingestion requires copilot.enterprise and the configured copilot.organization; skipping cost-center ingestion for organization:${backfillEntityId}.`,
       );
     }
 
@@ -473,7 +594,7 @@ export class TaskManagementV2 {
 
     const { missingDays } = await this.getMissingIngestionDays(
       metricsType,
-      entityId,
+      backfillEntityId,
       fromDate,
       missingFromDate,
       toDate,
@@ -483,7 +604,7 @@ export class TaskManagementV2 {
     const missingCostCenterDays = costCenterIngestionAvailable
       ? await db.getDaysMissingCostCenterAggregation(
           metricsType,
-          entityId,
+          backfillEntityId,
           missingFromDate,
           toDate,
         )
@@ -491,7 +612,7 @@ export class TaskManagementV2 {
     const incompleteCostCenterDays = costCenterIngestionAvailable
       ? await db.getDaysWithIncompleteCostCenterAggregation(
           metricsType,
-          entityId,
+          backfillEntityId,
           missingFromDate,
           toDate,
         )
@@ -508,14 +629,14 @@ export class TaskManagementV2 {
       !incompleteCostCenterDays.length
     ) {
       logger.info(
-        `[TaskManagementV2] No missing days for backfill ${metricsType}:${entityId} in range ${fromDate}..${toDate}.`,
+        `[TaskManagementV2] No missing days for backfill ${metricsType}:${backfillEntityId} in range ${fromDate}..${toDate}.`,
       );
       return;
     }
 
     if (missingDays.length) {
       logger.info(
-        `[TaskManagementV2] Backfill processing ${missingDays.length} days for ${metricsType}:${entityId}.`,
+        `[TaskManagementV2] Backfill processing ${missingDays.length} days for ${metricsType}:${backfillEntityId}.`,
       );
     }
 
@@ -523,7 +644,7 @@ export class TaskManagementV2 {
     if (costCenterIngestionAvailable && costCenterDays.length) {
       try {
         costCenterSnapshot = await this.loadCostCenterSnapshot([
-          { metricsType, entityId },
+          { metricsType, entityId: backfillEntityId },
         ]);
       } catch (error) {
         logger.error(
@@ -533,68 +654,115 @@ export class TaskManagementV2 {
       }
     }
 
-    const loadedUserReportDays = new Set<string>();
-    const refreshedUserReportDays = new Set<string>();
-    for (const day of missingDays) {
-      const userReport = await this.ingestDay(day, metricsType, entityId, {
-        ingestTeams: ingestTeamsForScope && day >= reportWindowStartDate,
-        ingestUsers: ingestUsers && day >= reportWindowStartDate,
-        ingestCostCenters: costCenterIngestionAvailable,
-        source: 'backfill',
-      });
-      if (userReport.loaded) {
-        loadedUserReportDays.add(day);
-      }
-      if (userReport.refreshed) {
-        refreshedUserReportDays.add(day);
-      }
-
-      if (backfillDelayMs > 0) {
-        await delay(backfillDelayMs);
+    let organizationLease: OrganizationIngestionLease | undefined;
+    if (canonicalOrganization && enterprise) {
+      const startedAt = DateTime.utc();
+      organizationLease = await db.claimEnterpriseOrganizationLease(
+        enterprise,
+        canonicalOrganization,
+        `org-backfill-legacy-${process.pid}-${randomUUID()}`,
+        startedAt.toJSDate(),
+        startedAt.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
+        true,
+      );
+      if (!organizationLease) {
+        throw new Error('Organization-team ingestion is already in progress.');
       }
     }
 
-    if (!costCenterSnapshot?.complete) {
-      return;
-    }
-
-    const retryIncompleteDays = costCenterSnapshot.unassignedComplete
-      ? incompleteCostCenterDays
-      : [];
-    for (const day of costCenterDays) {
-      if (
-        incompleteCostCenterDays.includes(day) &&
-        !missingCostCenterDays.includes(day) &&
-        !retryIncompleteDays.includes(day)
-      ) {
-        continue;
-      }
-      if (missingDays.includes(day) && !loadedUserReportDays.has(day)) {
-        continue;
-      }
-      if (
-        !missingCostCenterDays.includes(day) &&
-        !retryIncompleteDays.includes(day) &&
-        !refreshedUserReportDays.has(day)
-      ) {
-        continue;
-      }
-
-      try {
-        await this.ingestCostCenterAggregates(
+    try {
+      const loadedUserReportDays = new Set<string>();
+      const refreshedUserReportDays = new Set<string>();
+      for (const day of missingDays) {
+        if (organizationLease) {
+          await this.renewOrganizationIngestionLease(organizationLease);
+        }
+        const userReport = await this.ingestDay(
           day,
           metricsType,
-          entityId,
-          costCenterSnapshot,
-          missingCostCenterDays.includes(day) ||
-            retryIncompleteDays.includes(day) ||
-            loadedUserReportDays.has(day),
+          backfillEntityId,
+          {
+            ingestTeams: ingestTeamsForScope && day >= reportWindowStartDate,
+            ingestUsers: ingestUsers && day >= reportWindowStartDate,
+            ingestCostCenters: costCenterIngestionAvailable,
+            source: 'backfill',
+            organizationLease,
+          },
         );
-      } catch (error) {
-        logger.error(
-          `[TaskManagementV2] Failed cost-center aggregation for ${metricsType}:${entityId} on ${day}; the day will be retried.`,
-          error,
+        if (userReport.loaded) {
+          loadedUserReportDays.add(day);
+        }
+        if (userReport.refreshed) {
+          refreshedUserReportDays.add(day);
+        }
+
+        if (backfillDelayMs > 0) {
+          await delay(backfillDelayMs);
+        }
+      }
+
+      if (costCenterSnapshot?.complete) {
+        const retryIncompleteDays = costCenterSnapshot.unassignedComplete
+          ? incompleteCostCenterDays
+          : [];
+        for (const day of costCenterDays) {
+          if (
+            incompleteCostCenterDays.includes(day) &&
+            !missingCostCenterDays.includes(day) &&
+            !retryIncompleteDays.includes(day)
+          ) {
+            continue;
+          }
+          if (missingDays.includes(day) && !loadedUserReportDays.has(day)) {
+            continue;
+          }
+          if (
+            !missingCostCenterDays.includes(day) &&
+            !retryIncompleteDays.includes(day) &&
+            !refreshedUserReportDays.has(day)
+          ) {
+            continue;
+          }
+
+          try {
+            if (organizationLease) {
+              await this.renewOrganizationIngestionLease(organizationLease);
+            }
+            await this.ingestCostCenterAggregates(
+              day,
+              metricsType,
+              backfillEntityId,
+              costCenterSnapshot,
+              missingCostCenterDays.includes(day) ||
+                retryIncompleteDays.includes(day) ||
+                loadedUserReportDays.has(day),
+              organizationLease,
+            );
+          } catch (error) {
+            if (error instanceof OrganizationIngestionLeaseLostError) {
+              throw error;
+            }
+            logger.error(
+              `[TaskManagementV2] Failed cost-center aggregation for ${metricsType}:${backfillEntityId} on ${day}; the day will be retried.`,
+              error,
+            );
+          }
+        }
+      }
+
+      if (organizationLease && enterprise && canonicalOrganization) {
+        const completedAt = DateTime.utc();
+        await db.markLegacyConfiguredOrganization(
+          enterprise,
+          canonicalOrganization,
+          completedAt.toJSDate(),
+          completedAt.plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS }).toJSDate(),
+          organizationLease,
         );
+      }
+    } finally {
+      if (organizationLease) {
+        await db.releaseEnterpriseOrganizationLease(organizationLease);
       }
     }
   }
@@ -665,6 +833,7 @@ export class TaskManagementV2 {
     day: string,
     metricsType: MetricsScope,
     entityId: string,
+    organizationLease?: OrganizationIngestionLease,
   ): Promise<boolean> {
     const { api, db, logger } = this.options;
     const reportEnvelope =
@@ -689,17 +858,31 @@ export class TaskManagementV2 {
           ? parseOrganizationDocument(document, metricsType, entityId)
           : parseEnterpriseDocument(document, metricsType, entityId);
 
-      await db.insertDailyTotals(parsed.dailyTotals);
-      await db.insertPrMetrics(parsed.prMetrics);
-      await db.insertByFeature(parsed.byFeature);
-      await db.insertByIde(parsed.byIde);
-      await db.insertByLanguageFeature(parsed.byLanguageFeature);
-      await db.insertByModelFeature(parsed.byModelFeature);
-      await db.insertByLanguageModel(parsed.byLanguageModel);
-      await db.insertByCli(parsed.byCli);
-      await db.insertByVscodeAgent(parsed.byVscodeAgent);
-      await db.insertCustomizationMetrics(parsed.customizationMetrics);
-      await db.insertCustomizationSummaries(parsed.customizationSummaries);
+      await this.withOrganizationIngestionLease(
+        organizationLease,
+        async transaction => {
+          await db.insertDailyTotals(parsed.dailyTotals, transaction);
+          await db.insertPrMetrics(parsed.prMetrics, transaction);
+          await db.insertByFeature(parsed.byFeature, transaction);
+          await db.insertByIde(parsed.byIde, transaction);
+          await db.insertByLanguageFeature(
+            parsed.byLanguageFeature,
+            transaction,
+          );
+          await db.insertByModelFeature(parsed.byModelFeature, transaction);
+          await db.insertByLanguageModel(parsed.byLanguageModel, transaction);
+          await db.insertByCli(parsed.byCli, transaction);
+          await db.insertByVscodeAgent(parsed.byVscodeAgent, transaction);
+          await db.insertCustomizationMetrics(
+            parsed.customizationMetrics,
+            transaction,
+          );
+          await db.insertCustomizationSummaries(
+            parsed.customizationSummaries,
+            transaction,
+          );
+        },
+      );
 
       totalRowsParsed += parsed.dailyTotals.length;
     }
@@ -718,6 +901,7 @@ export class TaskManagementV2 {
     day: string,
     metricsType: MetricsScope,
     entityId: string,
+    organizationLease?: OrganizationIngestionLease,
   ): Promise<{
     loaded: boolean;
     userMetrics: V2UserMetricRow[];
@@ -758,11 +942,20 @@ export class TaskManagementV2 {
       const parsed = parseUserDocument(rows, metricsType, entityId);
       userMetrics.push(...parsed.userMetrics);
       userBreakdowns.push(...parsed.userBreakdowns);
-      await db.insertCustomizationMetrics(parsed.customizationMetrics);
-      await db.insertCustomizationSummaries(parsed.customizationSummaries);
+      await this.withOrganizationIngestionLease(
+        organizationLease,
+        async transaction => {
+          await db.insertCustomizationMetrics(
+            parsed.customizationMetrics,
+            transaction,
+          );
+          await db.insertCustomizationSummaries(
+            parsed.customizationSummaries,
+            transaction,
+          );
+        },
+      );
     }
-
-    await db.insertUserMetrics(userMetrics);
 
     const breakdownRows = buildUserBreakdownRows(
       userBreakdowns,
@@ -770,13 +963,29 @@ export class TaskManagementV2 {
       metricsType,
       entityId,
     );
-    await db.insertUserMetricsByFeature(breakdownRows.byFeature);
-    await db.insertUserMetricsByIde(breakdownRows.byIde);
-    await db.insertUserMetricsByLanguageFeature(
-      breakdownRows.byLanguageFeature,
+    await this.withOrganizationIngestionLease(
+      organizationLease,
+      async transaction => {
+        await db.insertUserMetrics(userMetrics, transaction);
+        await db.insertUserMetricsByFeature(
+          breakdownRows.byFeature,
+          transaction,
+        );
+        await db.insertUserMetricsByIde(breakdownRows.byIde, transaction);
+        await db.insertUserMetricsByLanguageFeature(
+          breakdownRows.byLanguageFeature,
+          transaction,
+        );
+        await db.insertUserMetricsByModelFeature(
+          breakdownRows.byModelFeature,
+          transaction,
+        );
+        await db.insertUserMetricsByLanguageModel(
+          breakdownRows.byLanguageModel,
+          transaction,
+        );
+      },
     );
-    await db.insertUserMetricsByModelFeature(breakdownRows.byModelFeature);
-    await db.insertUserMetricsByLanguageModel(breakdownRows.byLanguageModel);
 
     return { loaded: true, userMetrics, userBreakdowns };
   }
@@ -788,6 +997,7 @@ export class TaskManagementV2 {
     userMetrics: V2UserMetricRow[],
     userBreakdowns: UserBreakdownData[],
     userReportLoaded: boolean,
+    organizationLease?: OrganizationIngestionLease,
   ): Promise<boolean> {
     const { api, db, logger } = this.options;
     let userTeamsEnvelope: Awaited<
@@ -837,12 +1047,15 @@ export class TaskManagementV2 {
       entityId,
     );
 
-    await db.replaceTeamAggregates(
-      day,
-      metricsType,
-      entityId,
-      userTeams,
-      teamAggregates,
+    await this.withOrganizationIngestionLease(organizationLease, transaction =>
+      db.replaceTeamAggregates(
+        day,
+        metricsType,
+        entityId,
+        userTeams,
+        teamAggregates,
+        transaction,
+      ),
     );
 
     return userMetrics.length > 0;
@@ -854,6 +1067,7 @@ export class TaskManagementV2 {
     entityId: string,
     snapshot: CostCenterMembershipSnapshot,
     markEmptyDay: boolean,
+    organizationLease?: OrganizationIngestionLease,
   ): Promise<boolean> {
     const { db } = this.options;
     let userMetrics = await db.getUserMetricsForDay(metricsType, entityId, day);
@@ -867,7 +1081,12 @@ export class TaskManagementV2 {
       : [];
     // Legacy successful ingestion logs can predate persisted user breakdowns.
     if (userMetrics.length > 0 && userBreakdowns.length === 0) {
-      const report = await this.ingestUserReports(day, metricsType, entityId);
+      const report = await this.ingestUserReports(
+        day,
+        metricsType,
+        entityId,
+        organizationLease,
+      );
       if (!report.loaded || report.userBreakdowns.length === 0) {
         return false;
       }
@@ -905,24 +1124,27 @@ export class TaskManagementV2 {
       snapshot.unassignedComplete,
     );
 
-    await db.replaceCostCenterAggregates(
-      day,
-      metricsType,
-      entityId,
-      userCostCenters,
-      {
-        dailyTotals: aggregates.dailyTotals,
-        prMetrics: [],
-        byFeature: aggregates.byFeature,
-        byIde: aggregates.byIde,
-        byLanguageFeature: aggregates.byLanguageFeature,
-        byModelFeature: aggregates.byModelFeature,
-        byLanguageModel: aggregates.byLanguageModel,
-        byCli: aggregates.byCli,
-        byVscodeAgent: aggregates.byVscodeAgent,
-        customizationMetrics: aggregates.costCenterCustomizationMetrics,
-      },
-      snapshot.unassignedComplete,
+    await this.withOrganizationIngestionLease(organizationLease, transaction =>
+      db.replaceCostCenterAggregates(
+        day,
+        metricsType,
+        entityId,
+        userCostCenters,
+        {
+          dailyTotals: aggregates.dailyTotals,
+          prMetrics: [],
+          byFeature: aggregates.byFeature,
+          byIde: aggregates.byIde,
+          byLanguageFeature: aggregates.byLanguageFeature,
+          byModelFeature: aggregates.byModelFeature,
+          byLanguageModel: aggregates.byLanguageModel,
+          byCli: aggregates.byCli,
+          byVscodeAgent: aggregates.byVscodeAgent,
+          customizationMetrics: aggregates.costCenterCustomizationMetrics,
+        },
+        snapshot.unassignedComplete,
+        transaction,
+      ),
     );
     return true;
   }
@@ -946,15 +1168,22 @@ export class TaskManagementV2 {
         ? `Missing components: ${missingComponents.join(', ')}`
         : undefined;
 
-    await db.upsertIngestionLog({
-      day,
-      metrics_type: metricsType,
-      entity_id: entityId,
-      status,
-      components_loaded: JSON.stringify(componentsLoaded),
-      error_message: errorMessage,
-      source: context.source,
-    });
+    await this.withOrganizationIngestionLease(
+      context.organizationLease,
+      transaction =>
+        db.upsertIngestionLog(
+          {
+            day,
+            metrics_type: metricsType,
+            entity_id: entityId,
+            status,
+            components_loaded: JSON.stringify(componentsLoaded),
+            error_message: errorMessage,
+            source: context.source,
+          },
+          transaction,
+        ),
+    );
 
     if (status === 'success') {
       logger.info(
@@ -1002,7 +1231,12 @@ export class TaskManagementV2 {
 
       if (
         !previouslyLoaded.has('totals') &&
-        (await this.ingestTotals(day, metricsType, entityId))
+        (await this.ingestTotals(
+          day,
+          metricsType,
+          entityId,
+          context.organizationLease,
+        ))
       ) {
         componentsLoaded.add('totals');
       }
@@ -1024,11 +1258,25 @@ export class TaskManagementV2 {
               userMetrics: storedUserMetrics,
               userBreakdowns: storedUserBreakdowns,
             }
-          : await this.ingestUserReports(day, metricsType, entityId);
+          : await this.ingestUserReports(
+              day,
+              metricsType,
+              entityId,
+              context.organizationLease,
+            );
         userReportsLoaded = userReport.loaded;
         userReportsRefreshed = userReport.loaded && !reuseStoredReport;
         if (userReportsRefreshed && context.ingestCostCenters) {
-          await db.markCostCenterAggregationPending(day, metricsType, entityId);
+          await this.withOrganizationIngestionLease(
+            context.organizationLease,
+            transaction =>
+              db.markCostCenterAggregationPending(
+                day,
+                metricsType,
+                entityId,
+                transaction,
+              ),
+          );
         }
         if (userReport.loaded) {
           componentsLoaded.add('users');
@@ -1043,6 +1291,7 @@ export class TaskManagementV2 {
             userReport.userMetrics,
             userReport.userBreakdowns,
             userReport.loaded,
+            context.organizationLease,
           ))
         ) {
           componentsLoaded.add('teams');
@@ -1065,15 +1314,22 @@ export class TaskManagementV2 {
         error,
       );
 
-      await db.upsertIngestionLog({
-        day,
-        metrics_type: metricsType,
-        entity_id: entityId,
-        status: 'error',
-        components_loaded: JSON.stringify([...componentsLoaded]),
-        error_message: message,
-        source: context.source,
-      });
+      await this.withOrganizationIngestionLease(
+        context.organizationLease,
+        transaction =>
+          db.upsertIngestionLog(
+            {
+              day,
+              metrics_type: metricsType,
+              entity_id: entityId,
+              status: 'error',
+              components_loaded: JSON.stringify([...componentsLoaded]),
+              error_message: message,
+              source: context.source,
+            },
+            transaction,
+          ),
+      );
       return { loaded: userReportsLoaded, refreshed: userReportsRefreshed };
     }
   }
@@ -1095,12 +1351,12 @@ export class TaskManagementV2 {
         'Organization-team backfill requires copilot.enterprise and copilot.ingestOrganizationTeamReports.',
       );
     }
-    if (
-      !(await db.isCurrentAccessibleEnterpriseOrganization(
+    const canonicalOrganization =
+      await db.getCurrentAccessibleEnterpriseOrganizationLogin(
         enterprise,
         organization,
-      ))
-    ) {
+      );
+    if (!canonicalOrganization) {
       throw new Error('Organization is not available for team backfill.');
     }
 
@@ -1108,7 +1364,7 @@ export class TaskManagementV2 {
     const reportWindowStartDate = getReportWindowStartDate();
     const lease = await db.claimEnterpriseOrganizationLease(
       enterprise,
-      organization,
+      canonicalOrganization,
       `org-backfill-${process.pid}-${randomUUID()}`,
       now.toJSDate(),
       now.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
@@ -1120,23 +1376,13 @@ export class TaskManagementV2 {
     try {
       const days = this.getDayRange(fromDate, toDate);
       for (const [index, day] of days.entries()) {
-        const leaseNow = DateTime.utc();
-        const renewed = await db.renewEnterpriseOrganizationLease(
-          lease,
-          leaseNow.toJSDate(),
-          leaseNow
-            .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
-            .toJSDate(),
-        );
-        if (!renewed) {
-          throw new Error('Organization-team backfill lost its work lease.');
-        }
+        await this.renewOrganizationIngestionLease(lease);
 
         try {
           const includeUserAndTeamReports = day >= reportWindowStartDate;
           const loaded = await this.ingestOrganizationTeamDay(
             lease,
-            organization,
+            canonicalOrganization,
             day,
             'backfill',
             includeUserAndTeamReports,
@@ -1144,11 +1390,11 @@ export class TaskManagementV2 {
           if (!loaded) {
             if (includeUserAndTeamReports) {
               logger.warn(
-                `[TaskManagementV2] Organization-team backfill is incomplete for organization:${organization} on ${day}; the day will be retried.`,
+                `[TaskManagementV2] Organization-team backfill is incomplete for organization:${canonicalOrganization} on ${day}; the day will be retried.`,
               );
             } else {
               logger.info(
-                `[TaskManagementV2] Stored totals only for organization:${organization} on ${day}; per-user and user-team reports are outside GitHub's report window.`,
+                `[TaskManagementV2] Stored totals only for organization:${canonicalOrganization} on ${day}; per-user and user-team reports are outside GitHub's report window.`,
               );
             }
           }
@@ -1195,7 +1441,7 @@ export class TaskManagementV2 {
   private async runOrganizationTeamIngestion(
     enterprise: string,
     configuredOrganization?: string,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { api, db, logger } = this.options;
     const now = DateTime.utc();
     let organizations: string[];
@@ -1215,9 +1461,10 @@ export class TaskManagementV2 {
         '[TaskManagementV2] Failed to refresh the enterprise organization directory; organization-team views are unavailable until discovery succeeds.',
         error,
       );
-      return;
+      return false;
     }
 
+    let configuredOrganizationAvailable = false;
     if (
       configuredOrganization &&
       organizations.some(
@@ -1233,11 +1480,14 @@ export class TaskManagementV2 {
           configuredOrganization,
           yesterday,
         );
+        const checkedAt = DateTime.utc();
         await db.markLegacyConfiguredOrganization(
           enterprise,
           configuredOrganization,
-          DateTime.utc().toJSDate(),
+          checkedAt.toJSDate(),
+          checkedAt.plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS }).toJSDate(),
         );
+        configuredOrganizationAvailable = true;
       } catch (error) {
         if (error instanceof InaccessibleEnterpriseOrganizationError) {
           const failedAt = DateTime.utc();
@@ -1259,18 +1509,18 @@ export class TaskManagementV2 {
       }
     }
 
-    const workItems = await db.getEnterpriseOrganizationWorkItems(
+    const organizationsToIngest = await db.getEnterpriseOrganizationsToIngest(
       enterprise,
       DateTime.utc().toJSDate(),
       ORGANIZATION_TEAM_MAX_ORGANIZATIONS_PER_RUN,
       1,
       configuredOrganization,
     );
-    for (const item of workItems) {
+    for (const organization of organizationsToIngest) {
       const leaseStartedAt = DateTime.utc();
       const lease = await db.claimEnterpriseOrganizationLease(
         enterprise,
-        item.login,
+        organization,
         `org-ingest-${process.pid}-${randomUUID()}`,
         leaseStartedAt.toJSDate(),
         leaseStartedAt
@@ -1282,7 +1532,7 @@ export class TaskManagementV2 {
       }
 
       try {
-        await this.ingestEnterpriseOrganizationWorkItem(lease, item.login);
+        await this.ingestEnterpriseOrganizationWorkItem(lease, organization);
       } catch (error) {
         const failedAt = DateTime.utc();
         if (error instanceof InaccessibleEnterpriseOrganizationError) {
@@ -1295,12 +1545,12 @@ export class TaskManagementV2 {
             });
           } catch (stateError) {
             logger.warn(
-              `[TaskManagementV2] Could not update access state for organization:${item.login}; the ingestion lease may have expired.`,
+              `[TaskManagementV2] Could not update access state for organization:${organization}; the ingestion lease may have expired.`,
               stateError,
             );
           }
           logger.warn(
-            `[TaskManagementV2] Organization-team ingestion is inaccessible for organization:${item.login}; imported history will be retained.`,
+            `[TaskManagementV2] Organization-team ingestion is inaccessible for organization:${organization}; imported history will be retained.`,
           );
         } else {
           try {
@@ -1310,12 +1560,12 @@ export class TaskManagementV2 {
             });
           } catch (stateError) {
             logger.warn(
-              `[TaskManagementV2] Could not schedule a retry for organization:${item.login}; the ingestion lease may have expired.`,
+              `[TaskManagementV2] Could not schedule a retry for organization:${organization}; the ingestion lease may have expired.`,
               stateError,
             );
           }
           logger.error(
-            `[TaskManagementV2] Organization-team ingestion failed for organization:${item.login}; it will be retried.`,
+            `[TaskManagementV2] Organization-team ingestion failed for organization:${organization}; it will be retried.`,
             error,
           );
         }
@@ -1323,18 +1573,13 @@ export class TaskManagementV2 {
         await db.releaseEnterpriseOrganizationLease(lease);
       }
     }
+    return configuredOrganizationAvailable;
   }
 
   private async ingestEnterpriseOrganizationWorkItem(
-    lease: Awaited<
-      ReturnType<DatabaseHandlerV2['claimEnterpriseOrganizationLease']>
-    > & {},
+    lease: OrganizationIngestionLease,
     organization: string,
   ): Promise<void> {
-    if (!lease) {
-      return;
-    }
-
     const { db, logger } = this.options;
     const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
     const bootstrapStart = DateTime.utc()
@@ -1382,17 +1627,7 @@ export class TaskManagementV2 {
 
     let incomplete = false;
     for (const day of days) {
-      const leaseNow = DateTime.utc();
-      const renewed = await db.renewEnterpriseOrganizationLease(
-        lease,
-        leaseNow.toJSDate(),
-        leaseNow.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
-      );
-      if (!renewed) {
-        throw new Error(
-          `Organization-team ingestion lost its lease for organization:${organization}.`,
-        );
-      }
+      await this.renewOrganizationIngestionLease(lease);
 
       try {
         const loaded = await this.ingestOrganizationTeamDay(
@@ -1427,9 +1662,7 @@ export class TaskManagementV2 {
   }
 
   private async ingestOrganizationTeamDay(
-    lease: NonNullable<
-      Awaited<ReturnType<DatabaseHandlerV2['claimEnterpriseOrganizationLease']>>
-    >,
+    lease: OrganizationIngestionLease,
     organization: string,
     day: string,
     source: IngestSource,
@@ -1613,7 +1846,6 @@ export class TaskManagementV2 {
         {
           accessState: 'accessible',
           reportsReady: true,
-          cursorDay: day,
           lastAttemptedAt: storedAt.toJSDate(),
           nextAttemptAt: storedAt.plus({ hours: 23 }).toJSDate(),
         },
@@ -1624,9 +1856,7 @@ export class TaskManagementV2 {
   }
 
   private async storeOrganizationTotalsWithoutTeams(
-    lease: NonNullable<
-      Awaited<ReturnType<DatabaseHandlerV2['claimEnterpriseOrganizationLease']>>
-    >,
+    lease: OrganizationIngestionLease,
     organization: string,
     day: string,
     totals: ParsedEnterpriseDocument,
@@ -1659,7 +1889,6 @@ export class TaskManagementV2 {
         {
           accessState: 'accessible',
           reportsReady: true,
-          cursorDay: day,
           lastAttemptedAt: storedAt.toJSDate(),
           nextAttemptAt: storedAt.plus({ hours: 1 }).toJSDate(),
         },

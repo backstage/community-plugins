@@ -20,12 +20,13 @@ The plugin now defaults to the V2 dashboard, backed by GitHub's report-based Cop
 - **Team Filtering**: Filter V2 data by team when `copilot.ingestTeams` is enabled.
 - **Cost Center Filtering**: In enterprise views, and in organization views when both `copilot.enterprise` and `copilot.organization` are configured, filter by eligible cost centers when `copilot.ingestCostCenters` is enabled. The Consumption tab also works for a selected cost center.
 - **No Cost Center View**: View users without a cost-center membership as a separate dashboard scope. This option is not represented by a reserved cost-center ID, so every real cost-center ID remains selectable.
-- **Exclusive V2 Filters**: Filter by either cost center or team, never both. When `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are configured, organization teams are available as an additional filter target alongside enterprise teams and cost centers in enterprise view. Selecting a specific organization team uses the configured organization's existing reports; **All teams** retains enterprise-wide totals. This does not add ingestion or storage. The dashboard identifies enterprise and organization teams separately and explains the distinction in tooltips.
+- **Exclusive V2 Filters**: Filter by either cost center or team, never both. Organization teams are available in enterprise view when `copilot.ingestOrganizationTeamReports` is enabled, or when `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are configured. **All organizations** with **All teams** retains enterprise-wide totals; selecting a team scopes the dashboard to its owning organization. The dashboard identifies enterprise and organization teams separately in tooltips.
 - **Individual ("Me") Metrics**: A privacy-scoped view, mounted by default at `/copilot/me`, that shows only the signed-in user's own Copilot usage and consumption — see [Individual ("Me") Metrics](#individual-me-metrics) below.
 
-_GitHub's Copilot user-teams reports include only teams with at least five
-active users per day; the plugin lists teams only when at least five distinct
-users have data across the selected range._
+_The Enterprise team filter lists teams with at least five distinct users in
+the selected range. Organization-team names come from stored membership
+history; the organization-scoped dashboard still enforces the five-user
+privacy threshold._
 
 _Cost-center views require at least five distinct Copilot users across the selected date range._
 
@@ -239,12 +240,11 @@ copilot:
   ingestCostCenters: true
 ```
 
-In enterprise view, when `copilot.enterprise`, `copilot.organization`, and
-`copilot.ingestTeams` are configured, selected organization teams use the
-organization scope for dashboard, customization, and consumption metrics,
-matching the corresponding organization-view data. The existing five-user team
-eligibility threshold is unchanged. Organization view continues to use the
-`Team` label and is unaffected.
+Organization-team dashboards use the selected organization's scope for
+dashboard, customization, and consumption metrics, matching the corresponding
+organization-view data. Choosing a team with All organizations selected also
+selects its owning organization; equal team slugs remain distinct.
+Organization view continues to use the `Team` label.
 
 ## Routes And Legacy Dashboard
 

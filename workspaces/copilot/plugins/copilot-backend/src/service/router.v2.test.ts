@@ -80,9 +80,7 @@ describe('router v2 endpoints', () => {
       getIngestionLog: jest.fn(),
       getBackfillStatus: jest.fn(),
       getDashboardData: jest.fn(),
-      getOrganizationTeamDashboardData: jest.fn(),
       getEnterpriseOrganizationDirectory: jest.fn(),
-      areOrganizationTeamReportsComplete: jest.fn(),
       getAccessibleOrganizationTeams: jest.fn(),
       getCurrentAccessibleEnterpriseOrganizationLogin: jest.fn(),
       hasUsersWithoutCostCenterOnDashboard: jest.fn(),
@@ -134,23 +132,15 @@ describe('router v2 endpoints', () => {
       ],
       customizationSummaries: [{ category: 'skill', distinct_item_count: 1 }],
     });
-    mockDbV2.getOrganizationTeamDashboardData.mockResolvedValue({
-      daily: [],
-      byFeature: [],
-      byLanguage: [],
-      byModelFeature: [],
-      byLanguageModel: [],
-      prMetrics: [],
-      customizationMetrics: [],
-      customizationSummaries: [],
-    });
     mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
       complete: true,
       hasPendingOrganizations: false,
       organizations: ['org-1', 'org-2'],
     });
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(true);
-    mockDbV2.getAccessibleOrganizationTeams.mockResolvedValue(['platform']);
+    mockDbV2.getAccessibleOrganizationTeams.mockImplementation(
+      async (organizations: string[]) =>
+        organizations.map(organization => ({ organization, team: 'platform' })),
+    );
     mockDbV2.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
       'org-1',
     );
@@ -1005,7 +995,6 @@ describe('router v2 endpoints', () => {
   });
 
   it('GET /v2/dashboard serves eligible organization-team data with partial report coverage', async () => {
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(false);
     const app = await createTestApp({
       config: mockServices.rootConfig({
         data: {
@@ -1029,7 +1018,6 @@ describe('router v2 endpoints', () => {
       'platform',
       undefined,
     );
-    expect(mockDbV2.areOrganizationTeamReportsComplete).not.toHaveBeenCalled();
     expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
       ['org-1'],
       '2026-05-01',
@@ -1038,7 +1026,6 @@ describe('router v2 endpoints', () => {
   });
 
   it('GET /v2/metrics/daily serves eligible organization-team data with partial report coverage', async () => {
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(false);
     mockDbV2.getDailyTotals.mockResolvedValue([
       { day: '2026-05-20', metrics_type: 'organization', entity_id: 'org-1' },
     ]);
@@ -1061,7 +1048,6 @@ describe('router v2 endpoints', () => {
     expect(response.body).toEqual([
       { day: '2026-05-20', metrics_type: 'organization', entity_id: 'org-1' },
     ]);
-    expect(mockDbV2.areOrganizationTeamReportsComplete).not.toHaveBeenCalled();
     expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
       ['org-1'],
       '2026-05-01',
@@ -1074,39 +1060,6 @@ describe('router v2 endpoints', () => {
       '2026-05-20',
       'platform',
       undefined,
-    );
-  });
-
-  it('serves available selected organization-team data with partial report coverage', async () => {
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(false);
-    const app = await createTestApp({
-      config: mockServices.rootConfig({
-        data: {
-          copilot: {
-            enterprise: 'ent-1',
-            ingestOrganizationTeamReports: true,
-          },
-        },
-      }),
-    });
-
-    const response = await request(app).get(
-      '/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-20&organization=org-1&team=platform',
-    );
-
-    expect(response.status).toBe(200);
-    expect(mockDbV2.areOrganizationTeamReportsComplete).not.toHaveBeenCalled();
-    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-      ['org-1'],
-      '2026-05-01',
-      '2026-05-20',
-    );
-    expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
-      'organization',
-      'org-1',
-      '2026-05-01',
-      '2026-05-20',
-      'platform',
     );
   });
 
@@ -1213,40 +1166,49 @@ describe('router v2 endpoints', () => {
 
   it.each([
     {
-      path: '/v2/dashboard?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=hidden-team',
-      reader: 'getDashboardData',
+      ingestOrganizationTeamReports: true,
+      ingestTeams: false,
     },
     {
-      path: '/v2/metrics/daily?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=hidden-team',
-      reader: 'getDailyTotals',
+      ingestOrganizationTeamReports: false,
+      ingestTeams: true,
     },
   ])(
-    '$path rejects organization teams below the distinct-user threshold',
-    async ({ path, reader }) => {
+    'rejects organization teams below the distinct-user threshold (multi-org: $ingestOrganizationTeamReports)',
+    async ({ ingestOrganizationTeamReports, ingestTeams }) => {
       const app = await createTestApp({
         config: mockServices.rootConfig({
           data: {
             copilot: {
               enterprise: 'ent-1',
               organization: 'org-1',
-              ingestOrganizationTeamReports: true,
+              ingestOrganizationTeamReports,
+              ingestTeams,
             },
           },
         }),
       });
 
-      const response = await request(app).get(path);
+      for (const { path, reader } of [
+        {
+          path: '/v2/dashboard?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=hidden-team',
+          reader: 'getDashboardData',
+        },
+        {
+          path: '/v2/metrics/daily?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=hidden-team',
+          reader: 'getDailyTotals',
+        },
+      ] as const) {
+        const response = await request(app).get(path);
 
-      expect(response.status).toBe(400);
-      expect(
-        mockDbV2.areOrganizationTeamReportsComplete,
-      ).not.toHaveBeenCalled();
-      expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-        ['org-1'],
-        '2026-05-01',
-        '2026-05-20',
-      );
-      expect(mockDbV2[reader]).not.toHaveBeenCalled();
+        expect(response.status).toBe(400);
+        expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
+          ['org-1'],
+          '2026-05-01',
+          '2026-05-20',
+        );
+        expect(mockDbV2[reader]).not.toHaveBeenCalled();
+      }
     },
   );
 
@@ -1279,7 +1241,6 @@ describe('router v2 endpoints', () => {
   });
 
   it('lists threshold-qualified teams for a discovered organization with partial report coverage', async () => {
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(false);
     const app = await createTestApp({
       config: mockServices.rootConfig({
         data: {
@@ -1297,7 +1258,6 @@ describe('router v2 endpoints', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(['platform']);
-    expect(mockDbV2.areOrganizationTeamReportsComplete).not.toHaveBeenCalled();
     expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
       ['org-1'],
       '2026-05-01',
@@ -1306,38 +1266,7 @@ describe('router v2 endpoints', () => {
     expect(mockDbV2.getTeams).not.toHaveBeenCalled();
   });
 
-  it('GET /v2/organization-team/dashboard keeps the enterprise all/all fallback independent of discovery', async () => {
-    mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
-      complete: false,
-      hasPendingOrganizations: false,
-      organizations: [],
-    });
-    const app = await createTestApp({
-      config: mockServices.rootConfig({
-        data: {
-          copilot: {
-            enterprise: 'ent-1',
-            ingestOrganizationTeamReports: true,
-          },
-        },
-      }),
-    });
-
-    const response = await request(app).get(
-      '/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-20',
-    );
-
-    expect(response.status).toBe(200);
-    expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
-      'enterprise',
-      'ent-1',
-      '2026-05-01',
-      '2026-05-20',
-    );
-    expect(mockDbV2.getEnterpriseOrganizationDirectory).not.toHaveBeenCalled();
-  });
-
-  it('GET /v2/organization-team endpoints preserve configured-organization filtering when multi-org ingestion is off', async () => {
+  it('GET /v2/organization-team/options preserves the configured organization when multi-org ingestion is off', async () => {
     mockDbV2.getTeams.mockResolvedValue(['octo-team']);
     const app = await createTestApp({
       config: mockServices.rootConfig({
@@ -1351,14 +1280,11 @@ describe('router v2 endpoints', () => {
       }),
     });
 
-    const options = await request(app).get(
-      '/v2/organization-team/options?from=2026-05-01&to=2026-05-20',
-    );
+    const options = await request(app).get('/v2/organization-team/options');
     expect(options.status).toBe(200);
     expect(options.body).toEqual({
       organizations: ['org-1'],
-      teams: ['octo-team'],
-      teamsReady: true,
+      teams: [{ organization: 'org-1', team: 'octo-team' }],
       hasPendingOrganizations: false,
     });
     expect(mockDbV2.getTeams).toHaveBeenCalledWith(
@@ -1369,67 +1295,18 @@ describe('router v2 endpoints', () => {
       1,
     );
     expect(mockDbV2.getEnterpriseOrganizationDirectory).not.toHaveBeenCalled();
-
-    const dashboard = await request(app).get(
-      '/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-20&organization=org-1&team=octo-team',
-    );
-    expect(dashboard.status).toBe(200);
-    expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
-      'organization',
-      'org-1',
-      '2026-05-01',
-      '2026-05-20',
-      'octo-team',
-    );
   });
 
-  it('GET /v2/organization-team/dashboard combines only accessible organizations for a selected slug', async () => {
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(false);
+  it('lists known teams by owning organization despite partial reports or pending organizations', async () => {
     mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
       complete: true,
       hasPendingOrganizations: true,
       organizations: ['org-1', 'org-2'],
     });
-    const app = await createTestApp({
-      config: mockServices.rootConfig({
-        data: {
-          copilot: {
-            enterprise: 'ent-1',
-            ingestOrganizationTeamReports: true,
-          },
-        },
-      }),
-    });
-
-    const response = await request(app).get(
-      '/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-20&team=platform',
-    );
-
-    expect(response.status).toBe(200);
-    expect(mockDbV2.areOrganizationTeamReportsComplete).not.toHaveBeenCalled();
-    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-      ['org-1', 'org-2'],
-      '2026-05-01',
-      '2026-05-20',
-    );
-    expect(mockDbV2.getOrganizationTeamDashboardData).toHaveBeenCalledWith(
-      ['org-1', 'org-2'],
-      '2026-05-01',
-      '2026-05-20',
-      'platform',
-    );
-  });
-
-  it('lists known organization teams despite incomplete range coverage or pending organizations', async () => {
-    mockDbV2.areOrganizationTeamReportsComplete.mockResolvedValue(false);
-    mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
-      complete: true,
-      hasPendingOrganizations: true,
-      organizations: ['org-1'],
-    });
     mockDbV2.getAccessibleOrganizationTeams.mockResolvedValue([
-      'historic-only',
-      'platform',
+      { organization: 'org-1', team: 'historic-only' },
+      { organization: 'org-1', team: 'platform' },
+      { organization: 'org-2', team: 'platform' },
     ]);
     const app = await createTestApp({
       config: mockServices.rootConfig({
@@ -1442,71 +1319,25 @@ describe('router v2 endpoints', () => {
       }),
     });
 
-    const response = await request(app).get(
-      '/v2/organization-team/options?from=2026-05-01&to=2026-05-20',
-    );
+    const response = await request(app).get('/v2/organization-team/options');
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      organizations: ['org-1'],
-      teams: ['historic-only', 'platform'],
-      teamsReady: true,
+      organizations: ['org-1', 'org-2'],
+      teams: [
+        { organization: 'org-1', team: 'historic-only' },
+        { organization: 'org-1', team: 'platform' },
+        { organization: 'org-2', team: 'platform' },
+      ],
       hasPendingOrganizations: true,
     });
-    expect(mockDbV2.areOrganizationTeamReportsComplete).not.toHaveBeenCalled();
     expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-      ['org-1'],
+      ['org-1', 'org-2'],
       undefined,
       undefined,
       1,
     );
   });
-
-  it.each([
-    {
-      path: '/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-20&organization=org-1&team=historic-only',
-      reader: 'getDashboardData',
-    },
-    {
-      path: '/v2/organization-team/dashboard?from=2026-05-01&to=2026-05-20&team=historic-only',
-      reader: 'getOrganizationTeamDashboardData',
-    },
-  ])(
-    '$path returns no data without reading metrics below the privacy threshold',
-    async ({ path, reader }) => {
-      mockDbV2.getAccessibleOrganizationTeams.mockResolvedValue([]);
-      const app = await createTestApp({
-        config: mockServices.rootConfig({
-          data: {
-            copilot: {
-              enterprise: 'ent-1',
-              ingestOrganizationTeamReports: true,
-            },
-          },
-        }),
-      });
-
-      const response = await request(app).get(path);
-
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({
-        daily: [],
-        byFeature: [],
-        byLanguage: [],
-        byModelFeature: [],
-        byLanguageModel: [],
-        prMetrics: [],
-        customizationMetrics: [],
-        customizationSummaries: [],
-      });
-      expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-        path.includes('organization=org-1') ? ['org-1'] : ['org-1', 'org-2'],
-        '2026-05-01',
-        '2026-05-20',
-      );
-      expect(mockDbV2[reader]).not.toHaveBeenCalled();
-    },
-  );
 
   describe('GET /v2/me/dashboard', () => {
     function createMeTestApp(

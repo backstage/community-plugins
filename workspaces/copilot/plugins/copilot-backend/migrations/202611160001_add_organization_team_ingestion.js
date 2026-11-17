@@ -35,7 +35,6 @@ exports.up = async function up(knex) {
     table.boolean('is_current').notNullable().defaultTo(true);
     table.string('access_state', 32).notNullable().defaultTo('pending');
     table.boolean('reports_ready').notNullable().defaultTo(false);
-    table.date('cursor_day').nullable();
     table.timestamp('last_attempted_at').nullable();
     table.timestamp('next_attempt_at').nullable();
     table.string('lease_owner', 64).nullable();
