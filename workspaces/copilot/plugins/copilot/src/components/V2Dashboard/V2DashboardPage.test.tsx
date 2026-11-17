@@ -19,7 +19,9 @@ import { configApiRef } from '@backstage/core-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { DateTime } from 'luxon';
 import {
+  V2DailyTotal,
   V2DashboardData,
   V2CostCenterListResponse,
   V2CostCenterOption,
@@ -29,8 +31,24 @@ import { V2DashboardPage } from './V2DashboardPage';
 
 jest.mock('./charts', () => {
   const Noop = () => null;
+  const IDEActiveUsersChart = ({
+    data,
+    variant,
+    fillMissingDays,
+  }: {
+    data: V2DailyTotal[];
+    variant: string;
+    fillMissingDays?: boolean;
+  }) => (
+    <output
+      data-testid={`ide-active-users-${variant}`}
+      data-fill-missing-days={String(fillMissingDays)}
+    >
+      {JSON.stringify(data)}
+    </output>
+  );
   return {
-    IDEActiveUsersChart: Noop,
+    IDEActiveUsersChart,
     AvgChatRequestsChart: Noop,
     RequestsByChatModeChart: Noop,
     CodeCompletionsChart: Noop,
@@ -74,6 +92,24 @@ const EMPTY_DASHBOARD: V2DashboardData = {
   customizationMetrics: [],
   customizationSummaries: [],
 };
+
+const createDailyTotal = (
+  day: string,
+  dailyActiveUsers: number,
+): V2DailyTotal => ({
+  day,
+  metrics_type: 'organization',
+  entity_id: 'my-org',
+  team_slug: 'platform',
+  daily_active_users: dailyActiveUsers,
+  code_acceptance_activity_count: 0,
+  code_generation_activity_count: 0,
+  loc_added_sum: 0,
+  loc_deleted_sum: 0,
+  loc_suggested_to_add_sum: 0,
+  loc_suggested_to_delete_sum: 0,
+  user_initiated_interaction_count: 0,
+});
 
 const createDeferred = <T,>() => {
   let resolve!: (value: T) => void;
@@ -590,6 +626,55 @@ describe('V2DashboardPage filter targets', () => {
     expect(
       api.getTeams.mock.calls.every(([params]) => !('costCenter' in params)),
     ).toBe(true);
+  });
+
+  it('omits unreported days in the organization-view team filter while keeping reported zero days', async () => {
+    const today = DateTime.now();
+    const positiveDay = today.minus({ days: 4 }).toFormat('yyyy-MM-dd');
+    const missingDay = today.minus({ days: 3 }).toFormat('yyyy-MM-dd');
+    const reportedZeroDay = today.minus({ days: 2 }).toFormat('yyyy-MM-dd');
+    const daily = [
+      createDailyTotal(positiveDay, 2),
+      createDailyTotal(reportedZeroDay, 0),
+    ];
+    const api = createApi();
+    api.getDashboardData.mockResolvedValue({
+      ...EMPTY_DASHBOARD,
+      daily,
+    });
+    const user = userEvent.setup();
+
+    await renderDashboard(api, {
+      enterprise: 'enterprise-1',
+      organization: 'my-org',
+      defaultView: 'organization',
+      ingestCostCenters: false,
+      ingestTeams: true,
+    });
+
+    await user.click(await screen.findByRole('button', { name: /team/i }));
+    await user.click(await screen.findByRole('option', { name: 'platform' }));
+
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'my-org',
+          team: 'platform',
+        }),
+      ),
+    );
+
+    const dailyChart = screen.getByTestId('ide-active-users-daily');
+    expect(dailyChart).toHaveAttribute('data-fill-missing-days', 'false');
+    expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(daily);
+    expect(daily.map(row => row.day)).not.toContain(missingDay);
+    expect(daily).toContainEqual(
+      expect.objectContaining({
+        day: reportedZeroDay,
+        daily_active_users: 0,
+      }),
+    );
   });
 
   it('renders only the cost-center dropdown when only cost-center filtering is configured', async () => {

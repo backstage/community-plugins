@@ -321,6 +321,9 @@ export const V2DashboardPage = () => {
   } else if (organizationTeamScopeEnabled) {
     filterTarget = 'organizationTeam';
   }
+  const isPartialOrganizationTeamMode =
+    filterTarget === 'organizationTeam' ||
+    (type === 'organization' && filterTarget === 'team');
   const teamSelectionScopeKey = JSON.stringify([
     scopeKey,
     filterTarget,
@@ -919,7 +922,7 @@ export const V2DashboardPage = () => {
                         variant="daily"
                         from={from}
                         to={to}
-                        fillMissingDays={filterTarget !== 'organizationTeam'}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -930,7 +933,7 @@ export const V2DashboardPage = () => {
                         variant="weekly"
                         from={from}
                         to={to}
-                        fillMissingDays={filterTarget !== 'organizationTeam'}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -942,7 +945,7 @@ export const V2DashboardPage = () => {
                     data={data.daily}
                     from={from}
                     to={to}
-                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -952,7 +955,7 @@ export const V2DashboardPage = () => {
                     data={data.byFeature}
                     from={from}
                     to={to}
-                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -964,7 +967,7 @@ export const V2DashboardPage = () => {
                         data={data.byFeature}
                         from={from}
                         to={to}
-                        fillMissingDays={filterTarget !== 'organizationTeam'}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -974,7 +977,7 @@ export const V2DashboardPage = () => {
                         data={data.byFeature}
                         from={from}
                         to={to}
-                        fillMissingDays={filterTarget !== 'organizationTeam'}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -986,7 +989,7 @@ export const V2DashboardPage = () => {
                     data={data.byModelFeature}
                     from={from}
                     to={to}
-                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -1010,7 +1013,7 @@ export const V2DashboardPage = () => {
                     data={data.byLanguage}
                     from={from}
                     to={to}
-                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -1047,7 +1050,7 @@ export const V2DashboardPage = () => {
                   summaries={data.customizationSummaries}
                   from={from}
                   to={to}
-                  fillMissingDays={filterTarget !== 'organizationTeam'}
+                  fillMissingDays={!isPartialOrganizationTeamMode}
                 />
               </Flex>
             </TabPanel>
@@ -1080,7 +1083,7 @@ export const V2DashboardPage = () => {
                     data={data.daily}
                     from={from}
                     to={to}
-                    fillMissingDays={filterTarget !== 'organizationTeam'}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -1199,7 +1202,7 @@ export const V2DashboardPage = () => {
                       data={data.daily}
                       from={from}
                       to={to}
-                      fillMissingDays={filterTarget !== 'organizationTeam'}
+                      fillMissingDays={!isPartialOrganizationTeamMode}
                     />
                   </ChartCard>
                 </Flex>
