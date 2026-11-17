@@ -1,5 +1,84 @@
 # @backstage-community/plugin-npm-backend
 
+## 1.29.0
+
+### Minor Changes
+
+- 151a09c: Added two read-only actions to the actions registry: `npm:get-package-info` returns general package information including the latest version and its release date, and `npm:list-package-versions` returns the most recently published versions with their release dates. This makes the information shown in the npm cards also available to AI agents (MCP) and other plugins.
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.29.0
+
+## 1.28.0
+
+### Minor Changes
+
+- a37be92: Cleanup and version alignment to prepare the migration from Material UI to Backstage UI.
+
+  - The minimum supported Backstage version is now 1.54.
+  - The frontend plugin uses the new frontend plugin APIs for translations and backend requests.
+  - The unused root route of the legacy frontend plugin was removed.
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.28.0
+
+## 1.27.0
+
+### Minor Changes
+
+- 6927980: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [6927980]
+  - @backstage-community/plugin-npm-common@1.27.0
+
+## 1.26.0
+
+### Minor Changes
+
+- 6c24111: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [6c24111]
+  - @backstage-community/plugin-npm-common@1.26.0
+
+## 1.25.3
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.25.3
+
+## 1.25.2
+
+### Patch Changes
+
+- a6f14c0: Backstage version bump to v1.54.7
+- Updated dependencies [a6f14c0]
+  - @backstage-community/plugin-npm-common@1.25.2
+
+## 1.25.1
+
+### Patch Changes
+
+- 395995e: Backstage version bump to v1.54.6
+- Updated dependencies [395995e]
+  - @backstage-community/plugin-npm-common@1.25.1
+
+## 1.25.0
+
+### Minor Changes
+
+- 69488f7: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [69488f7]
+  - @backstage-community/plugin-npm-common@1.25.0
+
 ## 1.24.0
 
 ### Minor Changes

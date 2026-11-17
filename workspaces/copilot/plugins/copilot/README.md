@@ -17,9 +17,39 @@ The plugin now defaults to the V2 dashboard, backed by GitHub's report-based Cop
 - **Enterprise and Organization Integration**: Use the dashboard with a GitHub enterprise, a GitHub organization, or both.
 - **V2 Insights Dashboard**: View daily totals, feature usage, IDE breakdowns, language views, model usage, and PR metrics from the new GitHub reports API.
 - **Legacy Dashboard Access**: Keep the pre-V2 dashboard available during migration when you need to compare behavior.
-- **Team Filtering**: Filter V2 data by team when backend ingestion is configured to collect team membership data.
+- **Team Filtering**: Filter V2 data by team when `copilot.ingestTeams` is enabled.
+- **Cost Center Filtering**: In enterprise views, and in organization views when both `copilot.enterprise` and `copilot.organization` are configured, filter by eligible cost centers when `copilot.ingestCostCenters` is enabled. The Consumption tab also works for a selected cost center.
+- **No Cost Center View**: View users without a cost-center membership as a separate dashboard scope. This option is not represented by a reserved cost-center ID, so every real cost-center ID remains selectable.
+- **Exclusive V2 Filters**: Filter by either cost center or team, never both. When `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are configured, organization teams are available as an additional filter target alongside enterprise teams and cost centers in enterprise view. Selecting a specific organization team uses the configured organization's existing reports; **All teams** retains enterprise-wide totals. This does not add ingestion or storage. The dashboard identifies enterprise and organization teams separately and explains the distinction in tooltips.
+- **Individual ("Me") Metrics**: A privacy-scoped view, mounted by default at `/copilot/me`, that shows only the signed-in user's own Copilot usage and consumption — see [Individual ("Me") Metrics](#individual-me-metrics) below.
 
-_GitHub APIs will only show metrics for teams of 5 or more active users per day_
+_GitHub's Copilot user-teams reports include only teams with at least five
+active users per day; the plugin lists teams only when at least five distinct
+users have data across the selected range._
+
+_Cost-center views require at least five distinct Copilot users across the selected date range._
+
+The **No cost center** dashboard uses its own backend route and is offered only
+when at least five distinct users without a cost-center membership have data in
+the selected range. Cost-center dashboard breakdowns keep the top ten values
+per day and combine the remaining additive metrics into `others`; full detail
+remains in the database.
+
+Organization team filtering and organization-scope cost-center views require
+the GitHub App's organization-level **Organization Copilot metrics: read**
+permission, or `read:org` for classic PATs. Without this access, GitHub may
+return 403/404 for organization per-user or user-teams reports. If the
+per-user report is denied, organization team and organization-scope
+cost-center data will not sync; if the user-teams report is denied, team data
+will not sync. Other ingestion continues. See the
+[backend permission requirements](../copilot-backend/README.md#required-github-permissions)
+for enterprise permissions and further details.
+
+When both targets are configured, a target whose list finishes loading with no
+eligible data is disabled in the toggle button group with an explanation. If
+the active target is empty and the other has options, the dashboard falls back
+to that target. If both targets are empty, Cost center remains selected and its
+empty dropdown stays enabled.
 
 ## Setup
 
@@ -104,7 +134,85 @@ The following extensions are available in the plugin:
 
 - `api:copilot`
 - `page:copilot`
+- `sub-page:copilot/me`
 - `nav-item:copilot`
+
+## Individual ("Me") Metrics
+
+`api:copilot` and `page:copilot` power the org/team-scoped V2 dashboard. The
+plugin also mounts a **privacy-scoped, individual metrics view** — showing
+only the signed-in user's own Copilot usage and consumption, reusing the
+same charts and controls as the main dashboard, scoped to the caller's own
+data.
+
+By default it's mounted as a `me` sub-page (tab) of the main Copilot
+Insights page, at `/copilot/me`. It only supports **v2 metrics** — there is
+no v1 support for this view.
+
+### Privacy design
+
+This view is built around a single hard rule: **a user can only ever see
+their own metrics**, never anyone else's, through any API this plugin
+exposes.
+
+- The frontend API client ([`MyMetricsApi`](./src/me/api/MyMetricsApi.ts))
+  has a single method, `getMyDashboard`, whose parameters have **no field**
+  for a user or team identifier — it is structurally impossible to use this
+  client to ask for someone else's data.
+- The backend route it calls, `GET /v2/me/dashboard` (see
+  [copilot-backend](../copilot-backend/README.md#individual-me-metrics)),
+  resolves the caller's own GitHub login exclusively from their own request
+  credentials, never from a query parameter.
+- If the caller's login cannot be resolved to any ingested Copilot data, the
+  route returns `{ matched: false }` (HTTP 200) rather than an error, to
+  avoid leaking any signal about other users or teams.
+
+### User matching
+
+Because Backstage identities and GitHub Copilot usernames are two different
+namespaces, the backend needs a way to resolve "the signed-in Backstage
+user" to "a GitHub login". This is handled via the pluggable
+`CopilotUserResolver` extension point (`copilotUserResolverExtensionPoint`),
+exported from `@backstage-community/plugin-copilot-backend` — see that
+plugin's README for the default behavior and how to customize it.
+
+### Overriding the mount point
+
+The `me` sub-page is a regular `SubPageBlueprint` extension
+(`sub-page:copilot/me`), attached to the `page:copilot` extension's `pages`
+input. Consumers who want to mount it somewhere else (e.g. as a tab in
+`/settings`, or as a standalone page) can override this attachment with a
+frontend module:
+
+```tsx
+// packages/app/src/modules/copilot-me-override/index.tsx
+import {
+  createFrontendModule,
+  SubPageBlueprint,
+} from '@backstage/frontend-plugin-api';
+
+export const copilotMeOverrideModule = createFrontendModule({
+  pluginId: 'copilot',
+  extensions: [
+    SubPageBlueprint.make({
+      name: 'me',
+      attachTo: { id: 'page:user-settings', input: 'pages' },
+      params: {
+        path: 'copilot-me',
+        title: 'Copilot Metrics',
+        loader: () =>
+          import('@backstage-community/plugin-copilot').then(m => (
+            <m.MyMetricsContent />
+          )),
+      },
+    }),
+  ],
+});
+```
+
+then install `copilotMeOverrideModule` alongside `copilotPlugin` in your
+app's feature list. See `packages/app/src/modules/copilot-me-override` in
+this workspace for a complete, working example.
 
 ## Frontend Configuration
 
@@ -114,6 +222,9 @@ The frontend reads the following `app-config.yaml` settings:
 - `copilot.organization`: Organization slug to use for the dashboard.
 - `copilot.defaultView`: Optional default scope when both enterprise and organization are configured. Supported values are `enterprise` and `organization`.
 - `copilot.showLegacyView`: When `true`, the sidebar shows a link to the legacy dashboard.
+- `copilot.showUserMetrics`: Set to `false` to disable the individual ("me") metrics view — it will render a message explaining the feature has been turned off, rather than being removed from navigation. Defaults to `true`.
+- `copilot.ingestTeams`: Backend opt-in that enables team filtering; this value is frontend-visible so the dashboard can show the Team target. In enterprise view, organization teams are also available when both `copilot.enterprise` and `copilot.organization` are configured.
+- `copilot.ingestCostCenters`: Backend opt-in that enables cost-center filtering; this value is frontend-visible so the dashboard can show the Cost center target.
 
 Example:
 
@@ -123,16 +234,53 @@ copilot:
   organization: my-organization
   defaultView: enterprise
   showLegacyView: true
+  showUserMetrics: true
+  ingestTeams: true
+  ingestCostCenters: true
 ```
+
+In enterprise view, when `copilot.enterprise`, `copilot.organization`, and
+`copilot.ingestTeams` are configured, selected organization teams use the
+organization scope for dashboard, customization, and consumption metrics,
+matching the corresponding organization-view data. The existing five-user team
+eligibility threshold is unchanged. Organization view continues to use the
+`Team` label and is unaffected.
 
 ## Routes And Legacy Dashboard
 
 - `/copilot`: Default Copilot route. This now renders the V2 dashboard.
 - `/copilot/v2`: Explicit V2 dashboard route.
+- `/copilot/me`: The signed-in user's own, privacy-scoped Copilot metrics — see [Individual ("Me") Metrics](#individual-me-metrics) above.
 - `/copilot/legacy`: Legacy dashboard route.
 - `/copilot/legacy/enterprise` and `/copilot/legacy/organization`: Older legacy routes kept for backward compatibility.
 
 The legacy dashboard is useful during migration while you verify V2 backfill coverage. The sidebar only shows a dedicated legacy entry when `copilot.showLegacyView: true`, but direct navigation to `/copilot/legacy` still works.
+
+### Testing the individual ("me") view with the guest auth provider
+
+Because `/copilot/me` always resolves the caller's GitHub login from their
+own signed-in entity ref (see [User matching](#user-matching) above), the
+default `guest` sign-in identity (`user:default/guest`) won't match any
+ingested Copilot data — there's no GitHub user called `guest`.
+
+To test this view locally against real ingested data, override the guest
+user's entity ref in `app-config.yaml` to use a GitHub username that
+actually has ingested Copilot metrics:
+
+```yaml
+auth:
+  providers:
+    guest:
+      # Overrides the guest user's entity ref so that signing in as guest
+      # resolves to a real GitHub login with ingested Copilot metrics, for
+      # local testing of the /copilot/me individual metrics view.
+      userEntityRef: user:default/your-github-username
+```
+
+With the default `DefaultCopilotUserResolver`, the `name` part of this
+entity ref (`your-github-username`) is used directly as the GitHub login, so
+signing in as guest will resolve to that user's own metrics — no catalog
+entity for that user needs to exist.
 
 ## Migration Notes
 
@@ -141,7 +289,7 @@ This plugin moved to V2 because GitHub replaced the older direct metrics endpoin
 That change affects the frontend in three visible ways:
 
 1. V2 is the default UI.
-2. Historical data in V2 depends on backend backfill from the GitHub report window, which starts at `2025-10-10`.
+2. Historical user, team, and cost-center data in V2 depends on backend backfill within GitHub's roughly one-year report window.
 3. Team filtering in V2 depends on backend ingestion of user and user-team reports.
 
 For operator upgrade steps and configuration guidance, see [../../docs/copilot-v2-migration-guide.md](../../docs/copilot-v2-migration-guide.md).

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-backend",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "tech-insights",
@@ -52,11 +52,11 @@
     "@backstage-community/plugin-tech-insights-node": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
-    "@backstage/backend-test-utils": "backstage:^",
     "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
     "@backstage/plugin-permission-common": "backstage:^",
     "@backstage/types": "backstage:^",
     "@types/express": "^4.17.6",
@@ -71,6 +71,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
+    "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@types/lodash": "^4.14.151",
     "@types/semver": "^7.3.8",

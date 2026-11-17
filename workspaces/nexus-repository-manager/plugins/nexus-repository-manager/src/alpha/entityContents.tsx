@@ -13,6 +13,7 @@ export const nexusRepositoryManagerEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/build-artifacts',
     title: 'Build Artifacts',
+    group: 'development',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     filter: isNexusRepositoryManagerExperimentalAvailable,
     loader: async () =>

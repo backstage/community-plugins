@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect, Page, test } from '@playwright/test';
+import { expect, Page, test, type BrowserContext } from '@playwright/test';
 import { runAccessibilityTests } from './utils/accessibility';
 import { ArgoCDMessages, getTranslations } from './utils/translations';
 
@@ -27,7 +27,7 @@ import {
 } from '../dev/__data__';
 
 import { type Application } from '@backstage-community/plugin-argocd-common';
-import { Common } from './utils/argocdHelper';
+import { argocdEntityTab, Common } from './utils/argocdHelper';
 import {
   getInstanceAppUrl,
   verifyAppCard,
@@ -35,40 +35,56 @@ import {
 } from './utils/utils';
 
 test.describe('ArgoCD plugin', () => {
+  let context: BrowserContext;
   let argocdPage: Page;
   let common: Common;
   let translations: ArgoCDMessages;
 
   test.beforeAll(async ({ browser }) => {
-    const context = await browser.newContext();
+    context = await browser.newContext();
     argocdPage = await context.newPage();
     common = new Common(argocdPage);
 
     await common.loginAsGuest();
+
     // The new frontend system dev app renders in English regardless of browser
     // locale because plugin translation resources are not yet auto-discovered
     // by createApp. Use English translations for assertions.
     translations = getTranslations('en');
-
-    await argocdPage.goto(
-      '/catalog/default/component/backstage/deployment-lifecycle',
-    );
-    await expect(
-      argocdPage.getByRole('heading', {
-        name: translations.deploymentLifecycle.deploymentLifecycle.title,
-      }),
-    ).toBeVisible({ timeout: 20000 });
-    await runAccessibilityTests(argocdPage);
   });
 
-  test.afterAll(async ({ browser }) => {
-    test.setTimeout(40000);
-    await browser.close();
+  test.afterAll(async () => {
+    await context?.close();
+  });
+
+  test.describe('Missing permissions page', () => {
+    test('handles missing argocd view read permission', async ({}, testInfo) => {
+      await common.navigateToMissingPermissions();
+
+      await expect(
+        argocdPage.getByRole('heading', { name: 'permission-denied' }),
+      ).toBeVisible({ timeout: 30000 });
+      await expect(argocdEntityTab(argocdPage)).not.toBeVisible();
+
+      await runAccessibilityTests(argocdPage, testInfo, undefined, {
+        excludeRules: ['color-contrast'],
+      });
+    });
   });
 
   const apps = [mockApplication, preProdApplication, prodApplication];
 
   test.describe('Deployment lifecycle', () => {
+    test.beforeAll(async () => {
+      await common.navigateToDeploymentLifecycle();
+      await expect(
+        argocdPage.getByRole('heading', {
+          name: translations.deploymentLifecycle.deploymentLifecycle.title,
+        }),
+      ).toBeVisible({ timeout: 20000 });
+      await runAccessibilityTests(argocdPage);
+    });
+
     for (const [index, app] of apps.entries()) {
       /* eslint-disable-next-line  no-loop-func */
       test(`Verify ${app.metadata.name} card`, async () => {
@@ -96,14 +112,13 @@ test.describe('ArgoCD plugin', () => {
 
   test.describe('Summary', () => {
     test.beforeAll(async () => {
-      await argocdPage.goto(
-        '/catalog/default/component/backstage/deployment-summary',
-      );
+      await common.navigateToDeploymentSummary();
       await expect(
         argocdPage.getByRole('heading', {
           name: translations.deploymentSummary.deploymentSummary.tableTitle,
+          exact: true,
         }),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 20000 });
     });
 
     test('Verify column names', async () => {
@@ -242,14 +257,10 @@ test.describe('ArgoCD plugin', () => {
         ],
       };
 
-      await argocdPage.goto(
-        '/catalog/default/component/backstage-argocd-multi-selector/deployment-lifecycle',
-      );
+      await common.navigateToMultiInstanceScenario('multi-selector');
       await verifyLifecycleCards(expectedApps);
 
-      await argocdPage.goto(
-        '/catalog/default/component/backstage-argocd-multi-selector/deployment-summary',
-      );
+      await common.navigateToMultiInstanceSummary('multi-selector');
       await verifySummaryRows(expectedApps);
     });
 
@@ -259,14 +270,10 @@ test.describe('ArgoCD plugin', () => {
         argoInstance2: [DEV_INSTANCE_APPLICATIONS.argoInstance2[2]],
       };
 
-      await argocdPage.goto(
-        '/catalog/default/component/backstage-argocd-multi-app-name/deployment-lifecycle',
-      );
+      await common.navigateToMultiInstanceScenario('multi-app-name');
       await verifyLifecycleCards(expectedApps);
 
-      await argocdPage.goto(
-        '/catalog/default/component/backstage-argocd-multi-app-name/deployment-summary',
-      );
+      await common.navigateToMultiInstanceSummary('multi-app-name');
       await verifySummaryRows(expectedApps);
     });
 
@@ -275,14 +282,10 @@ test.describe('ArgoCD plugin', () => {
         argoInstance2: [DEV_INSTANCE_APPLICATIONS.argoInstance2[0]],
       };
 
-      await argocdPage.goto(
-        '/catalog/default/component/backstage-argocd-multi-one-app-name/deployment-lifecycle',
-      );
+      await common.navigateToMultiInstanceScenario('multi-one-app-name');
       await verifyLifecycleCards(expectedApps);
 
-      await argocdPage.goto(
-        '/catalog/default/component/backstage-argocd-multi-one-app-name/deployment-summary',
-      );
+      await common.navigateToMultiInstanceSummary('multi-one-app-name');
       await verifySummaryRows(expectedApps);
     });
   });

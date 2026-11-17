@@ -1,0 +1,52 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+spec:
+  profile:
+    displayName: Guest User
+    email: guest@example.com
+  memberOf: [team-rocket, platform]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: jane.roe
+spec:
+  profile:
+    displayName: Jane Roe
+    email: jane.roe@example.com
+  memberOf: [team-rocket, platform]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: john.doe
+spec:
+  profile:
+    displayName: John Doe
+    email: john.doe@example.com
+  memberOf: [team-rocket]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-rocket
+  title: Team Rocket
+spec:
+  type: team
+  profile:
+    displayName: Team Rocket
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform
+  title: Platform Team
+spec:
+  type: team
+  profile:
+    displayName: Platform Team
+  children: []

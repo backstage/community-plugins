@@ -53,6 +53,7 @@ export function UserLOCByFeatureChart({ data }: Readonly<Props>) {
 
   return (
     <BarChart
+      enableKeyboardNavigation
       xAxis={[{ data: labels, scaleType: 'band' }]}
       series={[
         {

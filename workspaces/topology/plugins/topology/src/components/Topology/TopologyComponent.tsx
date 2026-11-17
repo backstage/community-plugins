@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useLayoutEffect } from 'react';
-
 import { FilterContext } from '../../hooks/FilterContext';
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
 import { useDarkTheme } from '../../hooks/useDarkTheme';
@@ -25,49 +23,14 @@ import { ModelsPlural as TektonModels } from '../../pipeline-models';
 import { TopologyWorkloadView } from './TopologyWorkloadView';
 
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
-import '@patternfly/patternfly/patternfly.min.css';
+import '@patternfly/patternfly/patternfly-no-globals.css';
 import '@patternfly/patternfly/patternfly-charts.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
 import { RequireKubernetesReadPermissions } from './permissions/requireKubernetesReadPermissions';
 
-const savedStylesheets = new Set<HTMLLinkElement>();
-const firstLinkOrScript = document.head.querySelector('link, script');
-
 export const TopologyComponent = () => {
   useDarkTheme();
-
-  useLayoutEffect(() => {
-    const scalprumStyles = Array.from(
-      document.querySelectorAll('link[rel="stylesheet"]'),
-    ).filter(link =>
-      link.attributes
-        .getNamedItem('href')
-        ?.value?.includes('backstage-community.plugin-topology'),
-    );
-
-    scalprumStyles.forEach(link =>
-      savedStylesheets.add(link as HTMLLinkElement),
-    );
-
-    savedStylesheets.forEach(link => {
-      if (!document.head.contains(link)) {
-        if (firstLinkOrScript) {
-          document.head.insertBefore(link, firstLinkOrScript);
-        } else {
-          document.head.insertBefore(link, document.head.firstChild);
-        }
-      }
-    });
-
-    return () => {
-      savedStylesheets.forEach(link => {
-        if (document.head.contains(link)) {
-          document.head.removeChild(link);
-        }
-      });
-    };
-  }, []);
 
   const watchedResources = [
     ModelsPlural.deployments,

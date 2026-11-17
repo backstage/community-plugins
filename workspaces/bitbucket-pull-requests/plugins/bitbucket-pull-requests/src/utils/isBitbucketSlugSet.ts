@@ -16,10 +16,9 @@
 
 import { Entity } from '@backstage/catalog-model';
 
-export const BITBUCKET_PULL_REQUESTS_ANNOTATION = 'bitbucket.com/project-slug';
+// Bitbucket Annotation Server annotation: project-key/repo-slug format
+export const BITBUCKET_PROJECT_ANNOTATION = 'bitbucket.com/project-slug';
 
 export const isBitbucketSlugSet = (entity: Entity) => {
-  return (
-    entity?.metadata.annotations?.[BITBUCKET_PULL_REQUESTS_ANNOTATION] ?? ''
-  );
+  return entity?.metadata.annotations?.[BITBUCKET_PROJECT_ANNOTATION] ?? '';
 };

@@ -172,7 +172,7 @@ export const RecentWorkflowRunsCard = (props: {
         <Table
           columnConfig={columnConfig}
           {...tableProps}
-          loading={loading}
+          isPending={loading}
           emptyState={
             <div style={{ textAlign: 'center', padding: 'var(--bui-space-4)' }}>
               <Text variant="body-medium">

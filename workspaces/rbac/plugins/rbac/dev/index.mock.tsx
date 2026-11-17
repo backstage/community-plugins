@@ -29,6 +29,8 @@ import {
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis } from '@backstage/test-utils';
 
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+
 import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 import rbacPlugin, { rbacTranslationsModule } from '../src';
@@ -78,7 +80,13 @@ const devNavModule = createFrontendModule({
 const defaultPage = '/rbac';
 
 const app = createApp({
-  features: [rbacPlugin, rbacTranslationsModule, rbacDevModule, devNavModule],
+  features: [
+    rbacPlugin,
+    rbacTranslationsModule,
+    userSettingsPlugin,
+    rbacDevModule,
+    devNavModule,
+  ],
 });
 
 const root = app.createRoot();

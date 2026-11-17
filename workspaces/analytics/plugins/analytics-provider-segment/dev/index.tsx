@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,58 @@
  * limitations under the License.
  */
 
-import { createDevApp } from '@backstage/dev-utils';
-import { analyticsModuleSegment, SegmentAnalyticsApi } from '../src';
+import ReactDOM from 'react-dom/client';
+
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
+import { ConfigReader } from '@backstage/config';
+import { createApp } from '@backstage/frontend-defaults';
+import {
+  createFrontendPlugin,
+  PageBlueprint,
+} from '@backstage/frontend-plugin-api';
+
+import segmentModule from '../src';
 import { Playground } from './Playground';
 
-createDevApp()
-  .registerPlugin(analyticsModuleSegment)
-  .registerApi(SegmentAnalyticsApi)
-  .addPage({
-    path: '/segment',
-    title: 'Segment Playground',
-    element: <Playground />,
-  })
-  .render();
+const playgroundPlugin = createFrontendPlugin({
+  pluginId: 'analytics-segment-playground',
+  extensions: [
+    PageBlueprint.make({
+      params: {
+        path: '/segment',
+        loader: async () => <Playground />,
+      },
+    }),
+  ],
+});
+
+const defaultPage = '/segment';
+
+const app = createApp({
+  features: [segmentModule, playgroundPlugin],
+  advanced: {
+    configLoader: async () => ({
+      config: new ConfigReader({
+        app: {
+          title: 'Segment Dev',
+          baseUrl: 'http://localhost:3000',
+          analytics: {
+            segment: {
+              writeKey: 'test',
+              testMode: true,
+            },
+          },
+        },
+        backend: { baseUrl: 'http://localhost:7007' },
+      }),
+    }),
+  },
+});
+
+if (typeof window !== 'undefined' && window.location.pathname === '/') {
+  window.location.pathname = defaultPage;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());

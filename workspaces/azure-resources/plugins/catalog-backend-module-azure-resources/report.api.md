@@ -36,7 +36,7 @@ export type Mapping<T> = {
   [K in keyof T]: T[K] extends Array<infer I>
     ? Array<Mapping<I>>
     : T[K] extends object
-    ? Mapping<T[K]>
-    : string | undefined;
+      ? Mapping<T[K]>
+      : string | undefined;
 };
 ```

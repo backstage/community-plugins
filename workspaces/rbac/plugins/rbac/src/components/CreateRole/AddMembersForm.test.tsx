@@ -26,11 +26,13 @@ jest.mock('../../hooks/useLanguage', () => ({
 }));
 
 const mockSearchMembers = jest.fn();
+const mockGetMemberNamespaces = jest.fn();
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: () => ({
     searchMembers: mockSearchMembers,
+    getMemberNamespaces: mockGetMemberNamespaces,
   }),
 }));
 
@@ -83,7 +85,8 @@ describe('AddMembersForm', () => {
   const mockSetFieldValue = jest.fn();
 
   beforeEach(() => {
-    mockSearchMembers.mockResolvedValue([]);
+    mockSearchMembers.mockResolvedValue({ items: [], totalItems: 4 });
+    mockGetMemberNamespaces.mockResolvedValue(['default']);
   });
 
   afterEach(() => {
@@ -196,18 +199,21 @@ describe('AddMembersForm', () => {
 
   it('calls searchMembers API when user types in search input', async () => {
     const user = userEvent.setup();
-    mockSearchMembers.mockResolvedValue([
-      {
-        apiVersion: 'backstage.io/v1alpha1',
-        kind: 'User',
-        spec: { profile: { displayName: 'test user1' } },
-        metadata: {
-          name: 'test user1',
-          etag: 'test user1',
-          namespace: 'default',
+    mockSearchMembers.mockResolvedValue({
+      items: [
+        {
+          apiVersion: 'backstage.io/v1alpha1',
+          kind: 'User',
+          spec: { profile: { displayName: 'test user1' } },
+          metadata: {
+            name: 'test user1',
+            etag: 'test user1',
+            namespace: 'default',
+          },
         },
-      },
-    ]);
+      ],
+      totalItems: 1,
+    });
     const { getByTestId } = render(
       <AddMembersForm
         selectedMembers={[]}
@@ -219,6 +225,9 @@ describe('AddMembersForm', () => {
         setFieldValue={mockSetFieldValue}
       />,
     );
+    await waitFor(() => {
+      expect(getByTestId('users-and-groups-text-field')).toBeInTheDocument();
+    });
     const autocompleteInput = getByTestId(
       'users-and-groups-text-field',
     ).querySelector('input');
@@ -228,8 +237,38 @@ describe('AddMembersForm', () => {
     await user.type(autocompleteInput, 'test');
 
     await waitFor(() => {
-      expect(mockSearchMembers).toHaveBeenCalledWith('test');
+      expect(mockSearchMembers).toHaveBeenCalledWith(
+        expect.objectContaining({ searchTerm: 'test', limit: 100 }),
+      );
     });
+  });
+
+  it('opens members modal when catalog has more than 100 users/groups', async () => {
+    mockSearchMembers.mockResolvedValue({ items: [], totalItems: 101 });
+    const user = userEvent.setup();
+    render(
+      <AddMembersForm
+        selectedMembers={[]}
+        membersData={{
+          members: [],
+          loading: false,
+          error: { name: '', message: '' },
+        }}
+        setFieldValue={mockSetFieldValue}
+      />,
+    );
+
+    const openButton = await screen.findByTestId('add-members-button');
+    expect(openButton).toHaveTextContent('Add');
+    expect(
+      screen.getByText(
+        /Search and filter the catalog to add users and groups/i,
+      ),
+    ).toBeInTheDocument();
+    await user.click(openButton);
+    expect(
+      await screen.findByText('Add members and groups'),
+    ).toBeInTheDocument();
   });
 
   it('updates the selected member and calls setFieldValue on selection', async () => {

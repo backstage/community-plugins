@@ -28,3 +28,11 @@ export {
   CopilotLegacyPage,
 } from './plugin';
 export { V2DashboardPage as CopilotV2DashboardPage } from './components';
+
+// The privacy-scoped, individual ("me") Copilot metrics API and content
+// component. Exported so that consumers overriding the `/copilot/me`
+// sub-page attachment (see the alpha plugin) can still reference the same
+// API types and reuse the same content component in their override.
+export { myMetricsApiRef } from './me/api';
+export type { MyMetricsApi, MyDashboardParams } from './me/api';
+export { MyMetricsContent } from './me/components';

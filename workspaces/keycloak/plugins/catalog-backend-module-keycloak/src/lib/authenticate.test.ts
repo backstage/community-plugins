@@ -15,11 +15,18 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { InputError } from '@backstage/errors';
-import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import jwt from 'jsonwebtoken';
 
 import { KeycloakProviderConfig } from './config';
 import { authenticate, ensureTokenValid } from './authenticate';
+
+/** Unsigned JWT so the admin client's decodeToken can parse the access token. */
+function unsignedAccessToken(payload: object = {}): string {
+  const encode = (value: object) =>
+    Buffer.from(JSON.stringify(value)).toString('base64url');
+  return `${encode({ alg: 'none' })}.${encode(payload)}.`;
+}
 
 jest.mock('jsonwebtoken', () => ({
   decode: jest.fn(),
@@ -99,6 +106,49 @@ describe('authenticate', () => {
       'username and password or clientId and clientSecret must be provided.',
     );
     expect(client.auth).not.toHaveBeenCalled();
+  });
+
+  it('succeeds with client_credentials when the token response omits refresh_token', async () => {
+    const accessToken = unsignedAccessToken();
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          access_token: accessToken,
+          token_type: 'Bearer',
+          expires_in: 300,
+        }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      ),
+    );
+
+    const client = new KeycloakAdminClient({
+      baseUrl: 'http://localhost:8080',
+      realmName: 'myrealm',
+    });
+
+    const clientCredentialsProvider: KeycloakProviderConfig = {
+      id: 'default',
+      realm: 'myrealm',
+      baseUrl: 'http://localhost:8080',
+      clientId: 'myclientid',
+      clientSecret: 'myclientsecret', // NOSONAR
+    };
+
+    try {
+      await expect(
+        authenticate(client, clientCredentialsProvider, logger),
+      ).resolves.toBeUndefined();
+
+      expect(client.accessToken).toBe(accessToken);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [tokenUrl, tokenInit] = fetchMock.mock.calls[0];
+      expect(String(tokenUrl)).toBe(
+        'http://localhost:8080/realms/myrealm/protocol/openid-connect/token',
+      );
+      expect(tokenInit).toEqual(expect.objectContaining({ method: 'POST' }));
+    } finally {
+      fetchMock.mockRestore();
+    }
   });
 });
 

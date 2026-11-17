@@ -20,6 +20,8 @@
  * @packageDocumentation
  */
 
+export { default } from './frontendPlugin';
+
 export {
   gitReleaseManagerPlugin,
   GitReleaseManagerPage,

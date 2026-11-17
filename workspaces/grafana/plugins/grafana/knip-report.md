@@ -4,6 +4,6 @@
 
 | Name                        | Location          | Severity |
 | :-------------------------- | :---------------- | :------- |
-| @testing-library/user-event | package.json:77:6 | error    |
-| @backstage/core-app-api     | package.json:71:6 | error    |
+| @testing-library/user-event | package.json:76:6 | error    |
+| @backstage/core-app-api     | package.json:70:6 | error    |
 

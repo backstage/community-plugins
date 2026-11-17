@@ -52,6 +52,7 @@ export const createAcceptanceRateSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'total_lines_suggested',
     label: 'Acceptance Rate (Overall)',
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toFixed(2).concat('%') ?? 'N/A',
     data: metrics.map(
       x => (x.total_lines_accepted / x.total_lines_suggested) * 100,
@@ -61,6 +62,7 @@ export const createAcceptanceRateSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'total_lines_suggested_by_team',
     label: `Acceptance Rate (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toFixed(2).concat('%') ?? 'N/A',
     data: metrics.map(metric => {
       const metricByteam = metricsByTeam.find(
@@ -91,6 +93,7 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'total_suggestions_count_general',
     label: 'Total Suggestions (Overall)',
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(metric => metric.total_suggestions_count),
   });
@@ -98,6 +101,7 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'total_acceptances_count_general',
     label: 'Total Acceptances (Overall)',
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(metric => metric.total_acceptances_count),
   });
@@ -105,6 +109,7 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'total_suggestions_count_by_team',
     label: `Total Suggestions (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -116,6 +121,7 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'total_acceptances_count_by_team',
     label: `Total Acceptances (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -138,6 +144,7 @@ export const createTotalLinesSuggestedAndAcceptedSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'total_lines_suggested',
     label: 'Total Lines Suggested (Overall)',
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(x => x.total_lines_suggested),
   });
@@ -145,6 +152,7 @@ export const createTotalLinesSuggestedAndAcceptedSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'total_lines_accepted',
     label: 'Total Lines Accepted (Overall)',
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(x => x.total_lines_accepted),
   });
@@ -152,6 +160,7 @@ export const createTotalLinesSuggestedAndAcceptedSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'total_lines_suggested_by_team',
     label: `Total Lines Suggested (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -163,6 +172,7 @@ export const createTotalLinesSuggestedAndAcceptedSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'total_lines_accepted_by_team',
     label: `Total Lines Accepted (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -275,6 +285,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'series_never_used',
     label: `Never used (Overall)`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(x => x.seats_never_used),
   });
@@ -282,6 +293,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'series_not_used_7',
     label: `Not used last 7 days (Overall)`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(x => x.seats_inactive_7_days),
   });
@@ -289,6 +301,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'series_not_used_14',
     label: `Not used last 14 days (Overall)`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(x => x.seats_inactive_14_days),
   });
@@ -296,6 +309,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfOverall(series, showOverall || !team, {
     id: 'series_not_used_28',
     label: `Not used last 28 days (Overall)`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(x => x.seats_inactive_28_days),
   });
@@ -303,6 +317,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team_never_used',
     label: `Never used (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -313,6 +328,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team_not_used_7',
     label: `Not used last 7 days (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -323,6 +339,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team_not_used_14',
     label: `Not used last 14 days (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>
@@ -333,6 +350,7 @@ export const createUnusedSeatSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team_not_used_28',
     label: `Not used last 28 days (${team})`,
+    showMark: false,
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>

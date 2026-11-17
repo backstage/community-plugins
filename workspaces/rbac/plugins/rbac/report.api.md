@@ -20,7 +20,7 @@ import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
-const _default: OverridableFrontendPlugin<
+const rbacPlugin: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
   },
@@ -134,7 +134,7 @@ const _default: OverridableFrontendPlugin<
     }>;
   }
 >;
-export default _default;
+export default rbacPlugin;
 
 // @public
 export const rbacTranslationRef: TranslationRef<
@@ -153,9 +153,23 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'table.labelRowsPerPage': string;
     readonly 'table.titleWithCount': string;
     readonly 'table.headers.name': string;
+    readonly 'table.headers.source': string;
     readonly 'table.headers.usersAndGroups': string;
     readonly 'table.headers.accessiblePlugins': string;
     readonly 'table.headers.actions': string;
+    readonly 'table.sources.form': string;
+    readonly 'table.sources.appConfig': string;
+    readonly 'table.sources.csv': string;
+    readonly 'table.sources.legacy': string;
+    readonly 'table.sources.tooltips.form': string;
+    readonly 'table.sources.tooltips.appConfig': string;
+    readonly 'table.sources.tooltips.csv': string;
+    readonly 'table.sources.tooltips.legacy': string;
+    readonly 'table.sources.tooltips.generic': string;
+    readonly 'table.sources.actionTooltips.appConfig': string;
+    readonly 'table.sources.actionTooltips.csv': string;
+    readonly 'table.sources.actionTooltips.legacy': string;
+    readonly 'table.sources.actionTooltips.generic': string;
     readonly 'table.defaultRoleUsersAndGroups': string;
     readonly 'table.emptyContent': string;
     readonly 'page.title': string;
@@ -249,11 +263,14 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'common.delete': string;
     readonly 'common.use': string;
     readonly 'common.name': string;
+    readonly 'common.type': string;
+    readonly 'common.namespace': string;
+    readonly 'common.user': string;
+    readonly 'common.group': string;
+    readonly 'common.kind': string;
     readonly 'common.rule': string;
     readonly 'common.groups': string;
-    readonly 'common.group': string;
     readonly 'common.users': string;
-    readonly 'common.user': string;
     readonly 'common.editRole': string;
     readonly 'common.actions': string;
     readonly 'common.deleteRole': string;
@@ -269,6 +286,14 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'common.unauthorizedToEdit': string;
     readonly 'common.noRecordsFound': string;
     readonly 'common.selectUsersAndGroups': string;
+    readonly 'common.addMembersAndGroups': string;
+    readonly 'common.searchMembers': string;
+    readonly 'common.searchByName': string;
+    readonly 'common.kindAll': string;
+    readonly 'common.namespaceAll': string;
+    readonly 'common.allResults': string;
+    readonly 'common.selectedCount': string;
+    readonly 'common.add': string;
     readonly 'common.clearSearch': string;
     readonly 'common.closeDrawer': string;
     readonly 'common.remove': string;
@@ -280,7 +305,6 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'common.lastModified': string;
     readonly 'common.noUsersAndGroupsSelected': string;
     readonly 'common.selectedUsersAndGroupsAppearHere': string;
-    readonly 'common.type': string;
     readonly 'common.members': string;
     readonly 'common.removeMember': string;
     readonly 'common.checkingPermissions': string;
@@ -299,7 +323,9 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'common.parentGroupCount': string;
     readonly 'common.childGroupsCount': string;
     readonly 'common.searchAndSelectUsersGroups': string;
+    readonly 'common.searchAndFilterCatalog': string;
     readonly 'common.noUsersAndGroupsFound': string;
+    readonly 'common.noMembersMatchSearch': string;
     readonly 'common.errorFetchingUserGroups': string;
     readonly 'common.nameRequired': string;
     readonly 'common.noMemberSelected': string;

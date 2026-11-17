@@ -21,10 +21,12 @@ describe('gitReleaseManagerApiRef', () => {
     const result = gitReleaseManagerApiRef;
 
     expect(result).toMatchInlineSnapshot(`
-      ApiRefImpl {
-        "config": {
-          "id": "plugin.git-release-manager.service",
-        },
+      {
+        "$$type": "@backstage/ApiRef",
+        "T": null,
+        "id": "plugin.git-release-manager.service",
+        "toString": [Function],
+        "version": "v1",
       }
     `);
   });

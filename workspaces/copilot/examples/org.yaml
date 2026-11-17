@@ -4,6 +4,8 @@ apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:
   name: guest
+  annotations:
+    github.com/user-login: GITHUB_USER_LOGIN
 spec:
   memberOf: [guests]
 ---

@@ -260,6 +260,7 @@ Recent releases tighten validation so malformed or unsafe policy data cannot poi
 - **CSV policy files** (`policies-csv-file`) are parsed **line by line**. Lines that are syntactically invalid for CSV parsing are **skipped with a warning** so the rest of the file can still be applied; fix or remove bad lines in the file for a fully consistent load. Semantic validation (invalid entity refs, duplicates, source mismatches) continues to skip individual rows with warnings, as before.
 
 - **Conditional policies**: `permissionMapping` must list **distinct** Backstage permission actions only (no duplicates), with at most one entry per supported action (`create`, `read`, `update`, `delete`, `use`). Criteria trees and YAML conditional files still support optional `permission.rbac.validation.*` limits described below.
+- **Conditional policy rules**: `POST`/`PUT` `/roles/conditions` check every rule in `conditions` against the rules the plugin `pluginId` declares for that `resourceType`; an unknown rule is rejected with `400`. If the plugin's permission metadata cannot be retrieved (mistyped `pluginId`, plugin not started yet, metadata endpoint unreachable) the request fails with `503` rather than storing an unverified condition. Conditions from the YAML file and from providers are not checked this way, so an unknown rule there, or one renamed by its plugin after it was stored, still fails at evaluation time with a `500`.
 
 ### Configuring conditional policies via file
 
@@ -288,7 +289,30 @@ permission:
 
 This feature supports nested conditional policies.
 
-Example of the conditional policies file:
+#### `permissionMapping` format
+
+The `permissionMapping` field accepts two formats:
+
+**Action-only (broad match)** — matches all permissions with this action for the given `resourceType`:
+
+```yaml
+permissionMapping:
+  - read
+```
+
+**Named permission (specific match)** — matches only the exact named permission. Use this when a plugin registers multiple permissions with the same `(resourceType, action)` pair and you need to target a specific one:
+
+```yaml
+permissionMapping:
+  - name: scaffolder.template.parameter.read
+    action: read
+```
+
+Each `permissionMapping` array should use one format consistently — either action-only entries for broad matching or `{name, action}` entries for specific matching.
+
+#### Examples
+
+Basic example with action-only mapping:
 
 ```yaml
 ---
@@ -321,7 +345,46 @@ conditions:
       - group:default/team-a
 ```
 
+Example with named permission mapping for scaffolder (targeting only template parameter read, not step read):
+
+```yaml
+---
+result: CONDITIONAL
+roleEntityRef: role:default/test
+pluginId: scaffolder
+resourceType: scaffolder-template
+permissionMapping:
+  - name: scaffolder.template.parameter.read
+    action: read
+conditions:
+  rule: HAS_TAG
+  resourceType: scaffolder-template
+  params:
+    tag: secret
+```
+
 Information about condition policies format you can find in the doc: [Conditional policies documentation](./docs/conditions.md). There is only one difference: yaml format compare to json. But yaml and json are back convertiable.
+
+#### REST API
+
+When creating or updating conditional policies via the REST API (`POST /roles/conditions`, `PUT /roles/conditions/:id`), `permissionMapping` entries must include the permission name:
+
+```json
+{
+  "result": "CONDITIONAL",
+  "roleEntityRef": "role:default/test",
+  "pluginId": "catalog",
+  "resourceType": "catalog-entity",
+  "permissionMapping": [{ "name": "catalog.entity.read", "action": "read" }],
+  "conditions": {
+    "rule": "IS_ENTITY_OWNER",
+    "resourceType": "catalog-entity",
+    "params": { "claims": ["group:default/team-a"] }
+  }
+}
+```
+
+The YAML file format additionally supports action-only entries (`['read']`) for broad matching, since YAML-sourced conditions are not editable through the UI. RBAC provider module supports both formats too.
 
 ### Optional validation limits for conditional policies
 

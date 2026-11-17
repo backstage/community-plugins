@@ -1,5 +1,31 @@
 # @backstage-community/plugin-periskop-backend
 
+## 0.25.0
+
+### Minor Changes
+
+- e7e4791: Backstage version bump to v1.56.2
+
+## 0.24.0
+
+### Minor Changes
+
+- 4bdf799: Backstage version bump to v1.55.1
+
+## 0.23.0
+
+### Minor Changes
+
+- b5d93c8: Drops support for the old backend system, which removes the deprecated `createRouter` and `RouterOptions` exports.
+
+  **BREAKING**: The new backend system plugin is now the default export of the package, and the `./alpha` sub-path export has been removed. If you install the plugin via `backend.add(import('@backstage-community/plugin-periskop-backend/alpha'))`, update the import to `backend.add(import('@backstage-community/plugin-periskop-backend'))`. If you still use the old backend system, please migrate to the new backend system way of installing the plugin.
+
+## 0.22.0
+
+### Minor Changes
+
+- 587b28d: Backstage version bump to v1.54.5
+
 ## 0.21.0
 
 ### Minor Changes

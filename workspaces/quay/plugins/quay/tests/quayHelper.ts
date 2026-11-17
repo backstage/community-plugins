@@ -18,6 +18,18 @@ import { expect, TestInfo, type Locator, type Page } from '@playwright/test';
 
 const isLegacy = process.env.APP_MODE === 'legacy';
 
+/**
+ * Locator for the Quay entity tab.
+ * NFS 1.54+ uses the BUI header nav (`Content navigation` links) instead of
+ * `role="tab"`. Match the `/quay` path so the locator stays valid if the tab
+ * title is translated later.
+ */
+export function quayEntityTab(page: Page) {
+  return page
+    .getByRole('navigation', { name: 'Content navigation' })
+    .locator('a[href$="/quay"]');
+}
+
 export class Common {
   page: Page;
 
@@ -88,8 +100,8 @@ export class Common {
     } else {
       const entityName =
         instance === 'multi-instance' ? 'quay-instance-devel' : 'quay-instance';
-      await this.page.goto(`/catalog/default/component/${entityName}`);
-      await this.page.getByRole('tab', { name: 'Quay' }).click();
+      await this.page.goto(`/catalog/default/component/${entityName}/quay`);
+      await expect(quayEntityTab(this.page)).toBeVisible({ timeout: 30000 });
     }
   }
 

@@ -16,20 +16,25 @@
 
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/index.mock.tsx) or 'alpha' (dev/alpha/index.mock.tsx)
+// APP_MODE: 'legacy' (dev/legacy.mock.tsx) or 'nfs' (dev/index.mock.tsx)
 const appMode = process.env.APP_MODE || 'legacy';
 const startCommand =
-  appMode === 'legacy' ? 'yarn start:mock' : 'yarn start:alpha:mock';
+  appMode === 'legacy' ? 'yarn start:legacy:mock' : 'yarn start:mock';
 
 export default defineConfig({
+  // First webpack compile of the mock app can exceed the 30s default.
+  timeout: 120_000,
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
           command: startCommand,
           cwd: 'plugins/topology',
-          port: 3000,
-          reuseExistingServer: true,
+          // Wait for an HTTP response rather than only the TCP port. The
+          // dev-server can bind the port before the first compile finishes.
+          url: 'http://localhost:3000',
+          reuseExistingServer: !process.env.CI,
+          timeout: 120_000,
         },
       ],
 

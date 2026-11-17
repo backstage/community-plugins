@@ -22,6 +22,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import Autocomplete, {
   AutocompleteRenderOptionState,
 } from '@mui/material/Autocomplete';
+import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
@@ -31,16 +32,14 @@ import { FormikErrors } from 'formik';
 
 import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity } from '../../types';
-import {
-  getChildGroupsCount,
-  getMembersCount,
-  getParentGroupsCount,
-} from '../../utils/create-role-utils';
 import { MembersDropdownOption } from './MembersDropdownOption';
 import { RoleFormValues, SelectedMember } from './types';
 import { useTranslation } from '../../hooks/useTranslation';
-import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../alpha/translations';
+import { AddMembersModal } from './AddMembersModal';
+import {
+  MEMBERS_MODAL_THRESHOLD,
+  toSelectedMember,
+} from './memberSelectionUtils';
 
 type AddMembersFormProps = {
   selectedMembers: SelectedMember[];
@@ -51,50 +50,6 @@ type AddMembersFormProps = {
     value: any,
     shouldValidate?: boolean,
   ) => Promise<FormikErrors<RoleFormValues>> | Promise<void>;
-};
-
-const getDescription = (
-  member: MemberEntity,
-  t: TranslationFunction<typeof rbacTranslationRef.T>,
-) => {
-  const memberCount = getMembersCount(member);
-  const parentCount = getParentGroupsCount(member);
-  const childCount = getChildGroupsCount(member);
-
-  return member.kind === 'Group'
-    ? [
-        memberCount > 0
-          ? t('common.membersCount' as any, { count: memberCount })
-          : '',
-        parentCount > 0
-          ? t('common.parentGroupCount' as any, { count: parentCount })
-          : '',
-        childCount > 0
-          ? t('common.childGroupsCount' as any, { count: childCount })
-          : '',
-      ]
-        .filter(Boolean) // Remove any empty strings
-        .join(', ')
-    : undefined;
-};
-
-const toSelectedMember = (
-  member: MemberEntity,
-  index: number,
-  t: TranslationFunction<typeof rbacTranslationRef.T>,
-): SelectedMember => {
-  const tag =
-    member.metadata.etag ?? `${member.metadata.name}-${member.kind}-${index}`;
-  return {
-    id: tag,
-    label: member.spec?.profile?.displayName ?? member.metadata.name,
-    description: getDescription(member, t),
-    etag: tag,
-    type: member.kind,
-    namespace: member.metadata.namespace,
-    members: getMembersCount(member),
-    ref: stringifyEntityRef(member),
-  };
 };
 
 export const AddMembersForm = ({
@@ -115,18 +70,50 @@ export const AddMembersForm = ({
   const [searchResults, setSearchResults] = useState<MemberEntity[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [catalogTotal, setCatalogTotal] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await rbacApi.searchMembers({ limit: 1 });
+        if (cancelled) {
+          return;
+        }
+        if ('totalItems' in result) {
+          setCatalogTotal(result.totalItems);
+        }
+      } catch {
+        if (!cancelled) {
+          setCatalogTotal(0);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rbacApi]);
+
+  const useModal =
+    catalogTotal !== null && catalogTotal > MEMBERS_MODAL_THRESHOLD;
 
   const performSearch = useCallback(
     async (term: string) => {
       setSearchLoading(true);
       setSearchError(null);
       try {
-        const result = await rbacApi.searchMembers(term);
-        if (Array.isArray(result)) {
-          setSearchResults(result);
+        const result = await rbacApi.searchMembers({
+          searchTerm: term,
+          limit: 100,
+        });
+        if ('items' in result) {
+          setSearchResults(result.items);
         } else {
           setSearchError(
-            t('common.errorFetchingUserGroups' as any, { error: '' }),
+            t('common.errorFetchingUserGroups' as any, {
+              error: (result as Response).statusText || '',
+            }),
           );
         }
       } catch (err) {
@@ -140,10 +127,12 @@ export const AddMembersForm = ({
 
   useDebounce(
     () => {
-      performSearch(search);
+      if (!useModal) {
+        performSearch(search);
+      }
     },
     300,
-    [search],
+    [search, useModal],
   );
 
   const membersOptions: SelectedMember[] = useMemo(() => {
@@ -207,6 +196,51 @@ export const AddMembersForm = ({
     [],
   );
 
+  // Modal selection is the source of truth (includes unchecks on reopen/edit).
+  const handleModalAdd = useCallback(
+    (members: SelectedMember[]) => {
+      setSelectedMember(members);
+      setFieldValue('selectedMembers', members, false);
+    },
+    [setFieldValue],
+  );
+
+  if (useModal) {
+    return (
+      <>
+        <FormHelperText>{t('common.searchAndFilterCatalog')}</FormHelperText>
+        <br />
+        <Button
+          variant="outlined"
+          color="primary"
+          type="button"
+          data-testid="add-members-button"
+          sx={{ borderRadius: '99em' }}
+          onClick={() => setModalOpen(true)}
+        >
+          {t('common.add')}
+        </Button>
+        {selectedMembersError && (
+          <FormHelperText error>{selectedMembersError}</FormHelperText>
+        )}
+        <AddMembersModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onAdd={handleModalAdd}
+          selectedMembers={selectedMember}
+        />
+        {membersData.error?.message && (
+          <FormHelperText error={!!membersData.error}>
+            {t('common.errorFetchingUserGroups' as any, {
+              error: membersData.error.message,
+            })}
+          </FormHelperText>
+        )}
+        <br />
+      </>
+    );
+  }
+
   return (
     <>
       <FormHelperText>{t('common.searchAndSelectUsersGroups')}</FormHelperText>
@@ -219,7 +253,7 @@ export const AddMembersForm = ({
         options={membersOptions}
         getOptionLabel={handleGetOptionLabel}
         isOptionEqualToValue={handleIsOptionEqualToValue}
-        loading={searchLoading}
+        loading={searchLoading || catalogTotal === null}
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}

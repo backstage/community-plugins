@@ -58,6 +58,7 @@ export const EngagementCharts = ({
     return (
       <Chart title={title}>
         <BarChart
+          enableKeyboardNavigation
           xAxis={[
             {
               data: metrics.map(x => new Date(x.day)),
@@ -96,6 +97,7 @@ export const EngagementCharts = ({
     <MainBox>
       <Chart title="Total Assigned Seats">
         <BarChart
+          enableKeyboardNavigation
           xAxis={[
             {
               data: seats.map(x => new Date(x.day)),
@@ -115,6 +117,7 @@ export const EngagementCharts = ({
       </Chart>
       <Chart title="Unused Seats">
         <LineChart
+          enableKeyboardNavigation
           xAxis={[
             {
               data: seats.map(x => new Date(x.day)),

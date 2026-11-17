@@ -230,6 +230,7 @@ export const useRoles = (
                   },
                   accessiblePlugins,
                   isDefault: role.metadata?.isDefault ?? false,
+                  source: role.metadata?.source ?? 'legacy',
                 },
               ];
             },

@@ -15,6 +15,22 @@
  */
 import { expect, type Locator, type Page } from '@playwright/test';
 
+export type MultiInstanceScenario =
+  | 'multi-selector'
+  | 'multi-app-name'
+  | 'multi-one-app-name';
+
+const multiInstanceEntities: Record<MultiInstanceScenario, string> = {
+  'multi-selector': 'backstage-argocd-multi-selector',
+  'multi-app-name': 'backstage-argocd-multi-app-name',
+  'multi-one-app-name': 'backstage-argocd-multi-one-app-name',
+};
+
+/** Locator for the Argo CD deployment lifecycle entity tab. */
+export function argocdEntityTab(page: Page) {
+  return page.getByRole('link', { name: 'Deployment Lifecycle' });
+}
+
 export class Common {
   page: Page;
 
@@ -62,6 +78,42 @@ export class Common {
     ).toBeVisible();
     await this.clickButton('Enter');
     await this.waitForSideBarVisible();
+  }
+
+  async navigateToMissingPermissions() {
+    await this.page.goto('/catalog');
+    await this.page
+      .getByRole('row', { name: /permission-denied/ })
+      .getByRole('link')
+      .first()
+      .click();
+    await expect(
+      this.page.getByRole('heading', { name: 'permission-denied' }),
+    ).toBeVisible({ timeout: 30000 });
+  }
+
+  async navigateToDeploymentLifecycle(entity = 'backstage') {
+    await this.page.goto(
+      `/catalog/default/component/${entity}/deployment-lifecycle`,
+    );
+  }
+
+  async navigateToDeploymentSummary(entity = 'backstage') {
+    await this.page.goto(
+      `/catalog/default/component/${entity}/deployment-summary`,
+    );
+  }
+
+  async navigateToMultiInstanceScenario(scenario: MultiInstanceScenario) {
+    await this.page.goto(
+      `/catalog/default/component/${multiInstanceEntities[scenario]}/deployment-lifecycle`,
+    );
+  }
+
+  async navigateToMultiInstanceSummary(scenario: MultiInstanceScenario) {
+    await this.page.goto(
+      `/catalog/default/component/${multiInstanceEntities[scenario]}/deployment-summary`,
+    );
   }
 
   async switchToLocale(locale: string): Promise<void> {

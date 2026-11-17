@@ -758,6 +758,18 @@ export interface V2CliTotals {
   };
 }
 
+/**
+ * Aggregate/per-user totals for the dedicated VS Code Agents window.
+ * Added by GitHub on 2026-09-11. Distinct from editor-window Agent Mode
+ * (tracked separately via `used_agent`/`totals_by_feature`).
+ *
+ * @public
+ */
+export interface V2VscodeAgentTotals {
+  session_count: number;
+  total_user_messages: number;
+}
+
 /** @public */
 export interface V2EnterpriseDayTotal {
   day: string;
@@ -766,6 +778,12 @@ export interface V2EnterpriseDayTotal {
   weekly_active_users: number;
   monthly_active_users: number;
   daily_active_cli_users?: number;
+  /**
+   * Count of unique users active in the VS Code Agents window each day.
+   * Added by GitHub on 2026-09-11. Optional — absent when VS Code Agents
+   * window data is unavailable.
+   */
+  daily_active_vscode_agent_users?: number;
   monthly_active_agent_users?: number;
   monthly_active_chat_users?: number;
   code_acceptance_activity_count: number;
@@ -777,6 +795,11 @@ export interface V2EnterpriseDayTotal {
   user_initiated_interaction_count: number;
   pull_requests?: V2PrMetrics;
   totals_by_cli?: V2CliTotals;
+  /**
+   * Aggregate session_count/total_user_messages for the VS Code Agents
+   * window. Added by GitHub on 2026-09-11.
+   */
+  totals_by_vscode_agent?: V2VscodeAgentTotals;
   totals_by_feature?: V2MetricsByFeature[];
   totals_by_ide?: V2MetricsByIde[];
   totals_by_language_feature?: V2MetricsByLanguageFeature[];
@@ -800,6 +823,12 @@ export interface V2UserMetric {
   used_agent: boolean;
   used_chat: boolean;
   used_cli: boolean;
+  /**
+   * Whether the user used the dedicated VS Code Agents window on this day.
+   * Added by GitHub on 2026-09-11. Optional — absent when VS Code Agents
+   * window data is unavailable.
+   */
+  used_vscode_agent?: boolean;
   code_acceptance_activity_count: number;
   code_generation_activity_count: number;
   loc_added_sum: number;
@@ -807,9 +836,19 @@ export interface V2UserMetric {
   loc_suggested_to_add_sum: number;
   loc_suggested_to_delete_sum: number;
   user_initiated_interaction_count: number;
+  /**
+   * Total AI credits consumed by the user for the day.
+   * Added by GitHub on 2026-06-19. Only present in the user-level report.
+   */
+  ai_credits_used?: number;
   totals_by_feature?: V2MetricsByFeature[];
   totals_by_ide?: V2MetricsByIde[];
   totals_by_language_feature?: V2MetricsByLanguageFeature[];
+  /**
+   * Per-user session_count/total_user_messages for the VS Code Agents
+   * window. Added by GitHub on 2026-09-11.
+   */
+  totals_by_vscode_agent?: V2VscodeAgentTotals;
   totals_by_model_feature?: Array<{
     model: string;
     feature: string;
@@ -851,20 +890,28 @@ export interface V2DailyTotal {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   daily_active_users: number;
   /**
    * Weekly rolling window active users count.
-   * Only available for organization/enterprise-level aggregates.
-   * Undefined for team-level aggregates (which use daily user data only).
+   * Organization/enterprise aggregates use GitHub's reported value; team and
+   * cost-center scopes derive it from per-user activity and daily membership.
    */
   weekly_active_users?: number;
   /**
    * Monthly rolling window active users count.
-   * Only available for organization/enterprise-level aggregates.
-   * Undefined for team-level aggregates (which use daily user data only).
+   * Organization/enterprise aggregates use GitHub's reported value; team and
+   * cost-center scopes derive it from per-user activity and daily membership.
    */
   monthly_active_users?: number;
   daily_active_cli_users?: number;
+  /**
+   * Count of unique users active in the VS Code Agents window each day.
+   * Added by GitHub on 2026-09-11. Optional — absent when VS Code Agents
+   * window data is unavailable. Not aggregated for team-level rows (mirrors
+   * `daily_active_cli_users`, which is org/enterprise-level only).
+   */
+  daily_active_vscode_agent_users?: number;
   monthly_active_agent_users?: number;
   monthly_active_chat_users?: number;
   code_acceptance_activity_count: number;
@@ -874,6 +921,12 @@ export interface V2DailyTotal {
   loc_suggested_to_add_sum: number;
   loc_suggested_to_delete_sum: number;
   user_initiated_interaction_count: number;
+  /**
+   * Total AI credits consumed across all users in the aggregate, summed from
+   * per-user data. Added by GitHub on 2026-06-19. Only populated for
+   * team-level rows (org/enterprise reports do not expose AI credits).
+   */
+  total_ai_credits_used?: number;
 }
 
 /** @public */
@@ -883,6 +936,7 @@ export interface V2PrMetricsRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   total_created: number;
   total_merged: number;
   total_reviewed: number;
@@ -906,6 +960,7 @@ export interface V2MetricsByFeatureRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   feature: string;
   code_acceptance_activity_count: number;
   code_generation_activity_count: number;
@@ -923,6 +978,7 @@ export interface V2MetricsByIdeRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   ide: string;
   code_acceptance_activity_count: number;
   code_generation_activity_count: number;
@@ -940,6 +996,7 @@ export interface V2MetricsByLanguageFeatureRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   language: string;
   feature: string;
   code_acceptance_activity_count: number;
@@ -957,6 +1014,7 @@ export interface V2MetricsByModelFeatureRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   model_id: string;
   feature: string;
   user_initiated_interaction_count: number;
@@ -975,6 +1033,7 @@ export interface V2MetricsByLanguageModelRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   language: string;
   model_id: string;
   /** @deprecated use code_generation_activity_count */
@@ -994,12 +1053,31 @@ export interface V2MetricsByCliRow {
   metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
+  cost_center_id?: string;
   prompt_count: number;
   request_count: number;
   session_count: number;
   avg_tokens_per_request: number;
   output_tokens_sum: number;
   prompt_tokens_sum: number;
+}
+
+/**
+ * Aggregate session_count/total_user_messages for the VS Code Agents window,
+ * keyed by (day, metrics_type, entity_id, team_slug) like the other
+ * team-level breakdown tables. Added by GitHub on 2026-09-11.
+ *
+ * @public
+ */
+export interface V2MetricsByVscodeAgentRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  cost_center_id?: string;
+  session_count: number;
+  total_user_messages: number;
 }
 
 /** @public */
@@ -1013,6 +1091,40 @@ export interface V2UserMetricRow {
   used_agent: boolean;
   used_chat: boolean;
   used_cli: boolean;
+  /**
+   * Whether the user used the dedicated VS Code Agents window on this day.
+   * Added by GitHub on 2026-09-11.
+   */
+  used_vscode_agent: boolean;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+  /**
+   * Total AI credits consumed by the user for the day.
+   * Added by GitHub on 2026-06-19. Only present in the user-level report.
+   */
+  ai_credits_used?: number;
+}
+
+/**
+ * Per-user, per-feature breakdown row (e.g. chat panel, code completion,
+ * agent mode). Mirrors {@link V2MetricsByFeatureRow} but scoped to a single
+ * user instead of a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  feature: string;
   code_acceptance_activity_count: number;
   code_generation_activity_count: number;
   loc_added_sum: number;
@@ -1021,6 +1133,182 @@ export interface V2UserMetricRow {
   loc_suggested_to_delete_sum: number;
   user_initiated_interaction_count: number;
 }
+
+/**
+ * Per-user, per-IDE breakdown row. Mirrors {@link V2MetricsByIdeRow} but
+ * scoped to a single user instead of a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByIdeRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  ide: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/**
+ * Per-user, per-language/feature breakdown row. Mirrors
+ * {@link V2MetricsByLanguageFeatureRow} but scoped to a single user instead
+ * of a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByLanguageFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  language: string;
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/**
+ * Per-user, per-model/feature breakdown row. Mirrors
+ * {@link V2MetricsByModelFeatureRow} but scoped to a single user instead of
+ * a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByModelFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  model_id: string;
+  feature: string;
+  user_initiated_interaction_count: number;
+  code_generation_activity_count: number;
+  code_acceptance_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/**
+ * Per-user, per-language/model breakdown row. Mirrors
+ * {@link V2MetricsByLanguageModelRow} but scoped to a single user instead of
+ * a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByLanguageModelRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  language: string;
+  model_id: string;
+  request_count: number;
+  code_generation_activity_count: number;
+  code_acceptance_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/**
+ * A named Copilot customization usage metric. Categories are derived from
+ * GitHub report fields such as `totals_by_skill` rather than a fixed enum so
+ * newly introduced customization categories can be stored without a schema
+ * change.
+ *
+ * @public
+ */
+export interface V2CustomizationMetricRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  scope: 'aggregate' | 'team' | 'user';
+  team_slug: string;
+  user_id: number;
+  user_login: string;
+  category: string;
+  item_name: string;
+  interaction_count: number;
+}
+
+/**
+ * A distinct-item count reported by GitHub for a customization category.
+ * Team-level distinct counts are omitted because capped per-user item lists
+ * cannot be combined into an exact team-wide distinct count.
+ *
+ * @public
+ */
+export interface V2CustomizationSummaryRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  scope: 'aggregate' | 'team' | 'user';
+  team_slug: string;
+  user_id: number;
+  user_login: string;
+  category: string;
+  distinct_item_count: number;
+}
+
+/**
+ * Aggregated dashboard data returned by the privacy-scoped `/v2/me/dashboard`
+ * BFF endpoint. Contains all chart data needed to render an individual
+ * user's own Copilot usage, restricted server-side to the caller's own
+ * resolved GitHub login. Structurally mirrors {@link V2DashboardData}, minus
+ * data that GitHub's Copilot Metrics API does not expose per-user (e.g. pull
+ * request metrics).
+ *
+ * @public
+ */
+export interface V2UserDashboardData {
+  /**
+   * The GitHub login the caller was matched to. Always the resolved caller's
+   * own login — never settable or overridable by the client.
+   */
+  userLogin: string;
+  daily: V2UserMetricRow[];
+  byFeature: V2UserMetricsByFeatureRow[];
+  byIde: V2UserMetricsByIdeRow[];
+  byLanguage: V2UserMetricsByLanguageFeatureRow[];
+  byModelFeature: V2UserMetricsByModelFeatureRow[];
+  byLanguageModel: V2UserMetricsByLanguageModelRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
+}
+
+/**
+ * Response of the `/v2/me/dashboard` endpoint. If the caller could not be
+ * matched to a GitHub login (e.g. no user resolver match, or no ingested
+ * data for that login), `matched` is `false` and no data is returned.
+ *
+ * @public
+ */
+export type V2MyDashboardResponse =
+  | ({ matched: true } & V2UserDashboardData)
+  | { matched: false };
 
 /** @public */
 export interface V2UserTeamRow {
@@ -1032,6 +1320,39 @@ export interface V2UserTeamRow {
   user_login: string;
   team_id: number;
   team_slug: string;
+}
+
+/** @public */
+export interface V2CostCenterRow {
+  id?: number;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  cost_center_id: string;
+  name: string;
+  updated_at?: string | Date;
+}
+
+/** @public */
+export interface V2CostCenterOption {
+  id: string;
+  name: string | null;
+}
+
+/** @public */
+export interface V2CostCenterListResponse {
+  costCenters: V2CostCenterOption[];
+  hasUsersWithoutCostCenter: boolean;
+}
+
+/** @public */
+export interface V2UserCostCenterRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  cost_center_id: string;
 }
 
 /** @public */
@@ -1072,6 +1393,8 @@ export interface V2DashboardData {
   byModelFeature: V2MetricsByModelFeatureRow[];
   byLanguageModel: V2MetricsByLanguageModelRow[];
   prMetrics: V2PrMetricsRow[];
+  customizationMetrics: V2CustomizationMetricRow[];
+  customizationSummaries: V2CustomizationSummaryRow[];
 }
 
 /**

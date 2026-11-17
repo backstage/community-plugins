@@ -105,6 +105,7 @@ export class AzureDevOpsApi {
     project: string,
     repo: string,
     path: string,
+    version?: string,
   ): Promise<{
     url: string;
     content: string;

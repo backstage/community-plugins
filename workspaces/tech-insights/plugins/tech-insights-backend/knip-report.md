@@ -10,5 +10,5 @@
 
 | Name            | Location          | Severity |
 | :-------------- | :---------------- | :------- |
-| wait-for-expect | package.json:79:6 | error    |
+| wait-for-expect | package.json:80:6 | error    |
 

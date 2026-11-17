@@ -23,9 +23,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import Alert from '@material-ui/lab/Alert';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import { Alert, Focusable, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { Dashboard, DashboardCardOpts } from '../../types';
 import {
   dashboardSelectorFromEntity,
@@ -65,13 +63,18 @@ export const DashboardsTable = ({
   ];
 
   const titleElm = (
-    <Tooltip
-      title={`Note: only dashboard with the "${dashboardSelectorFromEntity(
-        entity,
-      )}" selector are displayed.`}
-    >
-      <Typography variant="h5">{opts.title || 'Dashboards'}</Typography>
-    </Tooltip>
+    <TooltipTrigger>
+      <Focusable>
+        <Text as="h2" variant="title-medium" weight="bold">
+          {opts.title || 'Dashboards'}
+        </Text>
+      </Focusable>
+      <Tooltip>
+        {`Note: only dashboard with the "${dashboardSelectorFromEntity(
+          entity,
+        )}" selector are displayed.`}
+      </Tooltip>
+    </TooltipTrigger>
   );
 
   return (
@@ -114,7 +117,7 @@ const Dashboards = ({
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   }
 
   return (

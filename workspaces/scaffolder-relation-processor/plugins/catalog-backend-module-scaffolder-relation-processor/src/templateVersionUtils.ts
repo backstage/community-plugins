@@ -263,7 +263,7 @@ export async function handleTemplateUpdateNotifications(
 
   const scaffoldedEntities = await catalogClient.getEntities(
     {
-      filter: { 'spec.scaffoldedFrom': payload.entityRef },
+      filter: { 'relations.scaffoldedFrom': payload.entityRef },
       fields: [
         'kind',
         'metadata.namespace',

@@ -24,7 +24,7 @@ src/
 │   ├── it.ts           # Italian (flat keys)
 │   ├── ja.ts           # Japanese (flat keys)
 │   ├── es.ts           # Spanish (flat keys)
-│   └── index.ts        # Translation resource
+│   └── index.ts        # Translation resource and default translation module
 ├── hooks/
 │   ├── useTranslation.ts
 │   └── useLanguage.ts
@@ -293,7 +293,7 @@ Add to `dev/index.tsx`:
 ### Dev App Setup
 
 ```typescript
-// dev/index.tsx
+// dev/legacy.tsx
 import { topologyTranslations } from '../src/translations';
 
 createDevApp()
@@ -306,8 +306,18 @@ createDevApp()
 ### Production App Setup
 
 ```typescript
-// packages/app/src/App.tsx
-import { topologyTranslations } from '@backstage-community/plugin-topology';
+// New frontend system
+import topologyPlugin from '@backstage-community/plugin-topology';
+import topologyTranslationsModule from '@backstage-community/plugin-topology/translations';
+
+export const app = createApp({
+  features: [topologyPlugin, topologyTranslationsModule],
+});
+```
+
+```typescript
+// Legacy frontend system — packages/app/src/App.tsx
+import { topologyTranslations } from '@backstage-community/plugin-topology/alpha';
 
 const app = createApp({
   apis,

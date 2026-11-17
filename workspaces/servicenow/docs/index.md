@@ -112,3 +112,7 @@ servicenow:
     username: ${SERVICENOW_USERNAME}
     password: ${SERVICENOW_PASSWORD}
 ```
+
+## Local development
+
+This workspace uses plugin `dev/` harnesses (no in-repo `packages/app`). See [Development.md](./Development.md) and the workspace [CONTRIBUTING.md](../CONTRIBUTING.md).

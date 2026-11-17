@@ -1,5 +1,18 @@
 # @backstage-community/plugin-jaeger-common
 
+## 0.20.0
+
+### Minor Changes
+
+- 1b1cb35: Backstage version bump to v1.56.2
+
+## 0.19.0
+
+### Minor Changes
+
+- 3feba0e: Backstage version bump to v1.54.5
+- 90fb467: Backstage version bump to v1.55.1
+
 ## 0.18.0
 
 ### Minor Changes

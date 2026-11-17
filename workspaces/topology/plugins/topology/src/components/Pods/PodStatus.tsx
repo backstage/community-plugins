@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactElement } from 'react';
+import type { KeyboardEvent, ReactElement } from 'react';
 
 import { useState, useRef, useMemo, memo } from 'react';
 
@@ -113,6 +113,18 @@ const PodStatus = ({
   const forceUpdate = useForceUpdate();
   const prevVData = useRef<PodData[] | null>(null);
   const chartTriggerRef = useRef<SVGGElement | null>(null);
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      chartTriggerRef.current?.dispatchEvent(
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        }),
+      );
+    }
+  };
 
   const vData = useMemo(() => {
     const updateVData: PodData[] = podStatus.map((pod: any) => ({
@@ -228,7 +240,15 @@ const PodStatus = ({
     );
     return (
       <Tooltip content={tipContent} triggerRef={chartTriggerRef}>
-        <g ref={chartTriggerRef}>{chartDonut}</g>
+        <g ref={chartTriggerRef} tabIndex={0} onKeyDown={handleKeyDown}>
+          <circle
+            cx={(x ?? 0) + size / 2}
+            cy={(y ?? 0) + size / 2}
+            r={outerRadius}
+            fill="transparent"
+          />
+          {chartDonut}
+        </g>
       </Tooltip>
     );
   }

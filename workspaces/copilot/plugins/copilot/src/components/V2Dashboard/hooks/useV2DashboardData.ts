@@ -26,13 +26,35 @@ const EMPTY_DASHBOARD: V2DashboardData = {
   byModelFeature: [],
   byLanguageModel: [],
   prMetrics: [],
+  customizationMetrics: [],
+  customizationSummaries: [],
 };
 
-export function useV2DashboardData(params: V2MetricsParams) {
+export function useV2DashboardData(
+  params: V2MetricsParams,
+  withoutCostCenter = false,
+) {
   const api = useApi(copilotApiV2Ref);
   const { value, loading, error } = useAsync(
-    () => api.getDashboardData(params),
-    [api, params.type, params.entityId, params.from, params.to, params.team],
+    () =>
+      withoutCostCenter
+        ? api.getNoCostCenterDashboardData({
+            type: params.type,
+            entityId: params.entityId,
+            from: params.from,
+            to: params.to,
+          })
+        : api.getDashboardData(params),
+    [
+      api,
+      withoutCostCenter,
+      params.type,
+      params.entityId,
+      params.from,
+      params.to,
+      params.team,
+      params.costCenter,
+    ],
   );
   return { data: value ?? EMPTY_DASHBOARD, loading, error };
 }

@@ -45,6 +45,7 @@ export function ChatModelUsageDonut({ data }: Readonly<Props>) {
 
   return (
     <PieChart
+      enableKeyboardNavigation
       series={[
         {
           data: pieData,

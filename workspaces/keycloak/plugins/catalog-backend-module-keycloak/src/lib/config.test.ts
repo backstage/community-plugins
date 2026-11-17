@@ -47,6 +47,8 @@ describe('readProviderConfigs', () => {
         schedule: undefined,
         userQuerySize: undefined,
         groupQuerySize: undefined,
+        userNamespace: undefined,
+        groupNamespace: undefined,
         briefRepresentation: undefined,
       },
     ]);
@@ -67,6 +69,8 @@ describe('readProviderConfigs', () => {
                 clientSecret: 'myclientsecret',
                 userQuerySize: 100,
                 groupQuerySize: 200,
+                userNamespace: 'users',
+                groupNamespace: 'groups',
                 briefRepresentation: true,
                 schedule: {
                   frequency: { hours: 1 },
@@ -94,6 +98,8 @@ describe('readProviderConfigs', () => {
         clientSecret: 'myclientsecret',
         userQuerySize: 100,
         groupQuerySize: 200,
+        userNamespace: 'users',
+        groupNamespace: 'groups',
         briefRepresentation: true,
         schedule: {
           scope: undefined,
@@ -104,6 +110,29 @@ describe('readProviderConfigs', () => {
       },
     ]);
   });
+
+  it.each(['userNamespace', 'groupNamespace'])(
+    'should throw an error if %s is invalid',
+    namespaceName => {
+      const config = mockServices.rootConfig({
+        data: deepmerge(CONFIG, {
+          catalog: {
+            providers: {
+              keycloakOrg: {
+                default: {
+                  [namespaceName]: 'invalid_namespace',
+                },
+              },
+            },
+          },
+        }),
+      });
+
+      expect(() => readProviderConfigs(config)).toThrow(
+        `The namespace 'invalid_namespace' in the '${namespaceName}' configuration for Keycloak provider 'default' must be a string that is sequences of [a-z0-9] separated by [-], at most 63 characters in total`,
+      );
+    },
+  );
 
   it('should throw an error if clientId is provided without clientSecret', () => {
     const config = mockServices.rootConfig({

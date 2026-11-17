@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-plugins
+  description: |
+    A collection of open source plugins for Backstage, maintained by the Backstage community.
+  links:
+    - title: Website
+      url: https://backstage.io
+    - title: Plugin Directory
+      url: https://backstage.io/plugins
+    - title: Contributing
+      url: https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md
+    - title: Discord Chat
+      url: https://discord.gg/backstage-687207715902193673
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+spec:
+  type: library
+  owner: CNCF
+  lifecycle: production

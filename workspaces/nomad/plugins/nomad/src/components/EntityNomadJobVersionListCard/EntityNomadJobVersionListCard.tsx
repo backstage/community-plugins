@@ -15,17 +15,12 @@
  */
 
 import { DateTime } from 'luxon';
-import {
-  InfoCard,
-  ResponseErrorPanel,
-  Table,
-  TableColumn,
-} from '@backstage/core-components';
+import { InfoCard, ResponseErrorPanel } from '@backstage/core-components';
 import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Version, nomadApiRef } from '../../api';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {
@@ -33,31 +28,22 @@ import {
   NOMAD_NAMESPACE_ANNOTATION,
   isNomadJobIDAvailable,
 } from '../../annotations';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import Chip from '@material-ui/core/Chip';
+import { RiExternalLinkLine } from '@remixicon/react';
+import {
+  Table,
+  Cell,
+  CellText,
+  Tag,
+  TagGroup,
+  useTable,
+  Header,
+  Container,
+  ButtonIcon,
+} from '@backstage/ui';
+import type { ColumnConfig } from '@backstage/ui';
+import styles from './EntityNomadJobVersionListCard.module.css';
 
-type rowType = Version & { nomadAddr: string };
-
-const columns: TableColumn<rowType>[] = [
-  {
-    title: 'Version',
-    field: 'Version',
-    render: row => row.Version,
-  },
-  {
-    title: 'Stable',
-    field: 'Stable',
-    render: row => <Chip label={`${row.Stable}`} />,
-  },
-  {
-    title: 'Submitted',
-    field: 'SubmitTime',
-    render: row =>
-      DateTime.fromMillis(row.SubmitTime / 1000000).toLocaleString(
-        DateTime.DATETIME_MED_WITH_SECONDS,
-      ),
-  },
-];
+type rowType = Version & { nomadAddr: string; id: string };
 
 /**
  * EntityNomadJobVersionListCard is roughly based on the Nomad UI's versions tab.
@@ -111,6 +97,51 @@ export const EntityNomadJobVersionListCard = () => {
     return () => clearTimeout(interval);
   }, [init, jobID, namespace, nomadAddr, nomadApi]);
 
+  // Build column configuration for BUI Table
+  const columnConfig: ColumnConfig<rowType>[] = useMemo(
+    () => [
+      {
+        id: 'version',
+        label: 'Version',
+        isRowHeader: true,
+        cell: (row: rowType) => <CellText title={String(row.Version)} />,
+        isSortable: true,
+      },
+      {
+        id: 'stable',
+        label: 'Stable',
+        cell: (row: rowType) => (
+          <Cell>
+            <TagGroup>
+              <Tag>{String(row.Stable)}</Tag>
+            </TagGroup>
+          </Cell>
+        ),
+        isSortable: true,
+      },
+      {
+        id: 'submitTime',
+        label: 'Submitted',
+        cell: (row: rowType) => (
+          <CellText
+            title={DateTime.fromMillis(row.SubmitTime / 1000000).toLocaleString(
+              DateTime.DATETIME_MED_WITH_SECONDS,
+            )}
+          />
+        ),
+        isSortable: true,
+      },
+    ],
+    [],
+  );
+
+  // Setup table
+  const { tableProps } = useTable<rowType>({
+    mode: 'complete',
+    data: versions,
+    paginationOptions: { pageSize: 10 },
+  });
+
   // Store a ref to a potential error
   if (err) {
     return <ResponseErrorPanel error={err} />;
@@ -128,27 +159,25 @@ export const EntityNomadJobVersionListCard = () => {
   }
 
   return (
-    <Table<rowType>
-      title="Job versions"
-      actions={[
-        {
-          icon: () => <OpenInNewIcon />,
-          tooltip: 'Open in Nomad UI',
-          isFreeAction: true,
-          onClick: () => window.open(`${nomadAddr}/ui/jobs/${jobID}/versions`),
-        },
-      ]}
-      options={{
-        search: false,
-        padding: 'dense',
-        sorting: true,
-        draggable: false,
-        paging: false,
-        debounceInterval: 500,
-        filterCellStyle: { padding: '0 16px 0 20px' },
-      }}
-      columns={columns}
-      data={versions}
-    />
+    <InfoCard title="Job Versions">
+      <Container>
+        <div className={styles.header}>
+          <Header title="" />
+          <ButtonIcon
+            aria-label="Open in Nomad UI"
+            icon={<RiExternalLinkLine />}
+            onPress={() =>
+              window.open(`${nomadAddr}/ui/jobs/${jobID}/versions`)
+            }
+            variant="secondary"
+          />
+        </div>
+        <Table
+          aria-label="Job Versions"
+          columnConfig={columnConfig}
+          {...tableProps}
+        />
+      </Container>
+    </InfoCard>
   );
 };

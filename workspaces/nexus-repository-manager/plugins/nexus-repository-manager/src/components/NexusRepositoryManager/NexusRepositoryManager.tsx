@@ -7,7 +7,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { NexusRepositoryManagerApiRef } from '../../api';
 import { useNexusRepositoryManagerAppData } from '../../hooks';
 import { ComponentXO } from '../../types';
-import { getFileSize, getHash, isPrimaryAsset, formatDate } from '../../utils';
+import { getFileSize, getHash, isPrimaryAsset } from '../../utils';
 import { ArtifactTable } from '../ArtifactTable';
 
 // Artifact types that we want to display: either classifiers (e.g. javadoc) or extensions (e.g. zip)
@@ -73,7 +73,7 @@ export const NexusRepositoryManager = () => {
       assetVariants: getAssetVariants(component),
       repositoryType: component.repository,
       hash: getHash(firstAsset),
-      lastModified: formatDate(firstAsset?.lastModified),
+      lastModified: firstAsset?.lastModified,
       // TODO for a maven component that uploads e.g. a protobuf, jar, and zip,
       // this will combine all of their sizes.
       sizeBytes: getFileSize(v),

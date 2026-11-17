@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { renderHook } from '@testing-library/react-hooks';
 
@@ -21,25 +21,43 @@ import { useLocationToast } from './useLocationToast';
 
 jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
+  useNavigate: jest.fn(),
 }));
 
 describe('useLocationToast', () => {
-  it('sets toast message based on location state', () => {
+  const mockNavigate = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+  });
+
+  it('sets toast message based on location state and clears it from history', () => {
     const mockSetToastMessage = jest.fn();
 
     (useLocation as jest.Mock).mockReturnValue({
+      pathname: '/rbac',
+      search: '',
+      hash: '',
       state: { toastMessage: 'Success Message' },
     });
 
     renderHook(() => useLocationToast(mockSetToastMessage));
 
     expect(mockSetToastMessage).toHaveBeenCalledWith('Success Message');
+    expect(mockNavigate).toHaveBeenCalledWith('/rbac', {
+      replace: true,
+      state: { toastMessage: undefined },
+    });
   });
 
   it('cleans up by setting toast message to an empty string', () => {
     const mockSetToastMessage = jest.fn();
 
     (useLocation as jest.Mock).mockReturnValue({
+      pathname: '/rbac',
+      search: '',
+      hash: '',
       state: { toastMessage: 'Success Message' },
     });
 
@@ -47,5 +65,21 @@ describe('useLocationToast', () => {
     unmount();
 
     expect(mockSetToastMessage).toHaveBeenCalledWith('');
+  });
+
+  it('does nothing when location state has no toast message', () => {
+    const mockSetToastMessage = jest.fn();
+
+    (useLocation as jest.Mock).mockReturnValue({
+      pathname: '/rbac',
+      search: '',
+      hash: '',
+      state: {},
+    });
+
+    renderHook(() => useLocationToast(mockSetToastMessage));
+
+    expect(mockSetToastMessage).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

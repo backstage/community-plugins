@@ -1,0 +1,57 @@
+.layout {
+  display: flex;
+  gap: var(--bui-space-4);
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  align-items: stretch;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-3);
+  width: 220px;
+  flex-shrink: 0;
+  /* Keep filters packed at the top like the prototype; BUI SearchField/Select
+     default to flex: 1 and would otherwise stretch across the dialog height. */
+  align-self: flex-start;
+}
+
+.filters > * {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-2);
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  /* Keep scroll on the table body only so the scrollbar does not cover pagination. */
+  overflow: hidden;
+}
+
+.results > :last-child {
+  flex: 1;
+  min-height: 0;
+}
+
+.emptyState {
+  padding-block: var(--bui-space-2);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--bui-space-3);
+}
+
+.footerActions {
+  display: flex;
+  gap: var(--bui-space-2);
+}

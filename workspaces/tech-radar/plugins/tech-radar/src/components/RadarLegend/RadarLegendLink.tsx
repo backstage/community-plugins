@@ -15,7 +15,7 @@
  */
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { WithLink } from '../../utils/components';
 import { RadarDescription } from '../RadarDescription';
 import type { EntrySnapshot } from '../../utils/types';
@@ -55,6 +55,13 @@ export const RadarLegendLink = ({
     setOpen(!open);
   };
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggle();
+    }
+  };
+
   if (description) {
     return (
       <>
@@ -64,7 +71,7 @@ export const RadarLegendLink = ({
           onClick={handleClickOpen}
           role="button"
           tabIndex={0}
-          onKeyPress={toggle}
+          onKeyDown={handleKeyDown}
         >
           <Typography
             component="span"

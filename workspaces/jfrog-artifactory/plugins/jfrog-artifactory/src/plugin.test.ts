@@ -13,10 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { jfrogArtifactoryPlugin } from './plugin';
+import { Entity } from '@backstage/catalog-model';
+
+import jfrogArtifactoryPlugin from './plugin';
+import { isJfrogArtifactoryAvailable } from './isJfrogArtifactoryAvailable';
 
 describe('jfrog artifactory', () => {
-  it('should export plugin', () => {
+  it('should export the new frontend system plugin', () => {
     expect(jfrogArtifactoryPlugin).toBeDefined();
+    expect(jfrogArtifactoryPlugin.pluginId).toBe('jfrog-artifactory');
+  });
+
+  it('isJfrogArtifactoryAvailable is true when the image-name annotation is set', () => {
+    expect(
+      isJfrogArtifactoryAvailable({
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+        metadata: {
+          name: 'example',
+          annotations: { 'jfrog-artifactory/image-name': 'backstage' },
+        },
+      } as Entity),
+    ).toBe(true);
+    expect(
+      isJfrogArtifactoryAvailable({
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+        metadata: { name: 'example' },
+      } as Entity),
+    ).toBe(false);
   });
 });

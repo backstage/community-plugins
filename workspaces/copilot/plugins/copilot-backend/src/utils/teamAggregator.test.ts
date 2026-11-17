@@ -18,7 +18,11 @@ import {
   V2UserMetricRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
-import { aggregateTeamMetrics } from './teamAggregator';
+import { UserBreakdownData } from './reportParser';
+import {
+  aggregateCostCenterMetrics,
+  aggregateTeamMetrics,
+} from './teamAggregator';
 
 describe('aggregateTeamMetrics', () => {
   const day = '2026-05-14';
@@ -57,6 +61,222 @@ describe('aggregateTeamMetrics', () => {
     expect(result.byLanguageFeature).toEqual([]);
     expect(result.byModelFeature).toEqual([]);
     expect(result.byLanguageModel).toEqual([]);
+  });
+
+  it('keeps team aggregates unscoped by cost center', () => {
+    const result = aggregateTeamMetrics(
+      [makeUserMetric({ user_id: 1, loc_added_sum: 7 })],
+      [makeUserTeam({ user_id: 1, team_slug: 'platform' })],
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      {
+        day,
+        metrics_type: metricsType,
+        entity_id: entityId,
+        team_slug: 'platform',
+        daily_active_users: 1,
+        weekly_active_users: undefined,
+        monthly_active_users: undefined,
+        monthly_active_agent_users: 0,
+        monthly_active_chat_users: 0,
+        daily_active_vscode_agent_users: 0,
+        code_acceptance_activity_count: 1,
+        code_generation_activity_count: 2,
+        loc_added_sum: 7,
+        loc_deleted_sum: 3,
+        loc_suggested_to_add_sum: 12,
+        loc_suggested_to_delete_sum: 4,
+        user_initiated_interaction_count: 5,
+        total_ai_credits_used: 0,
+      },
+    ]);
+    expect(result.dailyTotals[0]).not.toHaveProperty('cost_center_id');
+  });
+
+  it('aggregates per-user metrics by cost center only', () => {
+    const result = aggregateCostCenterMetrics(
+      [
+        makeUserMetric({
+          user_id: 1,
+          loc_added_sum: 10,
+          used_cli: true,
+          used_vscode_agent: true,
+        }),
+        makeUserMetric({
+          user_id: 2,
+          loc_added_sum: 20,
+          used_cli: false,
+          used_vscode_agent: false,
+        }),
+        makeUserMetric({
+          user_id: 3,
+          loc_added_sum: 5,
+          used_cli: true,
+          used_vscode_agent: true,
+        }),
+      ],
+      [],
+      new Map([
+        [1, 'cc-a'],
+        [2, 'cc-a'],
+      ]),
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          team_slug: '',
+          cost_center_id: 'cc-a',
+          daily_active_users: 2,
+          loc_added_sum: 30,
+          daily_active_cli_users: 1,
+          daily_active_vscode_agent_users: 1,
+        }),
+        expect.objectContaining({
+          team_slug: '',
+          cost_center_id: '',
+          without_cost_center: true,
+          daily_active_users: 1,
+          loc_added_sum: 5,
+          daily_active_cli_users: 1,
+          daily_active_vscode_agent_users: 1,
+        }),
+      ]),
+    );
+    expect(result.dailyTotals).toHaveLength(2);
+    expect(result.dailyTotals.every(row => row.team_slug === '')).toBe(true);
+    expect(result.byCli).toEqual([]);
+    expect(result.byVscodeAgent).toEqual([]);
+  });
+
+  it('aggregates named customizations for cost-center and no-cost-center groups', () => {
+    const result = aggregateCostCenterMetrics(
+      [
+        makeUserMetric({ user_id: 1 }),
+        makeUserMetric({ user_id: 2 }),
+        makeUserMetric({ user_id: 3 }),
+      ],
+      [
+        makeUserBreakdown({
+          user_id: 1,
+          customizations: [
+            {
+              category: 'skill',
+              item_name: 'shared-skill',
+              interaction_count: 4,
+            },
+          ],
+        }),
+        makeUserBreakdown({
+          user_id: 2,
+          customizations: [
+            {
+              category: 'skill',
+              item_name: 'shared-skill',
+              interaction_count: 6,
+            },
+          ],
+        }),
+        makeUserBreakdown({
+          user_id: 3,
+          customizations: [
+            {
+              category: 'skill',
+              item_name: 'unassigned-skill',
+              interaction_count: 3,
+            },
+          ],
+        }),
+      ],
+      new Map([
+        [1, 'cc-a'],
+        [2, 'cc-a'],
+      ]),
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.customizationMetrics).toEqual([]);
+    expect(result.costCenterCustomizationMetrics).toHaveLength(2);
+    expect(result.costCenterCustomizationMetrics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          cost_center_id: 'cc-a',
+          without_cost_center: false,
+          category: 'skill',
+          item_name: 'shared-skill',
+          interaction_count: 10,
+        }),
+        expect.objectContaining({
+          cost_center_id: '',
+          without_cost_center: true,
+          category: 'skill',
+          item_name: 'unassigned-skill',
+          interaction_count: 3,
+        }),
+      ]),
+    );
+  });
+
+  it('omits the no-cost-center group when unassigned membership is unknown', () => {
+    const result = aggregateCostCenterMetrics(
+      [
+        makeUserMetric({ user_id: 1, loc_added_sum: 10 }),
+        makeUserMetric({ user_id: 2, loc_added_sum: 20 }),
+      ],
+      [
+        makeUserBreakdown({
+          user_id: 1,
+          customizations: [
+            {
+              category: 'skill',
+              item_name: 'assigned-skill',
+              interaction_count: 2,
+            },
+          ],
+        }),
+        makeUserBreakdown({
+          user_id: 2,
+          customizations: [
+            {
+              category: 'skill',
+              item_name: 'unassigned-skill',
+              interaction_count: 3,
+            },
+          ],
+        }),
+      ],
+      new Map([[1, 'cc-a']]),
+      day,
+      metricsType,
+      entityId,
+      false,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      expect.objectContaining({
+        team_slug: '',
+        cost_center_id: 'cc-a',
+        daily_active_users: 1,
+        loc_added_sum: 10,
+      }),
+    ]);
+    expect(result.costCenterCustomizationMetrics).toEqual([
+      expect.objectContaining({
+        cost_center_id: 'cc-a',
+        without_cost_center: false,
+        item_name: 'assigned-skill',
+      }),
+    ]);
   });
 
   it('counts user in multiple teams', () => {
@@ -139,7 +359,65 @@ describe('aggregateTeamMetrics', () => {
       byLanguageFeature: [],
       byModelFeature: [],
       byLanguageModel: [],
+      customizationMetrics: [],
+      costCenterCustomizationMetrics: [],
     });
+  });
+
+  it('sums ai_credits_used into total_ai_credits_used per team', () => {
+    const userMetrics: V2UserMetricRow[] = [
+      makeUserMetric({ user_id: 1, ai_credits_used: 10.5 }),
+      makeUserMetric({ user_id: 2, ai_credits_used: 4.5 }),
+      // user without credits should be treated as 0
+      makeUserMetric({ user_id: 3, ai_credits_used: undefined }),
+    ];
+    const userTeams: V2UserTeamRow[] = [
+      makeUserTeam({ user_id: 1, team_slug: 'platform' }),
+      makeUserTeam({ user_id: 2, team_slug: 'platform' }),
+      makeUserTeam({ user_id: 3, team_slug: 'platform' }),
+    ];
+
+    const result = aggregateTeamMetrics(
+      userMetrics,
+      userTeams,
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      expect.objectContaining({
+        team_slug: 'platform',
+        total_ai_credits_used: 15,
+      }),
+    ]);
+  });
+
+  it('counts VS Code Agent users per team', () => {
+    const result = aggregateTeamMetrics(
+      [
+        makeUserMetric({ user_id: 1, used_vscode_agent: true }),
+        makeUserMetric({ user_id: 2, used_vscode_agent: false }),
+        makeUserMetric({ user_id: 3, used_vscode_agent: true }),
+      ],
+      [
+        makeUserTeam({ user_id: 1, team_slug: 'platform' }),
+        makeUserTeam({ user_id: 2, team_slug: 'platform' }),
+        makeUserTeam({ user_id: 3, team_slug: 'platform' }),
+      ],
+      [],
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.dailyTotals).toEqual([
+      expect.objectContaining({
+        team_slug: 'platform',
+        daily_active_vscode_agent_users: 2,
+      }),
+    ]);
   });
 
   it('filters userTeams by day', () => {
@@ -168,6 +446,52 @@ describe('aggregateTeamMetrics', () => {
       }),
     );
   });
+
+  it('aggregates customizations once per user regardless of model rows', () => {
+    const userBreakdowns: UserBreakdownData[] = [
+      makeUserBreakdown({
+        byLanguageModel: [
+          {
+            language: 'typescript',
+            model_id: 'gpt-5',
+            request_count: 1,
+            code_generation_activity_count: 1,
+            code_acceptance_activity_count: 0,
+            loc_added_sum: 1,
+            loc_deleted_sum: 0,
+            loc_suggested_to_add_sum: 1,
+            loc_suggested_to_delete_sum: 0,
+          },
+        ],
+        customizations: [
+          {
+            category: 'skill',
+            item_name: 'release-checks',
+            interaction_count: 4,
+          },
+        ],
+      }),
+    ];
+
+    const result = aggregateTeamMetrics(
+      [makeUserMetric()],
+      [makeUserTeam()],
+      userBreakdowns,
+      day,
+      metricsType,
+      entityId,
+    );
+
+    expect(result.customizationMetrics).toEqual([
+      expect.objectContaining({
+        scope: 'team',
+        team_slug: 'platform',
+        category: 'skill',
+        item_name: 'release-checks',
+        interaction_count: 4,
+      }),
+    ]);
+  });
 });
 
 function makeUserMetric(
@@ -182,6 +506,7 @@ function makeUserMetric(
     used_agent: false,
     used_chat: false,
     used_cli: true,
+    used_vscode_agent: false,
     code_acceptance_activity_count: 1,
     code_generation_activity_count: 2,
     loc_added_sum: 10,
@@ -202,6 +527,22 @@ function makeUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {
     user_login: 'octocat',
     team_id: 100,
     team_slug: 'platform',
+    ...overrides,
+  };
+}
+
+function makeUserBreakdown(
+  overrides: Partial<UserBreakdownData> = {},
+): UserBreakdownData {
+  return {
+    user_id: 1,
+    user_login: 'octocat',
+    byFeature: [],
+    byIde: [],
+    byLanguageFeature: [],
+    byModelFeature: [],
+    byLanguageModel: [],
+    customizations: [],
     ...overrides,
   };
 }

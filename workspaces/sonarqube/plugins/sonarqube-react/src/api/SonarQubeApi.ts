@@ -30,11 +30,13 @@ export type MetricKey =
   | 'vulnerabilities'
   | 'security_rating'
 
-  // code smells and rating (-> maintainability)
+  // code smells, rating and remediation effort (-> maintainability)
   | 'code_smells'
   | 'sqale_rating'
+  | 'sqale_index'
 
   // security hotspots
+  | 'security_hotspots'
   | 'security_hotspots_reviewed'
   | 'security_review_rating'
 
@@ -50,10 +52,12 @@ export type SonarUrlProcessorFunc = (identifier: string) => string;
 /**
  * @public
  *
- * Define a type to make sure that all metrics are used
+ * The measures reported for a project. Every key is optional: an instance only
+ * reports the measures it supports, and new keys are added over time, so
+ * requiring all of them would break every consumer that builds a summary.
  */
 export type Metrics = {
-  [key in MetricKey]: string | undefined;
+  [key in MetricKey]?: string;
 };
 
 /** @public */

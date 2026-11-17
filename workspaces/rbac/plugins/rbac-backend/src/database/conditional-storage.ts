@@ -18,13 +18,52 @@ import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import { Knex } from 'knex';
 
-import type {
-  PermissionAction,
-  PermissionInfo,
-  RoleConditionalPolicyDecision,
+import {
+  type PermissionAction,
+  type PermissionMapping,
+  type RoleConditionalPolicyDecision,
+  isPermissionInfo,
+  permissionMappingAction,
 } from '@backstage-community/plugin-rbac-common';
 
 export const CONDITIONAL_TABLE = 'role-condition-policies';
+
+function formatOverlap(
+  query: PermissionMapping,
+  stored: PermissionMapping,
+): string {
+  const queryNamed = isPermissionInfo(query);
+  const storedNamed = isPermissionInfo(stored);
+  if (!queryNamed && !storedNamed) {
+    return `action '${query}'`;
+  }
+  if (queryNamed && storedNamed) {
+    return `permission '${query.name}'`;
+  }
+  if (queryNamed) {
+    return `permission '${query.name}' overlaps with action '${stored}' (broad)`;
+  }
+  if (storedNamed) {
+    return `action '${query}' (broad) overlaps with permission '${stored.name}'`;
+  }
+  return `action '${query}'`;
+}
+
+function mappingEntriesConflict(
+  a: PermissionMapping,
+  b: PermissionMapping,
+): boolean {
+  if (permissionMappingAction(a) !== permissionMappingAction(b)) {
+    return false;
+  }
+  const aHasName = isPermissionInfo(a);
+  const bHasName = isPermissionInfo(b);
+  if (aHasName && bHasName) {
+    return a.name === b.name;
+  }
+  // broad (nameless) conflicts with everything that has the same action
+  return true;
+}
 
 export interface ConditionalPolicyDecisionDAO {
   result: AuthorizeResult.CONDITIONAL;
@@ -42,18 +81,18 @@ export interface ConditionalStorage {
     pluginId?: string,
     resourceType?: string,
     actions?: PermissionAction[],
-    permissionNames?: string[],
+    permissionName?: string,
     trx?: Knex.Transaction | Knex,
-  ): Promise<RoleConditionalPolicyDecision<PermissionInfo>[]>;
+  ): Promise<RoleConditionalPolicyDecision[]>;
   createCondition(
-    conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionalDecision: RoleConditionalPolicyDecision,
     idsToExclude?: ReadonlySet<number>,
   ): Promise<number>;
   checkConflictedConditions(
     roleEntityRef: string,
     resourceType: string,
     pluginId: string,
-    queryPermissionNames: string[],
+    queryMapping: PermissionMapping[],
     idToExclude?: number,
     trx?: Knex.Transaction | Knex,
     idsToExclude?: ReadonlySet<number>,
@@ -61,11 +100,11 @@ export interface ConditionalStorage {
   getCondition(
     id: number,
     trx?: Knex.Transaction | Knex,
-  ): Promise<RoleConditionalPolicyDecision<PermissionInfo> | undefined>;
+  ): Promise<RoleConditionalPolicyDecision | undefined>;
   deleteCondition(id: number): Promise<void>;
   updateCondition(
     id: number,
-    conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionalDecision: RoleConditionalPolicyDecision,
     trx?: Knex.Transaction,
     idsToExclude?: ReadonlySet<number>,
   ): Promise<void>;
@@ -79,9 +118,9 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     pluginId?: string,
     resourceType?: string,
     actions?: PermissionAction[],
-    permissionNames?: string[],
+    permissionName?: string,
     trx?: Knex.Transaction | Knex,
-  ): Promise<RoleConditionalPolicyDecision<PermissionInfo>[]> {
+  ): Promise<RoleConditionalPolicyDecision[]> {
     const db = trx ?? this.knex;
     const daoRaws = await db.table(CONDITIONAL_TABLE).where(builder => {
       if (pluginId) {
@@ -99,27 +138,21 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
       }
     });
 
-    let conditions: RoleConditionalPolicyDecision<PermissionInfo>[] = [];
+    let conditions: RoleConditionalPolicyDecision[] = [];
     if (daoRaws) {
       conditions = daoRaws.map(dao => this.daoToConditionalDecision(dao));
-    }
-
-    if (permissionNames && permissionNames.length > 0) {
-      conditions = conditions.filter(condition => {
-        return permissionNames.every(permissionName =>
-          condition.permissionMapping
-            .map(permInfo => permInfo.name)
-            .includes(permissionName),
-        );
-      });
     }
 
     if (actions && actions.length > 0) {
       conditions = conditions.filter(condition => {
         return actions.every(action =>
-          condition.permissionMapping
-            .map(permInfo => permInfo.action)
-            .includes(action),
+          condition.permissionMapping.some(
+            entry =>
+              permissionMappingAction(entry) === action &&
+              (!permissionName ||
+                !isPermissionInfo(entry) ||
+                entry.name === permissionName),
+          ),
         );
       });
     }
@@ -128,14 +161,15 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
   }
 
   async createCondition(
-    conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionalDecision: RoleConditionalPolicyDecision,
     idsToExclude?: ReadonlySet<number>,
   ): Promise<number> {
-    await this.checkConflictedConditions(
+    await this.throwOnConflict(
+      'Cannot create condition',
       conditionalDecision.roleEntityRef,
       conditionalDecision.resourceType,
       conditionalDecision.pluginId,
-      conditionalDecision.permissionMapping.map(permInfo => permInfo.action),
+      conditionalDecision.permissionMapping,
       undefined,
       undefined,
       idsToExclude,
@@ -157,7 +191,86 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     roleEntityRef: string,
     resourceType: string,
     pluginId: string,
-    queryConditionActions: PermissionAction[],
+    queryMapping: PermissionMapping[],
+    idToExclude?: number,
+    trx?: Knex.Transaction | Knex,
+    idsToExclude?: ReadonlySet<number>,
+  ): Promise<void> {
+    await this.throwOnConflict(
+      'Condition cannot be saved',
+      roleEntityRef,
+      resourceType,
+      pluginId,
+      queryMapping,
+      idToExclude,
+      trx,
+      idsToExclude,
+    );
+  }
+
+  async getCondition(
+    id: number,
+    trx?: Knex.Transaction | Knex,
+  ): Promise<RoleConditionalPolicyDecision | undefined> {
+    const db = trx ?? this.knex;
+    const daoRaw = await db.table(CONDITIONAL_TABLE).where('id', id).first();
+
+    if (daoRaw) {
+      return this.daoToConditionalDecision(daoRaw);
+    }
+    return undefined;
+  }
+
+  async deleteCondition(id: number): Promise<void> {
+    const condition = await this.getCondition(id);
+    if (!condition) {
+      throw new NotFoundError(`Condition with id ${id} was not found`);
+    }
+    await this.knex?.table(CONDITIONAL_TABLE).delete().whereIn('id', [id]);
+  }
+
+  async updateCondition(
+    id: number,
+    conditionalDecision: RoleConditionalPolicyDecision,
+    trx?: Knex.Transaction,
+    idsToExclude?: ReadonlySet<number>,
+  ): Promise<void> {
+    const db = trx ?? this.knex;
+    const condition = await this.getCondition(id, db);
+    if (!condition) {
+      throw new NotFoundError(`Condition with id ${id} was not found`);
+    }
+
+    await this.throwOnConflict(
+      `Cannot update condition ${id}`,
+      conditionalDecision.roleEntityRef,
+      conditionalDecision.resourceType,
+      conditionalDecision.pluginId,
+      conditionalDecision.permissionMapping,
+      id,
+      db,
+      idsToExclude,
+    );
+
+    const conditionRaw = this.toDAO(conditionalDecision);
+    conditionRaw.id = id;
+    const result = await db
+      .table(CONDITIONAL_TABLE)
+      .where('id', conditionRaw.id)
+      .update<ConditionalPolicyDecisionDAO>(conditionRaw)
+      .returning('id');
+
+    if (!result || result.length === 0) {
+      throw new Error(`Failed to update the condition with id: ${id}.`);
+    }
+  }
+
+  private async throwOnConflict(
+    operationLabel: string,
+    roleEntityRef: string,
+    resourceType: string,
+    pluginId: string,
+    queryMapping: PermissionMapping[],
     idToExclude?: number,
     trx?: Knex.Transaction | Knex,
     idsToExclude?: ReadonlySet<number>,
@@ -179,90 +292,51 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
           !idsToExclude.has(c.id)),
     );
 
-    if (conditionsForTheSameResource) {
-      const conflictedCondition = conditionsForTheSameResource.find(
-        condition => {
-          const conditionActions = condition.permissionMapping.map(
-            permInfo => permInfo.action,
-          );
-          return queryConditionActions.some(action =>
-            conditionActions.includes(action),
-          );
-        },
-      );
-
-      if (conflictedCondition) {
-        const conflictedActions = queryConditionActions.filter(action =>
-          conflictedCondition.permissionMapping.some(p => p.action === action),
-        );
-        throw new ConflictError(
-          `Found condition with conflicted permission action '${JSON.stringify(
-            conflictedActions,
-          )}'. Role could have multiple ` +
-            `conditions for the same resource type '${conflictedCondition.resourceType}', but with different permission action sets.`,
-        );
-      }
-    }
-  }
-
-  async getCondition(
-    id: number,
-    trx?: Knex.Transaction | Knex,
-  ): Promise<RoleConditionalPolicyDecision<PermissionInfo> | undefined> {
-    const db = trx ?? this.knex;
-    const daoRaw = await db.table(CONDITIONAL_TABLE).where('id', id).first();
-
-    if (daoRaw) {
-      return this.daoToConditionalDecision(daoRaw);
-    }
-    return undefined;
-  }
-
-  async deleteCondition(id: number): Promise<void> {
-    const condition = await this.getCondition(id);
-    if (!condition) {
-      throw new NotFoundError(`Condition with id ${id} was not found`);
-    }
-    await this.knex?.table(CONDITIONAL_TABLE).delete().whereIn('id', [id]);
-  }
-
-  async updateCondition(
-    id: number,
-    conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
-    trx?: Knex.Transaction,
-    idsToExclude?: ReadonlySet<number>,
-  ): Promise<void> {
-    const db = trx ?? this.knex;
-    const condition = await this.getCondition(id, db);
-    if (!condition) {
-      throw new NotFoundError(`Condition with id ${id} was not found`);
-    }
-
-    await this.checkConflictedConditions(
-      conditionalDecision.roleEntityRef,
-      conditionalDecision.resourceType,
-      conditionalDecision.pluginId,
-      conditionalDecision.permissionMapping.map(perm => perm.action),
-      id,
-      db,
-      idsToExclude,
+    const conflictingConditions = conditionsForTheSameResource.filter(
+      condition =>
+        queryMapping.some(queryEntry =>
+          condition.permissionMapping.some(storedEntry =>
+            mappingEntriesConflict(queryEntry, storedEntry),
+          ),
+        ),
     );
 
-    const conditionRaw = this.toDAO(conditionalDecision);
-    conditionRaw.id = id;
-    const result = await db
-      .table(CONDITIONAL_TABLE)
-      .where('id', conditionRaw.id)
-      .update<ConditionalPolicyDecisionDAO>(conditionRaw)
-      .returning('id');
-
-    if (!result || result.length === 0) {
-      throw new Error(`Failed to update the condition with id: ${id}.`);
+    if (conflictingConditions.length === 0) {
+      return;
     }
+
+    const overlapsForCondition = (cond: RoleConditionalPolicyDecision) =>
+      queryMapping
+        .flatMap(q =>
+          cond.permissionMapping
+            .filter(s => mappingEntriesConflict(q, s))
+            .map(s => formatOverlap(q, s)),
+        )
+        .join('; ');
+
+    if (conflictingConditions.length === 1) {
+      const cond = conflictingConditions[0];
+      throw new ConflictError(
+        `${operationLabel}: permission mapping overlaps with existing condition (id: ${cond.id}) ` +
+          `for resource type '${cond.resourceType}'. Overlapping entries: ${overlapsForCondition(cond)}.`,
+      );
+    }
+
+    const sorted = conflictingConditions.sort(
+      (a, b) => (a.id ?? 0) - (b.id ?? 0),
+    );
+    const condDetails = sorted
+      .map(cond => `Condition ${cond.id}: ${overlapsForCondition(cond)}`)
+      .join('. ');
+
+    throw new ConflictError(
+      `${operationLabel}: permission mapping overlaps with ${conflictingConditions.length} existing conditions ` +
+        `for resource type '${resourceType}'. ${condDetails}.`,
+    );
   }
 
   private toDAO(
-    conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionalDecision: RoleConditionalPolicyDecision,
   ): ConditionalPolicyDecisionDAO {
     const {
       result,
@@ -285,7 +359,7 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
 
   private daoToConditionalDecision(
     dao: ConditionalPolicyDecisionDAO,
-  ): RoleConditionalPolicyDecision<PermissionInfo> {
+  ): RoleConditionalPolicyDecision {
     if (!dao.id) {
       throw new InputError(`Missed id in the dao object: ${dao}`);
     }

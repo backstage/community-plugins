@@ -25,7 +25,8 @@ import {
   memo,
 } from 'react';
 
-import { InfoCard, Progress } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -75,7 +76,7 @@ const WrapperInfoCard = ({
 }: PropsWithChildren<WrapperInfoCardProps>) => (
   <>
     {allErrors && allErrors.length > 0 && <ErrorPanel allErrors={allErrors} />}
-    <InfoCard
+    <EntityInfoCard
       {...(showClusterSelector && {
         title: (
           <Box sx={titleSx}>
@@ -87,7 +88,7 @@ const WrapperInfoCard = ({
       })}
     >
       {children}
-    </InfoCard>
+    </EntityInfoCard>
   </>
 );
 

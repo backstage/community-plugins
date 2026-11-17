@@ -171,7 +171,7 @@ const DBToAnnouncementWithCategory = (
       ? timestampToDateTime(announcementDb.until_date)
       : null,
     updated_at: timestampToDateTime(announcementDb.updated_at),
-    on_behalf_of: announcementDb.on_behalf_of,
+    on_behalf_of: announcementDb.on_behalf_of ?? undefined,
   };
 };
 

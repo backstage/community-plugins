@@ -45,5 +45,21 @@ export interface Config {
      * @visibility frontend
      */
     defaultView?: 'enterprise' | 'organization';
+    /**
+     * Whether backend ingestion enables team filtering on the V2 dashboard.
+     * When cost-center filtering is also enabled, the dashboard shows a
+     * Cost center | Team toggle button group.
+     * @visibility frontend
+     */
+    ingestTeams?: boolean;
+    /**
+     * Whether backend ingestion enables cost-center filtering and the
+     * separately scoped No cost center dashboard option. The latter is shown
+     * only when enough users without a cost-center membership have data.
+     * When team filtering is also enabled, the dashboard shows a Cost center |
+     * Team toggle button group.
+     * @visibility frontend
+     */
+    ingestCostCenters?: boolean;
   };
 }

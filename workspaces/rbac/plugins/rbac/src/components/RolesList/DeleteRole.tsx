@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import Delete from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import { ButtonIcon, Focusable, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
+import { RiDeleteBinLine } from '@remixicon/react';
+
 import { useActionPermissionTooltip } from '../../hooks/useActionPermissionTooltip';
-import { useDeleteDialog } from '../DeleteDialogContext';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useDeleteDialog } from '../DeleteDialogContext';
 
 type DeleteRoleProps = {
   roleName: string;
@@ -52,24 +51,31 @@ const DeleteRole = ({
     fallbackTooltip: tooltip,
   });
 
+  const button = (
+    <ButtonIcon
+      icon={<RiDeleteBinLine size={16} />}
+      variant="tertiary"
+      size="medium"
+      aria-label={t('common.delete')}
+      isDisabled={disable}
+      data-testid={testIdText}
+      onPress={() => openDialog(roleName)}
+    />
+  );
+
   return (
-    <Tooltip title={tooltipText}>
-      <span style={{ display: 'inline-flex' }}>
-        <IconButton
-          onClick={() => openDialog(roleName)}
-          data-testid={testIdText}
-          aria-label={t('common.delete')}
-          disabled={disable}
-          sx={{
-            p: 1,
-            borderRadius: '50%',
-            '&:hover': { borderRadius: '50%' },
-          }}
-        >
-          <Delete />
-        </IconButton>
-      </span>
-    </Tooltip>
+    <TooltipTrigger delay={0}>
+      {disable ? (
+        <Focusable>
+          <span style={{ display: 'inline-flex', cursor: 'not-allowed' }}>
+            {button}
+          </span>
+        </Focusable>
+      ) : (
+        button
+      )}
+      <Tooltip>{tooltipText}</Tooltip>
+    </TooltipTrigger>
   );
 };
 export default DeleteRole;

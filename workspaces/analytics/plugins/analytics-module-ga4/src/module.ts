@@ -22,7 +22,7 @@ import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
 import { GoogleAnalytics4 } from './apis/implementations/AnalyticsApi';
 
-const ga4Implementation = AnalyticsImplementationBlueprint.make({
+export const ga4Implementation = AnalyticsImplementationBlueprint.make({
   name: 'ga4',
   params: defineParams =>
     defineParams({

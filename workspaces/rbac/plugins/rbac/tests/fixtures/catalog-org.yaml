@@ -1,0 +1,46 @@
+---
+# Extra catalog entities for full-stack e2e (org.yaml already has guest/guests)
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: xyz
+spec:
+  profile: {}
+  memberOf: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: admins
+spec:
+  type: team
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-d
+  description: Team D
+spec:
+  type: team
+  profile:
+    displayName: Team D
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: infrastructure
+  description: The infra department
+spec:
+  type: department
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: amelia.park
+spec:
+  profile:
+    displayName: Amelia Park
+  memberOf: []

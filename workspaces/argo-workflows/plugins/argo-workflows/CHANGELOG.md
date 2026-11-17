@@ -1,5 +1,13 @@
 # @backstage-community/plugin-argo-workflows
 
+## 0.3.1
+
+### Patch Changes
+
+- b1cf710: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+- Updated dependencies [b1cf710]
+  - @backstage-community/plugin-argo-workflows-react@0.2.1
+
 ## 0.3.0
 
 ### Minor Changes

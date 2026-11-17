@@ -338,8 +338,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
               options={branchOptions}
               data-testid="menu-control"
               size="small"
-              searchable
-              searchPlaceholder="Search branches..."
+              search={{ placeholder: 'Search branches...' }}
               style={{
                 marginLeft: '30px',
                 marginRight: '20px',

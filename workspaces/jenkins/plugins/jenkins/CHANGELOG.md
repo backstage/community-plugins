@@ -1,5 +1,39 @@
 # @backstage-community/plugin-jenkins
 
+## 0.36.0
+
+### Minor Changes
+
+- bacbeba: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [bacbeba]
+  - @backstage-community/plugin-jenkins-common@0.24.0
+
+## 0.35.0
+
+### Minor Changes
+
+- 84f4f0d: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [84f4f0d]
+  - @backstage-community/plugin-jenkins-common@0.23.0
+
+## 0.34.0
+
+### Minor Changes
+
+- 9446879: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- ccc6c95: No functional changes; re-publish to recover from a [GitHub Actions incident](https://www.githubstatus.com/incidents/y1t7p9fzrlj2)
+- Updated dependencies [9446879]
+  - @backstage-community/plugin-jenkins-common@0.22.0
+
 ## 0.33.0
 
 ### Minor Changes

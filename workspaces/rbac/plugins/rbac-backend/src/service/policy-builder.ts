@@ -225,7 +225,6 @@ export class PolicyBuilder {
           enforcerDelegate,
           roleMetadataStorage,
           databaseClient,
-          pluginPermMetaData,
           env.userInfo,
           env.auth,
           conditionValidationLimits,

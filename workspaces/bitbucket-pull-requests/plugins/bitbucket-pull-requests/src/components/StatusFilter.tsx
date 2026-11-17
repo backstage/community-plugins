@@ -17,25 +17,26 @@
 import { FC, useState } from 'react';
 import { ButtonGroup, Button } from '@material-ui/core';
 
-export type PullRequestState = 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL';
-
 interface StatusFilterProps {
-  onFilterChange: (filter: PullRequestState) => void;
+  onFilterChange: (filter: string) => void;
 }
-const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
-  const [status, setStatus] = useState<PullRequestState>('ALL');
 
-  const handleStatusChange = (newStatus: PullRequestState) => {
+type StatusFilterValue = 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL';
+
+const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
+  const [status, setStatus] = useState<StatusFilterValue>('ALL');
+
+  const handleStatusChange = (newStatus: StatusFilterValue) => {
     setStatus(newStatus);
     onFilterChange(newStatus);
   };
 
-  const buttons: { value: PullRequestState; label: string }[] = [
+  const buttons = [
     { value: 'OPEN', label: 'Open' },
     { value: 'MERGED', label: 'Merged' },
     { value: 'DECLINED', label: 'Declined' },
     { value: 'ALL', label: 'All' },
-  ];
+  ] as const satisfies readonly { value: StatusFilterValue; label: string }[];
 
   return (
     <ButtonGroup color="primary" aria-label="pull request status filter">

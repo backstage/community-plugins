@@ -182,7 +182,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
     factRetriever: FactRetriever,
     lifecycle?: FactLifecycle,
   ) {
-    return async () => {
+    return async (signal: AbortSignal) => {
       const startTimestamp = process.hrtime();
       this.logger.info(
         `Retrieving facts for fact retriever ${factRetriever.id}`,
@@ -194,6 +194,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
           ...this.factRetrieverContext,
           logger: this.logger.child({ factRetrieverId: factRetriever.id }),
           entityFilter: factRetriever.entityFilter,
+          signal,
         });
         this.logger.debug(
           `Retrieved ${facts.length} facts for fact retriever ${

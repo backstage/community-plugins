@@ -1,0 +1,222 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Playwright NFS entry. Same mocked NFS app as `yarn start:mock`.
+ *
+ * Must be self-contained: a static `import './index'` compiles under rspack
+ * but React never mounts, so Playwright sees a blank page.
+ */
+
+import '@backstage/cli/asset-types';
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
+import ReactDOM from 'react-dom/client';
+
+import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+  createFrontendPlugin,
+} from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+
+import {
+  kubernetesApiRef,
+  kubernetesAuthProvidersApiRef,
+} from '@backstage/plugin-kubernetes-react';
+
+import { mockArgoResources } from './__data__/argoRolloutsObjects';
+import {
+  MockArgoCDApiClient,
+  MockKubernetesClient,
+  mockKubernetesAuthProviderApi,
+} from './__fixtures__/mockClients';
+
+import {
+  argoCDApiRef,
+  ArgoCDInstanceApiClient,
+  argoCDInstanceApiRef,
+} from '../src/api';
+import argocdPlugin from '../src/plugin';
+import argocdTranslationsModule from '../src/translations';
+import { mockArgocdConfig, mockArgocdMultiInstanceConfig } from './__data__';
+import { getArgocdInstances } from '../src/hooks/useArgocdConfig';
+import { ConfigReader } from '@backstage/config';
+import {
+  createMockPermissionApi,
+  installMockArgocdPermissionsPathSync,
+  mockCatalogApi,
+} from './mocks';
+
+installMockArgocdPermissionsPathSync();
+
+const combinedArgocdConfig = {
+  argocd: {
+    ...mockArgocdConfig.argocd,
+    appLocatorMethods: [
+      {
+        type: 'config',
+        instances: [
+          ...mockArgocdConfig.argocd.appLocatorMethods[0].instances,
+          ...mockArgocdMultiInstanceConfig.argocd.appLocatorMethods[0]
+            .instances,
+        ],
+      },
+    ],
+  },
+};
+
+const configApi = new ConfigReader(combinedArgocdConfig);
+const mockArgoCDApi = new MockArgoCDApiClient();
+
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={['guest']}
+        />
+      ),
+  },
+});
+
+const catalogPluginOverrides = catalogPlugin.withOverrides({
+  extensions: [
+    catalogPlugin.getExtension('api:catalog').override({
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => mockCatalogApi,
+        }),
+    }),
+  ],
+});
+
+const appDevModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    signInPage,
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => createMockPermissionApi(),
+        }),
+    }),
+  ],
+});
+
+const argocdDevModule = createFrontendModule({
+  pluginId: 'backstage-community-argocd',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'argocd-mock',
+      params: defineParams =>
+        defineParams({
+          api: argoCDApiRef,
+          deps: {},
+          factory: () => mockArgoCDApi,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'argocd-instance-mock',
+      params: defineParams =>
+        defineParams({
+          api: argoCDInstanceApiRef,
+          deps: {},
+          factory: () =>
+            new ArgoCDInstanceApiClient({
+              argoCDApi: mockArgoCDApi,
+              instances: getArgocdInstances(configApi),
+            }),
+        }),
+    }),
+  ],
+});
+
+const kubernetesStubPlugin = createFrontendPlugin({
+  pluginId: 'kubernetes',
+  extensions: [],
+});
+
+const kubernetesDevModule = createFrontendModule({
+  pluginId: 'kubernetes',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'kubernetes-mock',
+      params: defineParams =>
+        defineParams({
+          api: kubernetesApiRef,
+          deps: {},
+          factory: () => new MockKubernetesClient(mockArgoResources),
+        }),
+    }),
+  ],
+});
+
+const kubernetesAuthStubPlugin = createFrontendPlugin({
+  pluginId: 'kubernetes-auth-providers',
+  extensions: [],
+});
+
+const kubernetesAuthDevModule = createFrontendModule({
+  pluginId: 'kubernetes-auth-providers',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'kubernetes-auth-mock',
+      params: defineParams =>
+        defineParams({
+          api: kubernetesAuthProvidersApiRef,
+          deps: {},
+          factory: () => mockKubernetesAuthProviderApi,
+        }),
+    }),
+  ],
+});
+
+const app = createApp({
+  features: [
+    catalogPluginOverrides,
+    userSettingsPlugin,
+    argocdPlugin,
+    argocdTranslationsModule,
+    appDevModule,
+    argocdDevModule,
+    kubernetesStubPlugin,
+    kubernetesDevModule,
+    kubernetesAuthStubPlugin,
+    kubernetesAuthDevModule,
+  ],
+});
+
+if (window.location.pathname === '/') {
+  window.location.replace('/catalog');
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());

@@ -1,5 +1,20 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 3.1.0
+
+### Minor Changes
+
+- efd82d4: Backstage version bump to v1.52.0
+- 9fcbc6c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 571332e: Moved `@backstage/backend-test-utils` from `dependencies` to `devDependencies`, as it is only used in tests. This stops it, and its `better-sqlite3` dependency, from being installed into consumers' production dependency trees.
+- Updated dependencies [efd82d4]
+- Updated dependencies [9fcbc6c]
+  - @backstage-community/plugin-tech-insights-common@0.11.0
+  - @backstage-community/plugin-tech-insights-node@2.9.0
+
 ## 3.0.1
 
 ### Major Changes

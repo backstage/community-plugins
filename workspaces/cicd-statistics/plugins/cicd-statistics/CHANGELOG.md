@@ -1,5 +1,23 @@
 # @backstage-community/plugin-cicd-statistics
 
+## 0.22.0
+
+### Minor Changes
+
+- 73a4e49: Backstage version bump to v1.56.2
+
+## 0.21.0
+
+### Minor Changes
+
+- 4c1bac2: Backstage version bump to v1.55.1
+
+## 0.20.0
+
+### Minor Changes
+
+- 061ec29: Backstage version bump to v1.54.5
+
 ## 0.19.1
 
 ### Patch Changes
