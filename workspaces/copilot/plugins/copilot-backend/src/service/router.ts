@@ -421,12 +421,8 @@ async function createRouter(
     }
 
     if (type === 'organization' && team !== undefined) {
-      const teams = await dbV2.getAccessibleOrganizationTeams(
-        [validatedEntityId],
-        from,
-        to,
-      );
-      if (!teams.some(candidate => candidate.team === team)) {
+      const teams = await dbV2.getTeams(type, validatedEntityId, from, to);
+      if (!teams.includes(team)) {
         throw new InputError(
           'Team is not eligible for the requested organization and period.',
         );
@@ -770,14 +766,6 @@ async function createRouter(
           from,
           to,
         });
-        if (type === 'organization' && organizationTeamIngestionEnabled) {
-          const teams = await dbV2.getAccessibleOrganizationTeams(
-            [validatedEntityId],
-            from,
-            to,
-          );
-          return res.json(teams.map(candidate => candidate.team));
-        }
         const result = await dbV2.getTeams(type, validatedEntityId, from, to);
         return res.json(result);
       } catch (err) {

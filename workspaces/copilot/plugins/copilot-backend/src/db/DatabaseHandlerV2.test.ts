@@ -223,6 +223,101 @@ describe('DatabaseHandlerV2', () => {
       await knex?.destroy();
     });
 
+    it.each(['commit', 'rollback', 'invalid replacement'])(
+      'keeps bound inserts and nested replacements in the lease transaction: %s',
+      async outcome => {
+        const now = new Date();
+        await handler.syncEnterpriseOrganizations('ent-1', ['org-1'], now);
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'org-1',
+          now,
+          new Date(now.getTime() + 60_000),
+        );
+        const day = '2026-05-01';
+        const teamTotal = buildDailyTotal({ team_slug: 'platform' });
+        const operation = handler.withOrganizationIngestionLease(
+          lease!,
+          async database => {
+            await database.insertDailyTotals([buildDailyTotal()]);
+            await database.replaceTeamAggregates(
+              day,
+              'organization',
+              'org-1',
+              [buildUserTeam({ team_slug: 'platform' })],
+              {
+                dailyTotals:
+                  outcome === 'invalid replacement'
+                    ? [teamTotal, teamTotal]
+                    : [teamTotal],
+                byFeature: [],
+                byIde: [],
+                byLanguageFeature: [],
+                byModelFeature: [],
+                byLanguageModel: [],
+                customizationMetrics: [],
+                costCenterCustomizationMetrics: [],
+              },
+            );
+            await database.replaceCostCenterAggregates(
+              day,
+              'organization',
+              'org-1',
+              [
+                {
+                  day,
+                  metrics_type: 'organization',
+                  entity_id: 'org-1',
+                  user_id: 1,
+                  user_login: 'user-1',
+                  cost_center_id: 'cc-a',
+                },
+              ],
+              makeCostCenterAggregateRows(
+                day,
+                [
+                  {
+                    costCenterId: 'cc-a',
+                    teamSlug: '',
+                    activeUsers: 1,
+                    locAdded: 10,
+                  },
+                ],
+                'organization',
+                'org-1',
+              ),
+            );
+            await database.upsertIngestionLog(buildIngestionLog());
+            if (outcome === 'rollback') {
+              throw new Error('Abort organization writes');
+            }
+          },
+        );
+
+        const error = await operation.then(
+          () => undefined,
+          (cause: Error) => cause,
+        );
+        const expectedMessage = {
+          commit: /^$/,
+          rollback: /Abort organization writes/,
+          'invalid replacement': /unique|duplicate/i,
+        }[outcome];
+        expect(error?.message ?? '').toMatch(expectedMessage!);
+        for (const table of [
+          ...costCenterAggregateTables,
+          'copilot_user_teams',
+          'copilot_user_cost_centers',
+          'copilot_cost_center_aggregation_log',
+          'copilot_ingestion_log',
+        ]) {
+          const committedCount = table === 'copilot_daily_totals' ? 3 : 1;
+          const expectedCount = outcome === 'commit' ? committedCount : 0;
+          expect(await knex(table).select('day')).toHaveLength(expectedCount);
+        }
+      },
+    );
+
     it('fences organization work, hides inaccessible orgs, and retains history', async () => {
       const now = new Date();
       const nextAttemptAt = new Date(now.getTime() + 60_000);
@@ -258,17 +353,16 @@ describe('DatabaseHandlerV2', () => {
         ),
       ).resolves.toBeUndefined();
 
-      await handler.withOrganizationIngestionLease(firstLease!, async tx => {
-        await handler.updateEnterpriseOrganizationState(
-          firstLease!,
-          {
+      await handler.withOrganizationIngestionLease(
+        firstLease!,
+        async database => {
+          await database.updateEnterpriseOrganizationState(firstLease!, {
             accessState: 'accessible',
             reportsReady: true,
             lastAttemptedAt: new Date(),
-          },
-          tx,
-        );
-      });
+          });
+        },
+      );
       await handler.releaseEnterpriseOrganizationLease(firstLease!);
 
       const secondStartedAt = new Date();
@@ -288,9 +382,11 @@ describe('DatabaseHandlerV2', () => {
         ),
       ).resolves.toBe(false);
       await handler.releaseEnterpriseOrganizationLease(firstLease!);
+      const staleOperation = jest.fn();
       await expect(
-        handler.withOrganizationIngestionLease(firstLease!, async () => {}),
+        handler.withOrganizationIngestionLease(firstLease!, staleOperation),
       ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      expect(staleOperation).not.toHaveBeenCalled();
       await expect(
         handler.updateEnterpriseOrganizationState(firstLease!, {
           accessState: 'inaccessible',

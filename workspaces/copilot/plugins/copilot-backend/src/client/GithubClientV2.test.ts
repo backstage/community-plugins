@@ -755,6 +755,56 @@ describe('GithubClientV2', () => {
     );
   });
 
+  it.each([
+    { enterprise: null },
+    {
+      enterprise: {
+        organizations: { nodes: null, pageInfo: { hasNextPage: false } },
+      },
+    },
+    {
+      enterprise: {
+        organizations: {
+          nodes: [{ login: 42 }],
+          pageInfo: { hasNextPage: false },
+        },
+      },
+    },
+    {
+      enterprise: {
+        organizations: { nodes: [], pageInfo: { hasNextPage: 'false' } },
+      },
+    },
+  ])('rejects malformed organization discovery data: %j', async data => {
+    mockRequest.mockResolvedValueOnce(githubResponse({ data }));
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).rejects.toThrow(
+      'GitHub returned an error while listing enterprise organizations.',
+    );
+  });
+
+  it('rejects repeated organization discovery cursors instead of returning partial results', async () => {
+    mockRequest.mockResolvedValue(
+      githubResponse({
+        data: {
+          enterprise: {
+            organizations: {
+              nodes: [{ login: 'Org-A' }],
+              pageInfo: { hasNextPage: true, endCursor: 'same-cursor' },
+            },
+          },
+        },
+      }),
+    );
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).rejects.toThrow(
+      'Unexpected pagination cursor while listing enterprise organizations.',
+    );
+    expect(mockRequest).toHaveBeenCalledTimes(2);
+  });
+
   it('refreshes a stale organization installation after a report 403', async () => {
     const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
     getGithubCredentials.mockResolvedValueOnce({

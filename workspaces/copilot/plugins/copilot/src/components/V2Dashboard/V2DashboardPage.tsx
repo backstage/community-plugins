@@ -307,7 +307,6 @@ export const V2DashboardPage = () => {
     [costCenterScopeEnabled, teamTargets],
   );
   const filterTargetToggleAvailable = filterTargets.length > 1;
-  const fallbackTeamTarget = teamTargets[0] ?? defaultTeamTarget;
 
   const [from, setFrom] = useState(
     DateTime.now().minus({ days: 30 }).toFormat('yyyy-MM-dd'),
@@ -325,18 +324,8 @@ export const V2DashboardPage = () => {
     filterTargets.includes(filterSelection.value.target)
       ? filterSelection.value
       : undefined;
-  const selectedFilterTarget =
-    currentFilterSelection?.target ?? fallbackTeamTarget;
-  let filterTarget: FilterTarget | undefined;
-  if (filterTargetToggleAvailable) {
-    filterTarget = selectedFilterTarget;
-  } else if (costCenterScopeEnabled) {
-    filterTarget = 'costCenter';
-  } else if (ingestTeams) {
-    filterTarget = defaultTeamTarget;
-  } else if (organizationTeamScopeEnabled) {
-    filterTarget = 'organizationTeam';
-  }
+  const filterTarget: FilterTarget | undefined =
+    currentFilterSelection?.target ?? teamTargets[0] ?? filterTargets[0];
   const activeFilterSelection =
     currentFilterSelection?.target === filterTarget
       ? currentFilterSelection
@@ -425,7 +414,7 @@ export const V2DashboardPage = () => {
   );
   const selectFilterTarget = useCallback(
     (value: FilterTarget) => {
-      if (value === selectedFilterTarget) {
+      if (value === filterTarget) {
         return;
       }
       setFilterSelection({
@@ -433,7 +422,7 @@ export const V2DashboardPage = () => {
         value: createEmptyFilterSelection(value),
       });
     },
-    [scopeKey, selectedFilterTarget],
+    [scopeKey, filterTarget],
   );
 
   let dashboardType = type;
@@ -739,7 +728,7 @@ export const V2DashboardPage = () => {
                         aria-label="Filter by"
                         selectionMode="single"
                         disallowEmptySelection
-                        selectedKeys={[selectedFilterTarget]}
+                        selectedKeys={filterTarget ? [filterTarget] : []}
                         onSelectionChange={keys => {
                           const [selected] = Array.from(keys);
                           if (

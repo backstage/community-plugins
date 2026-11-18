@@ -109,7 +109,9 @@ describe('router v2 endpoints', () => {
       costCenters: [],
       hasUsersWithoutCostCenter: false,
     });
-    mockDbV2.getTeams.mockResolvedValue([]);
+    mockDbV2.getTeams.mockImplementation(async (type: string) =>
+      type === 'organization' ? ['platform'] : [],
+    );
     mockDbV2.getPeriodRange.mockResolvedValue({
       minDate: '2025-10-10',
       maxDate: '2026-05-20',
@@ -1018,8 +1020,9 @@ describe('router v2 endpoints', () => {
       'platform',
       undefined,
     );
-    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-      ['org-1'],
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
       '2026-05-01',
       '2026-05-20',
     );
@@ -1048,8 +1051,9 @@ describe('router v2 endpoints', () => {
     expect(response.body).toEqual([
       { day: '2026-05-20', metrics_type: 'organization', entity_id: 'org-1' },
     ]);
-    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-      ['org-1'],
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
       '2026-05-01',
       '2026-05-20',
     );
@@ -1202,8 +1206,9 @@ describe('router v2 endpoints', () => {
         const response = await request(app).get(path);
 
         expect(response.status).toBe(400);
-        expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-          ['org-1'],
+        expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+          'organization',
+          'org-1',
           '2026-05-01',
           '2026-05-20',
         );
@@ -1258,12 +1263,13 @@ describe('router v2 endpoints', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(['platform']);
-    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
-      ['org-1'],
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
       '2026-05-01',
       '2026-05-20',
     );
-    expect(mockDbV2.getTeams).not.toHaveBeenCalled();
+    expect(mockDbV2.getAccessibleOrganizationTeams).not.toHaveBeenCalled();
   });
 
   it('GET /v2/organization-team/options preserves the configured organization when multi-org ingestion is off', async () => {
@@ -1378,6 +1384,16 @@ describe('router v2 endpoints', () => {
               team.members.length >= minMembers,
           )
           .map(({ organization, team }) => ({ organization, team })),
+    );
+    mockDbV2.getTeams.mockImplementation(
+      async (_type: string, organization: string, start: string, end: string) =>
+        (
+          await mockDbV2.getAccessibleOrganizationTeams(
+            [organization],
+            start,
+            end,
+          )
+        ).map(({ team }: { team: string }) => team),
     );
     const app = await createTestApp({
       config: mockServices.rootConfig({

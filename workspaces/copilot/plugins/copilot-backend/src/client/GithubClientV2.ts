@@ -16,6 +16,7 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Octokit } from '@octokit/rest';
+import { z } from 'zod';
 import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import {
   MetricsScope,
@@ -33,6 +34,21 @@ import {
   getCopilotConfig,
   getGithubCredentials,
 } from '../utils/GithubUtils';
+
+const enterpriseOrganizationsResponseSchema = z.object({
+  errors: z.array(z.unknown()).max(0).optional(),
+  data: z.object({
+    enterprise: z.object({
+      organizations: z.object({
+        nodes: z.array(z.object({ login: z.string() })),
+        pageInfo: z.object({
+          hasNextPage: z.boolean(),
+          endCursor: z.string().nullish(),
+        }),
+      }),
+    }),
+  }),
+});
 
 // GitHub serves user content from this domain on both github.com and GHE.com.
 const GITHUB_USER_CONTENT_DOMAIN = 'githubusercontent.com';
@@ -1199,61 +1215,18 @@ export class GithubClientV2 {
           },
         },
       );
-      const responseData: unknown = response.data;
-      if (!isRecord(responseData) || Array.isArray(responseData)) {
-        throw new Error(
-          'Unexpected GitHub response while listing enterprise organizations.',
-        );
-      }
-
-      const graphQlResponse: Record<string, unknown> = responseData;
-      const graphQlErrors = graphQlResponse.errors;
-      if (
-        (graphQlErrors !== undefined &&
-          (!Array.isArray(graphQlErrors) || graphQlErrors.length > 0)) ||
-        !isRecord(graphQlResponse.data) ||
-        Array.isArray(graphQlResponse.data)
-      ) {
+      const parsed = enterpriseOrganizationsResponseSchema.safeParse(
+        response.data,
+      );
+      if (!parsed.success) {
         throw new Error(
           'GitHub returned an error while listing enterprise organizations.',
         );
       }
 
-      const graphQlData: Record<string, unknown> = graphQlResponse.data;
-      const enterpriseData: unknown = graphQlData.enterprise;
-      const connection: unknown =
-        isRecord(enterpriseData) && !Array.isArray(enterpriseData)
-          ? enterpriseData.organizations
-          : undefined;
-      if (
-        !isRecord(connection) ||
-        Array.isArray(connection) ||
-        !Array.isArray((connection as Record<string, unknown>).nodes) ||
-        !isRecord((connection as Record<string, unknown>).pageInfo) ||
-        Array.isArray((connection as Record<string, unknown>).pageInfo)
-      ) {
-        throw new Error(
-          'Unexpected GitHub response while listing enterprise organizations.',
-        );
-      }
-      const organizationConnection = connection as Record<string, unknown>;
-      const nodes = organizationConnection.nodes as unknown[];
-      const pageInfo = organizationConnection.pageInfo as Record<
-        string,
-        unknown
-      >;
-      if (typeof pageInfo.hasNextPage !== 'boolean') {
-        throw new Error(
-          'Unexpected GitHub response while listing enterprise organizations.',
-        );
-      }
+      const { nodes, pageInfo } = parsed.data.data.enterprise.organizations;
 
       for (const value of nodes) {
-        if (!isRecord(value) || typeof value.login !== 'string') {
-          throw new Error(
-            'Unexpected organization entry in enterprise organization list.',
-          );
-        }
         const login = value.login.trim();
         if (login) {
           organizations.push(login);
@@ -1263,7 +1236,7 @@ export class GithubClientV2 {
       if (!pageInfo.hasNextPage) {
         break;
       }
-      const nextCursor: unknown = pageInfo.endCursor;
+      const nextCursor = pageInfo.endCursor;
       if (
         typeof nextCursor !== 'string' ||
         nextCursor.length === 0 ||
