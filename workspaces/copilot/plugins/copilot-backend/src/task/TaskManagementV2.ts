@@ -526,6 +526,7 @@ export class TaskManagementV2 {
     metricsType: MetricsScope,
     entityId: string,
     discoveredOrganization?: string,
+    options: { ignoreOrganizationNextAttempt?: boolean } = {},
   ): Promise<void> {
     const { api, config, db, logger } = this.options;
     const ingestTeams =
@@ -671,12 +672,15 @@ export class TaskManagementV2 {
     let organizationLease: OrganizationIngestionLease | undefined;
     if (canonicalOrganization && enterprise) {
       const startedAt = DateTime.utc();
+      const ignoreOrganizationNextAttempt =
+        isConfiguredOrganizationBackfill ||
+        options.ignoreOrganizationNextAttempt === true;
       organizationLease = await db.claimEnterpriseOrganizationLease(
         enterprise,
         canonicalOrganization,
         startedAt.toJSDate(),
         startedAt.plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES }).toJSDate(),
-        isConfiguredOrganizationBackfill,
+        ignoreOrganizationNextAttempt,
       );
       if (!organizationLease) {
         throw new Error('Organization-team ingestion is already in progress.');
@@ -1489,6 +1493,7 @@ export class TaskManagementV2 {
       'organization',
       canonicalOrganization,
       canonicalOrganization,
+      { ignoreOrganizationNextAttempt: true },
     );
   }
 

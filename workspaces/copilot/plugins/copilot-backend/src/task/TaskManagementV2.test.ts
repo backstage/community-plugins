@@ -358,7 +358,7 @@ describe('TaskManagementV2', () => {
         'Org-1',
         expect.any(Date),
         expect.any(Date),
-        false,
+        true,
       );
       expect(api.fetchCostCenterMemberships).not.toHaveBeenCalled();
       expect(db.getDaysMissingCostCenterAggregation).not.toHaveBeenCalled();

@@ -532,6 +532,66 @@ describe('DatabaseHandlerV2', () => {
       await handler.releaseEnterpriseOrganizationLease(legacyLease!);
     });
 
+    it('allows manual discovered-organization backfills during cooldown without bypassing leases', async () => {
+      const refreshedAt = new Date('2026-11-17T00:00:00.000Z');
+      const refreshLeaseExpiresAt = new Date(
+        refreshedAt.getTime() + 10 * 60_000,
+      );
+      const nextAttemptAt = new Date(refreshedAt.getTime() + 23 * 60 * 60_000);
+      await handler.syncEnterpriseOrganizations(
+        'ent-1',
+        ['Org-A'],
+        refreshedAt,
+      );
+
+      const refreshLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        refreshedAt,
+        refreshLeaseExpiresAt,
+      );
+      expect(refreshLease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(refreshLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: refreshedAt,
+        nextAttemptAt,
+      });
+      await handler.releaseEnterpriseOrganizationLease(refreshLease!);
+
+      const backfillStartedAt = new Date(refreshedAt.getTime() + 1_000);
+      const backfillExpiresAt = new Date(
+        backfillStartedAt.getTime() + 10 * 60_000,
+      );
+      await expect(
+        handler.getEnterpriseOrganizationsToIngest(
+          'ent-1',
+          backfillStartedAt,
+          5,
+          1,
+        ),
+      ).resolves.toEqual([]);
+
+      const backfillLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        backfillStartedAt,
+        backfillExpiresAt,
+        true,
+      );
+      expect(backfillLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          backfillStartedAt,
+          backfillExpiresAt,
+          true,
+        ),
+      ).resolves.toBeUndefined();
+      await handler.releaseEnterpriseOrganizationLease(backfillLease!);
+    });
+
     it('resolves an accessible organization key to its canonical login', async () => {
       const now = new Date();
       await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
