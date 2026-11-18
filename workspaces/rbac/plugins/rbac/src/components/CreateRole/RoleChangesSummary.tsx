@@ -21,6 +21,7 @@ import {
   RoleBasedPolicy,
 } from '@backstage-community/plugin-rbac-common';
 
+import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import List from '@mui/material/List';
@@ -151,11 +152,18 @@ const ChangeTypeLabel = ({ changeType }: { changeType: ChangeType }) => {
   const { t } = useTranslation();
   return (
     <Chip
-      size="small"
       variant="outlined"
       color={changeTypeColors[changeType]}
       label={t(`roleForm.review.changes.${changeType}`)}
-      sx={{ minWidth: '6rem', flexShrink: 0 }}
+      sx={theme => ({
+        minWidth: '7rem',
+        flexShrink: 0,
+        fontWeight: 600,
+        backgroundColor: alpha(
+          theme.palette[changeTypeColors[changeType]].main,
+          0.08,
+        ),
+      })}
     />
   );
 };
