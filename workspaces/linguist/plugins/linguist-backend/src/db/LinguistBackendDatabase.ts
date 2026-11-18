@@ -125,7 +125,9 @@ export class LinguistBackendDatabase implements LinguistBackendStore {
   }
 
   async getProcessedEntities(): Promise<ProcessedEntity[]> {
+    // Only the ref and date are needed, avoid loading the stored `languages` JSON
     const rawEntities = await this.db<RawDbEntityResultRow>('entity_result')
+      .select('entity_ref', 'processed_date')
       .whereNotNull('processed_date')
       .whereNotNull('languages');
 
@@ -158,6 +160,7 @@ export class LinguistBackendDatabase implements LinguistBackendStore {
 
   async getUnprocessedEntities(): Promise<string[]> {
     const rawEntities = await this.db<RawDbEntityResultRow>('entity_result')
+      .select('entity_ref')
       // Only entities without a language breakdown are still pending.
       .whereNull('languages')
       // Never-processed entities (null processed_date) first, then previously
@@ -180,7 +183,9 @@ export class LinguistBackendDatabase implements LinguistBackendStore {
   }
 
   async getAllEntities(): Promise<string[]> {
-    const rawEntities = await this.db<RawDbEntityResultRow>('entity_result');
+    const rawEntities = await this.db<RawDbEntityResultRow>(
+      'entity_result',
+    ).select('entity_ref');
 
     if (!rawEntities) {
       return [];

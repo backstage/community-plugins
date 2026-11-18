@@ -187,8 +187,8 @@ export async function createRouter(
       timeout: schedule.timeout,
       initialDelay: schedule.initialDelay,
       scope: schedule.scope,
-      fn: async () => {
-        await linguistBackendClient.processEntities();
+      fn: async signal => {
+        await linguistBackendClient.processEntities({ signal });
       },
     });
   }

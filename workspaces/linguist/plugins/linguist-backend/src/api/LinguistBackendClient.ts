@@ -48,6 +48,10 @@ async function delay(ms: number): Promise<void> {
   await new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function yieldToEventLoop(): Promise<void> {
+  return new Promise(resolve => setImmediate(resolve));
+}
+
 /**
  * Runs the operation, retrying transient failures with exponential backoff.
  */
@@ -75,7 +79,7 @@ async function withRetry<T>(
 /** @public */
 export interface LinguistBackendApi {
   getEntityLanguages(entityRef: string): Promise<Languages>;
-  processEntities(): Promise<void>;
+  processEntities(options?: { signal?: AbortSignal }): Promise<void>;
 }
 
 /** @public */
@@ -121,12 +125,19 @@ export class LinguistBackendClient implements LinguistBackendApi {
     return this.store.getEntityResults(entityRef);
   }
 
-  async processEntities(): Promise<void> {
+  async processEntities(options?: { signal?: AbortSignal }): Promise<void> {
+    const signal = options?.signal;
+
     this.logger?.info('Synchronizing list of entities');
     await this.synchronizeEntitiesWithCatalog();
 
+    if (signal?.aborted) {
+      this.logger?.warn('Processing aborted before analysing entities');
+      return;
+    }
+
     this.logger?.info('Processing applicable entities through Linguist');
-    await this.generateEntitiesLanguages();
+    await this.generateEntitiesLanguages(signal);
   }
 
   /** @internal */
@@ -190,7 +201,7 @@ export class LinguistBackendClient implements LinguistBackendApi {
   }
 
   /** @internal */
-  async generateEntitiesLanguages(): Promise<void> {
+  async generateEntitiesLanguages(signal?: AbortSignal): Promise<void> {
     const entitiesOverview = await this.getEntitiesOverview();
     this.logger?.info(
       `Entities overview: Entity: ${entitiesOverview.entityCount}, Processed: ${entitiesOverview.processedCount}, Pending: ${entitiesOverview.pendingCount}, Stale ${entitiesOverview.staleCount}`,
@@ -202,6 +213,13 @@ export class LinguistBackendClient implements LinguistBackendApi {
     );
 
     for (const entityRef of entities) {
+      if (signal?.aborted) {
+        this.logger?.warn(
+          'Processing aborted, remaining entities will be picked up on the next run',
+        );
+        return;
+      }
+
       const { token } = await this.auth.getPluginRequestToken({
         onBehalfOf: await this.auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
@@ -226,6 +244,9 @@ export class LinguistBackendClient implements LinguistBackendApi {
           `Unable to process "${entityRef}" using "${url}", message: ${error.message}, stack: ${error.stack}`,
         );
       }
+
+      // Give other work in the process a chance to run between entities
+      await yieldToEventLoop();
     }
   }
 

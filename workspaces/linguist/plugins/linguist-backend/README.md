@@ -114,6 +114,31 @@ linguist:
 # ... other config
 ```
 
+### Large catalogs
+
+Every run of the scheduled task lists all applicable entities from the Catalog and compares them with the entities stored in the database, so each run has a fixed cost that grows with the size of your catalog regardless of the `batchSize`. For catalogs with thousands of entities:
+
+- Prefer larger batches that run less frequently over tiny batches that run often. A `batchSize` of 2 every 2 minutes means a backfill of 8000 entities takes close to 3 days and the task is running almost constantly.
+- Keep the schedule `timeout` below its `frequency` so that runs do not overlap. When the timeout is reached the in-flight run stops picking up new entities and the remaining ones are processed on the next run.
+- Set the [`age`](#refresh) to a large value, e.g. 90 days, to avoid regenerating data that rarely changes.
+- Reduce the work done by [linguist-js](https://www.npmjs.com/package/linguist-js) using `linguistJsOptions`. The plugin only uses the bytes per language, so counting lines is wasted work:
+
+```yaml
+linguist:
+  schedule:
+    frequency:
+      minutes: 10
+    timeout:
+      minutes: 9
+  batchSize: 10
+  age: { days: 90 }
+  linguistJsOptions:
+    offline: true
+    calculateLines: false
+    checkHeuristics: false
+    ignoredFiles: ['node_modules/**', 'vendor/**']
+```
+
 ### Use Source Location
 
 You may wish to use the `backstage.io/source-location` annotation over using the `backstage.io/linguist` as you may not be able to quickly add that annotation to your Entities. To do this you'll just need to set the `useSourceLocation` boolean to `true` in your `app-config.yaml` file:
