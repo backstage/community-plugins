@@ -175,6 +175,61 @@ describe('PermissionsMatrix', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('narrows the rows to the roles checked in the sidebar', async () => {
+    await renderMatrix(createRbacApi());
+    await screen.findByRole('table');
+
+    const developers = screen.getByRole('checkbox', {
+      name: 'role:default/developers',
+    });
+    await userEvent.click(developers);
+    expect(
+      screen.getByRole('link', { name: 'role:default/developers' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'role:default/admins' }),
+    ).not.toBeInTheDocument();
+
+    // unchecking every role shows all of them again
+    await userEvent.click(developers);
+    expect(
+      screen.getByRole('link', { name: 'role:default/admins' }),
+    ).toBeInTheDocument();
+  });
+
+  it('keeps only the rows and columns where the selected policy appears', async () => {
+    await renderMatrix(createRbacApi());
+    await screen.findByRole('table');
+
+    await userEvent.click(screen.getByRole('button', { name: /policy/i }));
+    await userEvent.click(await screen.findByRole('option', { name: 'Deny' }));
+
+    // only developers denies something, and only on the scaffolder permission
+    expect(
+      screen.getByRole('columnheader', { name: 'scaffolder' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('columnheader', { name: 'catalog' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'role:default/developers' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'role:default/admins' }),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: /policy/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: 'Conditional' }),
+    );
+    expect(
+      await screen.findByRole('link', { name: 'role:default/admins' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'role:default/developers' }),
+    ).not.toBeInTheDocument();
+  });
+
   it('says so when there are no plugin permissions to show', async () => {
     await renderMatrix(
       createRbacApi({ listPermissions: jest.fn().mockResolvedValue([]) }),

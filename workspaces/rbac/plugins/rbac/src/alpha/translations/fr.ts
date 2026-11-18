@@ -283,12 +283,17 @@ const rbacTranslationFr = createTranslationMessages({
       'Vue en lecture seule des autorisations accordées à chaque rôle, regroupées par plugin.',
     'permissionsMatrix.roleColumn': 'Rôle',
     'permissionsMatrix.filterRoles': 'Filtrer les rôles',
+    'permissionsMatrix.roles': 'Rôles',
     'permissionsMatrix.plugin': 'Plugin',
     'permissionsMatrix.allPlugins': 'Tous les plugins',
+    'permissionsMatrix.policy': 'Politique',
+    'permissionsMatrix.allPolicies': 'Toutes les politiques',
     'permissionsMatrix.legend': 'Légende',
     'permissionsMatrix.viewOnlyRole': 'Rôle en lecture seule',
     'permissionsMatrix.conditionalRules': "Règles d'accès conditionnel",
     'permissionsMatrix.emptyRoles': 'Aucun rôle trouvé',
+    'permissionsMatrix.noMatches':
+      'Aucune autorisation ne correspond aux filtres actuels',
     'permissionsMatrix.emptyPermissions':
       'Aucune autorisation de plugin trouvée',
     'permissionsMatrix.decisions.allow': 'Autoriser',

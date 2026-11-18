@@ -17,6 +17,8 @@ import { useDeferredValue, useMemo, useState } from 'react';
 
 import { Link, Progress, WarningPanel } from '@backstage/core-components';
 import {
+  Checkbox,
+  CheckboxGroup,
   Flex,
   Focusable,
   type Key,
@@ -34,6 +36,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import {
   filterPermissionsMatrix,
   getMatrixCell,
+  MatrixDecision,
   MatrixPluginGroup,
   MatrixRow,
 } from '../../utils/permissions-matrix-utils';
@@ -51,6 +54,13 @@ import {
 import styles from './PermissionsMatrix.module.css';
 
 const ALL_PLUGINS = 'all';
+const ALL_POLICIES = 'all';
+const DECISION_FILTERS: MatrixDecision[] = [
+  'allow',
+  'deny',
+  'conditional',
+  'none',
+];
 
 const ViewOnlyRoleIndicator = ({ source }: { source: string }) => {
   const { t } = useTranslation();
@@ -158,7 +168,9 @@ export const PermissionsMatrix = () => {
   const [roleSearch, setRoleSearch] = useState('');
   // Keeps typing responsive while large matrices re-render.
   const deferredRoleSearch = useDeferredValue(roleSearch);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [pluginFilter, setPluginFilter] = useState<string>(ALL_PLUGINS);
+  const [decisionFilter, setDecisionFilter] = useState<string>(ALL_POLICIES);
 
   const pluginOptions = useMemo(
     () => [
@@ -171,6 +183,17 @@ export const PermissionsMatrix = () => {
     [matrix, t],
   );
 
+  const decisionOptions = useMemo(
+    () => [
+      { id: ALL_POLICIES, label: t('permissionsMatrix.allPolicies') },
+      ...DECISION_FILTERS.map(decision => ({
+        id: decision,
+        label: labels[decision],
+      })),
+    ],
+    [labels, t],
+  );
+
   const filtered = useMemo(
     () =>
       matrix &&
@@ -178,17 +201,30 @@ export const PermissionsMatrix = () => {
         matrix,
         {
           roleSearch: deferredRoleSearch,
+          roleNames: selectedRoles,
           pluginId: pluginFilter === ALL_PLUGINS ? undefined : pluginFilter,
+          decision: DECISION_FILTERS.find(d => d === decisionFilter),
         },
         locale,
       ),
-    [matrix, deferredRoleSearch, pluginFilter, locale],
+    [
+      matrix,
+      deferredRoleSearch,
+      selectedRoles,
+      pluginFilter,
+      decisionFilter,
+      locale,
+    ],
   );
 
-  const handlePluginChange = (value: Key | Key[] | null) => {
+  const toSingleValue = (value: Key | Key[] | null) => {
     const next = Array.isArray(value) ? value[0] : value;
-    setPluginFilter(next ? String(next) : ALL_PLUGINS);
+    return next ? String(next) : undefined;
   };
+  const handlePluginChange = (value: Key | Key[] | null) =>
+    setPluginFilter(toSingleValue(value) ?? ALL_PLUGINS);
+  const handleDecisionChange = (value: Key | Key[] | null) =>
+    setDecisionFilter(toSingleValue(value) ?? ALL_POLICIES);
 
   if (error) {
     return (
@@ -199,13 +235,15 @@ export const PermissionsMatrix = () => {
       />
     );
   }
-  if (loading || !filtered) {
+  if (loading || !matrix || !filtered) {
     return <Progress />;
   }
 
   let emptyMessage: string | undefined;
-  if (!filtered.plugins.length) {
+  if (!matrix.plugins.length) {
     emptyMessage = t('permissionsMatrix.emptyPermissions');
+  } else if (!filtered.plugins.length) {
+    emptyMessage = t('permissionsMatrix.noMatches');
   } else if (!filtered.rows.length) {
     emptyMessage = t('permissionsMatrix.emptyRoles');
   }
@@ -220,32 +258,54 @@ export const PermissionsMatrix = () => {
           {t('permissionsMatrix.description')}
         </Text>
       </Flex>
-      <div className={styles.filters}>
-        <SearchField
-          aria-label={t('permissionsMatrix.filterRoles')}
-          placeholder={t('permissionsMatrix.filterRoles')}
-          value={roleSearch}
-          onChange={setRoleSearch}
-        />
-        <Select
-          label={t('permissionsMatrix.plugin')}
-          options={pluginOptions}
-          value={pluginFilter}
-          onChange={handlePluginChange}
-        />
-      </div>
-      <MatrixLegend labels={labels} />
-      {emptyMessage ? (
-        <div className={styles.empty}>
-          <Text>{emptyMessage}</Text>
+      <div className={styles.layout}>
+        <aside className={styles.sidebar}>
+          <SearchField
+            aria-label={t('permissionsMatrix.filterRoles')}
+            placeholder={t('permissionsMatrix.filterRoles')}
+            value={roleSearch}
+            onChange={setRoleSearch}
+          />
+          <CheckboxGroup
+            label={t('permissionsMatrix.roles')}
+            value={selectedRoles}
+            onChange={setSelectedRoles}
+            className={styles.roleList}
+          >
+            {matrix.rows.map(row => (
+              <Checkbox key={row.roleName} value={row.roleName}>
+                {row.roleName}
+              </Checkbox>
+            ))}
+          </CheckboxGroup>
+          <Select
+            label={t('permissionsMatrix.plugin')}
+            options={pluginOptions}
+            value={pluginFilter}
+            onChange={handlePluginChange}
+          />
+          <Select
+            label={t('permissionsMatrix.policy')}
+            options={decisionOptions}
+            value={decisionFilter}
+            onChange={handleDecisionChange}
+          />
+        </aside>
+        <div className={styles.content}>
+          <MatrixLegend labels={labels} />
+          {emptyMessage ? (
+            <div className={styles.empty}>
+              <Text>{emptyMessage}</Text>
+            </div>
+          ) : (
+            <MatrixTable
+              plugins={filtered.plugins}
+              rows={filtered.rows}
+              labels={labels}
+            />
+          )}
         </div>
-      ) : (
-        <MatrixTable
-          plugins={filtered.plugins}
-          rows={filtered.rows}
-          labels={labels}
-        />
-      )}
+      </div>
     </Flex>
   );
 };

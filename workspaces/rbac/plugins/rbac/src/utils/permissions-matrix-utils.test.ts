@@ -271,6 +271,50 @@ describe('permissions-matrix-utils', () => {
     expect(filtered.plugins.map(p => p.pluginId)).toEqual(['scaffolder']);
   });
 
+  it('narrows to the selected roles and to the requested decision', () => {
+    const matrix = buildPermissionsMatrix({
+      roles,
+      policies,
+      permissions,
+      conditions,
+    });
+
+    const selected = filterPermissionsMatrix(matrix, {
+      roleSearch: '',
+      roleNames: ['role:default/ui', 'role:default/legacy'],
+    });
+    expect(selected.rows.map(r => r.roleName)).toEqual([
+      'role:default/ui',
+      'role:default/legacy',
+    ]);
+    expect(selected.plugins).toEqual(matrix.plugins);
+
+    // only the rows and columns where a deny appears are kept
+    const denies = filterPermissionsMatrix(matrix, {
+      roleSearch: '',
+      decision: 'deny',
+    });
+    expect(denies.rows.map(r => r.roleName)).toEqual([
+      'role:default/ui',
+      'role:default/csv',
+    ]);
+    expect(denies.plugins.map(p => p.pluginId)).toEqual(['catalog']);
+    expect(denies.plugins[0].columns.map(c => c.permission)).toEqual([
+      'catalog.entity.read',
+      'catalog.entity.create',
+    ]);
+
+    const combined = filterPermissionsMatrix(matrix, {
+      roleSearch: '',
+      roleNames: ['role:default/csv'],
+      decision: 'deny',
+    });
+    expect(combined.rows.map(r => r.roleName)).toEqual(['role:default/csv']);
+    expect(combined.plugins[0].columns.map(c => c.permission)).toEqual([
+      'catalog.entity.read',
+    ]);
+  });
+
   it('ignores malformed policies and policies without a role reference', () => {
     const matrix = buildPermissionsMatrix({
       roles: [

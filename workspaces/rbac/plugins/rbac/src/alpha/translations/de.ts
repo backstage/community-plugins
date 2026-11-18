@@ -281,12 +281,17 @@ const rbacTranslationDe = createTranslationMessages({
       'Schreibgeschützte Übersicht der Berechtigungen jeder Rolle, gruppiert nach Plugin.',
     'permissionsMatrix.roleColumn': 'Rolle',
     'permissionsMatrix.filterRoles': 'Rollen filtern',
+    'permissionsMatrix.roles': 'Rollen',
     'permissionsMatrix.plugin': 'Plugin',
     'permissionsMatrix.allPlugins': 'Alle Plugins',
+    'permissionsMatrix.policy': 'Richtlinie',
+    'permissionsMatrix.allPolicies': 'Alle Richtlinien',
     'permissionsMatrix.legend': 'Legende',
     'permissionsMatrix.viewOnlyRole': 'Schreibgeschützte Rolle',
     'permissionsMatrix.conditionalRules': 'Regeln für bedingten Zugriff',
     'permissionsMatrix.emptyRoles': 'Keine Rollen gefunden',
+    'permissionsMatrix.noMatches':
+      'Keine Berechtigungen entsprechen den aktuellen Filtern',
     'permissionsMatrix.emptyPermissions':
       'Keine Plugin-Berechtigungen gefunden',
     'permissionsMatrix.decisions.allow': 'Erlauben',

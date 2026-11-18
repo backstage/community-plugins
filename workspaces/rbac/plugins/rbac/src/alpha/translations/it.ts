@@ -275,12 +275,17 @@ const rbacTranslationIt = createTranslationMessages({
       'Panoramica in sola lettura delle autorizzazioni concesse a ciascun ruolo, raggruppate per plugin.',
     'permissionsMatrix.roleColumn': 'Ruolo',
     'permissionsMatrix.filterRoles': 'Filtra ruoli',
+    'permissionsMatrix.roles': 'Ruoli',
     'permissionsMatrix.plugin': 'Plugin',
     'permissionsMatrix.allPlugins': 'Tutti i plugin',
+    'permissionsMatrix.policy': 'Politica',
+    'permissionsMatrix.allPolicies': 'Tutte le politiche',
     'permissionsMatrix.legend': 'Legenda',
     'permissionsMatrix.viewOnlyRole': 'Ruolo in sola lettura',
     'permissionsMatrix.conditionalRules': 'Regole di accesso condizionale',
     'permissionsMatrix.emptyRoles': 'Nessun ruolo trovato',
+    'permissionsMatrix.noMatches':
+      'Nessuna autorizzazione corrisponde ai filtri attuali',
     'permissionsMatrix.emptyPermissions':
       'Nessuna autorizzazione dei plugin trovata',
     'permissionsMatrix.decisions.allow': 'Consenti',

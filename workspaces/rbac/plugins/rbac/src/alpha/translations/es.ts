@@ -276,12 +276,17 @@ const rbacTranslationEs = createTranslationMessages({
       'Vista de solo lectura de los permisos concedidos a cada rol, agrupados por plugin.',
     'permissionsMatrix.roleColumn': 'Rol',
     'permissionsMatrix.filterRoles': 'Filtrar roles',
+    'permissionsMatrix.roles': 'Roles',
     'permissionsMatrix.plugin': 'Plugin',
     'permissionsMatrix.allPlugins': 'Todos los plugins',
+    'permissionsMatrix.policy': 'Política',
+    'permissionsMatrix.allPolicies': 'Todas las políticas',
     'permissionsMatrix.legend': 'Leyenda',
     'permissionsMatrix.viewOnlyRole': 'Rol de solo lectura',
     'permissionsMatrix.conditionalRules': 'Reglas de acceso condicional',
     'permissionsMatrix.emptyRoles': 'No se encontraron roles',
+    'permissionsMatrix.noMatches':
+      'Ningún permiso coincide con los filtros actuales',
     'permissionsMatrix.emptyPermissions':
       'No se encontraron permisos de plugins',
     'permissionsMatrix.decisions.allow': 'Permitir',

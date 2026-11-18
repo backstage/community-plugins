@@ -234,22 +234,54 @@ export const getMatrixCell = (row: MatrixRow, columnId: string): MatrixCell =>
 
 /**
  * Narrows the matrix to roles whose name contains `roleSearch` (case
- * insensitive) and, when `pluginId` is set, to that plugin's columns.
+ * insensitive), to the roles listed in `roleNames` when it is non-empty, and,
+ * when `pluginId` is set, to that plugin's columns. When `decision` is set,
+ * only the rows and columns where that decision appears are kept, so the
+ * matrix shrinks to the area where the decision is actually used.
  */
 export const filterPermissionsMatrix = (
   matrix: PermissionsMatrix,
-  { roleSearch, pluginId }: { roleSearch: string; pluginId?: string },
+  {
+    roleSearch,
+    pluginId,
+    roleNames,
+    decision,
+  }: {
+    roleSearch: string;
+    pluginId?: string;
+    roleNames?: string[];
+    decision?: MatrixDecision;
+  },
   locale = 'en',
 ): PermissionsMatrix => {
   const search = roleSearch.trim().toLocaleUpperCase(locale);
-  return {
-    plugins: pluginId
-      ? matrix.plugins.filter(plugin => plugin.pluginId === pluginId)
-      : matrix.plugins,
-    rows: search
-      ? matrix.rows.filter(row =>
-          row.roleName.toLocaleUpperCase(locale).includes(search),
-        )
-      : matrix.rows,
-  };
+  const selectedRoles = roleNames?.length ? new Set(roleNames) : undefined;
+
+  let plugins = pluginId
+    ? matrix.plugins.filter(plugin => plugin.pluginId === pluginId)
+    : matrix.plugins;
+  let rows = matrix.rows.filter(
+    row =>
+      (!selectedRoles || selectedRoles.has(row.roleName)) &&
+      (!search || row.roleName.toLocaleUpperCase(locale).includes(search)),
+  );
+
+  if (decision) {
+    plugins = plugins
+      .map(plugin => ({
+        ...plugin,
+        columns: plugin.columns.filter(column =>
+          rows.some(row => getMatrixCell(row, column.id).decision === decision),
+        ),
+      }))
+      .filter(plugin => plugin.columns.length > 0);
+    const columns = plugins.flatMap(plugin => plugin.columns);
+    rows = rows.filter(row =>
+      columns.some(
+        column => getMatrixCell(row, column.id).decision === decision,
+      ),
+    );
+  }
+
+  return { plugins, rows };
 };
