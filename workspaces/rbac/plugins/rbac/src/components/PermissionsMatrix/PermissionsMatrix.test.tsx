@@ -182,6 +182,10 @@ describe('PermissionsMatrix', () => {
     const developers = screen.getByRole('checkbox', {
       name: 'role:default/developers',
     });
+    // The sidebar shows the short role name; the full ref stays in the tooltip.
+    expect(screen.getByTitle('role:default/developers')).toHaveTextContent(
+      'developers',
+    );
     await userEvent.click(developers);
     expect(
       screen.getByRole('link', { name: 'role:default/developers' }),

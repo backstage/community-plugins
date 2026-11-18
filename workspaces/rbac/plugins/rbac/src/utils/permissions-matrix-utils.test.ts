@@ -27,6 +27,7 @@ import {
   filterPermissionsMatrix,
   getConditionRuleNames,
   getMatrixCell,
+  getShortRoleName,
 } from './permissions-matrix-utils';
 
 const permissions: PluginPermissionMetaData[] = [
@@ -168,6 +169,14 @@ const conditions: RoleConditionalPolicyDecision[] = [
 ];
 
 describe('permissions-matrix-utils', () => {
+  it('shortens role names for display, keeping non-default namespaces and odd refs intact', () => {
+    expect(getShortRoleName('role:default/developers')).toBe('developers');
+    expect(getShortRoleName('role:marketing/editors')).toBe(
+      'editors (marketing)',
+    );
+    expect(getShortRoleName('')).toBe('');
+  });
+
   it('builds plugin columns and resolves allow, deny, conditional and empty cells per role', () => {
     const matrix = buildPermissionsMatrix({
       roles,

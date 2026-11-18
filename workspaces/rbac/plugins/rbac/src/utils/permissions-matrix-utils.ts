@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { parseEntityRef } from '@backstage/catalog-model';
 import {
   PermissionCondition,
   PermissionCriteria,
@@ -28,6 +29,19 @@ import {
 
 import { isPolicyCoveredByCondition } from './rbac-utils';
 import { isRoleEditableInUI, ROLE_SOURCE_LEGACY } from './role-source-utils';
+
+/**
+ * Display name for a role in the sidebar: the role's own name, keeping the
+ * namespace as a suffix when it is not "default".
+ */
+export const getShortRoleName = (roleRef: string): string => {
+  try {
+    const { namespace, name } = parseEntityRef(roleRef);
+    return namespace === 'default' ? name : `${name} (${namespace})`;
+  } catch {
+    return roleRef;
+  }
+};
 
 /** Decision shown in a matrix cell; `none` means the role has no policy for the permission. */
 export type MatrixDecision = 'allow' | 'deny' | 'conditional' | 'none';

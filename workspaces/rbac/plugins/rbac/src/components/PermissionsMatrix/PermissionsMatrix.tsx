@@ -36,6 +36,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import {
   filterPermissionsMatrix,
   getMatrixCell,
+  getShortRoleName,
   MatrixDecision,
   MatrixPluginGroup,
   MatrixRow,
@@ -273,8 +274,14 @@ export const PermissionsMatrix = () => {
             className={styles.roleList}
           >
             {matrix.rows.map(row => (
-              <Checkbox key={row.roleName} value={row.roleName}>
-                {row.roleName}
+              <Checkbox
+                key={row.roleName}
+                value={row.roleName}
+                aria-label={row.roleName}
+              >
+                <Text as="span" title={row.roleName}>
+                  {getShortRoleName(row.roleName)}
+                </Text>
               </Checkbox>
             ))}
           </CheckboxGroup>

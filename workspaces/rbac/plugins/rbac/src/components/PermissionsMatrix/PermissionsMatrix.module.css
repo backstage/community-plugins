@@ -13,6 +13,15 @@
   gap: var(--bui-space-4);
 }
 
+/* Section headings in the sidebar (Roles, Plugin, Policy). */
+.sidebar :global(.bui-FieldLabel) {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--bui-font-size-1);
+  font-weight: var(--bui-font-weight-bold);
+  color: var(--bui-fg-secondary);
+}
+
 .content {
   flex: 1 1 360px;
   min-width: 0;
@@ -25,6 +34,10 @@
 .roleList {
   max-height: 320px;
   overflow: auto;
+}
+
+.roleList :global(.bui-CheckboxGroupContent) {
+  gap: var(--bui-space-2);
 }
 
 .legend {
