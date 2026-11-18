@@ -228,6 +228,18 @@ describe('PermissionsMatrix', () => {
     expect(
       screen.queryByRole('link', { name: 'role:default/developers' }),
     ).not.toBeInTheDocument();
+
+    // nothing in the catalog plugin is denied
+    await userEvent.click(screen.getByRole('button', { name: /policy/i }));
+    await userEvent.click(await screen.findByRole('option', { name: 'Deny' }));
+    await userEvent.click(screen.getByRole('button', { name: /plugin/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: 'catalog' }),
+    );
+    expect(
+      await screen.findByText('No permissions match the current filters'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
   });
 
   it('says so when there are no plugin permissions to show', async () => {

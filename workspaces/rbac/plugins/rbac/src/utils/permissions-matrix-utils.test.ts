@@ -315,6 +315,38 @@ describe('permissions-matrix-utils', () => {
     ]);
   });
 
+  it('keeps a deny even when an allow for the same permission comes later', () => {
+    const matrix = buildPermissionsMatrix({
+      roles: [{ name: 'role:default/x', memberReferences: [] }],
+      policies: [
+        {
+          entityReference: 'role:default/x',
+          permission: 'catalog.entity.create',
+          policy: 'create',
+          effect: 'deny',
+        },
+        {
+          entityReference: 'role:default/x',
+          permission: 'catalog.entity.create',
+          policy: 'create',
+          effect: 'allow',
+        },
+      ],
+      permissions,
+      conditions: [],
+    });
+
+    const column = matrix.plugins
+      .find(plugin => plugin.pluginId === 'catalog')
+      ?.columns.find(c => c.permission === 'catalog.entity.create');
+    if (!column) {
+      throw new Error('catalog.entity.create column missing');
+    }
+    expect(getMatrixCell(matrix.rows[0], column.id)).toEqual({
+      decision: 'deny',
+    });
+  });
+
   it('ignores malformed policies and policies without a role reference', () => {
     const matrix = buildPermissionsMatrix({
       roles: [
