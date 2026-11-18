@@ -323,6 +323,10 @@ describe('V2DashboardPage filter targets', () => {
       ),
     );
     await user.click(getFilterToggleButton('Organization team'));
+    expect(screen.getByTestId('ide-active-users-daily')).toHaveAttribute(
+      'data-fill-missing-days',
+      'true',
+    );
     await user.click(screen.getByRole('button', { name: /All teams/ }));
     expect(
       await screen.findByRole('option', { name: 'org-1 / platform' }),
@@ -332,6 +336,10 @@ describe('V2DashboardPage filter targets', () => {
     ).toBeVisible();
     await user.click(
       await screen.findByRole('option', { name: 'org-2 / platform' }),
+    );
+    expect(screen.getByTestId('ide-active-users-daily')).toHaveAttribute(
+      'data-fill-missing-days',
+      'false',
     );
 
     await waitFor(() =>

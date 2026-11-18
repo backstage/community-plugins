@@ -623,6 +623,31 @@ describe('DatabaseHandlerV2', () => {
         handler.getAccessibleOrganizationTeams(['Org-A'], day, day, 1),
       ).resolves.toEqual([{ organization: 'Org-A', team: 'shared' }]);
       await expect(
+        handler.getTeams('organization', 'Org-A', day, day, 2),
+      ).resolves.toEqual(['shared']);
+      await expect(
+        handler.getAccessibleOrganizationTeams([], day, day, 1),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          undefined,
+          historyDay,
+          1,
+        ),
+      ).resolves.toEqual([{ organization: 'Org-A', team: 'historic-only' }]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          day,
+          undefined,
+          1,
+        ),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
+      await expect(
         handler.getAccessibleOrganizationTeams(
           organizations,
           undefined,

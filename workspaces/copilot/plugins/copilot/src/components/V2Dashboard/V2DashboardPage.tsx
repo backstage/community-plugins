@@ -337,9 +337,6 @@ export const V2DashboardPage = () => {
   } else if (organizationTeamScopeEnabled) {
     filterTarget = 'organizationTeam';
   }
-  const isPartialOrganizationTeamMode =
-    filterTarget === 'organizationTeam' ||
-    (type === 'organization' && filterTarget === 'team');
   const activeFilterSelection =
     currentFilterSelection?.target === filterTarget
       ? currentFilterSelection
@@ -348,6 +345,10 @@ export const V2DashboardPage = () => {
     activeFilterSelection?.target === 'organizationTeam'
       ? activeFilterSelection.organization
       : undefined;
+  const isPartialOrganizationTeamMode =
+    (filterTarget === 'organizationTeam' &&
+      selectedOrganizationTeamOrganization !== undefined) ||
+    (type === 'organization' && filterTarget === 'team');
   const selectedTeam =
     activeFilterSelection && activeFilterSelection.target !== 'costCenter'
       ? activeFilterSelection.team

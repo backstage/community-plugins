@@ -470,10 +470,21 @@ export class GithubClientV2 {
     return this.organizationOctokit;
   }
 
+  private async getOrganizationInstallation(
+    appJwtOctokit: Octokit,
+    organization: string,
+  ): Promise<unknown> {
+    const url = buildApiUrl(
+      this.copilotConfig.apiBaseUrl,
+      `/orgs/${encodeURIComponent(organization)}/installation`,
+    );
+    const { data } = await appJwtOctokit.request(`GET ${url}`);
+    return data;
+  }
+
   private async getCostCenterOrganizationOctokit(
     organization: string,
     enterpriseOctokit: Octokit,
-    checkMembersPermission = true,
   ): Promise<CostCenterOrganizationClient> {
     const authStrategy = this.enterpriseAuthStrategy;
     if (!authStrategy) {
@@ -488,13 +499,12 @@ export class GithubClientV2 {
     if (!octokitPromise) {
       octokitPromise = (async () => {
         const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
-        const installationUrl = buildApiUrl(
-          this.copilotConfig.apiBaseUrl,
-          `/orgs/${encodeURIComponent(organization)}/installation`,
-        );
         let data: unknown;
         try {
-          ({ data } = await appJwtOctokit.request(`GET ${installationUrl}`));
+          data = await this.getOrganizationInstallation(
+            appJwtOctokit,
+            organization,
+          );
         } catch (error) {
           if (getHttpStatus(error) === 404) {
             throw new MissingCostCenterOrganizationInstallationError();
@@ -520,7 +530,6 @@ export class GithubClientV2 {
     try {
       const client = await octokitPromise;
       if (
-        checkMembersPermission &&
         !hasMembersReadPermission(client.membersPermission) &&
         this.costCenterOrganizationOctokits.get(cacheKey) === octokitPromise
       ) {
@@ -551,13 +560,12 @@ export class GithubClientV2 {
     if (!octokitPromise) {
       octokitPromise = (async () => {
         const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
-        const installationUrl = buildApiUrl(
-          this.copilotConfig.apiBaseUrl,
-          `/orgs/${encodeURIComponent(organization)}/installation`,
-        );
         let data: unknown;
         try {
-          ({ data } = await appJwtOctokit.request(`GET ${installationUrl}`));
+          data = await this.getOrganizationInstallation(
+            appJwtOctokit,
+            organization,
+          );
         } catch (error) {
           const status = getHttpStatus(error);
           if ((status === 403 || status === 404) && !isRateLimitError(error)) {

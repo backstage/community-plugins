@@ -2928,19 +2928,20 @@ export class DatabaseHandlerV2 {
     return Number(unassignedCount?.member_count ?? 0) >= minMembers;
   }
 
-  async getAccessibleOrganizationTeams(
-    organizations: string[],
+  private async getTeamsForEntities(
+    metricsType: MetricsScope,
+    entityIds: string[],
     from?: string,
     to?: string,
     minMembers: number = 5,
-  ): Promise<Array<{ organization: string; team: string }>> {
-    if (organizations.length === 0) {
+  ): Promise<Array<{ entityId: string; team: string }>> {
+    if (entityIds.length === 0) {
       return [];
     }
 
     const query = this.db('copilot_user_teams')
-      .where('metrics_type', 'organization')
-      .whereIn('entity_id', organizations)
+      .where('metrics_type', metricsType)
+      .whereIn('entity_id', entityIds)
       .whereNot('team_slug', '');
     if (from && to) {
       query.whereBetween('day', [from, to]);
@@ -2957,8 +2958,27 @@ export class DatabaseHandlerV2 {
       .orderBy('team_slug', 'asc')
       .select('entity_id', 'team_slug');
     return rows.map(row => ({
-      organization: row.entity_id,
+      entityId: row.entity_id,
       team: row.team_slug,
+    }));
+  }
+
+  async getAccessibleOrganizationTeams(
+    organizations: string[],
+    from?: string,
+    to?: string,
+    minMembers: number = 5,
+  ): Promise<Array<{ organization: string; team: string }>> {
+    const teams = await this.getTeamsForEntities(
+      'organization',
+      organizations,
+      from,
+      to,
+      minMembers,
+    );
+    return teams.map(({ entityId, team }) => ({
+      organization: entityId,
+      team,
     }));
   }
 
@@ -2969,26 +2989,14 @@ export class DatabaseHandlerV2 {
     to?: string,
     minMembers: number = 5,
   ): Promise<string[]> {
-    const query = this.db('copilot_user_teams as t')
-      .where('t.metrics_type', metricsType)
-      .where('t.entity_id', entityId)
-      .whereNot('t.team_slug', '');
-
-    if (from && to) {
-      query.whereBetween('t.day', [from, to]);
-    } else if (from) {
-      query.where('t.day', '>=', from);
-    } else if (to) {
-      query.where('t.day', '<=', to);
-    }
-
-    const rows = await query
-      .groupBy('t.team_slug')
-      .havingRaw('COUNT(DISTINCT ??) >= ?', ['t.user_id', minMembers])
-      .orderBy('t.team_slug', 'asc')
-      .select('t.team_slug');
-
-    return rows.map(row => row.team_slug);
+    const teams = await this.getTeamsForEntities(
+      metricsType,
+      [entityId],
+      from,
+      to,
+      minMembers,
+    );
+    return teams.map(({ team }) => team);
   }
 
   /**
