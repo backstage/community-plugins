@@ -611,7 +611,7 @@ describe('TaskManagementV2', () => {
     );
   });
 
-  it('updates scheduled retry time after manually refreshing the latest report day', async () => {
+  it('preserves the scheduled retry time after a complete latest-day backfill', async () => {
     jest.useFakeTimers().setSystemTime(new Date('2026-11-18T12:00:00.000Z'));
     try {
       const db = createDbMock();
@@ -649,15 +649,21 @@ describe('TaskManagementV2', () => {
       await task.runOrganizationBackfill('org-a', yesterday, yesterday);
 
       const state = db.updateEnterpriseOrganizationState.mock.calls[0][1];
-      expect(state.nextAttemptAt.getTime()).toBe(
-        state.lastAttemptedAt.getTime() + 23 * 60 * 60 * 1000,
+      expect(state).toEqual(
+        expect.objectContaining({
+          accessState: 'accessible',
+          reportsReady: true,
+          lastAttemptedAt: expect.any(Date),
+        }),
       );
+      expect(state).not.toHaveProperty('nextAttemptAt');
+      expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
     } finally {
       jest.useRealTimers();
     }
   });
 
-  it('preserves the scheduled retry time after a successful history-only backfill', async () => {
+  it('preserves the scheduled retry time after a complete historical backfill', async () => {
     const db = createDbMock();
     const api = createApiMock();
     const logger = createLoggerMock();

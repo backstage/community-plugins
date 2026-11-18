@@ -528,7 +528,6 @@ export class TaskManagementV2 {
     discoveredOrganization?: string,
   ): Promise<void> {
     const { api, config, db, logger } = this.options;
-    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
     const ingestTeams =
       config.getOptionalBoolean('copilot.ingestTeams') ?? false;
     const ingestCostCenters =
@@ -688,6 +687,7 @@ export class TaskManagementV2 {
     let organizationReportsReady = false;
     try {
       if (discoveredOrganization) {
+        const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
         if (!yesterday) {
           throw new Error('Unable to compute yesterday date.');
         }
@@ -789,24 +789,13 @@ export class TaskManagementV2 {
 
       if (discoveredOrganization && organizationLease) {
         const completedAt = DateTime.utc();
-        const latestReportDate = completedAt.minus({ days: 1 }).toISODate();
-        const isHistoryOnlyDiscoveredOrganizationBackfill = Boolean(
-          latestReportDate && !missingDays.some(day => day >= latestReportDate),
-        );
         await db.updateEnterpriseOrganizationState(organizationLease, {
           accessState: 'accessible',
           ...(organizationReportsReady ? { reportsReady: true } : {}),
           lastAttemptedAt: completedAt.toJSDate(),
-          ...(organizationBackfillIncomplete ||
-          !isHistoryOnlyDiscoveredOrganizationBackfill
+          ...(organizationBackfillIncomplete
             ? {
-                nextAttemptAt: completedAt
-                  .plus({
-                    hours: organizationBackfillIncomplete
-                      ? 1
-                      : ORGANIZATION_TEAM_RETRY_HOURS,
-                  })
-                  .toJSDate(),
+                nextAttemptAt: completedAt.plus({ hours: 1 }).toJSDate(),
               }
             : {}),
         });
