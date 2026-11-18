@@ -589,6 +589,17 @@ describe('DatabaseHandlerV2', () => {
           true,
         ),
       ).resolves.toBeUndefined();
+      const backfillCompletedAt = new Date(backfillStartedAt.getTime() + 1_000);
+      await handler.updateEnterpriseOrganizationState(backfillLease!, {
+        accessState: 'accessible',
+        lastAttemptedAt: backfillCompletedAt,
+      });
+      const currentOrganization = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('next_attempt_at');
+      expect(new Date(currentOrganization?.next_attempt_at).getTime()).toBe(
+        nextAttemptAt.getTime(),
+      );
       await handler.releaseEnterpriseOrganizationLease(backfillLease!);
     });
 

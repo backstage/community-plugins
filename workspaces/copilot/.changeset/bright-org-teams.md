@@ -12,3 +12,5 @@ blank. Enterprise totals continue to fill missing days when all organizations
 are selected. Selecting a team scopes results to its owning organization,
 keeping same-slug teams distinct.
 Failed team-option and dashboard requests can be retried.
+Successful backfills of historical dates no longer postpone the next
+scheduled organization refresh.

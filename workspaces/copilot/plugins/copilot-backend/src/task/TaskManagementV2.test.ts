@@ -534,7 +534,8 @@ describe('TaskManagementV2', () => {
     const db = createDbMock();
     const api = createApiMock();
     const logger = createLoggerMock();
-    const day = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const day = DateTime.utc().minus({ days: 2 }).toISODate()!;
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
     const lease = {
       enterpriseId: 'ent-1',
       organization: 'Org-A',
@@ -571,7 +572,7 @@ describe('TaskManagementV2', () => {
       logger,
     });
 
-    await task.runOrganizationBackfill('org-a', day, day);
+    await task.runOrganizationBackfill('org-a', day, yesterday);
 
     expect(db.insertDailyTotals).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -604,6 +605,113 @@ describe('TaskManagementV2', () => {
         nextAttemptAt: expect.any(Date),
       }),
     );
+    const partialState = db.updateEnterpriseOrganizationState.mock.calls[0][1];
+    expect(partialState.nextAttemptAt.getTime()).toBe(
+      partialState.lastAttemptedAt.getTime() + 60 * 60 * 1000,
+    );
+  });
+
+  it('updates scheduled retry time after manually refreshing the latest report day', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-11-18T12:00:00.000Z'));
+    try {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'Org-A',
+        owner: 'worker',
+      };
+      db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+        'Org-A',
+      );
+      db.getMissingDays.mockResolvedValue([yesterday]);
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      api.verifyEnterpriseOrganizationAccess.mockResolvedValue(undefined);
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.backfillDelayMs': 0,
+          'copilot.ingestOrganizationTeamReports': true,
+        }),
+        logger,
+      });
+      jest.spyOn(task as any, 'ingestDay').mockResolvedValue({
+        loaded: true,
+        refreshed: false,
+        complete: true,
+        totalsLoaded: true,
+      });
+
+      await task.runOrganizationBackfill('org-a', yesterday, yesterday);
+
+      const state = db.updateEnterpriseOrganizationState.mock.calls[0][1];
+      expect(state.nextAttemptAt.getTime()).toBe(
+        state.lastAttemptedAt.getTime() + 23 * 60 * 60 * 1000,
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('preserves the scheduled retry time after a successful history-only backfill', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 2 }).toISODate()!;
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([day]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(undefined);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+    jest.spyOn(task as any, 'ingestDay').mockResolvedValue({
+      loaded: true,
+      refreshed: false,
+      complete: true,
+      totalsLoaded: true,
+    });
+
+    await task.runOrganizationBackfill('org-a', day, yesterday);
+
+    expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-A',
+      expect.any(Date),
+      expect.any(Date),
+      true,
+    );
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: expect.any(Date),
+      }),
+    );
+    expect(
+      db.updateEnterpriseOrganizationState.mock.calls[0][1],
+    ).not.toHaveProperty('nextAttemptAt');
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
   });
 
   it('marks a discovered organization inaccessible when a manual backfill fails access verification', async () => {
@@ -646,6 +754,11 @@ describe('TaskManagementV2', () => {
         reportsReady: false,
         nextAttemptAt: expect.any(Date),
       }),
+    );
+    const inaccessibleState =
+      db.updateEnterpriseOrganizationState.mock.calls[0][1];
+    expect(inaccessibleState.nextAttemptAt.getTime()).toBe(
+      inaccessibleState.lastAttemptedAt.getTime() + 24 * 60 * 60 * 1000,
     );
     expect(api.fetchEnterpriseOrganizationReportLinks).not.toHaveBeenCalled();
     expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
