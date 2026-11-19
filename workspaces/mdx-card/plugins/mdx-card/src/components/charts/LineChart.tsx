@@ -23,7 +23,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { useChartPalette } from './useChartPalette';
+import { chartPalette } from './chartPalette';
 
 /**
  * Props for {@link LineChart}.
@@ -62,7 +62,7 @@ export function LineChart({
   curved = true,
   showDots = true,
 }: LineChartProps) {
-  const getColor = useChartPalette(colors);
+  const getColor = chartPalette(colors);
 
   return (
     <ResponsiveContainer width={width} height={height}>

@@ -20,7 +20,7 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react';
 import type { MDXComponents, MDXContent } from 'mdx/types';
 import remarkGfm from 'remark-gfm';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import Typography from '@mui/material/Typography';
+import { Text } from '@backstage/ui';
 import { defaultMdxComponents } from './defaultMdxComponents';
 
 /**
@@ -35,9 +35,7 @@ export type MdxContentProps = {
 };
 
 const RenderError = ({ error }: FallbackProps) => (
-  <Typography color="error">
-    Failed to render the MDX template: {error.message}
-  </Typography>
+  <Text color="danger">Failed to render the MDX template: {error.message}</Text>
 );
 
 const compile = (template: string): MDXContent => {
@@ -49,7 +47,7 @@ const compile = (template: string): MDXContent => {
     }).default;
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
-    return () => <Typography color="error">{message}</Typography>;
+    return () => <Text color="danger">{message}</Text>;
   }
 };
 

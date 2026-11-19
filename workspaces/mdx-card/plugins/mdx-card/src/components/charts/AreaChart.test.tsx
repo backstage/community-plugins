@@ -15,7 +15,6 @@
  */
 import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { AreaChart } from './AreaChart';
 
 jest.mock('recharts', () => {
@@ -28,8 +27,6 @@ jest.mock('recharts', () => {
   };
 });
 
-const theme = createTheme();
-
 const sampleData = [
   { hour: '00:00', requests: 100 },
   { hour: '06:00', requests: 250 },
@@ -37,8 +34,7 @@ const sampleData = [
   { hour: '18:00', requests: 600 },
 ];
 
-const renderWithTheme = (ui: ReactElement) =>
-  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+const renderWithTheme = (ui: ReactElement) => render(ui);
 
 describe('AreaChart', () => {
   it('renders without crashing', () => {

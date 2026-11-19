@@ -16,9 +16,8 @@
 import { createContext, ReactNode, useContext } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { Progress } from '@backstage/core-components';
 import type { JsonValue } from '@backstage/types';
-import Typography from '@mui/material/Typography';
+import { Skeleton, Text } from '@backstage/ui';
 
 /**
  * State of an {@link ApiFetcher} request.
@@ -129,11 +128,11 @@ export const ApiFetcherContent = ({
   const { data, loading, error } = useApiFetcherData();
 
   if (loading && showLoading) {
-    return <Progress />;
+    return <Skeleton width="100%" height={24} />;
   }
 
   if (error && showError) {
-    return <Typography color="error">{error.message}</Typography>;
+    return <Text color="danger">{error.message}</Text>;
   }
 
   if (data === undefined) {

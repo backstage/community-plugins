@@ -16,8 +16,7 @@
 import { useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import useDebounce from 'react-use/esm/useDebounce';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import { Combobox } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
@@ -30,9 +29,10 @@ export const EntityPreviewPicker = ({
   const catalogApi = useApi(catalogApiRef);
   const [input, setInput] = useState('');
   const [term, setTerm] = useState('');
+  const [selected, setSelected] = useState<string>();
   useDebounce(() => setTerm(input), 300, [input]);
 
-  const { value: options = [], loading } = useAsync(async () => {
+  const { value: results = [] } = useAsync(async () => {
     const response = await catalogApi.queryEntities({
       limit: 20,
       fields: ['kind', 'metadata.name', 'metadata.namespace'],
@@ -41,23 +41,26 @@ export const EntityPreviewPicker = ({
     return response.items.map(entity => stringifyEntityRef(entity));
   }, [catalogApi, term]);
 
+  const options = [
+    ...(selected && !results.includes(selected) ? [selected] : []),
+    ...results,
+  ].map(ref => ({ id: ref, label: ref }));
+
   return (
-    <Autocomplete
-      size="small"
+    <Combobox
+      label="Preview with entity"
+      description="Exposes the entity to the template as on an entity page"
       options={options}
-      loading={loading}
       inputValue={input}
-      onInputChange={(_, value) => setInput(value)}
-      onChange={async (_, ref) =>
-        onChange(ref ? await catalogApi.getEntityByRef(ref) : undefined)
-      }
-      renderInput={params => (
-        <TextField
-          {...params}
-          label="Preview with entity"
-          helperText="Exposes the entity to the template as on an entity page"
-        />
-      )}
+      onInputChange={setInput}
+      defaultFilter={() => true}
+      selectedKey={selected ?? null}
+      onSelectionChange={async key => {
+        const ref = key ? String(key) : undefined;
+        setSelected(ref);
+        setInput(ref ?? '');
+        onChange(ref ? await catalogApi.getEntityByRef(ref) : undefined);
+      }}
     />
   );
 };

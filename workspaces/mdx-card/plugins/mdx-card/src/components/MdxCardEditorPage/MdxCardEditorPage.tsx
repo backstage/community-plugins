@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Route, Routes } from 'react-router-dom';
-import { Header, Page } from '@backstage/core-components';
+import { HeaderPage } from '@backstage/ui';
 import { TemplateEditor } from './TemplateEditor';
 import { TemplateList } from './TemplateList';
 
@@ -32,8 +32,8 @@ export const MdxCardEditorPage = () => (
 );
 
 export const LegacyMdxCardEditorPage = () => (
-  <Page themeId="tool">
-    <Header title="MDX Cards" />
+  <>
+    <HeaderPage title="MDX Cards" />
     <MdxCardEditorPage />
-  </Page>
+  </>
 );

@@ -23,7 +23,7 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { HomePageWidgetBlueprint } from '@backstage/plugin-home-react/alpha';
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import { RiLayoutMasonryLine } from '@remixicon/react';
 import { z } from 'zod';
 import { MdxCardClient, mdxCardApiRef } from './api';
 
@@ -121,7 +121,7 @@ export const mdxCardEditorPage = PageBlueprint.make({
   params: {
     path: '/mdx-cards',
     title: 'MDX Cards',
-    icon: <DashboardCustomizeIcon fontSize="inherit" />,
+    icon: <RiLayoutMasonryLine />,
     routeRef: mdxCardEditorRouteRef,
     loader: () =>
       import('./components/MdxCardEditorPage').then(m => (

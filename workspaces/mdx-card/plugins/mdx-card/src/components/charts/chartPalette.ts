@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useTheme } from '@mui/material/styles';
+const DEFAULT_PALETTE = [
+  'var(--bui-accent-bg)',
+  'var(--bui-fg-positive)',
+  'var(--bui-fg-warning)',
+  'var(--bui-fg-announcement)',
+  'var(--bui-fg-negative)',
+  'var(--bui-fg-secondary)',
+];
 
-export const useChartPalette = (colors?: string[]) => {
-  const theme = useTheme();
-  const palette =
-    colors && colors.length > 0
-      ? colors
-      : [
-          theme.palette.primary.main,
-          theme.palette.secondary.main,
-          theme.palette.success.main,
-          theme.palette.warning.main,
-          theme.palette.info.main,
-          theme.palette.error.main,
-        ];
+export const chartPalette = (colors?: string[]) => {
+  const palette = colors && colors.length > 0 ? colors : DEFAULT_PALETTE;
   return (index: number) => palette[index % palette.length];
 };

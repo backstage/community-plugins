@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { Alert, Skeleton } from '@backstage/ui';
 import type { Entity } from '@backstage/catalog-model';
 import { MdxContent } from '../MdxContent';
 import { useMdxCardData } from '../../hooks/useMdxCardData';
@@ -42,10 +42,16 @@ const MdxCardBody = ({
   const { value, loading, error } = useMdxCardData({ dataFetchers, entity });
 
   if (loading) {
-    return <Progress />;
+    return <Skeleton width="100%" height={80} />;
   }
   if (error) {
-    return <ResponseErrorPanel error={error} />;
+    return (
+      <Alert
+        status="danger"
+        title="Failed to load data"
+        description={error.message}
+      />
+    );
   }
   return (
     <MdxContent
@@ -76,10 +82,16 @@ export const MdxCardContent = ({
   });
 
   if (loading) {
-    return <Progress />;
+    return <Skeleton width="100%" height={80} />;
   }
   if (error || !value) {
-    return <ResponseErrorPanel error={error ?? new Error('No template')} />;
+    return (
+      <Alert
+        status="danger"
+        title="Failed to load the MDX card"
+        description={error?.message ?? 'No template'}
+      />
+    );
   }
   return (
     <MdxCardBody

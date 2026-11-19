@@ -15,7 +15,6 @@
  */
 import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { LineChart } from './LineChart';
 
 jest.mock('recharts', () => {
@@ -28,16 +27,13 @@ jest.mock('recharts', () => {
   };
 });
 
-const theme = createTheme();
-
 const sampleData = [
   { date: '2024-01', latency: 120, errors: 5 },
   { date: '2024-02', latency: 110, errors: 3 },
   { date: '2024-03', latency: 130, errors: 8 },
 ];
 
-const renderWithTheme = (ui: ReactElement) =>
-  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+const renderWithTheme = (ui: ReactElement) => render(ui);
 
 describe('LineChart', () => {
   it('renders without crashing', () => {

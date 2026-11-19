@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useNavigate } from 'react-router-dom';
-import useAsync from 'react-use/esm/useAsync';
-import Button from '@mui/material/Button';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 import {
-  Content,
-  ContentHeader,
-  Link,
-  ResponseErrorPanel,
+  Button,
+  CellText,
+  ColumnConfig,
+  Container,
+  Flex,
   Table,
-  TableColumn,
-} from '@backstage/core-components';
+  Text,
+  useTable,
+} from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -32,56 +32,63 @@ import {
 } from '@backstage-community/plugin-mdx-card-common';
 import { mdxCardApiRef } from '../../api';
 
-const columns: TableColumn<MdxCardTemplateSummary>[] = [
-  {
-    title: 'ID',
-    field: 'id',
-    render: row => <Link to={`edit/${row.id}`}>{row.id}</Link>,
-  },
-  { title: 'Title', field: 'title' },
-  { title: 'Updated by', field: 'updatedBy' },
-  {
-    title: 'Updated',
-    field: 'updatedAt',
-    render: row => new Date(row.updatedAt).toLocaleString(),
-  },
-];
-
 export const TemplateList = () => {
   const mdxCardApi = useApi(mdxCardApiRef);
   const navigate = useNavigate();
+  const editPath = useResolvedPath('edit').pathname;
   const { allowed: canCreate } = usePermission({
     permission: mdxCardTemplateCreatePermission,
   });
-  const { value, loading, error } = useAsync(
-    () => mdxCardApi.listTemplates(),
-    [mdxCardApi],
-  );
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData: () => mdxCardApi.listTemplates(),
+  });
+
+  const columns: ColumnConfig<MdxCardTemplateSummary>[] = [
+    {
+      id: 'id',
+      label: 'ID',
+      isRowHeader: true,
+      cell: template => (
+        <CellText title={template.id} href={`${editPath}/${template.id}`} />
+      ),
+    },
+    {
+      id: 'title',
+      label: 'Title',
+      cell: template => <CellText title={template.title ?? ''} />,
+    },
+    {
+      id: 'updatedBy',
+      label: 'Updated by',
+      cell: template => <CellText title={template.updatedBy} />,
+    },
+    {
+      id: 'updatedAt',
+      label: 'Updated',
+      cell: template => (
+        <CellText title={new Date(template.updatedAt).toLocaleString()} />
+      ),
+    },
+  ];
 
   return (
-    <Content>
-      <ContentHeader title="MDX cards">
-        <Button
-          variant="contained"
-          disabled={!canCreate}
-          onClick={() => navigate('new')}
-        >
-          Create card
-        </Button>
-      </ContentHeader>
-      {error ? (
-        <ResponseErrorPanel error={error} />
-      ) : (
+    <Container>
+      <Flex direction="column" gap="4">
+        <Flex justify="between" align="center">
+          <Text as="h2" variant="title-medium">
+            MDX cards
+          </Text>
+          <Button isDisabled={!canCreate} onPress={() => navigate('new')}>
+            Create card
+          </Button>
+        </Flex>
         <Table
-          isLoading={loading}
-          options={{ paging: false, search: true }}
-          columns={columns}
-          data={value ?? []}
-          emptyContent={
-            <Content>No MDX cards yet. Create one to get started.</Content>
-          }
+          columnConfig={columns}
+          emptyState={<Text>No MDX cards yet. Create one to get started.</Text>}
+          {...tableProps}
         />
-      )}
-    </Content>
+      </Flex>
+    </Container>
   );
 };

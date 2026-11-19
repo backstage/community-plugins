@@ -14,58 +14,109 @@
  * limitations under the License.
  */
 import {
+  Accordion,
+  AccordionGroup,
+  AccordionPanel,
+  AccordionTrigger,
+  Alert,
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  ButtonIcon,
+  ButtonLink,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Cell,
+  CellProfile,
+  CellText,
+  Column,
+  Container,
+  Flex,
+  Grid,
   Link,
-  StructuredMetadataTable,
-  Table,
-} from '@backstage/core-components';
-import { EntityRefLink, EntityRefLinks } from '@backstage/plugin-catalog-react';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+  List,
+  ListRow,
+  Row,
+  Skeleton,
+  Tab,
+  TableBody,
+  TableHeader,
+  TableRoot,
+  TabList,
+  TabPanel,
+  Tabs,
+  Tag,
+  TagGroup,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
+import type { MDXComponents } from 'mdx/types';
 import { AreaChart, BarChart, LineChart, PieChart } from '../charts';
 import { ApiFetcher, ApiFetcherContent, ApiFetcherData } from '../ApiFetcher';
+import {
+  DataTable,
+  EntityRefLink,
+  EntityRefLinks,
+  MetadataTable,
+} from '../templateComponents';
 
 /**
  * Components available to MDX templates by default.
  *
  * @public
  */
-export const defaultMdxComponents = {
-  Avatar,
+export const defaultMdxComponents: MDXComponents = {
   Box,
-  Button,
-  ButtonGroup,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
+  Container,
+  Flex,
   Grid,
-  IconButton,
-  List,
-  ListItem,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  Typography,
 
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+
+  Accordion,
+  AccordionGroup,
+  AccordionPanel,
+  AccordionTrigger,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+
+  Text,
   Link,
-  StructuredMetadataTable,
-  Table,
+  Avatar,
+  Badge,
+  Tag,
+  TagGroup,
+  Tooltip,
+  TooltipTrigger,
+  Alert,
+  Skeleton,
+
+  Button,
+  ButtonIcon,
+  ButtonLink,
+
+  List,
+  ListRow,
+  TableRoot,
+  TableHeader,
+  TableBody,
+  Column,
+  Row,
+  Cell,
+  CellText,
+  CellProfile,
+  DataTable,
+  MetadataTable,
+
   EntityRefLink,
   EntityRefLinks,
 

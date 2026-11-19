@@ -15,7 +15,6 @@
  */
 import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BarChart } from './BarChart';
 
 jest.mock('recharts', () => {
@@ -28,16 +27,13 @@ jest.mock('recharts', () => {
   };
 });
 
-const theme = createTheme();
-
 const sampleData = [
   { month: 'Jan', deploys: 10, rollbacks: 2 },
   { month: 'Feb', deploys: 15, rollbacks: 1 },
   { month: 'Mar', deploys: 20, rollbacks: 3 },
 ];
 
-const renderWithTheme = (ui: ReactElement) =>
-  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+const renderWithTheme = (ui: ReactElement) => render(ui);
 
 describe('BarChart', () => {
   it('renders without crashing', () => {

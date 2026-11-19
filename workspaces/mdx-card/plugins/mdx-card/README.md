@@ -1,6 +1,6 @@
 # MDX Card
 
-Render cards on entity pages and the home page from [MDX](https://mdxjs.com/) templates. A template is Markdown mixed with JSX. It can show JSON responses from any Backstage backend plugin using tables, charts and Material UI components, without you writing a new plugin.
+Render cards on entity pages and the home page from [MDX](https://mdxjs.com/) templates. A template is Markdown mixed with JSX. It can show JSON responses from any Backstage backend plugin using tables, charts and Backstage UI components, without you writing a new plugin.
 
 ![MDX card on an entity page, showing data from the catalog backend in a metadata table and a table of entities with the same owner](./docs/entity-card.png)
 
@@ -10,6 +10,12 @@ Render cards on entity pages and the home page from [MDX](https://mdxjs.com/) te
 
 ```sh
 yarn --cwd packages/app add @backstage-community/plugin-mdx-card
+```
+
+The plugin is built with [Backstage UI](https://ui.backstage.io/). Apps created with recent versions of Backstage already import its stylesheet in `packages/app/src/index.tsx`. If yours doesn't, add:
+
+```ts
+import '@backstage/ui/css/styles.css';
 ```
 
 ## New frontend system
@@ -36,8 +42,7 @@ app:
               pluginId: catalog
               apiUrl: /entities/by-query?limit=5
           template: |
-            <Table
-              options={{ paging: false, search: false, toolbar: false }}
+            <DataTable
               columns={[{ title: 'Name', field: 'name' }, { title: 'Kind', field: 'kind' }]}
               data={props.entities.items.map(e => ({ name: e.metadata.name, kind: e.kind }))}
             />
@@ -173,7 +178,7 @@ Responses must be JSON. When a request fails or returns another content type, th
   <ApiFetcherContent>
     <ApiFetcherData
       path="items.0.metadata.name"
-      render={name => <Chip label={name} />}
+      render={name => <Badge>{name}</Badge>}
     />
   </ApiFetcherContent>
 </ApiFetcher>
@@ -183,12 +188,26 @@ Responses must be JSON. When a request fails or returns another content type, th
 
 ### Available components
 
-| Group       | Components                                                                                                                                                                         |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Material UI | `Avatar`, `Box`, `Button`, `ButtonGroup`, `Card`, `CardContent`, `Chip`, `Divider`, `Grid`, `IconButton`, `List`, `ListItem`, `MenuItem`, `Paper`, `Select`, `Stack`, `Typography` |
-| Backstage   | `Link`, `StructuredMetadataTable`, `Table`, `EntityRefLink`, `EntityRefLinks`                                                                                                      |
-| Charts      | `AreaChart`, `BarChart`, `LineChart`, `PieChart` (built on [Recharts](https://recharts.org/))                                                                                      |
-| Data        | `ApiFetcher`, `ApiFetcherContent`, `ApiFetcherData`                                                                                                                                |
+Templates can use these components from [Backstage UI](https://ui.backstage.io/) (`@backstage/ui`):
+
+| Group    | Components                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------- |
+| Layout   | `Box`, `Container`, `Flex`, `Grid`, `Card`, `CardHeader`, `CardBody`, `CardFooter`                             |
+| Content  | `Text`, `Link`, `Avatar`, `Badge`, `Tag`, `TagGroup`, `Tooltip`, `TooltipTrigger`, `Alert`, `Skeleton`         |
+| Actions  | `Button`, `ButtonIcon`, `ButtonLink`                                                                           |
+| Grouping | `Accordion`, `AccordionGroup`, `AccordionTrigger`, `AccordionPanel`, `Tabs`, `TabList`, `Tab`, `TabPanel`      |
+| Lists    | `List`, `ListRow`, `TableRoot`, `TableHeader`, `TableBody`, `Column`, `Row`, `Cell`, `CellText`, `CellProfile` |
+
+And these components from this plugin:
+
+| Component                                           | Description                                                                          |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `DataTable`                                         | Table from `columns` (`{ title, field }` items) and `data` (an array of objects)     |
+| `MetadataTable`                                     | Key and value list from a `metadata` object                                          |
+| `EntityRefLink`                                     | Link to the entity page of `entityRef`, showing the entity's display name or `title` |
+| `EntityRefLinks`                                    | Comma separated links for an `entityRefs` array                                      |
+| `AreaChart`, `BarChart`, `LineChart`, `PieChart`    | Charts built on [Recharts](https://recharts.org/)                                    |
+| `ApiFetcher`, `ApiFetcherContent`, `ApiFetcherData` | Fetch data while the template renders                                                |
 
 `BarChart`, `LineChart` and `AreaChart` take `data`, `xKey` and `yKeys`. `PieChart` takes `data` as `{ name, value }` items. All charts accept `height`, `width`, `colors`, `showLegend` and `showTooltip`.
 

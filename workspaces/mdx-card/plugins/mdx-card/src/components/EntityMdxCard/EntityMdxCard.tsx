@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InfoCard } from '@backstage/core-components';
+import { Card, CardBody, CardHeader, Text } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { MdxCardContent } from '../MdxCardContent';
 import type { MdxCardProps } from '../../types';
@@ -36,8 +36,17 @@ export type EntityMdxCardProps = MdxCardProps & {
 export const EntityMdxCard = ({ title, ...props }: EntityMdxCardProps) => {
   const { entity } = useEntity();
   return (
-    <InfoCard title={title}>
-      <MdxCardContent {...props} entity={entity} />
-    </InfoCard>
+    <Card>
+      {title && (
+        <CardHeader>
+          <Text as="h3" variant="title-small">
+            {title}
+          </Text>
+        </CardHeader>
+      )}
+      <CardBody>
+        <MdxCardContent {...props} entity={entity} />
+      </CardBody>
+    </Card>
   );
 };

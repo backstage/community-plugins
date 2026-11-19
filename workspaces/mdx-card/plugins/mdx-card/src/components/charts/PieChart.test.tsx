@@ -15,7 +15,6 @@
  */
 import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { PieChart } from './PieChart';
 
 jest.mock('recharts', () => {
@@ -28,16 +27,13 @@ jest.mock('recharts', () => {
   };
 });
 
-const theme = createTheme();
-
 const sampleData = [
   { name: 'Active', value: 45 },
   { name: 'Inactive', value: 12 },
   { name: 'Pending', value: 8 },
 ];
 
-const renderWithTheme = (ui: ReactElement) =>
-  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+const renderWithTheme = (ui: ReactElement) => render(ui);
 
 describe('PieChart', () => {
   it('renders without crashing', () => {

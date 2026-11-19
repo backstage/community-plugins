@@ -19,25 +19,25 @@ import useAsync from 'react-use/esm/useAsync';
 import useDebounce from 'react-use/esm/useDebounce';
 import CodeMirror, { EditorView } from '@uiw/react-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
 import {
-  CodeSnippet,
-  Content,
-  ContentHeader,
-  InfoCard,
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+  Alert,
+  Button,
+  ButtonIcon,
+  Card,
+  CardBody,
+  CardHeader,
+  Container,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Flex,
+  Grid,
+  Skeleton,
+  Text,
+  TextField,
+} from '@backstage/ui';
+import { RiFileCopyLine } from '@remixicon/react';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 import type { Entity } from '@backstage/catalog-model';
@@ -66,9 +66,11 @@ type FormState = {
 };
 
 const editorExtensions = [
-  markdown({ extensions: { remove: ['IndentedCode'] } }),
+  markdown({ extensions: { remove: ['IndentedCode', 'Link'] } }),
   EditorView.lineWrapping,
 ];
+
+const snippetExtensions = [EditorView.lineWrapping];
 
 const isComplete = (fetcher: DataFetcher) =>
   Boolean(fetcher.name && fetcher.pluginId && fetcher.apiUrl);
@@ -83,6 +85,13 @@ const usageSnippet = (id: string) => `app:
         config:
           templateRef: ${id}`;
 
+const editorTheme = () =>
+  document
+    .querySelector('[data-theme-mode]')
+    ?.getAttribute('data-theme-mode') === 'dark'
+    ? 'dark'
+    : 'light';
+
 const TemplateEditorForm = ({
   initial,
   isNew,
@@ -93,7 +102,6 @@ const TemplateEditorForm = ({
   const mdxCardApi = useApi(mdxCardApiRef);
   const alertApi = useApi(alertApiRef);
   const navigate = useNavigate();
-  const theme = useTheme();
   const [form, setForm] = useState(initial);
   const [preview, setPreview] = useState(initial);
   const [entity, setEntity] = useState<Entity>();
@@ -115,6 +123,14 @@ const TemplateEditorForm = ({
       ? 'Use lowercase letters, numbers and single dashes'
       : undefined;
 
+  const reportError = (action: string, e: unknown) =>
+    alertApi.post({
+      message: `Failed to ${action} MDX card: ${
+        e instanceof Error ? e.message : String(e)
+      }`,
+      severity: 'error',
+    });
+
   const save = async () => {
     setSaving(true);
     const input = {
@@ -135,12 +151,7 @@ const TemplateEditorForm = ({
         display: 'transient',
       });
     } catch (e) {
-      alertApi.post({
-        message: `Failed to save MDX card: ${
-          e instanceof Error ? e.message : String(e)
-        }`,
-        severity: 'error',
-      });
+      reportError('save', e);
     } finally {
       setSaving(false);
     }
@@ -152,121 +163,144 @@ const TemplateEditorForm = ({
       await mdxCardApi.deleteTemplate(form.id);
       navigate('..');
     } catch (e) {
-      alertApi.post({
-        message: `Failed to delete MDX card: ${
-          e instanceof Error ? e.message : String(e)
-        }`,
-        severity: 'error',
-      });
+      reportError('delete', e);
     }
   };
 
   return (
-    <Content>
-      <ContentHeader title={isNew ? 'New MDX card' : form.id}>
-        <Stack direction="row" spacing={1}>
-          <Button onClick={() => navigate('..')}>Back</Button>
-          {!isNew && (
-            <Button
-              color="error"
-              disabled={!canDelete}
-              onClick={() => setConfirmDelete(true)}
-            >
-              Delete
+    <Container>
+      <Flex direction="column" gap="4">
+        <Flex justify="between" align="center">
+          <Text as="h2" variant="title-medium">
+            {isNew ? 'New MDX card' : form.id}
+          </Text>
+          <Flex gap="2">
+            <Button variant="tertiary" onPress={() => navigate('..')}>
+              Back
             </Button>
-          )}
-          <Button
-            variant="contained"
-            disabled={!canSave || saving || Boolean(idError)}
-            onClick={save}
-          >
-            Save
-          </Button>
-        </Stack>
-      </ContentHeader>
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={6}>
-          <Stack spacing={2}>
-            {isNew && (
-              <TextField
-                label="ID"
-                required
-                value={form.id}
-                onChange={e => setForm({ ...form, id: e.target.value })}
-                error={Boolean(form.id && idError)}
-                helperText={
-                  (form.id && idError) ||
-                  'Cards reference the template by this ID. It cannot be changed later.'
-                }
-              />
+            {!isNew && (
+              <Button
+                variant="secondary"
+                destructive
+                isDisabled={!canDelete}
+                onPress={() => setConfirmDelete(true)}
+              >
+                Delete
+              </Button>
             )}
-            <TextField
-              label="Title"
-              value={form.title}
-              onChange={e => setForm({ ...form, title: e.target.value })}
-            />
-            <DataFetchersEditor
-              value={form.dataFetchers}
-              onChange={dataFetchers => setForm({ ...form, dataFetchers })}
-            />
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                Template
-              </Typography>
-              <CodeMirror
-                value={form.template}
-                height="480px"
-                theme={theme.palette.mode === 'dark' ? 'dark' : 'light'}
-                extensions={editorExtensions}
-                onChange={template => setForm({ ...form, template })}
-              />
-            </Box>
-          </Stack>
-        </Grid>
-        <Grid item xs={12} lg={6}>
-          <Stack spacing={2}>
-            <EntityPreviewPicker onChange={setEntity} />
-            <InfoCard title={preview.title || 'Preview'}>
-              {usesEntity(preview) && !entity ? (
-                <Typography color="text.secondary">
-                  This template uses an entity. Pick one above to preview it.
-                </Typography>
-              ) : (
-                <MdxCardContent
-                  template={preview.template}
-                  dataFetchers={preview.dataFetchers.filter(isComplete)}
-                  entity={entity}
+            <Button
+              isDisabled={!canSave || Boolean(idError)}
+              isPending={saving}
+              onPress={save}
+            >
+              Save
+            </Button>
+          </Flex>
+        </Flex>
+        <Grid.Root columns={{ initial: '1', lg: '2' }} gap="6">
+          <Grid.Item>
+            <Flex direction="column" gap="4">
+              {isNew && (
+                <TextField
+                  label="ID"
+                  isRequired
+                  value={form.id}
+                  onChange={id => setForm({ ...form, id })}
+                  isInvalid={Boolean(form.id && idError)}
+                  description={
+                    (form.id && idError) ||
+                    'Cards reference the template by this ID. It cannot be changed later.'
+                  }
                 />
               )}
-            </InfoCard>
-            {!isNew && (
-              <Box>
-                <Typography variant="subtitle1" gutterBottom>
-                  Use this card
-                </Typography>
-                <CodeSnippet
-                  language="yaml"
-                  text={usageSnippet(form.id)}
-                  showCopyCodeButton
+              <TextField
+                label="Title"
+                value={form.title}
+                onChange={title => setForm({ ...form, title })}
+              />
+              <DataFetchersEditor
+                value={form.dataFetchers}
+                onChange={dataFetchers => setForm({ ...form, dataFetchers })}
+              />
+              <Flex direction="column" gap="2">
+                <Text variant="title-x-small">Template</Text>
+                <CodeMirror
+                  value={form.template}
+                  height="480px"
+                  theme={editorTheme()}
+                  extensions={editorExtensions}
+                  onChange={template => setForm({ ...form, template })}
                 />
-              </Box>
-            )}
-          </Stack>
-        </Grid>
-      </Grid>
-      <Dialog open={confirmDelete} onClose={() => setConfirmDelete(false)}>
-        <DialogTitle>Delete MDX card "{form.id}"?</DialogTitle>
-        <DialogContent>
-          Cards that reference this template will stop rendering.
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
-          <Button color="error" onClick={remove}>
+              </Flex>
+            </Flex>
+          </Grid.Item>
+          <Grid.Item>
+            <Flex direction="column" gap="4">
+              <EntityPreviewPicker onChange={setEntity} />
+              <Card>
+                <CardHeader>
+                  <Text as="h3" variant="title-small">
+                    {preview.title || 'Preview'}
+                  </Text>
+                </CardHeader>
+                <CardBody>
+                  {usesEntity(preview) && !entity ? (
+                    <Text color="secondary">
+                      This template uses an entity. Pick one above to preview
+                      it.
+                    </Text>
+                  ) : (
+                    <MdxCardContent
+                      template={preview.template}
+                      dataFetchers={preview.dataFetchers.filter(isComplete)}
+                      entity={entity}
+                    />
+                  )}
+                </CardBody>
+              </Card>
+              {!isNew && (
+                <Flex direction="column" gap="2">
+                  <Flex justify="between" align="center">
+                    <Text variant="title-x-small">Use this card</Text>
+                    <ButtonIcon
+                      aria-label="Copy configuration"
+                      variant="tertiary"
+                      icon={<RiFileCopyLine />}
+                      onPress={() =>
+                        window.navigator.clipboard.writeText(
+                          usageSnippet(form.id),
+                        )
+                      }
+                    />
+                  </Flex>
+                  <CodeMirror
+                    value={usageSnippet(form.id)}
+                    editable={false}
+                    basicSetup={{ lineNumbers: false, foldGutter: false }}
+                    theme={editorTheme()}
+                    extensions={snippetExtensions}
+                  />
+                </Flex>
+              )}
+            </Flex>
+          </Grid.Item>
+        </Grid.Root>
+      </Flex>
+      <Dialog isOpen={confirmDelete} onOpenChange={setConfirmDelete}>
+        <DialogHeader>Delete MDX card "{form.id}"?</DialogHeader>
+        <DialogBody>
+          <Text>Cards that reference this template will stop rendering.</Text>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="secondary" onPress={() => setConfirmDelete(false)}>
+            Cancel
+          </Button>
+          <Button destructive onPress={remove}>
             Delete
           </Button>
-        </DialogActions>
+        </DialogFooter>
       </Dialog>
-    </Content>
+    </Container>
   );
 };
 
@@ -279,13 +313,21 @@ export const TemplateEditor = () => {
   );
 
   if (loading) {
-    return <Progress />;
+    return (
+      <Container>
+        <Skeleton width="100%" height={240} />
+      </Container>
+    );
   }
   if (error) {
     return (
-      <Content>
-        <ResponseErrorPanel error={error} />
-      </Content>
+      <Container>
+        <Alert
+          status="danger"
+          title="Failed to load the MDX card"
+          description={error.message}
+        />
+      </Container>
     );
   }
 

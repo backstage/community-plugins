@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, ButtonIcon, Flex, Text, TextField } from '@backstage/ui';
+import { RiDeleteBinLine } from '@remixicon/react';
 import type { DataFetcher } from '@backstage-community/plugin-mdx-card-common';
 
 export const DataFetchersEditor = ({
@@ -36,12 +32,13 @@ export const DataFetchersEditor = ({
     );
 
   return (
-    <Stack spacing={1}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="subtitle1">Data fetchers</Typography>
+    <Flex direction="column" gap="2">
+      <Flex justify="between" align="center">
+        <Text variant="title-x-small">Data fetchers</Text>
         <Button
           size="small"
-          onClick={() =>
+          variant="secondary"
+          onPress={() =>
             onChange([
               ...value,
               { name: `data${value.length + 1}`, pluginId: '', apiUrl: '' },
@@ -50,44 +47,44 @@ export const DataFetchersEditor = ({
         >
           Add data fetcher
         </Button>
-      </Stack>
+      </Flex>
       {value.length === 0 && (
-        <Typography variant="body2" color="text.secondary">
+        <Text variant="body-small" color="secondary">
           No data fetchers. Responses are available in the template as
           props.&lt;name&gt;.
-        </Typography>
+        </Text>
       )}
       {value.map((fetcher, index) => (
-        <Stack key={index} direction="row" spacing={1} alignItems="center">
+        <Flex key={index} gap="2" align="end">
           <TextField
             label="Name"
             size="small"
             value={fetcher.name}
-            onChange={e => update(index, 'name', e.target.value)}
-            sx={{ width: 140 }}
+            onChange={text => update(index, 'name', text)}
+            style={{ width: 140 }}
           />
           <TextField
             label="Plugin ID"
             size="small"
             value={fetcher.pluginId}
-            onChange={e => update(index, 'pluginId', e.target.value)}
-            sx={{ width: 140 }}
+            onChange={text => update(index, 'pluginId', text)}
+            style={{ width: 140 }}
           />
           <TextField
             label="API URL"
             size="small"
             value={fetcher.apiUrl}
-            onChange={e => update(index, 'apiUrl', e.target.value)}
-            fullWidth
+            onChange={text => update(index, 'apiUrl', text)}
+            style={{ flex: 1 }}
           />
-          <IconButton
+          <ButtonIcon
             aria-label={`Remove data fetcher ${fetcher.name}`}
-            onClick={() => onChange(value.filter((_, i) => i !== index))}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Stack>
+            variant="tertiary"
+            icon={<RiDeleteBinLine />}
+            onPress={() => onChange(value.filter((_, i) => i !== index))}
+          />
+        </Flex>
       ))}
-    </Stack>
+    </Flex>
   );
 };

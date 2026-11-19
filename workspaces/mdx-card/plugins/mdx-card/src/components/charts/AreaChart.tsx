@@ -23,7 +23,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { useChartPalette } from './useChartPalette';
+import { chartPalette } from './chartPalette';
 
 /**
  * Props for {@link AreaChart}.
@@ -62,7 +62,7 @@ export function AreaChart({
   curved = true,
   stacked = false,
 }: AreaChartProps) {
-  const getColor = useChartPalette(colors);
+  const getColor = chartPalette(colors);
 
   return (
     <ResponsiveContainer width={width} height={height}>
