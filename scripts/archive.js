@@ -38,6 +38,8 @@ const ARCHIVED_WORKSPACES_FILE = path.join(
 // Configuration files that need workspace entries removed
 const CONFIG_FILES = {
   LABELER: path.join(__dirname, '..', '.github', 'labeler.yml'),
+  PR_LABELER: path.join(__dirname, '..', '.github', 'pr-labeler.yml'),
+  RENOVATE: path.join(__dirname, '..', '.github', 'renovate.json'),
   BUG_TEMPLATE: path.join(
     __dirname,
     '..',
@@ -114,6 +116,51 @@ async function removeWorkspaceFromLabeler(workspace) {
 
   await fs.writeFile(CONFIG_FILES.LABELER, filteredLines.join('\n'));
   console.log('Updated labeler.yml');
+}
+
+async function removeWorkspaceFromPrLabeler(workspace) {
+  console.log(`Removing workspace/${workspace} from pr-labeler.yml...`);
+  const content = await fs.readFile(CONFIG_FILES.PR_LABELER, 'utf8');
+  const workspaceGlob = `'workspaces/${workspace}/**'`;
+  const paragraphs = content.split('\n\n');
+  const filtered = paragraphs
+    .filter(paragraph => !paragraph.startsWith(`workspace/${workspace}:\n`))
+    .map(paragraph =>
+      paragraph
+        .replace(`${workspaceGlob}, `, '')
+        .replace(`, ${workspaceGlob}`, ''),
+    );
+
+  await fs.writeFile(CONFIG_FILES.PR_LABELER, filtered.join('\n\n'));
+  console.log('Updated pr-labeler.yml');
+}
+
+async function removeWorkspaceFromRenovate(workspace) {
+  const content = await fs.readFile(CONFIG_FILES.RENOVATE, 'utf8');
+  const config = JSON.parse(content);
+  const workspacePattern = `workspaces/${workspace}/**`;
+  let changed = false;
+
+  for (const rule of config.packageRules ?? []) {
+    if (!Array.isArray(rule.matchFileNames)) {
+      continue;
+    }
+    const remaining = rule.matchFileNames.filter(
+      pattern => pattern !== workspacePattern,
+    );
+    if (remaining.length !== rule.matchFileNames.length) {
+      rule.matchFileNames = remaining;
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    await fs.writeFile(
+      CONFIG_FILES.RENOVATE,
+      `${JSON.stringify(config, null, 2)}\n`,
+    );
+    console.log(`Removed ${workspacePattern} from renovate.json`);
+  }
 }
 
 async function removeWorkspaceFromIssueTemplate(filePath, workspace) {
@@ -307,6 +354,8 @@ async function main() {
         `\\nDetected full workspace archival - updating additional configuration files...`,
       );
       await removeWorkspaceFromLabeler(workspace);
+      await removeWorkspaceFromPrLabeler(workspace);
+      await removeWorkspaceFromRenovate(workspace);
       await removeWorkspaceFromIssueTemplate(
         CONFIG_FILES.BUG_TEMPLATE,
         workspace,
