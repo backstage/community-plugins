@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GITHUB_ACTIONS_ANNOTATION } from '../components/getProjectNameFromEntity';
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
 
 export const sampleEntity = {
   entity: {
@@ -21,7 +21,7 @@ export const sampleEntity = {
     kind: 'Component',
     metadata: {
       name: 'backstage',
-      annotations: { [GITHUB_ACTIONS_ANNOTATION]: 'backstage/backstage' },
+      annotations: { [GITHUB_PROJECT_SLUG_ANNOTATION]: 'backstage/backstage' },
     },
     spec: {
       lifecycle: 'experimental',

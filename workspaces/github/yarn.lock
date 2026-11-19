@@ -2510,6 +2510,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-actions@workspace:plugins/github-actions"
   dependencies:
+    "@backstage-community/plugin-github-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
@@ -2549,10 +2550,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-github-common@workspace:^, @backstage-community/plugin-github-common@workspace:plugins/github-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-github-common@workspace:plugins/github-common"
+  dependencies:
+    "@backstage/catalog-model": "backstage:^"
+    "@backstage/cli": "backstage:^"
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-github-deployments@workspace:^, @backstage-community/plugin-github-deployments@workspace:plugins/github-deployments":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-deployments@workspace:plugins/github-deployments"
   dependencies:
+    "@backstage-community/plugin-github-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
@@ -2635,6 +2646,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-issues@workspace:plugins/github-issues"
   dependencies:
+    "@backstage-community/plugin-github-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-compat-api": "backstage:^"
@@ -2673,6 +2685,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-pull-requests-board@workspace:plugins/github-pull-requests-board"
   dependencies:
+    "@backstage-community/plugin-github-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-compat-api": "backstage:^"
