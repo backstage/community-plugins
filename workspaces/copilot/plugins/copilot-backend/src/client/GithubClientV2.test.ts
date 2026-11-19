@@ -118,6 +118,98 @@ function httpError(status: number): Error & { status: number } {
   return Object.assign(new Error(`HTTP ${status}`), { status });
 }
 
+function githubError(
+  fields: Record<string, unknown>,
+  message = 'request failed',
+) {
+  return Object.assign(new Error(message), fields);
+}
+
+type GithubErrorBoundaryCase = [
+  name: string,
+  createError: () => unknown,
+  shouldRetry: boolean,
+];
+
+const githubErrorBoundaryCases: GithubErrorBoundaryCase[] = [
+  [
+    'Error instances with non-enumerable response and inherited retry-after',
+    () => {
+      const error = githubError({ status: 403 });
+      const headers = Object.create({ 'retry-after': '0.5' });
+      Object.defineProperty(error, 'response', {
+        value: Object.create({ headers }),
+      });
+      return error;
+    },
+    false,
+  ],
+  [
+    'arrays with assigned status and remaining-zero headers',
+    () =>
+      Object.assign([], {
+        status: 403,
+        response: { headers: { 'x-ratelimit-remaining': '0' } },
+      }),
+    false,
+  ],
+  [
+    'non-number own status fallback',
+    () => githubError({ status: '500', response: { status: 403 } }),
+    true,
+  ],
+  [
+    'NaN status precedence over nested response.status',
+    () => githubError({ status: NaN, response: { status: 403 } }),
+    false,
+  ],
+  [
+    'Infinity status precedence over nested response.status',
+    () => githubError({ status: Infinity, response: { status: 403 } }),
+    false,
+  ],
+  [
+    'secondary-rate-limit message survives malformed headers',
+    () =>
+      githubError(
+        {
+          status: 403,
+          response: {
+            headers: {
+              'retry-after': 1,
+              'x-ratelimit-remaining': { malformed: true },
+            },
+          },
+        },
+        'SECONDARY RATE LIMIT',
+      ),
+    false,
+  ],
+  [
+    'API-rate-limit-exceeded message is case-insensitive',
+    () => githubError({ status: 403 }, 'API RATE LIMIT EXCEEDED'),
+    false,
+  ],
+  [
+    'upper-case header names, zero retry-after and non-exact remaining are ignored',
+    () =>
+      githubError(
+        {
+          status: 403,
+          response: {
+            headers: {
+              'Retry-After': '1',
+              'retry-after': '0',
+              'x-ratelimit-remaining': '00',
+            },
+          },
+        },
+        'GitHub rate limit',
+      ),
+    true,
+  ],
+];
+
 describe('GithubClientV2', () => {
   let mockConfig: any;
   let mockLogger: any;
@@ -929,6 +1021,57 @@ describe('GithubClientV2', () => {
     expect(installationLookups).toBe(1);
   });
 
+  it.each(githubErrorBoundaryCases)(
+    'preserves GitHub error boundary behavior: %s',
+    async (_name, createError, shouldRetry) => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: { appId: 123, privateKey: 'private-key' },
+      });
+      const failure = createError();
+      let installationLookups = 0;
+      let reportRequests = 0;
+      const successEnvelope = { download_links: [] };
+      mockRequest.mockImplementation(async (route: string) => {
+        if (route === 'GET /enterprises/my-enterprise/installation') {
+          return { data: { id: 100 } };
+        }
+        if (
+          route === 'GET https://api.github.com/orgs/private-org/installation'
+        ) {
+          installationLookups += 1;
+          return { data: { id: 200 + installationLookups } };
+        }
+        if (
+          route ===
+          'GET /orgs/private-org/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+        ) {
+          reportRequests += 1;
+          if (reportRequests === 1) {
+            throw failure;
+          }
+          return { data: successEnvelope };
+        }
+        throw new Error(`Unexpected GitHub request: ${route}`);
+      });
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+      const request = client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      );
+      const outcome = await request.then(
+        result => ({ status: 'resolved' as const, value: result }),
+        error => ({ status: 'rejected' as const, value: error }),
+      );
+
+      expect(outcome.status).toBe(shouldRetry ? 'resolved' : 'rejected');
+      expect(outcome.value).toBe(shouldRetry ? successEnvelope : failure);
+      expect(reportRequests).toBe(shouldRetry ? 2 : 1);
+      expect(installationLookups).toBe(shouldRetry ? 2 : 1);
+    },
+  );
+
   it('resolves a per-organization installation before fetching its report', async () => {
     const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
     getGithubCredentials.mockResolvedValueOnce({
@@ -1021,6 +1164,24 @@ describe('GithubClientV2', () => {
     const MockedOctokit = Octokit as unknown as jest.Mock;
     expect(MockedOctokit.mock.calls[1][0].auth.installationId).toBe(321);
   });
+
+  it.each([0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, NaN, Infinity, '123'])(
+    'rejects a GitHub App installation ID that is not a positive safe integer number (%p)',
+    async id => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: { appId: 123, privateKey: 'private-key' },
+      });
+      mockRequest.mockResolvedValueOnce({ data: { id } });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+      await expect(
+        client.fetchEnterpriseReportLinks('2026-01-01'),
+      ).rejects.toThrow('Unexpected GitHub App installation response.');
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    },
+  );
 
   it('lists complete cost-center resources and accepts admin org membership permission', async () => {
     const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
@@ -1219,6 +1380,94 @@ describe('GithubClientV2', () => {
       ),
     ).toBe(true);
   });
+
+  it('preserves cost-center resource aliases and pagination precedence', async () => {
+    const detailPages: string[] = [];
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-alias', name: 'cc-alias' }],
+        });
+      }
+      if (url.pathname.endsWith('/settings/billing/cost-centers/cc-alias')) {
+        const page = url.searchParams.get('page') ?? '';
+        detailPages.push(page);
+        if (page === '1') {
+          return githubResponse({
+            resources: 'not-an-array',
+            costCenter: {
+              resources: [{ type: 'Repo', name: 'camel-case-resource' }],
+              hasNextPage: true,
+            },
+            cost_center: {
+              resources: [{ type: 'Repo', name: 'shadowed-by-camel-case' }],
+              hasNextPage: false,
+            },
+          });
+        }
+        if (page === '2') {
+          return githubResponse({
+            resources: [],
+            has_next_page: true,
+            cost_center: {
+              resources: [
+                { type: 'Repo', name: 'shadowed-by-top-level-array' },
+              ],
+              hasNextPage: true,
+            },
+          });
+        }
+        return githubResponse({
+          resources: 'not-an-array',
+          hasNextPage: 'true',
+          cost_center: {
+            resources: [{ type: 'Repo', name: 'snake-case-resource' }],
+            has_next_page: true,
+          },
+        });
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(detailPages).toEqual(['1', '2', '3']);
+    expect(result.complete).toBe(true);
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      '[GithubClientV2] Ignoring cost center resource type "Repo" (camel-case-resource).',
+    );
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      '[GithubClientV2] Ignoring cost center resource type "Repo" (snake-case-resource).',
+    );
+    expect(mockLogger.debug).not.toHaveBeenCalledWith(
+      expect.stringContaining('shadowed'),
+    );
+  });
+
+  it.each([
+    [{ costCenters: null }, 'Unexpected GitHub cost center list response.'],
+    [
+      { costCenters: [{ id: 'cc-invalid', name: 42 }] },
+      'Unexpected GitHub cost center entry.',
+    ],
+  ])(
+    'preserves cost-center list validation errors for %j',
+    async (data, message) => {
+      mockRequest.mockResolvedValueOnce(githubResponse(data));
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+      await expect(client.fetchCostCenterMemberships()).rejects.toThrow(
+        message,
+      );
+    },
+  );
 
   it('skips an organization without an App installation without blocking other cost centers', async () => {
     const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
@@ -1481,7 +1730,10 @@ describe('GithubClientV2', () => {
       }
       if (url.pathname === '/orgs/roster-org/members') {
         return githubResponse(
-          [{ id: 1, login: 'octocat-user-8' }, { id: 2 }],
+          [
+            { id: 1, login: 'octocat-user-8' },
+            { id: 0, login: 'invalid-user' },
+          ],
           undefined,
           { 'x-oauth-scopes': 'read:org' },
         );
@@ -1819,7 +2071,7 @@ describe('GithubClientV2', () => {
     });
     const mockFetch = global.fetch as jest.MockedFunction<any>;
     mockFetch.mockImplementation(async () =>
-      rawFetchResponse([{ id: 1, login: 'octocat-user-10' }]),
+      rawFetchResponse([{ id: '1', login: 'octocat-user-10' }]),
     );
 
     const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);

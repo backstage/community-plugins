@@ -50,6 +50,112 @@ const enterpriseOrganizationsResponseSchema = z.object({
   }),
 });
 
+// Keep object-property access for Error, array, inherited, and non-enumerable fields.
+const objectValueSchema = z.custom<Record<string, unknown>>(
+  (value): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null,
+);
+const optionalObjectValueSchema = objectValueSchema.optional().catch(undefined);
+const optionalStringValueSchema = z.string().optional().catch(undefined);
+// `typeof` includes NaN and Infinity; both still take precedence over nested status.
+const optionalNumberValueSchema = z
+  .custom<number>((value): value is number => typeof value === 'number')
+  .optional()
+  .catch(undefined);
+const optionalArrayValueSchema = z
+  .array(z.unknown())
+  .optional()
+  .catch(undefined);
+
+const positiveSafeIntegerSchema = z.int().positive();
+const safeIntegerSchema = z.int();
+
+const githubUserIdSchema = z
+  .union([z.number(), z.string().transform(Number)])
+  .pipe(positiveSafeIntegerSchema);
+
+const githubUserSchema = objectValueSchema
+  .transform(user => ({ id: user.id, login: user.login }))
+  .pipe(z.object({ id: githubUserIdSchema, login: z.string() }));
+
+const githubInstallationResponseSchema = objectValueSchema
+  .transform(response => response.id)
+  .pipe(positiveSafeIntegerSchema);
+
+const githubUserListSchema = z.array(z.unknown());
+
+const costCenterApiResourceSchema = objectValueSchema
+  .transform(resource => ({ type: resource.type, name: resource.name }))
+  .pipe(z.object({ type: z.string(), name: z.string() }));
+const costCenterApiResourcesSchema = z.array(costCenterApiResourceSchema);
+type CostCenterApiResource = z.infer<typeof costCenterApiResourceSchema>;
+
+const costCenterListEntrySchema = objectValueSchema
+  .transform(costCenter => ({
+    id: costCenter.id,
+    name: costCenter.name,
+  }))
+  .pipe(z.object({ id: z.string(), name: z.string() }));
+const costCenterListResponseSchema = objectValueSchema
+  .transform(data => data.costCenters)
+  .pipe(z.array(z.unknown()));
+
+const costCenterDetailPageDataSchema = objectValueSchema.transform(data => {
+  const nestedCenter =
+    optionalObjectValueSchema.parse(data.costCenter) ??
+    optionalObjectValueSchema.parse(data.cost_center) ??
+    data;
+  return {
+    resources:
+      optionalArrayValueSchema.parse(data.resources) ?? nestedCenter.resources,
+    hasNextPage:
+      data.has_next_page ??
+      data.hasNextPage ??
+      nestedCenter.has_next_page ??
+      nestedCenter.hasNextPage,
+  };
+});
+
+const costCenterOrganizationMembersPermissionSchema =
+  objectValueSchema.transform(data => {
+    const permissions = optionalObjectValueSchema.parse(data.permissions);
+    const members = optionalStringValueSchema.parse(permissions?.members);
+    return members?.toLowerCase();
+  });
+
+const githubAuthenticationSchema = objectValueSchema
+  .transform(authentication => ({ token: authentication.token }))
+  .pipe(z.object({ token: z.string() }));
+
+const enterpriseTeamIdSchema = z
+  .union([z.number(), z.string().transform(Number)])
+  .pipe(safeIntegerSchema);
+
+const githubHttpStatusSchema = optionalObjectValueSchema.transform(error => {
+  const status = optionalNumberValueSchema.parse(error?.status);
+  return (
+    status ??
+    optionalNumberValueSchema.parse(
+      optionalObjectValueSchema.parse(error?.response)?.status,
+    )
+  );
+});
+
+const githubRateLimitErrorSchema = optionalObjectValueSchema.transform(
+  error => {
+    const headers = optionalObjectValueSchema.parse(
+      optionalObjectValueSchema.parse(error?.response)?.headers,
+    );
+    return {
+      retryAfter: optionalStringValueSchema.parse(headers?.['retry-after']),
+      remaining: optionalStringValueSchema.parse(
+        headers?.['x-ratelimit-remaining'],
+      ),
+      message: optionalStringValueSchema.parse(error?.message) ?? '',
+    };
+  },
+);
+
 // GitHub serves user content from this domain on both github.com and GHE.com.
 const GITHUB_USER_CONTENT_DOMAIN = 'githubusercontent.com';
 
@@ -68,17 +174,6 @@ const MAX_DOWNLOAD_REDIRECTS = 5;
 // GHE.com serves the API from api.SUBDOMAIN.ghe.com and the reports from
 // copilot-reports.SUBDOMAIN.ghe.com.
 const GHE_COM_API_HOST = /^api\.([a-z0-9-]+\.ghe\.com)$/;
-
-interface CostCenterApiResource {
-  type: string;
-  name: string;
-}
-
-interface CostCenterApiItem {
-  id: string;
-  name: string;
-  resources?: CostCenterApiResource[];
-}
 
 type OctokitResponseHeaders = Awaited<
   ReturnType<Octokit['request']>
@@ -151,34 +246,16 @@ function hasNextLink(headers: { link?: string; Link?: string }): boolean {
   return /rel="?next"?/i.test(headers.link ?? headers.Link ?? '');
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
 function getHttpStatus(error: unknown): number | undefined {
-  if (!isRecord(error)) {
-    return undefined;
-  }
-  if (typeof error.status === 'number') {
-    return error.status;
-  }
-  const response = isRecord(error.response) ? error.response : undefined;
-  return typeof response?.status === 'number' ? response.status : undefined;
+  return githubHttpStatusSchema.parse(error);
 }
 
 function isRateLimitError(error: unknown): boolean {
-  if (!isRecord(error)) {
-    return false;
-  }
-  const response = isRecord(error.response) ? error.response : undefined;
-  const headers =
-    response && isRecord(response.headers) ? response.headers : undefined;
-  const retryAfter = headers?.['retry-after'];
-  const remaining = headers?.['x-ratelimit-remaining'];
-  const message = typeof error.message === 'string' ? error.message : '';
+  const { retryAfter, remaining, message } =
+    githubRateLimitErrorSchema.parse(error);
   return (
-    (typeof retryAfter === 'string' && Number(retryAfter) > 0) ||
-    (typeof remaining === 'string' && remaining === '0') ||
+    (retryAfter !== undefined && Number(retryAfter) > 0) ||
+    remaining === '0' ||
     /secondary rate limit|api rate limit exceeded/i.test(message)
   );
 }
@@ -209,31 +286,16 @@ function hasMembersReadPermission(permission?: string): boolean {
 }
 
 function getInstallationId(data: unknown): number {
-  const id = isRecord(data) ? data.id : undefined;
-  if (typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0) {
+  const parsedResponse = githubInstallationResponseSchema.safeParse(data);
+  if (!parsedResponse.success) {
     throw new Error('Unexpected GitHub App installation response.');
   }
-  return id;
+  return parsedResponse.data;
 }
 
 function toGithubUser(value: unknown): GithubUser | undefined {
-  if (!isRecord(value) || typeof value.login !== 'string') {
-    return undefined;
-  }
-
-  let id: number;
-  if (typeof value.id === 'number') {
-    id = value.id;
-  } else if (typeof value.id === 'string') {
-    id = Number(value.id);
-  } else {
-    return undefined;
-  }
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    return undefined;
-  }
-
-  return { id, login: value.login };
+  const parsedUser = githubUserSchema.safeParse(value);
+  return parsedUser.success ? parsedUser.data : undefined;
 }
 
 function toGithubUsers(values: readonly unknown[]): GithubUser[] {
@@ -250,41 +312,21 @@ function getCostCenterDetailPage(data: unknown): {
   resources: CostCenterApiResource[];
   hasNextPage: boolean;
 } {
-  if (!isRecord(data)) {
+  const parsedPage = costCenterDetailPageDataSchema.safeParse(data);
+  if (!parsedPage.success) {
     throw new Error('Unexpected GitHub cost center response.');
   }
 
-  let nestedCenter = data;
-  if (isRecord(data.costCenter)) {
-    nestedCenter = data.costCenter;
-  } else if (isRecord(data.cost_center)) {
-    nestedCenter = data.cost_center;
-  }
-  const resources = Array.isArray(data.resources)
-    ? data.resources
-    : nestedCenter.resources;
-
-  if (
-    !Array.isArray(resources) ||
-    !resources.every(
-      (resource): resource is CostCenterApiResource =>
-        isRecord(resource) &&
-        typeof resource.type === 'string' &&
-        typeof resource.name === 'string',
-    )
-  ) {
+  const resources = costCenterApiResourcesSchema.safeParse(
+    parsedPage.data.resources,
+  );
+  if (!resources.success) {
     throw new Error('Unexpected GitHub cost center resources response.');
   }
 
-  const hasNextPage =
-    data.has_next_page ??
-    data.hasNextPage ??
-    nestedCenter.has_next_page ??
-    nestedCenter.hasNextPage;
-
   return {
-    resources,
-    hasNextPage: hasNextPage === true,
+    resources: resources.data,
+    hasNextPage: parsedPage.data.hasNextPage === true,
   };
 }
 
@@ -528,16 +570,10 @@ export class GithubClientV2 {
           throw error;
         }
         const installationId = getInstallationId(data);
-        const permissions =
-          isRecord(data) && isRecord(data.permissions)
-            ? data.permissions
-            : undefined;
         return {
           octokit: this.createInstallationOctokit(authStrategy, installationId),
           membersPermission:
-            typeof permissions?.members === 'string'
-              ? permissions.members.toLowerCase()
-              : undefined,
+            costCenterOrganizationMembersPermissionSchema.parse(data),
         };
       })();
       this.costCenterOrganizationOctokits.set(cacheKey, octokitPromise);
@@ -741,7 +777,9 @@ export class GithubClientV2 {
       typeof this.enterpriseAuthStrategy === 'string'
         ? await octokit.auth()
         : await octokit.auth({ type: 'installation' });
-    if (!isRecord(authentication) || typeof authentication.token !== 'string') {
+    const parsedAuthentication =
+      githubAuthenticationSchema.safeParse(authentication);
+    if (!parsedAuthentication.success) {
       throw new Error('Could not resolve GitHub credentials for team members.');
     }
 
@@ -766,7 +804,7 @@ export class GithubClientV2 {
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2026-03-10',
           'User-Agent': 'backstage-community-copilot',
-          authorization: `Bearer ${authentication.token}`,
+          authorization: `Bearer ${parsedAuthentication.data.token}`,
         },
       });
       if (!response.ok) {
@@ -779,10 +817,11 @@ export class GithubClientV2 {
       }
 
       const data: unknown = await response.json();
-      if (!Array.isArray(data)) {
+      const parsedMembers = githubUserListSchema.safeParse(data);
+      if (!parsedMembers.success) {
         throw new Error('Unexpected GitHub user list response.');
       }
-      members.push(...toGithubUsers(data));
+      members.push(...toGithubUsers(parsedMembers.data));
       hasNextPage = hasNextLink({
         link: response.headers.get('link') ?? undefined,
       });
@@ -812,21 +851,19 @@ export class GithubClientV2 {
       { state: 'active' },
     );
     const listResponse = await enterpriseOctokit.request(`GET ${listUrl}`);
-    const listData = listResponse.data as {
-      costCenters?: CostCenterApiItem[];
-    };
-    if (!Array.isArray(listData?.costCenters)) {
+    const parsedCostCenters = costCenterListResponseSchema.safeParse(
+      listResponse.data,
+    );
+    if (!parsedCostCenters.success) {
       throw new Error('Unexpected GitHub cost center list response.');
     }
 
-    const listedCostCenters = listData.costCenters.map(costCenter => {
-      if (
-        typeof costCenter.id !== 'string' ||
-        typeof costCenter.name !== 'string'
-      ) {
+    const listedCostCenters = parsedCostCenters.data.map(costCenter => {
+      const parsedCostCenter = costCenterListEntrySchema.safeParse(costCenter);
+      if (!parsedCostCenter.success) {
         throw new Error('Unexpected GitHub cost center entry.');
       }
-      return { id: costCenter.id, name: costCenter.name };
+      return parsedCostCenter.data;
     });
 
     const warnings: string[] = [];
@@ -941,17 +978,8 @@ export class GithubClientV2 {
         continue;
       }
 
-      if (typeof team.id === 'number') {
-        resource.teamId = team.id;
-      } else if (typeof team.id === 'string') {
-        resource.teamId = Number(team.id);
-      }
-      if (
-        resource.teamId !== undefined &&
-        !Number.isSafeInteger(resource.teamId)
-      ) {
-        resource.teamId = undefined;
-      }
+      const parsedTeamId = enterpriseTeamIdSchema.safeParse(team.id);
+      resource.teamId = parsedTeamId.success ? parsedTeamId.data : undefined;
       resource.teamCreatedAt = team.created_at;
     }
 
