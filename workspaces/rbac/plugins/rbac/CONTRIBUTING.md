@@ -21,7 +21,7 @@ Legacy (pre-NFS) entrypoint:
 yarn workspace @backstage-community/plugin-rbac start:legacy:mock
 ```
 
-This is the default frontend workflow. Playwright UI tests also use `start:mock` (no live backend).
+This is the default frontend workflow for UI-only work. Full-stack Playwright e2e (`yarn test:nfs` from the workspace root) uses the real backend with the **small** catalog (Autocomplete dropdown) for most tests; the last case in `rbac.spec.ts` temporarily injects `large-catalog-org.yaml` for the modal path and tears it down afterward. See the workspace [README.md](../../README.md#large-catalog-members-modal).
 
 ### Multi-user testing with Keycloak
 
