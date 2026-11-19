@@ -15,6 +15,7 @@
  */
 import { LLMProvider } from './base-provider';
 import { ChatMessage, Tool, ChatResponse, ToolCall } from '../types';
+import { constructURL } from '../utils';
 
 /**
  * Anthropic Claude API provider.
@@ -27,7 +28,10 @@ export class ClaudeProvider extends LLMProvider {
     tools?: Tool[],
   ): Promise<ChatResponse> {
     const requestBody = this.formatRequest(messages, tools);
-    const response = await this.makeRequest('/messages', requestBody);
+    const response = await this.makeRequest(
+      this.pathOverrides?.inference ?? '/messages',
+      requestBody,
+    );
     return this.parseResponse(response);
   }
 
@@ -45,11 +49,17 @@ export class ClaudeProvider extends LLMProvider {
         messages: this.convertToAnthropicFormat(testMessages),
       };
 
-      const response = await fetch(`${this.baseUrl}/messages`, {
-        method: 'POST',
-        headers: this.getHeaders(),
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        constructURL(
+          this.baseUrl,
+          this.pathOverrides?.inference ?? '/messages',
+        ),
+        {
+          method: 'POST',
+          headers: this.getHeaders(),
+          body: JSON.stringify(requestBody),
+        },
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
