@@ -2,6 +2,8 @@
 
 This workspace contains a plugin that renders entity page and home page cards from MDX templates, using data from Backstage backend APIs.
 
+![MDX card on an entity page](./plugins/mdx-card/docs/entity-card.png)
+
 ## Plugins
 
 - [mdx-card](./plugins/mdx-card/README.md): Frontend plugin that provides the entity card, home page card and template editor page.

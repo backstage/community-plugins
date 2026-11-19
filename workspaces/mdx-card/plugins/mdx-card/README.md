@@ -2,6 +2,10 @@
 
 Render cards on entity pages and the home page from [MDX](https://mdxjs.com/) templates. A template is Markdown mixed with JSX. It can show JSON responses from any Backstage backend plugin using tables, charts and Material UI components, without you writing a new plugin.
 
+![MDX card on an entity page, showing data from the catalog backend in a metadata table and a table of entities with the same owner](./docs/entity-card.png)
+
+![MDX card on the home page, showing a pie chart of catalog entities by kind](./docs/home-page-widget.png)
+
 ## Installation
 
 ```sh
@@ -100,6 +104,10 @@ import { HomePageMdxCard } from '@backstage-community/plugin-mdx-card/legacy';
 ## Stored templates and the editor
 
 Instead of writing templates in config or code, you can store them with the MDX card backend and edit them in the browser. The editor page lists stored templates and shows a live preview while you edit. The preview can use a catalog entity, so you can build entity page cards against real data.
+
+![Editor page listing stored MDX cards](./docs/editor-list.png)
+
+![Editor with data fetchers and an MDX template on the left, and a live preview for a selected entity on the right](./docs/editor.png)
 
 1. Install and set up `@backstage-community/plugin-mdx-card-backend`. See its [README](../mdx-card-backend/README.md).
 2. Enable the editor page. In the new frontend system:

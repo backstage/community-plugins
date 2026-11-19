@@ -2,6 +2,8 @@
 
 Stores MDX card templates so they can be edited in the browser with the MDX card editor page and referenced from cards with `templateRef`. See the [MDX card plugin](../mdx-card/README.md) for the frontend.
 
+![MDX card editor with a live preview](../mdx-card/docs/editor.png)
+
 ## Installation
 
 ```sh
