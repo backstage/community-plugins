@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 import { DateTime } from 'luxon';
-import { MockErrorApi } from '@backstage/test-utils';
+import { mockApis } from '@backstage/test-utils';
 import {
   DiscoveryApi,
+  ErrorApi,
   FetchApi,
   IdentityApi,
+  StorageApi,
 } from '@backstage/core-plugin-api';
 import { AnnouncementsClient } from './AnnouncementsClient';
 
-const createClient = () =>
+const createClient = (storageApi: StorageApi) =>
   new AnnouncementsClient({
     discoveryApi: {
       getBaseUrl: async () => 'http://example.com',
@@ -30,17 +32,14 @@ const createClient = () =>
     identityApi: {
       getCredentials: async () => ({ token: undefined }),
     } as IdentityApi,
-    errorApi: new MockErrorApi(),
+    errorApi: { post: jest.fn(), error$: jest.fn() } as unknown as ErrorApi,
     fetchApi: { fetch: jest.fn() } as unknown as FetchApi,
+    storageApi,
   });
 
 describe('AnnouncementsClient dismiss tracking', () => {
-  beforeEach(() => {
-    window.localStorage.clear();
-  });
-
   it('dismisses announcements independently and idempotently', () => {
-    const client = createClient();
+    const client = createClient(mockApis.storage());
 
     expect(client.isAnnouncementDismissed('a')).toBe(false);
 
@@ -58,15 +57,18 @@ describe('AnnouncementsClient dismiss tracking', () => {
     expect(client.isAnnouncementDismissed('a')).toBe(true);
   });
 
-  it('persists dismissed ids across client instances', () => {
-    createClient().dismissAnnouncement('persisted');
+  it('persists dismissed ids across client instances via shared storage', () => {
+    const storageApi = mockApis.storage();
+    createClient(storageApi).dismissAnnouncement('persisted');
 
     // A fresh client backed by the same storage sees the dismissed id.
-    expect(createClient().isAnnouncementDismissed('persisted')).toBe(true);
+    expect(createClient(storageApi).isAnnouncementDismissed('persisted')).toBe(
+      true,
+    );
   });
 
   it('tracks last seen date with a far-past default before any is set', () => {
-    const client = createClient();
+    const client = createClient(mockApis.storage());
 
     expect(client.lastSeenDate().toISO()).toBe(
       DateTime.fromISO('1990-01-01').toISO(),

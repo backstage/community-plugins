@@ -14,6 +14,7 @@ import { Entity } from '@backstage/catalog-model';
 import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { StorageApi } from '@backstage/core-plugin-api';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 
@@ -117,6 +118,7 @@ export type AnnouncementsClientOptions = {
   identityApi: IdentityApi;
   errorApi: ErrorApi;
   fetchApi: FetchApi;
+  storageApi: StorageApi;
 };
 
 // @public
