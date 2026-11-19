@@ -73,10 +73,6 @@ const costCenterApiResourceSchema = z.object({
 const costCenterApiResourcesSchema = z.array(costCenterApiResourceSchema);
 type CostCenterApiResource = z.infer<typeof costCenterApiResourceSchema>;
 
-const costCenterListResponseSchema = z.object({
-  costCenters: z.unknown().optional(),
-});
-
 const costCenterListEntrySchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -117,23 +113,32 @@ const optionalGithubStatusSchema = z
   .optional()
   .catch(undefined);
 
-// Zod handles Error and inherited fields; normalize arrays to preserve legacy reads.
+// Preserve property reads from array-shaped errors at every metadata level.
+const normalizeErrorArray = (value: unknown) =>
+  Array.isArray(value) ? Object.create(value) : value;
+
 const githubErrorMetadataSchema = z.preprocess(
-  value => (Array.isArray(value) ? Object.create(value) : value),
+  normalizeErrorArray,
   z.object({
     message: optionalErrorStringSchema,
     status: optionalGithubStatusSchema,
     response: z
-      .object({
-        status: optionalGithubStatusSchema,
-        headers: z
-          .object({
-            'retry-after': optionalErrorStringSchema,
-            'x-ratelimit-remaining': optionalErrorStringSchema,
-          })
-          .optional()
-          .catch(undefined),
-      })
+      .preprocess(
+        normalizeErrorArray,
+        z.object({
+          status: optionalGithubStatusSchema,
+          headers: z
+            .preprocess(
+              normalizeErrorArray,
+              z.object({
+                'retry-after': optionalErrorStringSchema,
+                'x-ratelimit-remaining': optionalErrorStringSchema,
+              }),
+            )
+            .optional()
+            .catch(undefined),
+        }),
+      )
       .optional()
       .catch(undefined),
   }),
@@ -853,26 +858,22 @@ export class GithubClientV2 {
       { state: 'active' },
     );
     const listResponse = await enterpriseOctokit.request(`GET ${listUrl}`);
-    const parsedCostCenters = costCenterListResponseSchema.safeParse(
-      listResponse.data,
-    );
-    if (
-      !parsedCostCenters.success ||
-      !Array.isArray(parsedCostCenters.data.costCenters)
-    ) {
+    const listData = listResponse.data as
+      | { costCenters?: unknown }
+      | null
+      | undefined;
+    const costCentersFromResponse = listData?.costCenters;
+    if (!Array.isArray(costCentersFromResponse)) {
       throw new Error('Unexpected GitHub cost center list response.');
     }
 
-    const listedCostCenters = parsedCostCenters.data.costCenters.map(
-      costCenter => {
-        const parsedCostCenter =
-          costCenterListEntrySchema.safeParse(costCenter);
-        if (!parsedCostCenter.success) {
-          throw new Error('Unexpected GitHub cost center entry.');
-        }
-        return parsedCostCenter.data;
-      },
-    );
+    const listedCostCenters = costCentersFromResponse.map(costCenter => {
+      const parsedCostCenter = costCenterListEntrySchema.safeParse(costCenter);
+      if (!parsedCostCenter.success) {
+        throw new Error('Unexpected GitHub cost center entry.');
+      }
+      return parsedCostCenter.data;
+    });
 
     const warnings: string[] = [];
     let complete = true;

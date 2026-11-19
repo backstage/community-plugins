@@ -154,6 +154,20 @@ const githubErrorBoundaryCases: GithubErrorBoundaryCase[] = [
     false,
   ],
   [
+    'array response preserves nested status',
+    () => githubError({ response: Object.assign([], { status: 403 }) }),
+    true,
+  ],
+  [
+    'array headers preserve retry-after',
+    () =>
+      githubError({
+        status: 403,
+        response: { headers: Object.assign([], { 'retry-after': '0.5' }) },
+      }),
+    false,
+  ],
+  [
     'non-number own status fallback',
     () => githubError({ status: '500', response: { status: 403 } }),
     true,
