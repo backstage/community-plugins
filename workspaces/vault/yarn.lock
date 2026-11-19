@@ -2075,21 +2075,15 @@ __metadata:
     "@backstage/plugin-auth-backend": "backstage:^"
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^"
     "@backstage/plugin-catalog-backend": "backstage:^"
-    "@types/compression": "npm:^1.7.2"
     "@types/express": "npm:*"
     "@types/node-fetch": "npm:^2.5.12"
     "@types/supertest": "npm:^7.0.0"
-    compression: "npm:^1.7.4"
-    cors: "npm:^2.8.5"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
-    helmet: "npm:^7.0.0"
     msw: "npm:^1.0.0"
     node-fetch: "npm:^2.6.7"
     p-limit: "npm:^3.1.0"
     supertest: "npm:^7.0.0"
-    winston: "npm:^3.2.1"
-    yn: "npm:^5.0.0"
   languageName: unknown
   linkType: soft
 
@@ -9673,15 +9667,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/compression@npm:^1.7.2":
-  version: 1.7.5
-  resolution: "@types/compression@npm:1.7.5"
-  dependencies:
-    "@types/express": "npm:*"
-  checksum: 10/9d65485bfb8e20035dedbbbebea06ea0c0554ac7bedb11ec3f2c6582cb082d121a10a03b4803b56315ae31705043eddf97eaf49c3dad6f9e39f7875b27c8feb4
-  languageName: node
-  linkType: hard
-
 "@types/connect-history-api-fallback@npm:^1.5.4":
   version: 1.5.4
   resolution: "@types/connect-history-api-fallback@npm:1.5.4"
@@ -16903,13 +16888,6 @@ __metadata:
   version: 6.0.1
   resolution: "helmet@npm:6.0.1"
   checksum: 10/0eec311e1a3820e206226563e55d7115fa66e9a34922229472c1dac407c5d00f0d5c4f5f7afed714fba40287aac1c30dcbfa9b3c096f1146f9d6a55c4527d65d
-  languageName: node
-  linkType: hard
-
-"helmet@npm:^7.0.0":
-  version: 7.1.0
-  resolution: "helmet@npm:7.1.0"
-  checksum: 10/aa13b0907d9d31b65e4ec73093b58d7e94e83c06818cc06869f5eb95d205574a14f01ed71cadfac4a68b736a1a6d7ef2290f3f6ef77ac664c7e75b8f9eddf88c
   languageName: node
   linkType: hard
 
@@ -27933,13 +27911,6 @@ __metadata:
   version: 4.0.0
   resolution: "yn@npm:4.0.0"
   checksum: 10/2d60113b6f43f7c29a0a97719d8da4f626b755f5bb2fd19b00d1fe732db1900ad3f1785811a86d941cbe2800f02773af00d0ed99201333eeb3618db8502f7e96
-  languageName: node
-  linkType: hard
-
-"yn@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "yn@npm:5.0.0"
-  checksum: 10/f0ec7710d3d697e88a67a46e8072542448f04677a7e6580c56b1b78da202fa5cd73fabba94957d58ee306e4ce6366c5c38c1a9fb7fd76d07ad77a4d1908b66b0
   languageName: node
   linkType: hard
 
