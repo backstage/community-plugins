@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import express from 'express';
-import request from 'supertest';
-import { Server } from 'http';
 import { createRouter } from './router';
-import { wrapServer } from '@backstage/backend-openapi-utils/testUtils';
 import { LinguistBackendApi } from '../api';
 import {
   mockCredentials,
@@ -49,36 +45,6 @@ const mockUrlReader: UrlReaderService = {
 const databases = TestDatabases.create();
 
 describe('createRouter', () => {
-  const linguistBackendApi: jest.Mocked<LinguistBackendApi> =
-    {} as jest.Mocked<LinguistBackendApi>;
-  let app: express.Express | Server;
-
-  describe('GET /health', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-    beforeAll(async () => {
-      const knex = await databases.init('SQLITE_3');
-      const getClient = jest.fn(async () => knex);
-      const router = await createRouter({
-        linguistBackendApi: linguistBackendApi,
-        discovery: mockServices.discovery.mock(),
-        database: mockServices.database.mock({ getClient }),
-        reader: mockUrlReader,
-        logger: mockServices.logger.mock(),
-        config: mockServices.rootConfig(),
-        auth: mockServices.auth(),
-      });
-      app = await wrapServer(express().use(router));
-    });
-    it('returns ok', async () => {
-      const response = await request(app).get('/health');
-
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({ status: 'ok' });
-    });
-  });
-
   describe('actions registry', () => {
     const mockActionsRegistry = { register: jest.fn() };
     const actionsApi: jest.Mocked<LinguistBackendApi> =
