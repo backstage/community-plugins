@@ -61,7 +61,7 @@ export interface TechRadarLoaderResponse {
 }
 
 // @public
-export const TechRadarLoaderResponseParser: z.ZodSchema<TechRadarLoaderResponse>;
+export const TechRadarLoaderResponseParser: z.ZodType<TechRadarLoaderResponse>;
 
 // (No @packageDocumentation comment for this package)
 ```
