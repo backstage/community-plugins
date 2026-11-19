@@ -517,10 +517,18 @@ export class GithubClientV2 {
           privateKey: authStrategy.privateKey,
         },
       });
-      const { data } = await appOctokit.rest.apps.getOrgInstallation({
-        org: orgName,
-      });
-      installationId = getInstallationId(data);
+      try {
+        const { data } = await appOctokit.rest.apps.getOrgInstallation({
+          org: orgName,
+        });
+        installationId = getInstallationId(data);
+      } catch (error) {
+        const status = getHttpStatus(error);
+        if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+          throw new InaccessibleEnterpriseOrganizationError();
+        }
+        throw error;
+      }
     }
 
     return this.createInstallationOctokit(authStrategy, installationId);
