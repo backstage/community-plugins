@@ -8,9 +8,13 @@ This workspace contains a plugin that renders entity page and home page cards fr
 
 ## Getting Started
 
-To start the plugin's development app, run:
+To start the plugin's development app using the new frontend system, run:
 
 ```sh
 yarn install
 yarn --cwd plugins/mdx-card start
 ```
+
+The app runs without a backend. When signing in as a guest, accept the prompt to use the legacy guest token. The MDX card is on the example-service entity page and on the home page.
+
+To start the development app using the legacy frontend system, run `yarn --cwd plugins/mdx-card start:legacy`.

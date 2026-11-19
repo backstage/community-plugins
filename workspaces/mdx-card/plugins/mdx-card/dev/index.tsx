@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+import ReactDOM from 'react-dom/client';
+import { createApp } from '@backstage/frontend-defaults';
+import { ConfigReader } from '@backstage/config';
+import { defaultConfigLoader } from '@backstage/core-app-api';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import homePlugin from '@backstage/plugin-home/alpha';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import type { Entity } from '@backstage/catalog-model';
-import { EntityMdxCard, mdxCardPlugin } from '../src/legacy';
+import mdxCardPlugin from '../src';
 
 const entity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
-  metadata: {
-    name: 'example-service',
-    namespace: 'default',
-    annotations: { 'backstage.io/techdocs-ref': 'dir:.' },
-  },
+  metadata: { name: 'example-service', namespace: 'default' },
   spec: { type: 'service', owner: 'team-a', lifecycle: 'production' },
 };
 
-const template = `
+const entityTemplate = `
 ## {props.entity.metadata.name}
 
 Owned by <EntityRefLink entityRef={\`group:default/\${props.entity.spec.owner}\`} />.
@@ -45,15 +54,87 @@ Owned by <EntityRefLink entityRef={\`group:default/\${props.entity.spec.owner}\`
 />
 `;
 
-createDevApp()
-  .registerPlugin(mdxCardPlugin)
-  .addPage({
-    title: 'Entity MDX Card',
-    path: '/mdx-card',
-    element: (
-      <EntityProvider entity={entity}>
-        <EntityMdxCard title="Example" template={template} />
-      </EntityProvider>
-    ),
-  })
-  .render();
+const homeTemplate = `
+Welcome, **{props.user.displayName}**.
+
+<PieChart
+  data={[
+    { name: 'Services', value: 12 },
+    { name: 'Websites', value: 5 },
+    { name: 'Libraries', value: 8 },
+  ]}
+  donut
+/>
+`;
+
+const devConfig = {
+  backend: { baseUrl: 'http://localhost:7007' },
+  app: {
+    title: 'MDX Card Dev',
+    extensions: [
+      {
+        'entity-card:mdx-card': {
+          config: { title: 'MDX Card', template: entityTemplate },
+        },
+      },
+      {
+        'home-page-widget:mdx-card': {
+          config: { title: 'MDX Card', template: homeTemplate },
+        },
+      },
+      {
+        'page:home': {
+          config: {
+            defaultConfig: [
+              {
+                component: 'home-page-widget:mdx-card',
+                column: 0,
+                row: 0,
+                width: 6,
+                height: 8,
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
+};
+
+const catalogDevModule = createFrontendModule({
+  pluginId: 'catalog',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'catalog-mock',
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => catalogApiMock({ entities: [entity] }),
+        }),
+    }),
+  ],
+});
+
+const app = createApp({
+  features: [
+    catalogPlugin,
+    catalogDevModule,
+    homePlugin,
+    userSettingsPlugin,
+    mdxCardPlugin,
+  ],
+  advanced: {
+    configLoader: async () => ({
+      config: ConfigReader.fromConfigs([
+        ...(await defaultConfigLoader()),
+        { context: 'dev', data: devConfig },
+      ]),
+    }),
+  },
+});
+
+const root = document.getElementById('root');
+if (root) {
+  ReactDOM.createRoot(root).render(app.createRoot());
+}

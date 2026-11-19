@@ -19,7 +19,8 @@ import {
   renderInTestApp,
 } from '@backstage/frontend-test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { mdxEntityCard } from './plugin';
+import { homePageWidgetDataRef } from '@backstage/plugin-home-react/alpha';
+import { mdxEntityCard, mdxHomePageWidget } from './plugin';
 
 describe('mdxEntityCard', () => {
   it('renders the template from extension config', async () => {
@@ -44,5 +45,23 @@ describe('mdxEntityCard', () => {
 
     expect(await screen.findByText('Configured card')).toBeInTheDocument();
     expect(await screen.findByText('Name: my-service')).toBeInTheDocument();
+  });
+});
+
+describe('mdxHomePageWidget', () => {
+  it('renders the template from extension config', async () => {
+    const widget = createExtensionTester(mdxHomePageWidget, {
+      config: {
+        title: 'Configured widget',
+        template: 'Hello {props.user.displayName}',
+      },
+    }).get(homePageWidgetDataRef);
+
+    expect(widget.title).toBe('Configured widget');
+
+    renderInTestApp(widget.component);
+
+    expect(await screen.findByText('Configured widget')).toBeInTheDocument();
+    expect(await screen.findByText(/^Hello /)).toBeInTheDocument();
   });
 });
