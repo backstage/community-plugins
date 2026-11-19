@@ -19,12 +19,12 @@
  * Module wiring (extension-point registration) is covered in `../module.test.ts`
  * and is not replaced by these handler-level cases.
  */
+import { createRequire } from 'node:module';
+
 import type { CatalogClient } from '@backstage/catalog-client';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
 import type { V1Namespace } from '@kubernetes/client-node';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
 
 import {
   convertLabelsToObject,
@@ -33,6 +33,83 @@ import {
 
 const LOCAL_ADDR = 'https://kube-api:5000';
 const FIXTURES_DIR = `${__dirname}/../../__fixtures__/cluster-entities`;
+const BEARER_TOKEN = 'token-should-not-leak';
+
+/**
+ * `@kubernetes/client-node` 2.x calls `fetch` from its own nested `undici`.
+ * The workspace also hoists an older `undici`, and each copy has its own
+ * global dispatcher. Load the client copy so the mock sees the request.
+ */
+const requireFromClient = createRequire(
+  createRequire(__filename).resolve('@kubernetes/client-node/package.json'),
+);
+const undici = requireFromClient('undici') as {
+  MockAgent: new () => {
+    disableNetConnect: () => void;
+    close: () => Promise<void>;
+    get: (origin: string) => {
+      intercept: (options: { path: string; method: string }) => {
+        reply: (
+          handler: (request: { body?: unknown }) => {
+            statusCode: number;
+            data: string;
+            responseOptions: { headers: Record<string, string> };
+          },
+        ) => void;
+      };
+    };
+  };
+  getGlobalDispatcher: () => unknown;
+  setGlobalDispatcher: (dispatcher: unknown) => void;
+};
+
+const originalDispatcher = undici.getGlobalDispatcher();
+let mockAgent: InstanceType<typeof undici.MockAgent>;
+let namespacePool: ReturnType<InstanceType<typeof undici.MockAgent>['get']>;
+
+function postedNamespace(body: unknown): V1Namespace {
+  if (typeof body === 'string') {
+    return JSON.parse(body) as V1Namespace;
+  }
+  if (body instanceof Uint8Array) {
+    return JSON.parse(Buffer.from(body).toString('utf8')) as V1Namespace;
+  }
+  throw new Error('Kubernetes client posted an unexpected namespace body');
+}
+
+function mockNamespacePost(options?: {
+  statusCode?: number;
+  data?: string;
+  headers?: Record<string, string>;
+  onNamespace?: (namespace: V1Namespace) => void;
+}) {
+  namespacePool
+    .intercept({ path: '/api/v1/namespaces', method: 'POST' })
+    .reply(request => {
+      if (options?.onNamespace) {
+        options.onNamespace(postedNamespace(request.body));
+      }
+      return {
+        statusCode: options?.statusCode ?? 200,
+        data: options?.data ?? '{}',
+        responseOptions: {
+          headers: options?.headers ?? { 'content-type': 'application/json' },
+        },
+      };
+    });
+}
+
+beforeEach(() => {
+  mockAgent = new undici.MockAgent();
+  mockAgent.disableNetConnect();
+  undici.setGlobalDispatcher(mockAgent);
+  namespacePool = mockAgent.get(LOCAL_ADDR);
+});
+
+afterEach(async () => {
+  await mockAgent.close();
+  undici.setGlobalDispatcher(originalDispatcher);
+});
 
 /** Minimal JSON Schema required-field check (no extra validator dependency). */
 function missingRequiredFields(
@@ -42,35 +119,6 @@ function missingRequiredFields(
   const required = Array.isArray(schema?.required) ? schema.required : [];
   return required.filter(key => input[key] === undefined);
 }
-
-const handlers = [
-  rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, async (req, res, ctx) => {
-    const ns = (await req.json()) as V1Namespace;
-    if (ns.metadata?.name === 'error') {
-      const error = {
-        body: {
-          kind: 'Status',
-          apiVersion: 'v1',
-          metadata: {},
-          status: 'Failure',
-          message: 'Unauthorized',
-          reason: 'Unauthorized',
-          code: 401,
-        },
-        statusCode: 401,
-        message: 'Unauthorized',
-      };
-      return res(ctx.status(401), ctx.json(error));
-    }
-    return res(ctx.status(200), ctx.json({}));
-  }),
-];
-
-const server = setupServer(...handlers);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
 
 describe('kubernetes:create-namespace', () => {
   afterEach(() => {
@@ -127,6 +175,7 @@ describe('kubernetes:create-namespace', () => {
   });
 
   it('should get the api url from the correct entity', async () => {
+    mockNamespacePost();
     await action.handler({
       ...mockContext,
       input: {
@@ -143,12 +192,11 @@ describe('kubernetes:create-namespace', () => {
 
   it('posts namespace name and labels on the happy path', async () => {
     let postedBody: V1Namespace | undefined;
-    server.use(
-      rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, async (req, res, ctx) => {
-        postedBody = (await req.json()) as V1Namespace;
-        return res(ctx.status(200), ctx.json({}));
-      }),
-    );
+    mockNamespacePost({
+      onNamespace: namespace => {
+        postedBody = namespace;
+      },
+    });
 
     await action.handler({
       ...mockContext,
@@ -183,6 +231,7 @@ describe('kubernetes:create-namespace', () => {
       name: 'should warn if the resource is not kubernetes-cluster',
     },
   ])('$name', async ({ entityName, calledWith, warnMsg }) => {
+    mockNamespacePost();
     const mockedWarn = jest.spyOn(mockContext.logger, 'warn');
     await action.handler({
       ...mockContext,
@@ -258,19 +307,25 @@ describe('kubernetes:create-namespace', () => {
   });
 
   it('should surface a generic client HTTP error (no string body Status JSON)', async () => {
-    await expect(async () => {
-      await action.handler({
+    mockNamespacePost({ statusCode: 401 });
+
+    const error = await action
+      .handler({
         ...mockContext,
         input: {
           namespace: 'error',
-          url: 'https://kube-api:5000',
-          token: 'TOKEN',
+          url: LOCAL_ADDR,
+          token: BEARER_TOKEN,
           skipTLSVerify: false,
         },
-      });
-    }).rejects.toThrow(
-      `Failed to create kubernetes namespace, HTTP-Code: 401\nMessage: Unauthorized\nBody: undefined\nHeaders: {"content-type":"application/json","x-powered-by":"msw"}`,
+      })
+      .catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain(
+      'Failed to create kubernetes namespace, HTTP-Code: 401\nMessage: Unauthorized\nBody: undefined\nHeaders:',
     );
+    expect((error as Error).message).not.toContain(BEARER_TOKEN);
   });
 
   it('should parse string body Status JSON into an API code error message', async () => {
@@ -283,45 +338,55 @@ describe('kubernetes:create-namespace', () => {
       reason: 'Forbidden',
       code: 403,
     };
-    server.use(
-      rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, (_req, res, ctx) =>
-        res(ctx.status(403), ctx.text(JSON.stringify(statusBody))),
-      ),
-    );
+    mockNamespacePost({
+      statusCode: 403,
+      data: JSON.stringify(statusBody),
+      headers: { 'content-type': 'text/plain' },
+    });
 
-    await expect(async () => {
-      await action.handler({
+    const error = await action
+      .handler({
         ...mockContext,
         input: {
           namespace: 'forbidden-ns',
           url: LOCAL_ADDR,
-          token: 'test-token',
+          token: BEARER_TOKEN,
           skipTLSVerify: false,
         },
-      });
-    }).rejects.toThrow(
+      })
+      .catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toBe(
       'Failed to create kubernetes namespace, API code: 403 -- namespaces is forbidden',
     );
+    expect((error as Error).message).not.toContain(BEARER_TOKEN);
   });
 
   it('should fall back to the generic failure message for unparseable string body', async () => {
-    server.use(
-      rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, (_req, res, ctx) =>
-        res(ctx.status(500), ctx.text('not-json')),
-      ),
-    );
+    mockNamespacePost({
+      statusCode: 500,
+      data: 'not-json',
+      headers: { 'content-type': 'text/plain' },
+    });
 
-    await expect(async () => {
-      await action.handler({
+    const error = await action
+      .handler({
         ...mockContext,
         input: {
           namespace: 'bad-body-ns',
           url: LOCAL_ADDR,
-          token: 'test-token',
+          token: BEARER_TOKEN,
           skipTLSVerify: false,
         },
-      });
-    }).rejects.toThrow(/^Failed to create kubernetes namespace,/);
+      })
+      .catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toMatch(
+      /^Failed to create kubernetes namespace,/,
+    );
+    expect((error as Error).message).not.toContain(BEARER_TOKEN);
   });
 
   it('should throw an error while using an invalid api url', async () => {
