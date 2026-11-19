@@ -85,7 +85,28 @@ describe('AuditList', () => {
             <AuditList />
           </ApiProvider>,
         );
-        expect(screen.queryByLabelText(/Go to page/)).not.toBeInTheDocument();
+        expect(
+          screen.queryByLabelText('Next table page'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    describe('when the page size is not a default option', () => {
+      beforeEach(() => {
+        const response = { ...websiteListResponse };
+        response.limit = 7;
+        response.offset = 0;
+        response.total = 14;
+        server.use(rest.get('*', (_req, res, ctx) => res(ctx.json(response))));
+      });
+
+      it('shows the range for the actual page size', async () => {
+        await renderInTestApp(
+          <ApiProvider apis={apis}>
+            <AuditList />
+          </ApiProvider>,
+        );
+        expect(await screen.findByText('1 - 7 of 14')).toBeInTheDocument();
       });
     });
 
@@ -105,7 +126,9 @@ describe('AuditList', () => {
             <AuditList />
           </ApiProvider>,
         );
-        expect(await screen.findByLabelText(/Go to page/)).toBeInTheDocument();
+        expect(
+          await screen.findByLabelText('Next table page'),
+        ).toBeInTheDocument();
       });
 
       it('changes the page on click', async () => {
@@ -115,7 +138,7 @@ describe('AuditList', () => {
           </ApiProvider>,
           { routeEntries: ['?page=2'] },
         );
-        const element = await screen.findByLabelText(/Go to page 1/);
+        const element = await screen.findByLabelText('Previous table page');
         fireEvent.click(element);
 
         expect(useNavigate()).toHaveBeenCalledWith(`?page=1`);

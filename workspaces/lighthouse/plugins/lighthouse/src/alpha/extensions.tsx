@@ -30,13 +30,13 @@ import {
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 import { isLighthouseAvailable } from '../Router';
-import Highlight from '@material-ui/icons/Highlight';
+import { RiFlashlightLine } from '@remixicon/react';
 
 export const lighthousePage = PageBlueprint.make({
   params: {
     path: '/lighthouse',
     title: 'Lighthouse',
-    icon: <Highlight />,
+    icon: <RiFlashlightLine />,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () =>
       import('../Router').then(m => compatWrapper(<m.Router />)),

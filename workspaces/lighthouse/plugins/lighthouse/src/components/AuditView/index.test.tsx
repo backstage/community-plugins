@@ -119,20 +119,18 @@ describe('AuditView', () => {
       await screen.findByTestId('audit-sidebar');
 
       const audit = websiteResponse.audits.find(a => a.id === id) as Audit;
-      const auditElement = screen.getByText(formatTime(audit.timeCreated));
-      expect(auditElement.parentElement?.parentElement?.className).toContain(
-        'selected',
-      );
+      expect(
+        screen.getByRole('row', { name: formatTime(audit.timeCreated) }),
+      ).toHaveAttribute('aria-selected', 'true');
 
       const notSelectedAudit = websiteResponse.audits.find(
         a => a.id !== id,
       ) as Audit;
-      const notSelectedAuditElement = screen.getByText(
-        formatTime(notSelectedAudit.timeCreated),
-      );
       expect(
-        notSelectedAuditElement.parentElement?.parentElement?.className,
-      ).not.toContain('selected');
+        screen.getByRole('row', {
+          name: formatTime(notSelectedAudit.timeCreated),
+        }),
+      ).toHaveAttribute('aria-selected', 'false');
     });
 
     it('navigates to the next report when an audit is clicked', async () => {
@@ -147,9 +145,8 @@ describe('AuditView', () => {
 
       websiteResponse.audits.forEach(a => {
         expect(
-          screen.getByText(formatTime(a.timeCreated)).parentElement
-            ?.parentElement,
-        ).toHaveAttribute('href', `/audit/${a.id}`);
+          screen.getByRole('row', { name: formatTime(a.timeCreated) }),
+        ).toHaveAttribute('data-href', `/audit/${a.id}`);
       });
     });
 
@@ -175,9 +172,8 @@ describe('AuditView', () => {
 
       websiteResponse.audits.forEach(a => {
         expect(
-          screen.getByText(formatTime(a.timeCreated)).parentElement
-            ?.parentElement,
-        ).toHaveAttribute('href', `/example/lighthouse/audit/${a.id}`);
+          screen.getByRole('row', { name: formatTime(a.timeCreated) }),
+        ).toHaveAttribute('data-href', `/example/lighthouse/audit/${a.id}`);
       });
     });
   });

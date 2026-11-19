@@ -24,7 +24,7 @@ import {
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
-import Button from '@material-ui/core/Button';
+import { Button } from '@backstage/ui';
 import { resolvePath, useNavigate } from 'react-router-dom';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useRouteRef } from '@backstage/core-plugin-api';
@@ -49,9 +49,8 @@ export const AuditListForEntity = () => {
     <Content>
       <ContentHeader title="Latest Audit">
         <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
+          variant="primary"
+          onPress={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
         >
           Create New Audit
         </Button>
