@@ -36,7 +36,6 @@ body:
         - azure-storage-explorer
         - badges
         - bazaar
-        - bitbucket-pull-requests
         - bitrise
         - blackduck
         - bookmarks

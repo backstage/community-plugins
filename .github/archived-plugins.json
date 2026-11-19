@@ -44,6 +44,15 @@
       "gitTag": "@backstage-community/plugin-matomo-backend@1.14.0",
       "reason": "No longer maintained",
       "archivedDate": "2025-12-02"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-bitbucket-pull-requests",
+      "version": "4.0.0",
+      "workspace": "bitbucket-pull-requests",
+      "plugin": "bitbucket-pull-requests",
+      "gitTag": "@backstage-community/plugin-bitbucket-pull-requests@4.0.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2026-11-19"
     }
   ]
 }

@@ -86,10 +86,6 @@ workspace/bazaar:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/bazaar/**']
 
-workspace/bitbucket-pull-requests:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/bitbucket-pull-requests/**']
-
 workspace/bitrise:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/bitrise/**']
