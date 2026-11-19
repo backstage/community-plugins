@@ -18,7 +18,10 @@ import {
   buildFileStructure,
   formatInitialData,
   getObjectsAtPath,
+  findFileCoverage,
+  normalizePath,
 } from './FileExplorer';
+import { FileEntry } from '../../types';
 
 const dummyFiles = [
   {
@@ -321,5 +324,52 @@ describe('getObjectsAtPath function', () => {
     expect(
       getObjectsAtPath(structure, ['dir3', 'doesnt-exist']),
     ).toBeUndefined();
+  });
+});
+
+describe('root-level files', () => {
+  const files: FileEntry[] = [
+    { filename: 'main.go', lineHits: { 10: 1, 11: 0 }, branchHits: {} },
+    { filename: 'bar/main.go', lineHits: { 5: 1 }, branchHits: {} },
+  ];
+  const value = {
+    aggregate: { line: { percentage: 66.67, missed: 1, available: 3 } },
+    files,
+  };
+
+  it('should list a root file as a leaf and resolve it by exact path', () => {
+    const structure = formatInitialData(value);
+    const root = structure.files.find(f => f.path === 'main.go');
+    expect(root?.files).toEqual([]);
+
+    expect(findFileCoverage(files, '/main.go')?.filename).toBe('main.go');
+    expect(findFileCoverage(files, 'main.go')?.filename).toBe('main.go');
+    expect(findFileCoverage(files, 'bar/main.go')?.filename).toBe(
+      'bar/main.go',
+    );
+    expect(findFileCoverage(files, 'ain.go')).toBeUndefined();
+  });
+});
+
+describe('normalizePath function', () => {
+  it('should resolve dot segments and keep leading parent segments', () => {
+    expect(normalizePath('./main.go')).toBe('main.go');
+    expect(normalizePath('/src//./a/../b.go')).toBe('src/b.go');
+    expect(normalizePath('src/../../main.go')).toBe('../main.go');
+    expect(normalizePath('../../lib/x.go')).toBe('../../lib/x.go');
+  });
+
+  it('should build the folder tree from normalized paths', () => {
+    const structure = formatInitialData({
+      aggregate: { line: { percentage: 50, missed: 1, available: 2 } },
+      files: [
+        { filename: './main.go', lineHits: { 1: 1 }, branchHits: {} },
+        { filename: 'src/../bar/bar.go', lineHits: { 1: 0 }, branchHits: {} },
+      ],
+    });
+
+    expect(structure.files.map(f => f.path)).toEqual(['main.go', 'bar']);
+    expect(structure.files[0].files).toEqual([]);
+    expect(structure.files[1].files.map(f => f.path)).toEqual(['bar.go']);
   });
 });
