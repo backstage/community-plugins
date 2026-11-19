@@ -14,10 +14,6 @@ workspace/adr:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/adr/**']
 
-workspace/agent-forge:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/agent-forge/**']
-
 workspace/airbrake:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/airbrake/**']

@@ -18,7 +18,6 @@ body:
         - acr
         - acs
         - adr
-        - agent-forge
         - airbrake
         - akeyless
         - allure

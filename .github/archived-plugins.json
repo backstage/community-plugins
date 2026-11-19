@@ -44,6 +44,15 @@
       "gitTag": "@backstage-community/plugin-matomo-backend@1.14.0",
       "reason": "No longer maintained",
       "archivedDate": "2025-12-02"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-agent-forge",
+      "version": "0.4.0",
+      "workspace": "agent-forge",
+      "plugin": "agent-forge",
+      "gitTag": "@backstage-community/plugin-agent-forge@0.4.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2026-11-19"
     }
   ]
 }
