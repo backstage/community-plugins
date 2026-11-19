@@ -2405,6 +2405,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals computes rolling weekly/monthly active users for teams', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
       ]);
@@ -2463,6 +2464,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals anchors rolling windows to each returned day', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-11', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-08', team_slug: 'team-a' }),
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
@@ -2549,6 +2551,10 @@ describe('DatabaseHandlerV2', () => {
           used_chat: false,
         },
       ];
+      const fakeCoverageRows = buildTeamCoverageRows(
+        '2026-04-13',
+        '2026-05-10',
+      );
       const fakeQuery = {
         join: jest.fn().mockReturnThis(),
         leftJoin: jest.fn().mockReturnThis(),
@@ -2557,7 +2563,14 @@ describe('DatabaseHandlerV2', () => {
         whereRaw: jest.fn().mockReturnThis(),
         select: jest.fn().mockResolvedValue(fakeActivityRows),
       };
-      (handler as any).db = jest.fn().mockReturnValue(fakeQuery);
+      const fakeCoverageQuery = {
+        where: jest.fn().mockReturnThis(),
+        whereBetween: jest.fn().mockReturnThis(),
+        select: jest.fn().mockResolvedValue(fakeCoverageRows),
+      };
+      (handler as any).db = jest.fn((table: string) =>
+        table === 'copilot_ingestion_log' ? fakeCoverageQuery : fakeQuery,
+      );
 
       try {
         const rows = await (handler as any).enrichScopedRollingActiveUsers(
@@ -2585,6 +2598,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals only counts users active within the selected team', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
       ]);
@@ -2624,7 +2638,221 @@ describe('DatabaseHandlerV2', () => {
       expect(rows[0].monthly_active_users).toBe(1);
     });
 
+    it.each([
+      {
+        missingComponent: 'users',
+        components_loaded: JSON.stringify(['totals', 'teams']),
+      },
+      {
+        missingComponent: 'teams',
+        components_loaded: JSON.stringify(['totals', 'users']),
+      },
+    ])(
+      'withholds team rolling counts when $missingComponent coverage is missing',
+      async ({ components_loaded }) => {
+        const currentDay = '2026-05-10';
+        await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+          '2026-05-09': { components_loaded },
+        });
+        await handler.insertDailyTotals([
+          buildDailyTotal({ day: currentDay, team_slug: 'team-a' }),
+        ]);
+        await handler.insertUserMetrics([
+          buildUserMetric({
+            day: currentDay,
+            user_id: 1,
+            user_login: 'u1',
+            used_agent: false,
+            used_chat: false,
+          }),
+        ]);
+        await handler.insertUserTeams([
+          buildUserTeam({
+            day: currentDay,
+            user_id: 1,
+            user_login: 'u1',
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ]);
+
+        const rows = await handler.getDailyTotals(
+          'organization',
+          'org-1',
+          currentDay,
+          currentDay,
+          'team-a',
+        );
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].weekly_active_users).toBeUndefined();
+        expect(rows[0].monthly_active_users).toBeUndefined();
+        expect(rows[0].monthly_active_agent_users).toBeUndefined();
+        expect(rows[0].monthly_active_chat_users).toBeUndefined();
+      },
+    );
+
+    it('keeps weekly team counts when a gap is only in monthly coverage', async () => {
+      const currentDay = '2026-05-10';
+      const gapDay = '2026-05-01';
+      await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+        [gapDay]: { components_loaded: JSON.stringify(['totals', 'users']) },
+      });
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: currentDay, team_slug: 'team-a' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+      ]);
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+
+      await knex('copilot_ingestion_log')
+        .where({
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          day: gapDay,
+        })
+        .update({
+          status: 'error',
+          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
+        });
+
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBe(1);
+      expect(rows[0].monthly_active_agent_users).toBe(0);
+      expect(rows[0].monthly_active_chat_users).toBe(0);
+    });
+
+    it('combines team completeness with no-cost-center completeness', async () => {
+      const currentDay = '2026-05-10';
+      const incompleteDay = '2026-05-09';
+      await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+        [incompleteDay]: {
+          components_loaded: JSON.stringify(['totals', 'users']),
+        },
+      });
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({
+          day: currentDay,
+          team_slug: 'team-a',
+          cost_center_id: '',
+        }),
+        without_cost_center: true,
+      });
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+      ]);
+      for (const day of [
+        '2026-05-04',
+        '2026-05-05',
+        '2026-05-06',
+        '2026-05-07',
+        '2026-05-08',
+        currentDay,
+      ]) {
+        await handler.markCostCenterAggregationDone(
+          day,
+          'organization',
+          'org-1',
+        );
+      }
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBeUndefined();
+
+      await handler.markCostCenterAggregationDone(
+        incompleteDay,
+        'organization',
+        'org-1',
+      );
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows[0].weekly_active_users).toBeUndefined();
+
+      await knex('copilot_ingestion_log')
+        .where({
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          day: incompleteDay,
+        })
+        .update({
+          status: 'error',
+          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
+        });
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+    });
+
     it('computes rolling active users for cost centers and teams independently', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({
           day: '2026-05-10',
@@ -3800,6 +4028,54 @@ function buildIngestionLog(
     source: 'scheduled',
     ...overrides,
   };
+}
+
+function buildTeamCoverageRows(
+  from: string,
+  to: string,
+  overrides: Record<
+    string,
+    Partial<Pick<V2IngestionLogRow, 'status' | 'components_loaded'>>
+  > = {},
+): V2IngestionLogRow[] {
+  const start = DateTime.fromISO(from, { zone: 'utc' }).startOf('day');
+  const end = DateTime.fromISO(to, { zone: 'utc' }).startOf('day');
+  if (!start.isValid || !end.isValid || start > end) {
+    throw new Error('Invalid team coverage date range.');
+  }
+
+  const rows: V2IngestionLogRow[] = [];
+  for (let cursor = start; cursor <= end; cursor = cursor.plus({ days: 1 })) {
+    const day = cursor.toISODate();
+    if (!day) {
+      throw new Error('Invalid team coverage day.');
+    }
+
+    rows.push(
+      buildIngestionLog({
+        day,
+        components_loaded:
+          overrides[day]?.components_loaded ??
+          JSON.stringify(['totals', 'users', 'teams']),
+        status: overrides[day]?.status ?? 'success',
+      }),
+    );
+  }
+  return rows;
+}
+
+async function insertTeamCoverageLogs(
+  knex: Knex,
+  from: string,
+  to: string,
+  overrides: Record<
+    string,
+    Partial<Pick<V2IngestionLogRow, 'status' | 'components_loaded'>>
+  > = {},
+): Promise<void> {
+  await knex('copilot_ingestion_log').insert(
+    buildTeamCoverageRows(from, to, overrides),
+  );
 }
 
 function buildDailyTotal(overrides: Partial<V2DailyTotal> = {}): V2DailyTotal {

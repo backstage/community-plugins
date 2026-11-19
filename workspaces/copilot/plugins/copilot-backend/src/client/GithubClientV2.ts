@@ -383,6 +383,7 @@ export class GithubClientV2 {
   private enterpriseOctokit?: Octokit;
   private organizationOctokit?: Octokit;
   private enterpriseAuthStrategy?: string | StrategyOptions;
+  private organizationAuthStrategy?: string | StrategyOptions;
   private readonly costCenterOrganizationOctokits = new Map<
     string,
     Promise<CostCenterOrganizationClient>
@@ -469,6 +470,8 @@ export class GithubClientV2 {
     if (typeof authStrategy === 'string') {
       if (type === 'enterprise') {
         this.enterpriseAuthStrategy = authStrategy;
+      } else {
+        this.organizationAuthStrategy = authStrategy;
       }
       return this.createOctokit({
         auth: authStrategy,
@@ -477,6 +480,8 @@ export class GithubClientV2 {
 
     if (type === 'enterprise') {
       this.enterpriseAuthStrategy = authStrategy;
+    } else {
+      this.organizationAuthStrategy = authStrategy;
     }
 
     const orgName =
@@ -675,6 +680,12 @@ export class GithubClientV2 {
       if (this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise) {
         this.enterpriseOrganizationOctokits.delete(cacheKey);
       }
+    }
+  }
+
+  private invalidateOrganizationOctokit(staleClient: Octokit): void {
+    if (this.organizationOctokit === staleClient) {
+      this.organizationOctokit = undefined;
     }
   }
 
@@ -1305,10 +1316,26 @@ export class GithubClientV2 {
     reportType: 'organization-1-day' | 'users-1-day' | 'user-teams-1-day',
     day: string,
   ): Promise<ReportEnvelope> {
-    const octokit = await this.getEnterpriseOrganizationOctokit(organization);
-    const hasCachedInstallationClient = this.enterpriseOrganizationOctokits.has(
-      organization.toLowerCase(),
-    );
+    const isConfiguredOrganization =
+      this.copilotConfig.organization?.toLowerCase() ===
+      organization.toLowerCase();
+    const octokit = isConfiguredOrganization
+      ? await this.getOrganizationOctokit()
+      : await this.getEnterpriseOrganizationOctokit(organization);
+    const hasCachedInstallationClient = isConfiguredOrganization
+      ? this.organizationAuthStrategy !== undefined &&
+        typeof this.organizationAuthStrategy !== 'string'
+      : this.enterpriseOrganizationOctokits.has(organization.toLowerCase());
+    const invalidateClient = async (staleClient: Octokit) => {
+      if (isConfiguredOrganization) {
+        this.invalidateOrganizationOctokit(staleClient);
+      } else {
+        await this.invalidateEnterpriseOrganizationOctokit(
+          organization,
+          staleClient,
+        );
+      }
+    };
     const path = `/orgs/${encodeURIComponent(
       organization,
     )}/copilot/metrics/reports/${reportType}?day=${encodeURIComponent(day)}`;
@@ -1318,29 +1345,20 @@ export class GithubClientV2 {
       const status = getHttpStatus(error);
       if ((status === 403 || status === 404) && !isRateLimitError(error)) {
         if (hasCachedInstallationClient) {
-          await this.invalidateEnterpriseOrganizationOctokit(
-            organization,
-            octokit,
-          );
-          const refreshedOctokit = await this.getEnterpriseOrganizationOctokit(
-            organization,
-          );
+          await invalidateClient(octokit);
+          const refreshedOctokit = isConfiguredOrganization
+            ? await this.getOrganizationOctokit()
+            : await this.getEnterpriseOrganizationOctokit(organization);
           try {
             return await this.fetchReportLinks(refreshedOctokit, path);
           } catch (retryError) {
             const retryStatus = getHttpStatus(retryError);
             if (retryStatus === 403 && !isRateLimitError(retryError)) {
-              await this.invalidateEnterpriseOrganizationOctokit(
-                organization,
-                refreshedOctokit,
-              );
+              await invalidateClient(refreshedOctokit);
               throw new InaccessibleEnterpriseOrganizationError();
             }
             if (retryStatus === 404 && !isRateLimitError(retryError)) {
-              await this.invalidateEnterpriseOrganizationOctokit(
-                organization,
-                refreshedOctokit,
-              );
+              await invalidateClient(refreshedOctokit);
             }
             throw retryError;
           }

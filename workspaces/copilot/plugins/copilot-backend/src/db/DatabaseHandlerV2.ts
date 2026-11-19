@@ -1633,6 +1633,28 @@ export class DatabaseHandlerV2 {
 
     const { activeByDay, agentByDay, chatByDay } =
       this.collectRollingUsersByDay(activityRows as TeamActivityRow[]);
+    let completeTeamDays: Set<string> | undefined;
+    if (teamSlug) {
+      const lowerBound = DateTime.fromISO(from, { zone: 'utc' })
+        .minus({ days: MONTHLY_ACTIVE_USERS_WINDOW_DAYS - 1 })
+        .toFormat('yyyy-MM-dd');
+      const coverageRows = await this.db('copilot_ingestion_log')
+        .where({ metrics_type: metricsType, entity_id: entityId })
+        .whereBetween('day', [lowerBound, to])
+        .select('day', 'components_loaded');
+      completeTeamDays = new Set(
+        coverageRows
+          .filter(row =>
+            this.hasRequiredComponents(row.components_loaded, [
+              'users',
+              'teams',
+            ]),
+          )
+          .map(row => this.normalizeDay(row.day))
+          .filter((day): day is string => Boolean(day)),
+      );
+    }
+
     let completeUnassignedDays: Set<string> | undefined;
     if (typeof costCenter !== 'string' && costCenter?.kind === 'noCostCenter') {
       const lowerBound = DateTime.fromISO(from)
@@ -1662,6 +1684,7 @@ export class DatabaseHandlerV2 {
         chatByDay,
         weeklyWindowDays: WEEKLY_ACTIVE_USERS_WINDOW_DAYS,
         monthlyWindowDays: MONTHLY_ACTIVE_USERS_WINDOW_DAYS,
+        completeTeamDays,
         completeUnassignedDays,
       }),
     );
@@ -1755,6 +1778,7 @@ export class DatabaseHandlerV2 {
       chatByDay: Map<string, Set<number>>;
       weeklyWindowDays: number;
       monthlyWindowDays: number;
+      completeTeamDays?: Set<string>;
       completeUnassignedDays?: Set<string>;
     },
   ): V2DailyTotal {
@@ -1764,19 +1788,31 @@ export class DatabaseHandlerV2 {
     }
 
     const weeklyWindowComplete =
-      !params.completeUnassignedDays ||
-      this.isRollingWindowComplete(
-        params.completeUnassignedDays,
-        day,
-        params.weeklyWindowDays,
-      );
+      (!params.completeTeamDays ||
+        this.isRollingWindowComplete(
+          params.completeTeamDays,
+          day,
+          params.weeklyWindowDays,
+        )) &&
+      (!params.completeUnassignedDays ||
+        this.isRollingWindowComplete(
+          params.completeUnassignedDays,
+          day,
+          params.weeklyWindowDays,
+        ));
     const monthlyWindowComplete =
-      !params.completeUnassignedDays ||
-      this.isRollingWindowComplete(
-        params.completeUnassignedDays,
-        day,
-        params.monthlyWindowDays,
-      );
+      (!params.completeTeamDays ||
+        this.isRollingWindowComplete(
+          params.completeTeamDays,
+          day,
+          params.monthlyWindowDays,
+        )) &&
+      (!params.completeUnassignedDays ||
+        this.isRollingWindowComplete(
+          params.completeUnassignedDays,
+          day,
+          params.monthlyWindowDays,
+        ));
 
     return {
       ...row,
