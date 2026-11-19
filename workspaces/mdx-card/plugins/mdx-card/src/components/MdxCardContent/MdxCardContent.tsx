@@ -17,7 +17,8 @@ import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import type { Entity } from '@backstage/catalog-model';
 import { MdxContent } from '../MdxContent';
 import { useMdxCardData } from '../../hooks/useMdxCardData';
-import type { MdxCardProps } from '../../types';
+import { useMdxCardSource } from '../../hooks/useMdxCardSource';
+import type { DataFetcher, MdxCardProps } from '../../types';
 
 /**
  * Props for {@link MdxCardContent}.
@@ -29,18 +30,15 @@ export type MdxCardContentProps = MdxCardProps & {
   entity?: Entity;
 };
 
-/**
- * Loads data fetcher responses and renders the MDX template without a card
- * wrapper.
- *
- * @public
- */
-export const MdxCardContent = ({
+const MdxCardBody = ({
   template,
   dataFetchers,
   components,
   entity,
-}: MdxCardContentProps) => {
+}: Omit<MdxCardContentProps, 'template' | 'templateRef' | 'dataFetchers'> & {
+  template: string;
+  dataFetchers: DataFetcher[];
+}) => {
   const { value, loading, error } = useMdxCardData({ dataFetchers, entity });
 
   if (loading) {
@@ -54,6 +52,41 @@ export const MdxCardContent = ({
       template={template}
       data={value ?? {}}
       components={components}
+    />
+  );
+};
+
+/**
+ * Resolves the template, loads data fetcher responses and renders the MDX
+ * template without a card wrapper.
+ *
+ * @public
+ */
+export const MdxCardContent = ({
+  template,
+  templateRef,
+  dataFetchers,
+  components,
+  entity,
+}: MdxCardContentProps) => {
+  const { value, loading, error } = useMdxCardSource({
+    template,
+    templateRef,
+    dataFetchers,
+  });
+
+  if (loading) {
+    return <Progress />;
+  }
+  if (error || !value) {
+    return <ResponseErrorPanel error={error ?? new Error('No template')} />;
+  }
+  return (
+    <MdxCardBody
+      template={value.template}
+      dataFetchers={value.dataFetchers}
+      components={components}
+      entity={entity}
     />
   );
 };

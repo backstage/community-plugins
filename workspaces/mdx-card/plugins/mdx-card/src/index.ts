@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { default, mdxEntityCard, mdxHomePageWidget } from './plugin';
+export {
+  default,
+  mdxCardApi,
+  mdxCardEditorPage,
+  mdxCardEditorRouteRef,
+  mdxEntityCard,
+  mdxHomePageWidget,
+} from './plugin';
+export { MdxCardClient, mdxCardApiRef } from './api';
+export type { MdxCardApi } from './api';
 export { EntityMdxCard } from './components/EntityMdxCard';
 export type { EntityMdxCardProps } from './components/EntityMdxCard';
 export { MdxCardContent } from './components/MdxCardContent';

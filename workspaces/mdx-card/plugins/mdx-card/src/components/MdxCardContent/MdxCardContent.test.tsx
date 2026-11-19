@@ -26,6 +26,7 @@ import {
 } from '@backstage/test-utils';
 import type { Entity } from '@backstage/catalog-model';
 import { MdxCardContent } from './MdxCardContent';
+import { MdxCardApi, mdxCardApiRef } from '../../api';
 
 const entity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -41,10 +42,14 @@ const jsonResponse = (body: unknown) =>
 describe('MdxCardContent', () => {
   const fetch = jest.fn();
 
+  const getTemplate = jest.fn();
+  const mdxCardApi: Partial<MdxCardApi> = { getTemplate };
+
   const renderContent = (element: JSX.Element) =>
     renderInTestApp(
       <TestApiProvider
         apis={[
+          [mdxCardApiRef, mdxCardApi],
           [discoveryApiRef, mockApis.discovery()],
           [fetchApiRef, { fetch }],
           [
@@ -60,7 +65,10 @@ describe('MdxCardContent', () => {
       </TestApiProvider>,
     );
 
-  beforeEach(() => fetch.mockReset());
+  beforeEach(() => {
+    fetch.mockReset();
+    getTemplate.mockReset();
+  });
 
   it('exposes data fetcher responses, the entity and the user to the template', async () => {
     fetch.mockResolvedValue(jsonResponse({ owner: 'team-a' }));
@@ -121,5 +129,52 @@ describe('MdxCardContent', () => {
       ),
     ).toBeInTheDocument();
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('loads the template and data fetchers referenced by templateRef', async () => {
+    getTemplate.mockResolvedValue({
+      id: 'stored',
+      template: 'Stored: {props.first.value} / {props.second.value}',
+      dataFetchers: [
+        { name: 'first', pluginId: 'proxy', apiUrl: '/stored-first' },
+        { name: 'second', pluginId: 'proxy', apiUrl: '/stored-second' },
+      ],
+    });
+    fetch.mockImplementation(async (url: string) =>
+      jsonResponse({ value: url.split('/').pop() }),
+    );
+
+    await renderContent(
+      <MdxCardContent
+        templateRef="stored"
+        dataFetchers={[
+          { name: 'second', pluginId: 'proxy', apiUrl: '/override-second' },
+        ]}
+      />,
+    );
+
+    expect(
+      await screen.findByText('Stored: stored-first / override-second'),
+    ).toBeInTheDocument();
+    expect(getTemplate).toHaveBeenCalledWith('stored');
+  });
+
+  it('prefers an inline template over templateRef', async () => {
+    await renderContent(
+      <MdxCardContent template="Inline" templateRef="stored" />,
+    );
+
+    expect(await screen.findByText('Inline')).toBeInTheDocument();
+    expect(getTemplate).not.toHaveBeenCalled();
+  });
+
+  it('reports a missing template', async () => {
+    await renderContent(<MdxCardContent />);
+
+    expect(
+      await screen.findAllByText(
+        /MDX card needs either a template or a templateRef/,
+      ),
+    ).not.toHaveLength(0);
   });
 });

@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 import {
+  createApiFactory,
   createComponentExtension,
   createPlugin,
+  createRoutableExtension,
+  createRouteRef,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { createCardExtension } from '@backstage/plugin-home-react';
+import { MdxCardClient, mdxCardApiRef } from './api';
 import type { MdxCardProps } from './types';
+
+const editorRouteRef = createRouteRef({ id: 'mdx-card:editor' });
 
 /**
  * MDX card plugin for the legacy frontend system.
@@ -28,6 +36,15 @@ import type { MdxCardProps } from './types';
  */
 export const mdxCardPlugin = createPlugin({
   id: 'mdx-card',
+  routes: { editor: editorRouteRef },
+  apis: [
+    createApiFactory({
+      api: mdxCardApiRef,
+      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new MdxCardClient({ discoveryApi, fetchApi }),
+    }),
+  ],
 });
 
 /**
@@ -59,5 +76,23 @@ export const HomePageMdxCard = mdxCardPlugin.provide(
   }),
 );
 
+/**
+ * Page for creating, editing and previewing stored MDX card templates.
+ *
+ * @public
+ */
+export const MdxCardEditorPage = mdxCardPlugin.provide(
+  createRoutableExtension({
+    name: 'MdxCardEditorPage',
+    component: () =>
+      import('./components/MdxCardEditorPage').then(
+        m => m.LegacyMdxCardEditorPage,
+      ),
+    mountPoint: editorRouteRef,
+  }),
+);
+
+export { MdxCardClient, mdxCardApiRef } from './api';
+export type { MdxCardApi } from './api';
 export type { DataFetcher, MdxCardProps, UserInformation } from './types';
 export type { EntityMdxCardProps } from './components/EntityMdxCard';

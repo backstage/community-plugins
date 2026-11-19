@@ -14,3 +14,10 @@
  * limitations under the License.
  */
 import '@testing-library/jest-dom';
+
+Range.prototype.getClientRects = () => ({
+  item: () => null,
+  length: 0,
+  [Symbol.iterator]: [][Symbol.iterator],
+});
+Range.prototype.getBoundingClientRect = () => new DOMRect();

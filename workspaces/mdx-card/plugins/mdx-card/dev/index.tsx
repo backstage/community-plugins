@@ -29,7 +29,8 @@ import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import homePlugin from '@backstage/plugin-home/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import type { Entity } from '@backstage/catalog-model';
-import mdxCardPlugin from '../src';
+import mdxCardPlugin, { mdxCardApiRef } from '../src';
+import { InMemoryMdxCardApi } from './InMemoryMdxCardApi';
 
 const entity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -79,8 +80,11 @@ const devConfig = {
       },
       {
         'home-page-widget:mdx-card': {
-          config: { title: 'MDX Card', template: homeTemplate },
+          config: { title: 'MDX Card', templateRef: 'welcome' },
         },
+      },
+      {
+        'page:mdx-card': true,
       },
       {
         'page:home': {
@@ -116,6 +120,32 @@ const catalogDevModule = createFrontendModule({
   ],
 });
 
+const mdxCardDevModule = createFrontendModule({
+  pluginId: 'mdx-card',
+  extensions: [
+    ApiBlueprint.make({
+      params: defineParams =>
+        defineParams({
+          api: mdxCardApiRef,
+          deps: {},
+          factory: () =>
+            new InMemoryMdxCardApi([
+              {
+                id: 'welcome',
+                title: 'Welcome',
+                template: homeTemplate,
+                dataFetchers: [],
+                createdBy: 'user:development/guest',
+                createdAt: new Date().toISOString(),
+                updatedBy: 'user:development/guest',
+                updatedAt: new Date().toISOString(),
+              },
+            ]),
+        }),
+    }),
+  ],
+});
+
 const app = createApp({
   features: [
     catalogPlugin,
@@ -123,6 +153,7 @@ const app = createApp({
     homePlugin,
     userSettingsPlugin,
     mdxCardPlugin,
+    mdxCardDevModule,
   ],
   advanced: {
     configLoader: async () => ({

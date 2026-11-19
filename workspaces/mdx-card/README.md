@@ -4,7 +4,9 @@ This workspace contains a plugin that renders entity page and home page cards fr
 
 ## Plugins
 
-- [mdx-card](./plugins/mdx-card/README.md): Frontend plugin that provides the entity card and home page card.
+- [mdx-card](./plugins/mdx-card/README.md): Frontend plugin that provides the entity card, home page card and template editor page.
+- [mdx-card-backend](./plugins/mdx-card-backend/README.md): Backend plugin that stores templates.
+- [mdx-card-common](./plugins/mdx-card-common/README.md): Types and permissions shared by the frontend and backend.
 
 ## Getting Started
 

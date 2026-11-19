@@ -18,23 +18,9 @@ import type {
   ProfileInfo,
 } from '@backstage/core-plugin-api';
 import type { MDXComponents } from 'mdx/types';
+import type { DataFetcher } from '@backstage-community/plugin-mdx-card-common';
 
-/**
- * Describes a backend request whose JSON response is exposed to the template.
- *
- * @public
- */
-export type DataFetcher = {
-  /** Property name the response is exposed under in the template props. */
-  name: string;
-  /** Backend plugin ID resolved through the discovery API, e.g. `catalog`. */
-  pluginId: string;
-  /**
-   * Path relative to the plugin base URL. Supports Nunjucks expressions with
-   * `entity` and `user` in scope, e.g. `/entities/by-name/{{ entity.kind }}/...`.
-   */
-  apiUrl: string;
-};
+export type { DataFetcher };
 
 /**
  * Props shared by the MDX card components.
@@ -42,8 +28,13 @@ export type DataFetcher = {
  * @public
  */
 export type MdxCardProps = {
-  /** MDX template rendered inside the card. */
-  template: string;
+  /** MDX template rendered inside the card. Takes precedence over `templateRef`. */
+  template?: string;
+  /**
+   * ID of a template stored by the MDX card backend. Its data fetchers are
+   * used too, and `dataFetchers` with the same name replace them.
+   */
+  templateRef?: string;
   /** Requests whose responses are passed to the template as props. */
   dataFetchers?: DataFetcher[];
   /** Additional components made available to the template. */

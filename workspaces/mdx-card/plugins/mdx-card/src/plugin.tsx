@@ -13,14 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import {
+  ApiBlueprint,
+  createFrontendPlugin,
+  createRouteRef,
+  discoveryApiRef,
+  fetchApiRef,
+  PageBlueprint,
+} from '@backstage/frontend-plugin-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { HomePageWidgetBlueprint } from '@backstage/plugin-home-react/alpha';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { z } from 'zod';
+import { MdxCardClient, mdxCardApiRef } from './api';
 
 const cardConfigSchema = {
   title: z.string().optional(),
-  template: z.string(),
+  template: z.string().optional(),
+  templateRef: z.string().optional(),
   dataFetchers: z
     .array(
       z.object({
@@ -33,7 +43,30 @@ const cardConfigSchema = {
 };
 
 /**
- * Entity page card that renders the MDX template from its extension config.
+ * Route to the MDX card editor page.
+ *
+ * @public
+ */
+export const mdxCardEditorRouteRef = createRouteRef();
+
+/**
+ * Client for the MDX card backend.
+ *
+ * @public
+ */
+export const mdxCardApi = ApiBlueprint.make({
+  params: defineParams =>
+    defineParams({
+      api: mdxCardApiRef,
+      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new MdxCardClient({ discoveryApi, fetchApi }),
+    }),
+});
+
+/**
+ * Entity page card that renders an MDX template from its extension config,
+ * either inline or referenced from the MDX card backend.
  *
  * @public
  */
@@ -47,6 +80,7 @@ export const mdxEntityCard = EntityCardBlueprint.makeWithOverrides({
           <m.EntityMdxCard
             title={config.title}
             template={config.template}
+            templateRef={config.templateRef}
             dataFetchers={config.dataFetchers}
           />
         )),
@@ -55,7 +89,8 @@ export const mdxEntityCard = EntityCardBlueprint.makeWithOverrides({
 });
 
 /**
- * Home page widget that renders the MDX template from its extension config.
+ * Home page widget that renders an MDX template from its extension config,
+ * either inline or referenced from the MDX card backend.
  *
  * @public
  */
@@ -69,9 +104,29 @@ export const mdxHomePageWidget = HomePageWidgetBlueprint.makeWithOverrides({
       components: () => import('./components/HomePageMdxCard'),
       componentProps: {
         template: config.template,
+        templateRef: config.templateRef,
         dataFetchers: config.dataFetchers,
       },
     });
+  },
+});
+
+/**
+ * Page for creating, editing and previewing stored MDX card templates.
+ *
+ * @public
+ */
+export const mdxCardEditorPage = PageBlueprint.make({
+  disabled: true,
+  params: {
+    path: '/mdx-cards',
+    title: 'MDX Cards',
+    icon: <DashboardCustomizeIcon fontSize="inherit" />,
+    routeRef: mdxCardEditorRouteRef,
+    loader: () =>
+      import('./components/MdxCardEditorPage').then(m => (
+        <m.MdxCardEditorPage />
+      )),
   },
 });
 
@@ -83,5 +138,6 @@ export const mdxHomePageWidget = HomePageWidgetBlueprint.makeWithOverrides({
 export default createFrontendPlugin({
   pluginId: 'mdx-card',
   info: { packageJson: () => import('../package.json') },
-  extensions: [mdxEntityCard, mdxHomePageWidget],
+  routes: { editor: mdxCardEditorRouteRef },
+  extensions: [mdxCardApi, mdxEntityCard, mdxHomePageWidget, mdxCardEditorPage],
 });

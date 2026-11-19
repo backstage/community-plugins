@@ -4,6 +4,9 @@
 
 ```ts
 import { AnchorHTMLAttributes } from 'react';
+import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { AvatarTypeMap } from '@mui/material';
 import type { BackstageUserIdentity } from '@backstage/core-plugin-api';
 import { BoxTypeMap } from '@mui/system';
@@ -14,7 +17,10 @@ import { CardContentTypeMap } from '@mui/material';
 import { CardTypeMap } from '@mui/material';
 import { ChipTypeMap } from '@mui/material';
 import { CommonProps } from '@mui/material/OverridableComponent';
+import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
+import type { DataFetcher } from '@backstage-community/plugin-mdx-card-common';
 import { DetailedHTMLProps } from 'react';
+import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { DividerTypeMap } from '@mui/material';
 import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_CALLBACK_REF_RETURN_VALUES } from 'react';
 import { Entity } from '@backstage/catalog-model';
@@ -24,18 +30,25 @@ import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { ExtendButtonBase } from '@mui/material';
 import { ExtendButtonBaseTypeMap } from '@mui/material';
 import { ExtendList } from '@mui/material';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { FilterPredicate } from '@backstage/filter-predicates';
 import { GridTypeMap } from '@mui/material';
 import { HomePageWidgetBlueprintParams } from '@backstage/plugin-home-react/alpha';
 import { HomePageWidgetData } from '@backstage/plugin-home-react/alpha';
 import { IconButtonTypeMap } from '@mui/material';
+import { IconElement } from '@backstage/frontend-plugin-api';
 import type { JsonValue } from '@backstage/types';
 import { JSX as JSX_2 } from 'react';
 import { LinkProps } from '@backstage/core-components';
 import { ListItemOwnProps } from '@mui/material';
 import { ListItemTypeMap } from '@mui/material';
 import { ListTypeMap } from '@mui/material';
+import type { MdxCardTemplate } from '@backstage-community/plugin-mdx-card-common';
+import type { MdxCardTemplateInput } from '@backstage-community/plugin-mdx-card-common';
+import type { MdxCardTemplateSummary } from '@backstage-community/plugin-mdx-card-common';
 import type { MDXComponents } from 'mdx/types';
 import { MenuItemTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
@@ -46,12 +59,14 @@ import { PaperTypeMap } from '@mui/material';
 import type { ProfileInfo } from '@backstage/core-plugin-api';
 import { ReactNode } from 'react';
 import { RefObject } from 'react';
+import { RouteRef } from '@backstage/frontend-plugin-api';
 import * as runtime from 'react/jsx-runtime';
 import { SelectProps } from '@mui/material';
 import { StackTypeMap } from '@mui/material';
 import { StructuredMetadataTable } from '@backstage/core-components';
 import { Table } from '@backstage/core-components';
 import { Theme } from '@mui/material';
+import { TranslationRefTuple } from '@backstage/frontend-plugin-api';
 import { TypographyTypeMap } from '@mui/material';
 
 // @public
@@ -151,22 +166,45 @@ export interface BarChartProps {
   yKeys: string[];
 }
 
-// @public
-export type DataFetcher = {
-  name: string;
-  pluginId: string;
-  apiUrl: string;
-};
+export { DataFetcher };
 
 // @public
 const _default: OverridableFrontendPlugin<
-  {},
+  {
+    editor: RouteRef<undefined>;
+  },
   {},
   {
+    'api:mdx-card': OverridableExtensionDefinition<{
+      kind: 'api';
+      name: undefined;
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<
+        ApiFactory<
+          unknown,
+          unknown,
+          {
+            [x: string]: unknown;
+          }
+        >,
+        'core.api.factory',
+        {}
+      >;
+      inputs: {};
+      params: <
+        TApi,
+        TImpl extends TApi,
+        TDeps extends { [name in string]: unknown },
+      >(
+        params: ApiFactory<TApi, TImpl, TDeps>,
+      ) => ExtensionBlueprintParams<ApiFactory>;
+    }>;
     'entity-card:mdx-card': OverridableExtensionDefinition<{
       config: {
         title: string | undefined;
-        template: string;
+        template: string | undefined;
+        templateRef: string | undefined;
         dataFetchers: {
           name: string;
           pluginId: string;
@@ -178,6 +216,7 @@ const _default: OverridableFrontendPlugin<
       configInput: {
         title?: string | undefined;
         template?: string | undefined;
+        templateRef?: string | undefined;
         dataFetchers?:
           | {
               name: string;
@@ -223,7 +262,8 @@ const _default: OverridableFrontendPlugin<
     'home-page-widget:mdx-card': OverridableExtensionDefinition<{
       config: {
         title: string | undefined;
-        template: string;
+        template: string | undefined;
+        templateRef: string | undefined;
         dataFetchers: {
           name: string;
           pluginId: string;
@@ -233,6 +273,7 @@ const _default: OverridableFrontendPlugin<
       configInput: {
         title?: string | undefined;
         template?: string | undefined;
+        templateRef?: string | undefined;
         dataFetchers?:
           | {
               name: string;
@@ -246,6 +287,96 @@ const _default: OverridableFrontendPlugin<
       kind: 'home-page-widget';
       name: undefined;
       params: HomePageWidgetBlueprintParams;
+    }>;
+    'page:mdx-card': OverridableExtensionDefinition<{
+      kind: 'page';
+      name: undefined;
+      config: {
+        path: string | undefined;
+        title: string | undefined;
+      };
+      configInput: {
+        path?: string | undefined;
+        title?: string | undefined;
+      };
+      output:
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<string, 'core.routing.path', {}>
+        | ExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            string,
+            'core.title',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            TranslationRefTuple<undefined>,
+            'core.titleTranslation',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            IconElement,
+            'core.icon',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {
+        pages: ExtensionInput<
+          | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+          | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+          | ConfigurableExtensionDataRef<
+              RouteRef<AnyRouteRefParams>,
+              'core.routing.ref',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              string,
+              'core.title',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              TranslationRefTuple<undefined>,
+              'core.titleTranslation',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              IconElement,
+              'core.icon',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+            internal: false;
+          }
+        >;
+      };
+      params: {
+        path: string;
+        title?: string | TranslationRefTuple<undefined>;
+        icon?: IconElement;
+        loader?: () => Promise<JSX_2.Element>;
+        routeRef?: RouteRef;
+        noHeader?: boolean;
+      };
     }>;
   }
 >;
@@ -403,6 +534,77 @@ export interface LineChartProps {
 }
 
 // @public
+export interface MdxCardApi {
+  // (undocumented)
+  createTemplate(
+    id: string,
+    input: MdxCardTemplateInput,
+  ): Promise<MdxCardTemplate>;
+  // (undocumented)
+  deleteTemplate(id: string): Promise<void>;
+  // (undocumented)
+  getTemplate(id: string): Promise<MdxCardTemplate>;
+  // (undocumented)
+  listTemplates(): Promise<MdxCardTemplateSummary[]>;
+  // (undocumented)
+  updateTemplate(
+    id: string,
+    input: MdxCardTemplateInput,
+  ): Promise<MdxCardTemplate>;
+}
+
+// @public
+export const mdxCardApi: OverridableExtensionDefinition<{
+  kind: 'api';
+  name: undefined;
+  config: {};
+  configInput: {};
+  output: ExtensionDataRef<
+    ApiFactory<
+      unknown,
+      unknown,
+      {
+        [x: string]: unknown;
+      }
+    >,
+    'core.api.factory',
+    {}
+  >;
+  inputs: {};
+  params: <
+    TApi,
+    TImpl extends TApi,
+    TDeps extends { [name in string]: unknown },
+  >(
+    params: ApiFactory<TApi, TImpl, TDeps>,
+  ) => ExtensionBlueprintParams<ApiFactory>;
+}>;
+
+// @public
+export const mdxCardApiRef: ApiRef<MdxCardApi>;
+
+// @public
+export class MdxCardClient implements MdxCardApi {
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
+  // (undocumented)
+  createTemplate(
+    id: string,
+    input: MdxCardTemplateInput,
+  ): Promise<MdxCardTemplate>;
+  // (undocumented)
+  deleteTemplate(id: string): Promise<void>;
+  // (undocumented)
+  getTemplate(id: string): Promise<MdxCardTemplate>;
+  // (undocumented)
+  listTemplates(): Promise<MdxCardTemplateSummary[]>;
+  // (undocumented)
+  updateTemplate(
+    id: string,
+    input: MdxCardTemplateInput,
+  ): Promise<MdxCardTemplate>;
+}
+
+// @public
 export const MdxCardContent: (input: MdxCardContentProps) => JSX_2.Element;
 
 // @public
@@ -411,8 +613,104 @@ export type MdxCardContentProps = MdxCardProps & {
 };
 
 // @public
+export const mdxCardEditorPage: OverridableExtensionDefinition<{
+  kind: 'page';
+  name: undefined;
+  config: {
+    path: string | undefined;
+    title: string | undefined;
+  };
+  configInput: {
+    path?: string | undefined;
+    title?: string | undefined;
+  };
+  output:
+    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+    | ExtensionDataRef<string, 'core.routing.path', {}>
+    | ExtensionDataRef<
+        RouteRef<AnyRouteRefParams>,
+        'core.routing.ref',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        string,
+        'core.title',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        TranslationRefTuple<undefined>,
+        'core.titleTranslation',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        IconElement,
+        'core.icon',
+        {
+          optional: true;
+        }
+      >;
+  inputs: {
+    pages: ExtensionInput<
+      | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+      | ConfigurableExtensionDataRef<
+          RouteRef<AnyRouteRefParams>,
+          'core.routing.ref',
+          {
+            optional: true;
+          }
+        >
+      | ConfigurableExtensionDataRef<
+          string,
+          'core.title',
+          {
+            optional: true;
+          }
+        >
+      | ConfigurableExtensionDataRef<
+          TranslationRefTuple<undefined>,
+          'core.titleTranslation',
+          {
+            optional: true;
+          }
+        >
+      | ConfigurableExtensionDataRef<
+          IconElement,
+          'core.icon',
+          {
+            optional: true;
+          }
+        >,
+      {
+        singleton: false;
+        optional: false;
+        internal: false;
+      }
+    >;
+  };
+  params: {
+    path: string;
+    title?: string | TranslationRefTuple<undefined>;
+    icon?: IconElement;
+    loader?: () => Promise<JSX_2.Element>;
+    routeRef?: RouteRef;
+    noHeader?: boolean;
+  };
+}>;
+
+// @public
+export const mdxCardEditorRouteRef: RouteRef<undefined>;
+
+// @public
 export type MdxCardProps = {
-  template: string;
+  template?: string;
+  templateRef?: string;
   dataFetchers?: DataFetcher[];
   components?: MDXComponents;
 };
@@ -431,7 +729,8 @@ export type MdxContentProps = {
 export const mdxEntityCard: OverridableExtensionDefinition<{
   config: {
     title: string | undefined;
-    template: string;
+    template: string | undefined;
+    templateRef: string | undefined;
     dataFetchers: {
       name: string;
       pluginId: string;
@@ -443,6 +742,7 @@ export const mdxEntityCard: OverridableExtensionDefinition<{
   configInput: {
     title?: string | undefined;
     template?: string | undefined;
+    templateRef?: string | undefined;
     dataFetchers?:
       | {
           name: string;
@@ -490,7 +790,8 @@ export const mdxEntityCard: OverridableExtensionDefinition<{
 export const mdxHomePageWidget: OverridableExtensionDefinition<{
   config: {
     title: string | undefined;
-    template: string;
+    template: string | undefined;
+    templateRef: string | undefined;
     dataFetchers: {
       name: string;
       pluginId: string;
@@ -500,6 +801,7 @@ export const mdxHomePageWidget: OverridableExtensionDefinition<{
   configInput: {
     title?: string | undefined;
     template?: string | undefined;
+    templateRef?: string | undefined;
     dataFetchers?:
       | {
           name: string;
