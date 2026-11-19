@@ -51,6 +51,21 @@ Here's how to get the backend up and running:
   backend.start();
 ```
 
+### Catalog Model Layer (Alpha)
+
+The Azure DevOps annotations are available as a layer for the opt-in [catalog model layer system](https://backstage.io/docs/releases/v1.50.0#catalog-model-layer-system-alpha-opt-in). To register it, add the following to your `packages/backend/src/index.ts`:
+
+```ts
+import { provideStaticCatalogModel } from '@backstage/plugin-catalog-node/alpha';
+import { azureDevOpsCatalogModelLayer } from '@backstage-community/plugin-azure-devops-common/alpha';
+
+backend.add(
+  provideStaticCatalogModel({
+    layers: [azureDevOpsCatalogModelLayer],
+  }),
+);
+```
+
 ## Links
 
 - [Frontend part of the plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/azure-devops)
