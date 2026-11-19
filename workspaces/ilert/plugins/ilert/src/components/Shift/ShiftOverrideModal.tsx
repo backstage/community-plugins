@@ -14,52 +14,20 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from '@material-ui/core/Typography';
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@backstage/ui';
 import { ilertApiRef } from '../../api';
 import { useShiftOverride } from '../../hooks/useShiftOverride';
 import { Shift } from '../../types';
-import { DateTimePicker } from '@material-ui/pickers/DateTimePicker';
-import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
-import LuxonUtils from '@date-io/luxon';
 import { useApi } from '@backstage/core-plugin-api';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  formControl: {
-    minWidth: 120,
-    width: '100%',
-  },
-  option: {
-    fontSize: 15,
-    '& > span': {
-      marginRight: 10,
-      fontSize: 18,
-    },
-  },
-  optionWrapper: {
-    display: 'flex',
-    width: '100%',
-  },
-  sourceImage: {
-    height: 22,
-    paddingRight: 4,
-  },
-  grow: {
-    flexGrow: 1,
-  },
-}));
+import styles from './ShiftOverrideModal.module.css';
 
 export const ShiftOverrideModal = ({
   scheduleId,
@@ -80,7 +48,6 @@ export const ShiftOverrideModal = ({
   ] = useShiftOverride(shift, isModalOpened);
   const ilertApi = useApi(ilertApiRef);
   const alertApi = useApi(toastApiRef);
-  const classes = useStyles();
 
   const handleClose = () => {
     setIsModalOpened(false);
@@ -114,85 +81,101 @@ export const ShiftOverrideModal = ({
     return null;
   }
 
+  const startDate = start ? new Date(start).toISOString().slice(0, 16) : '';
+  const endDate = end ? new Date(end).toISOString().slice(0, 16) : '';
+
   return (
-    <Dialog
-      open={isModalOpened}
-      onClose={handleClose}
-      aria-labelledby="override-shift-form-title"
-    >
-      <DialogTitle id="override-shift-form-title">Shift override</DialogTitle>
-      <DialogContent>
-        <MuiPickersUtilsProvider utils={LuxonUtils}>
-          <Autocomplete
-            disabled={isLoading}
-            options={users}
-            value={user}
-            classes={{
-              root: classes.formControl,
-              option: classes.option,
-            }}
-            onChange={(_event: any, newValue: any) => {
-              setUser(newValue);
-            }}
-            autoHighlight
-            getOptionLabel={a => ilertApi.getUserInitials(a)}
-            renderOption={a => (
-              <div className={classes.optionWrapper}>
-                <Typography noWrap>{ilertApi.getUserInitials(a)}</Typography>
-              </div>
-            )}
-            renderInput={params => (
-              <TextField
-                {...params}
-                label="User"
-                variant="outlined"
-                fullWidth
-                inputProps={{
-                  ...params.inputProps,
-                  autoComplete: 'new-password', // disable autocomplete and autofill
-                }}
-              />
-            )}
-          />
-          <DateTimePicker
-            label="Start"
-            inputVariant="outlined"
-            fullWidth
-            margin="normal"
-            ampm={false}
-            value={start}
-            className={classes.formControl}
-            onChange={date => {
-              setStart(date?.toISO() ?? '');
-            }}
-          />
-          <DateTimePicker
-            label="End"
-            inputVariant="outlined"
-            fullWidth
-            margin="normal"
-            ampm={false}
-            value={end}
-            className={classes.formControl}
-            onChange={date => {
-              setEnd(date?.toISO() ?? '');
-            }}
-          />
-        </MuiPickersUtilsProvider>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          disabled={isLoading}
-          onClick={handleOverride}
-          color="primary"
-          variant="contained"
-        >
-          Override
-        </Button>
-        <Button disabled={isLoading} onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <DialogTrigger>
+      <Dialog
+        isOpen={isModalOpened}
+        isDismissable
+        onOpenChange={open => {
+          if (!open) handleClose();
+        }}
+      >
+        <DialogHeader>Shift override</DialogHeader>
+        <DialogBody>
+          <div className={styles.formControl}>
+            <label htmlFor="user-select" className={styles.label}>
+              User
+            </label>
+            <select
+              id="user-select"
+              disabled={isLoading}
+              value={user?.id || ''}
+              onChange={e => {
+                const selected = users.find(
+                  u => u.id === parseInt(e.target.value, 10),
+                );
+                if (selected) {
+                  setUser(selected);
+                }
+              }}
+              className={styles.select}
+            >
+              <option value="">-- Select a user --</option>
+              {users.map(u => (
+                <option key={u.id} value={u.id}>
+                  {ilertApi.getUserInitials(u)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.formControl}>
+            <label htmlFor="start-datetime" className={styles.label}>
+              Start
+            </label>
+            <input
+              id="start-datetime"
+              type="datetime-local"
+              disabled={isLoading}
+              value={startDate}
+              onChange={e => {
+                const date = e.target.value
+                  ? new Date(e.target.value).toISOString()
+                  : '';
+                setStart(date);
+              }}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formControl}>
+            <label htmlFor="end-datetime" className={styles.label}>
+              End
+            </label>
+            <input
+              id="end-datetime"
+              type="datetime-local"
+              disabled={isLoading}
+              value={endDate}
+              onChange={e => {
+                const date = e.target.value
+                  ? new Date(e.target.value).toISOString()
+                  : '';
+                setEnd(date);
+              }}
+              className={styles.input}
+            />
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            isDisabled={isLoading}
+            onPress={handleOverride}
+            variant="primary"
+          >
+            Override
+          </Button>
+          <Button
+            isDisabled={isLoading}
+            onPress={handleClose}
+            variant="secondary"
+            slot="close"
+          >
+            Cancel
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };

@@ -14,13 +14,29 @@
  * limitations under the License.
  */
 
-import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
+/*
+ * Copyright 2022 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { SVGAttributes } from 'react';
 
 /**
  * @public
  */
-export const ILertIcon = (props: SvgIconProps) => (
-  <SvgIcon {...props}>
+export const ILertIcon = (props: SVGAttributes<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" {...props}>
     <g>
       <path
         stroke="none"
@@ -65,5 +81,5 @@ export const ILertIcon = (props: SvgIconProps) => (
         d="M 10.355469 5.945312 C 10.355469 8.613281 11.957031 11.019531 14.417969 12.050781 L 14.417969 9.917969 C 15.972656 10.925781 17.972656 10.925781 19.527344 9.917969 L 19.527344 12.050781 C 20.847656 11.496094 21.953125 10.53125 22.679688 9.300781 L 22.679688 4.105469 C 22.679688 1.847656 20.832031 0 18.574219 0 L 14.066406 0 C 11.796875 1.113281 10.355469 3.417969 10.355469 5.945312 Z M 16.972656 2.5625 C 18.84375 2.5625 20.355469 4.078125 20.355469 5.945312 C 20.355469 7.8125 18.84375 9.328125 16.972656 9.328125 C 15.105469 9.328125 13.589844 7.8125 13.589844 5.945312 C 13.59375 4.078125 15.105469 2.566406 16.972656 2.5625 Z M 16.972656 2.5625"
       />
     </g>
-  </SvgIcon>
+  </svg>
 );

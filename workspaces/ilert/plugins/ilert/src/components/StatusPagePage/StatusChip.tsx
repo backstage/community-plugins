@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Chip from '@material-ui/core/Chip';
-import { withStyles } from '@material-ui/core/styles';
 import {
   DEGRADED,
   MAJOR_OUTAGE,
@@ -23,43 +21,7 @@ import {
   StatusPage,
   UNDER_MAINTENANCE,
 } from '../../types';
-
-const OperationalChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#388E3D',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-
-const UnderMaintenanceChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#616161',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-const DegradedChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#FBC02D',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-const PartialOutageChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#F57C02',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-const MajorOutageChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#D22F2E',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
+import styles from './StatusChip.module.css';
 
 const statusPageStatusLabels = {
   [OPERATIONAL]: 'Operational',
@@ -74,16 +36,16 @@ export const StatusChip = ({ statusPage }: { statusPage: StatusPage }) => {
 
   switch (statusPage.status) {
     case OPERATIONAL:
-      return <OperationalChip label={label} size="small" />;
+      return <div className={styles.operational}>{label}</div>;
     case UNDER_MAINTENANCE:
-      return <UnderMaintenanceChip label={label} size="small" />;
+      return <div className={styles.underMaintenance}>{label}</div>;
     case DEGRADED:
-      return <DegradedChip label={label} size="small" />;
+      return <div className={styles.degraded}>{label}</div>;
     case PARTIAL_OUTAGE:
-      return <PartialOutageChip label={label} size="small" />;
+      return <div className={styles.partialOutage}>{label}</div>;
     case MAJOR_OUTAGE:
-      return <MajorOutageChip label={label} size="small" />;
+      return <div className={styles.majorOutage}>{label}</div>;
     default:
-      return <Chip label={label} size="small" />;
+      return <div>{label}</div>;
   }
 };

@@ -1,0 +1,9 @@
+.content {
+  padding: var(--bui-space-16);
+}
+
+.code {
+  border-radius: 6px;
+  margin: var(--bui-space-16) 0;
+  background: var(--bui-bg-surface-secondary);
+}

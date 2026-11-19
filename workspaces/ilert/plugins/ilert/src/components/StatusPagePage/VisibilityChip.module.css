@@ -1,0 +1,11 @@
+@layer components {
+  .private {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .public {
+    background-color: #ffb74d;
+    color: white;
+  }
+}

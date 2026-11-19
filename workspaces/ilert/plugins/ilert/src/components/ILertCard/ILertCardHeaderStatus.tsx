@@ -13,17 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Chip from '@material-ui/core/Chip';
-import { withStyles } from '@material-ui/core/styles';
 import { AlertSource } from '../../types';
-
-const MaintenanceChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#92949c',
-    color: theme.palette.common.white,
-    marginTop: 8,
-  },
-}))(Chip);
+import styles from './ILertCardHeaderStatus.module.css';
 
 export const ILertCardHeaderStatus = ({
   alertSource,
@@ -36,9 +27,9 @@ export const ILertCardHeaderStatus = ({
 
   switch (alertSource.status) {
     case 'IN_MAINTENANCE':
-      return <MaintenanceChip label="MAINTENANCE" size="small" />;
+      return <div className={styles.maintenance}>MAINTENANCE</div>;
     case 'DISABLED':
-      return <MaintenanceChip label="INACTIVE" size="small" />;
+      return <div className={styles.maintenance}>INACTIVE</div>;
     default:
       return null;
   }

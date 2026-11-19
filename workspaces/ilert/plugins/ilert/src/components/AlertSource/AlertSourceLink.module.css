@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 8px;
+}
+
+.imageContainer {
+  flex-shrink: 0;
+}
+
+.image {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+.linkContainer {
+  flex: 1;
+  min-width: 0;
+}
+
+.link {
+  line-height: 22px;
+  text-decoration: none;
+  color: inherit;
+}
