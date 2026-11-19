@@ -1732,6 +1732,7 @@ describe('GithubClientV2', () => {
         return githubResponse(
           [
             { id: 1, login: 'octocat-user-8' },
+            { id: 2 },
             { id: 0, login: 'invalid-user' },
           ],
           undefined,

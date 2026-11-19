@@ -50,23 +50,6 @@ const enterpriseOrganizationsResponseSchema = z.object({
   }),
 });
 
-// Keep object-property access for Error, array, inherited, and non-enumerable fields.
-const objectValueSchema = z.custom<Record<string, unknown>>(
-  (value): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null,
-);
-const optionalObjectValueSchema = objectValueSchema.optional().catch(undefined);
-const optionalStringValueSchema = z.string().optional().catch(undefined);
-// `typeof` includes NaN and Infinity; both still take precedence over nested status.
-const optionalNumberValueSchema = z
-  .custom<number>((value): value is number => typeof value === 'number')
-  .optional()
-  .catch(undefined);
-const optionalArrayValueSchema = z
-  .array(z.unknown())
-  .optional()
-  .catch(undefined);
-
 const positiveSafeIntegerSchema = z.int().positive();
 const safeIntegerSchema = z.int();
 
@@ -74,86 +57,86 @@ const githubUserIdSchema = z
   .union([z.number(), z.string().transform(Number)])
   .pipe(positiveSafeIntegerSchema);
 
-const githubUserSchema = objectValueSchema
-  .transform(user => ({ id: user.id, login: user.login }))
-  .pipe(z.object({ id: githubUserIdSchema, login: z.string() }));
+const githubUserSchema = z.object({
+  id: githubUserIdSchema,
+  login: z.string(),
+});
 
-const githubInstallationResponseSchema = objectValueSchema
-  .transform(response => response.id)
-  .pipe(positiveSafeIntegerSchema);
+const githubInstallationResponseSchema = z.object({
+  id: positiveSafeIntegerSchema,
+});
 
-const githubUserListSchema = z.array(z.unknown());
-
-const costCenterApiResourceSchema = objectValueSchema
-  .transform(resource => ({ type: resource.type, name: resource.name }))
-  .pipe(z.object({ type: z.string(), name: z.string() }));
+const costCenterApiResourceSchema = z.object({
+  type: z.string(),
+  name: z.string(),
+});
 const costCenterApiResourcesSchema = z.array(costCenterApiResourceSchema);
 type CostCenterApiResource = z.infer<typeof costCenterApiResourceSchema>;
 
-const costCenterListEntrySchema = objectValueSchema
-  .transform(costCenter => ({
-    id: costCenter.id,
-    name: costCenter.name,
-  }))
-  .pipe(z.object({ id: z.string(), name: z.string() }));
-const costCenterListResponseSchema = objectValueSchema
-  .transform(data => data.costCenters)
-  .pipe(z.array(z.unknown()));
-
-const costCenterDetailPageDataSchema = objectValueSchema.transform(data => {
-  const nestedCenter =
-    optionalObjectValueSchema.parse(data.costCenter) ??
-    optionalObjectValueSchema.parse(data.cost_center) ??
-    data;
-  return {
-    resources:
-      optionalArrayValueSchema.parse(data.resources) ?? nestedCenter.resources,
-    hasNextPage:
-      data.has_next_page ??
-      data.hasNextPage ??
-      nestedCenter.has_next_page ??
-      nestedCenter.hasNextPage,
-  };
+const costCenterListResponseSchema = z.object({
+  costCenters: z.unknown().optional(),
 });
 
-const costCenterOrganizationMembersPermissionSchema =
-  objectValueSchema.transform(data => {
-    const permissions = optionalObjectValueSchema.parse(data.permissions);
-    const members = optionalStringValueSchema.parse(permissions?.members);
-    return members?.toLowerCase();
-  });
+const costCenterListEntrySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
 
-const githubAuthenticationSchema = objectValueSchema
-  .transform(authentication => ({ token: authentication.token }))
-  .pipe(z.object({ token: z.string() }));
+const costCenterDetailObjectSchema = z.object({
+  resources: z.unknown().optional(),
+  has_next_page: z.unknown().optional(),
+  hasNextPage: z.unknown().optional(),
+});
+const optionalCostCenterDetailObjectSchema = costCenterDetailObjectSchema
+  .optional()
+  .catch(undefined);
+const costCenterDetailPageSchema = z.object({
+  resources: z.unknown().optional(),
+  costCenter: optionalCostCenterDetailObjectSchema,
+  cost_center: optionalCostCenterDetailObjectSchema,
+  has_next_page: z.unknown().optional(),
+  hasNextPage: z.unknown().optional(),
+});
+
+const costCenterOrganizationInstallationSchema = z.object({
+  permissions: z
+    .object({ members: z.string().optional().catch(undefined) })
+    .optional()
+    .catch(undefined),
+});
+
+const githubAuthenticationSchema = z.object({ token: z.string() });
 
 const enterpriseTeamIdSchema = z
   .union([z.number(), z.string().transform(Number)])
   .pipe(safeIntegerSchema);
 
-const githubHttpStatusSchema = optionalObjectValueSchema.transform(error => {
-  const status = optionalNumberValueSchema.parse(error?.status);
-  return (
-    status ??
-    optionalNumberValueSchema.parse(
-      optionalObjectValueSchema.parse(error?.response)?.status,
-    )
-  );
-});
+const optionalErrorStringSchema = z.string().optional().catch(undefined);
+const optionalGithubStatusSchema = z
+  .union([z.number(), z.nan(), z.literal(Infinity), z.literal(-Infinity)])
+  .optional()
+  .catch(undefined);
 
-const githubRateLimitErrorSchema = optionalObjectValueSchema.transform(
-  error => {
-    const headers = optionalObjectValueSchema.parse(
-      optionalObjectValueSchema.parse(error?.response)?.headers,
-    );
-    return {
-      retryAfter: optionalStringValueSchema.parse(headers?.['retry-after']),
-      remaining: optionalStringValueSchema.parse(
-        headers?.['x-ratelimit-remaining'],
-      ),
-      message: optionalStringValueSchema.parse(error?.message) ?? '',
-    };
-  },
+// Zod handles Error and inherited fields; normalize arrays to preserve legacy reads.
+const githubErrorMetadataSchema = z.preprocess(
+  value => (Array.isArray(value) ? Object.create(value) : value),
+  z.object({
+    message: optionalErrorStringSchema,
+    status: optionalGithubStatusSchema,
+    response: z
+      .object({
+        status: optionalGithubStatusSchema,
+        headers: z
+          .object({
+            'retry-after': optionalErrorStringSchema,
+            'x-ratelimit-remaining': optionalErrorStringSchema,
+          })
+          .optional()
+          .catch(undefined),
+      })
+      .optional()
+      .catch(undefined),
+  }),
 );
 
 // GitHub serves user content from this domain on both github.com and GHE.com.
@@ -247,12 +230,23 @@ function hasNextLink(headers: { link?: string; Link?: string }): boolean {
 }
 
 function getHttpStatus(error: unknown): number | undefined {
-  return githubHttpStatusSchema.parse(error);
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success) {
+    return undefined;
+  }
+  return parsedError.data.status ?? parsedError.data.response?.status;
 }
 
 function isRateLimitError(error: unknown): boolean {
-  const { retryAfter, remaining, message } =
-    githubRateLimitErrorSchema.parse(error);
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success) {
+    return false;
+  }
+
+  const headers = parsedError.data.response?.headers;
+  const retryAfter = headers?.['retry-after'];
+  const remaining = headers?.['x-ratelimit-remaining'];
+  const message = parsedError.data.message ?? '';
   return (
     (retryAfter !== undefined && Number(retryAfter) > 0) ||
     remaining === '0' ||
@@ -290,7 +284,7 @@ function getInstallationId(data: unknown): number {
   if (!parsedResponse.success) {
     throw new Error('Unexpected GitHub App installation response.');
   }
-  return parsedResponse.data;
+  return parsedResponse.data.id;
 }
 
 function toGithubUser(value: unknown): GithubUser | undefined {
@@ -312,21 +306,29 @@ function getCostCenterDetailPage(data: unknown): {
   resources: CostCenterApiResource[];
   hasNextPage: boolean;
 } {
-  const parsedPage = costCenterDetailPageDataSchema.safeParse(data);
+  const parsedPage = costCenterDetailPageSchema.safeParse(data);
   if (!parsedPage.success) {
     throw new Error('Unexpected GitHub cost center response.');
   }
 
-  const resources = costCenterApiResourcesSchema.safeParse(
-    parsedPage.data.resources,
-  );
-  if (!resources.success) {
+  const page = parsedPage.data;
+  const nestedCenter = page.costCenter ?? page.cost_center ?? page;
+  const resources = Array.isArray(page.resources)
+    ? page.resources
+    : nestedCenter.resources;
+  const parsedResources = costCenterApiResourcesSchema.safeParse(resources);
+  if (!parsedResources.success) {
     throw new Error('Unexpected GitHub cost center resources response.');
   }
 
+  const hasNextPage =
+    page.has_next_page ??
+    page.hasNextPage ??
+    nestedCenter.has_next_page ??
+    nestedCenter.hasNextPage;
   return {
-    resources: resources.data,
-    hasNextPage: parsedPage.data.hasNextPage === true,
+    resources: parsedResources.data,
+    hasNextPage: hasNextPage === true,
   };
 }
 
@@ -572,8 +574,9 @@ export class GithubClientV2 {
         const installationId = getInstallationId(data);
         return {
           octokit: this.createInstallationOctokit(authStrategy, installationId),
-          membersPermission:
-            costCenterOrganizationMembersPermissionSchema.parse(data),
+          membersPermission: costCenterOrganizationInstallationSchema
+            .parse(data)
+            .permissions?.members?.toLowerCase(),
         };
       })();
       this.costCenterOrganizationOctokits.set(cacheKey, octokitPromise);
@@ -817,11 +820,10 @@ export class GithubClientV2 {
       }
 
       const data: unknown = await response.json();
-      const parsedMembers = githubUserListSchema.safeParse(data);
-      if (!parsedMembers.success) {
+      if (!Array.isArray(data)) {
         throw new Error('Unexpected GitHub user list response.');
       }
-      members.push(...toGithubUsers(parsedMembers.data));
+      members.push(...toGithubUsers(data));
       hasNextPage = hasNextLink({
         link: response.headers.get('link') ?? undefined,
       });
@@ -854,17 +856,23 @@ export class GithubClientV2 {
     const parsedCostCenters = costCenterListResponseSchema.safeParse(
       listResponse.data,
     );
-    if (!parsedCostCenters.success) {
+    if (
+      !parsedCostCenters.success ||
+      !Array.isArray(parsedCostCenters.data.costCenters)
+    ) {
       throw new Error('Unexpected GitHub cost center list response.');
     }
 
-    const listedCostCenters = parsedCostCenters.data.map(costCenter => {
-      const parsedCostCenter = costCenterListEntrySchema.safeParse(costCenter);
-      if (!parsedCostCenter.success) {
-        throw new Error('Unexpected GitHub cost center entry.');
-      }
-      return parsedCostCenter.data;
-    });
+    const listedCostCenters = parsedCostCenters.data.costCenters.map(
+      costCenter => {
+        const parsedCostCenter =
+          costCenterListEntrySchema.safeParse(costCenter);
+        if (!parsedCostCenter.success) {
+          throw new Error('Unexpected GitHub cost center entry.');
+        }
+        return parsedCostCenter.data;
+      },
+    );
 
     const warnings: string[] = [];
     let complete = true;
