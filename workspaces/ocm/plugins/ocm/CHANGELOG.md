@@ -1,5 +1,14 @@
 # @backstage-community/plugin-ocm
 
+## 5.22.1
+
+### Patch Changes
+
+- af746fa: Updated dependency `@openapitools/openapi-generator-cli` to `2.42.2`.
+  Updated dependency `@testing-library/user-event` to `14.6.10`.
+- bc5be3f: Updated dependency `@testing-library/user-event` to `14.6.9`.
+  - @backstage-community/plugin-ocm-common@5.22.1
+
 ## 5.22.0
 
 ### Minor Changes
