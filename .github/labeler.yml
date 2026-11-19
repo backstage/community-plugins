@@ -266,7 +266,7 @@ workspace/rollbar:
   - "Workspace\\s*rollbar"
 
 workspace/scaffolder:
-  - "Workspace\\s*scaffolder"
+  - "Workspace\\s*scaffolder(?![\\w-])"
 
 workspace/scaffolder-relation-processor:
   - "Workspace\\s*scaffolder-relation-processor"
