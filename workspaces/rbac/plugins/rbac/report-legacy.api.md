@@ -82,8 +82,11 @@ export type RBACAPI = {
     conditionalPermission: RoleBasedConditions,
   ) => Promise<RoleError | Response>;
   getRoleConditions: (
-    roleRef?: string,
+    roleRef: string,
   ) => Promise<RoleConditionalPolicyDecision[] | Response>;
+  getAllRoleConditions: () => Promise<
+    RoleConditionalPolicyDecision[] | Response
+  >;
   updateConditionalPolicies: (
     conditionId: number,
     data: RoleBasedConditions,

@@ -141,6 +141,44 @@ test.describe('RBAC plugin', () => {
     await verifyCellsInTable(cellIdentifier, page);
   });
 
+  test('Permissions by plugin matrix lists the roles and narrows to a checked one', async () => {
+    await page
+      .getByRole('tab', {
+        name: translations.permissionsMatrix.tabs.permissionsByPlugin,
+      })
+      .click();
+    await common.verifyHeading(translations.permissionsMatrix.title);
+    await expect(page.getByRole('table')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: e2eRoles.guests }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: e2eRoles.rbacAdmin }),
+    ).toBeVisible();
+    await runAccessibilityTests(page);
+
+    // The checkbox input is visually hidden, so click its label.
+    const guestsCheckbox = page
+      .locator('label')
+      .filter({ hasText: e2eRoles.guestsName })
+      .first();
+    await guestsCheckbox.click();
+    await expect(
+      page.getByRole('link', { name: e2eRoles.rbacAdmin }),
+    ).toBeHidden();
+    await expect(
+      page.getByRole('link', { name: e2eRoles.guests }),
+    ).toBeVisible();
+    await guestsCheckbox.click();
+    await expect(
+      page.getByRole('link', { name: e2eRoles.rbacAdmin }),
+    ).toBeVisible();
+
+    await page
+      .getByRole('tab', { name: translations.permissionsMatrix.tabs.roles })
+      .click();
+  });
+
   test('View details of role', async ({}, testInfo) => {
     // Skipping Japanese tests due to https://issues.redhat.com/browse/RHDHBUGS-2598
     test.fixme(testInfo.project.name === 'ja', 'Skip Japanese test');

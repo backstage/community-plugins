@@ -117,10 +117,13 @@ export type RBACAPI = {
   createConditionalPermission: (
     conditionalPermission: RoleBasedConditions,
   ) => Promise<RoleError | Response>;
-  /** Lists the conditional policies of `roleRef`, or of all roles when omitted. */
   getRoleConditions: (
-    roleRef?: string,
+    roleRef: string,
   ) => Promise<RoleConditionalPolicyDecision[] | Response>;
+  /** Lists the conditional policies of every role. */
+  getAllRoleConditions: () => Promise<
+    RoleConditionalPolicyDecision[] | Response
+  >;
   updateConditionalPolicies: (
     conditionId: number,
     data: RoleBasedConditions,
@@ -582,10 +585,17 @@ export class RBACBackendClient implements RBACAPI {
     return jsonResponse;
   }
 
-  async getRoleConditions(roleRef?: string) {
+  async getRoleConditions(roleRef: string) {
+    return this.fetchRoleConditions(`?roleEntityRef=${roleRef}`);
+  }
+
+  async getAllRoleConditions() {
+    return this.fetchRoleConditions('');
+  }
+
+  private async fetchRoleConditions(query: string) {
     const { token: idToken } = await this.identityApi.getCredentials();
     const backendUrl = this.configApi.getString('backend.baseUrl');
-    const query = roleRef === undefined ? '' : `?roleEntityRef=${roleRef}`;
     const jsonResponse = await fetch(
       `${backendUrl}/api/permission/roles/conditions${query}`,
       {

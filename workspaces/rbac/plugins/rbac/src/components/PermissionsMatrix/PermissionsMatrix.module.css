@@ -56,7 +56,7 @@
   gap: var(--bui-space-1);
 }
 
-/* Horizontal scroll for many permission columns; the role column stays visible. */
+/* The matrix scrolls both ways; the role column and the header rows stick. */
 .scroll {
   overflow: auto;
   max-height: 70vh;
@@ -69,6 +69,9 @@
   border-spacing: 0;
   min-width: 100%;
   font-size: var(--bui-font-size-2);
+  /* The plugin row needs a fixed height for the permission row to stick
+     directly below it. */
+  --matrix-plugin-row-height: 2.5rem;
 }
 
 .table th,
@@ -83,6 +86,17 @@
   font-weight: var(--bui-font-weight-bold);
   text-align: center;
   vertical-align: bottom;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table thead tr:first-child th {
+  height: var(--matrix-plugin-row-height);
+}
+
+.table thead tr:nth-child(2) th {
+  top: var(--matrix-plugin-row-height);
 }
 
 .pluginHeader {
@@ -102,7 +116,7 @@
 }
 
 .table thead .roleCell {
-  z-index: 2;
+  z-index: 3;
   text-align: left;
 }
 

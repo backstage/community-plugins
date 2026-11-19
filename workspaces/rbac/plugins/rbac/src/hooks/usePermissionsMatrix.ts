@@ -60,7 +60,7 @@ export const usePermissionsMatrix = (): {
       rbacApi.getRoles(),
       rbacApi.getPolicies(),
       rbacApi.listPermissions(),
-      rbacApi.getRoleConditions(),
+      rbacApi.getAllRoleConditions(),
     ]);
     return buildPermissionsMatrix({
       roles: unwrap(roles, t('errors.fetchRoles')),

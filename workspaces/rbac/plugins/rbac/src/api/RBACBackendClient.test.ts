@@ -937,8 +937,8 @@ describe('RBACBackendClient', () => {
     });
   });
 
-  describe('getRoleConditions', () => {
-    it('should fetch the conditions of all roles in a single request and return error responses as-is', async () => {
+  describe('getRoleConditions / getAllRoleConditions', () => {
+    it('should fetch the conditions of one role or of all roles and return error responses as-is', async () => {
       const conditions = [
         {
           id: 1,
@@ -963,7 +963,7 @@ describe('RBACBackendClient', () => {
         ),
       );
 
-      await expect(rbacApi.getRoleConditions()).resolves.toEqual(conditions);
+      await expect(rbacApi.getAllRoleConditions()).resolves.toEqual(conditions);
       expect(lastRequest.url).toBe(
         'https://localhost:7007/api/permission/roles/conditions',
       );
@@ -982,9 +982,12 @@ describe('RBACBackendClient', () => {
           (_req, res, ctx) => res(ctx.status(403)),
         ),
       );
-      await expect(rbacApi.getRoleConditions()).resolves.toEqual(
+      await expect(rbacApi.getAllRoleConditions()).resolves.toEqual(
         expect.objectContaining({ status: 403 }),
       );
+      await expect(
+        rbacApi.getRoleConditions('role:default/one'),
+      ).resolves.toEqual(expect.objectContaining({ status: 403 }));
     });
   });
 });

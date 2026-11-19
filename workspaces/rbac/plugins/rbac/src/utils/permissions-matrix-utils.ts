@@ -163,8 +163,11 @@ const groupByRole = <T>(
 
 /**
  * Resolves the cell for a single permission. Conditional policies take
- * precedence (matching the backend default), then a policy targeting the
- * permission by name, then one targeting its resource type. The name-first
+ * precedence, which matches the backend's default
+ * `policyDecisionPrecedence: conditional`; the frontend cannot read that
+ * setting, so under the `basic` precedence a cell shown as Conditional is
+ * actually enforced from the basic policy. Then a policy targeting the
+ * permission by name wins over one targeting its resource type. The name-first
  * order mirrors the backend: when a named policy exists, enforcement uses the
  * permission name as the object and the resource-type policy is not consulted
  * (rbac-backend `permission-policy.ts`, "higher priority for permission
@@ -246,6 +249,20 @@ export const buildPermissionsMatrix = ({
 export const getMatrixCell = (row: MatrixRow, columnId: string): MatrixCell =>
   row.cells.get(columnId) ?? NO_POLICY;
 
+/** The rows whose role name contains `roleSearch`, case insensitive. */
+export const searchMatrixRows = (
+  rows: MatrixRow[],
+  roleSearch: string,
+  locale = 'en',
+): MatrixRow[] => {
+  const search = roleSearch.trim().toLocaleUpperCase(locale);
+  return search
+    ? rows.filter(row =>
+        row.roleName.toLocaleUpperCase(locale).includes(search),
+      )
+    : rows;
+};
+
 /**
  * Narrows the matrix to roles whose name contains `roleSearch` (case
  * insensitive), to the roles listed in `roleNames` when it is non-empty, and,
@@ -268,16 +285,13 @@ export const filterPermissionsMatrix = (
   },
   locale = 'en',
 ): PermissionsMatrix => {
-  const search = roleSearch.trim().toLocaleUpperCase(locale);
   const selectedRoles = roleNames?.length ? new Set(roleNames) : undefined;
 
   let plugins = pluginId
     ? matrix.plugins.filter(plugin => plugin.pluginId === pluginId)
     : matrix.plugins;
-  let rows = matrix.rows.filter(
-    row =>
-      (!selectedRoles || selectedRoles.has(row.roleName)) &&
-      (!search || row.roleName.toLocaleUpperCase(locale).includes(search)),
+  let rows = searchMatrixRows(matrix.rows, roleSearch, locale).filter(
+    row => !selectedRoles || selectedRoles.has(row.roleName),
   );
 
   if (decision) {

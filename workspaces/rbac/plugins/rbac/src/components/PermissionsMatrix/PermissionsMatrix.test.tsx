@@ -72,7 +72,7 @@ const createRbacApi = (
       ],
     },
   ]),
-  getRoleConditions: jest.fn().mockResolvedValue([
+  getAllRoleConditions: jest.fn().mockResolvedValue([
     {
       id: 1,
       result: AuthorizeResult.CONDITIONAL,
@@ -103,7 +103,7 @@ describe('PermissionsMatrix', () => {
     await renderMatrix(rbacApi);
 
     const table = await screen.findByRole('table');
-    expect(rbacApi.getRoleConditions).toHaveBeenCalledTimes(1);
+    expect(rbacApi.getAllRoleConditions).toHaveBeenCalledTimes(1);
 
     expect(
       within(table).getByRole('columnheader', { name: 'catalog' }),
@@ -150,6 +150,13 @@ describe('PermissionsMatrix', () => {
     expect(
       screen.getByRole('link', { name: 'role:default/admins' }),
     ).toBeInTheDocument();
+    // The sidebar checkbox list follows the same search as the table.
+    expect(
+      screen.queryByRole('checkbox', { name: 'developers' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', { name: 'admins' }),
+    ).toBeInTheDocument();
 
     await userEvent.type(
       screen.getByRole('searchbox', { name: 'Filter roles' }),
@@ -179,10 +186,9 @@ describe('PermissionsMatrix', () => {
     await renderMatrix(createRbacApi());
     await screen.findByRole('table');
 
-    const developers = screen.getByRole('checkbox', {
-      name: 'role:default/developers',
-    });
-    // The sidebar shows the short role name; the full ref stays in the tooltip.
+    // The short role name is both the visible label and the accessible name
+    // (WCAG 2.5.3); the full ref stays in the tooltip.
+    const developers = screen.getByRole('checkbox', { name: 'developers' });
     expect(screen.getByTitle('role:default/developers')).toHaveTextContent(
       'developers',
     );
@@ -206,6 +212,10 @@ describe('PermissionsMatrix', () => {
     await screen.findByRole('table');
 
     await userEvent.click(screen.getByRole('button', { name: /policy/i }));
+    // 'Not set' is deliberately not offered as a policy filter.
+    expect(
+      screen.queryByRole('option', { name: 'Not set' }),
+    ).not.toBeInTheDocument();
     await userEvent.click(await screen.findByRole('option', { name: 'Deny' }));
 
     // only developers denies something, and only on the scaffolder permission
@@ -260,7 +270,7 @@ describe('PermissionsMatrix', () => {
   it('shows an error panel when a request fails', async () => {
     await renderMatrix(
       createRbacApi({
-        getRoleConditions: jest
+        getAllRoleConditions: jest
           .fn()
           .mockResolvedValue({ status: 403, statusText: 'Forbidden' }),
       }),

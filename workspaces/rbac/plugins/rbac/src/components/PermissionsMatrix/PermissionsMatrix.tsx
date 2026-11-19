@@ -40,6 +40,7 @@ import {
   MatrixDecision,
   MatrixPluginGroup,
   MatrixRow,
+  searchMatrixRows,
 } from '../../utils/permissions-matrix-utils';
 import { getRoleOverviewPath } from '../../utils/rbac-utils';
 import {
@@ -56,12 +57,9 @@ import styles from './PermissionsMatrix.module.css';
 
 const ALL_PLUGINS = 'all';
 const ALL_POLICIES = 'all';
-const DECISION_FILTERS: MatrixDecision[] = [
-  'allow',
-  'deny',
-  'conditional',
-  'none',
-];
+// 'none' is not offered: with no policy on most permissions it matches nearly
+// every column, so the option would look broken until roles are checked.
+const DECISION_FILTERS: MatrixDecision[] = ['allow', 'deny', 'conditional'];
 
 const ViewOnlyRoleIndicator = ({ source }: { source: string }) => {
   const { t } = useTranslation();
@@ -195,6 +193,13 @@ export const PermissionsMatrix = () => {
     [labels, t],
   );
 
+  // The checkbox list follows the same search as the table, so the two
+  // controls agree about which roles are in play.
+  const sidebarRows = useMemo(
+    () => searchMatrixRows(matrix?.rows ?? [], deferredRoleSearch, locale),
+    [matrix, deferredRoleSearch, locale],
+  );
+
   const filtered = useMemo(
     () =>
       matrix &&
@@ -273,12 +278,8 @@ export const PermissionsMatrix = () => {
             onChange={setSelectedRoles}
             className={styles.roleList}
           >
-            {matrix.rows.map(row => (
-              <Checkbox
-                key={row.roleName}
-                value={row.roleName}
-                aria-label={row.roleName}
-              >
+            {sidebarRows.map(row => (
+              <Checkbox key={row.roleName} value={row.roleName}>
                 <Text as="span" title={row.roleName}>
                   {getShortRoleName(row.roleName)}
                 </Text>
