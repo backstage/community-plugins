@@ -128,7 +128,7 @@ export const GithubDeploymentsTable = (props: {
     () =>
       deployments.map(deployment => ({
         ...deployment,
-        id: `${deployment.environment}-${deployment.updatedAt}-${deployment.creator.login}`,
+        id: `${deployment.environment}-${deployment.id}-${deployment.creator.login}`,
       })),
     [deployments],
   );

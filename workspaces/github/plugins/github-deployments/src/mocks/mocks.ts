@@ -43,6 +43,7 @@ export const responseStub: QueryResponse = {
           state: 'active',
           environment: 'prd',
           updatedAt: '2021-03-25T12:08:45Z',
+          id: 'github-deployments-id-1',
           commit: {
             commitUrl: 'https://exampleapi.com/123456789',
             abbreviatedOid: '12345',
@@ -62,6 +63,7 @@ export const responseStub: QueryResponse = {
           state: 'pending',
           environment: 'lab',
           updatedAt: '2021-03-25T12:08:47Z',
+          id: 'github-deployments-id-2',
           commit: {
             commitUrl: 'https://exampleapi.com/543212345',
             abbreviatedOid: '54321',
@@ -90,6 +92,7 @@ export const refreshedResponseStub: QueryResponse = {
           state: 'active',
           environment: 'prd',
           updatedAt: '2021-03-25T12:08:45Z',
+          id: 'github-deployments-id-1',
           commit: {
             commitUrl: 'https://exampleapi.com/123456789',
             abbreviatedOid: '12345',
@@ -109,6 +112,7 @@ export const refreshedResponseStub: QueryResponse = {
           state: 'failure',
           environment: 'lab',
           updatedAt: '2021-03-25T12:09:47Z',
+          id: 'github-deployments-id-2',
           commit: {
             commitUrl: 'https://exampleapi.com/543212345',
             abbreviatedOid: '54321',

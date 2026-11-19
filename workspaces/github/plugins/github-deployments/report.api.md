@@ -22,6 +22,7 @@ export type GithubDeployment = {
   environment: string;
   state: string;
   updatedAt: string;
+  id: string;
   commit: {
     abbreviatedOid: string;
     commitUrl: string;
