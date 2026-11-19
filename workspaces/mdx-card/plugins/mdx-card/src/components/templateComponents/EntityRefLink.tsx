@@ -16,7 +16,11 @@
 import { Fragment } from 'react';
 import { Link } from '@backstage/ui';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import type { CompoundEntityRef, Entity } from '@backstage/catalog-model';
+import {
+  CompoundEntityRef,
+  Entity,
+  parseEntityRef,
+} from '@backstage/catalog-model';
 import {
   entityRouteParams,
   entityRouteRef,
@@ -25,12 +29,27 @@ import {
 
 type EntityReference = Entity | CompoundEntityRef | string;
 
+type RefDefaults = {
+  /** Kind used when a string ref has no kind, e.g. `group` for `team-a`. */
+  defaultKind?: string;
+  /** Namespace used when a string ref has no namespace. Defaults to `default`. */
+  defaultNamespace?: string;
+};
+
+const resolveRef = (
+  entityRef: EntityReference,
+  { defaultKind, defaultNamespace }: RefDefaults,
+) =>
+  typeof entityRef === 'string'
+    ? parseEntityRef(entityRef, { defaultKind, defaultNamespace })
+    : entityRef;
+
 /**
  * Props for {@link EntityRefLink}.
  *
  * @public
  */
-export type EntityRefLinkProps = {
+export type EntityRefLinkProps = RefDefaults & {
   entityRef: EntityReference;
   /** Text shown instead of the entity's display name. */
   title?: string;
@@ -41,11 +60,16 @@ export type EntityRefLinkProps = {
  *
  * @public
  */
-export const EntityRefLink = ({ entityRef, title }: EntityRefLinkProps) => {
+export const EntityRefLink = ({
+  entityRef,
+  title,
+  ...defaults
+}: EntityRefLinkProps) => {
   const entityRoute = useRouteRef(entityRouteRef);
-  const { primaryTitle } = useEntityPresentation(entityRef);
+  const ref = resolveRef(entityRef, defaults);
+  const { primaryTitle } = useEntityPresentation(ref);
   return (
-    <Link href={entityRoute(entityRouteParams(entityRef))}>
+    <Link href={entityRoute(entityRouteParams(ref))}>
       {title ?? primaryTitle}
     </Link>
   );
@@ -56,7 +80,7 @@ export const EntityRefLink = ({ entityRef, title }: EntityRefLinkProps) => {
  *
  * @public
  */
-export type EntityRefLinksProps = {
+export type EntityRefLinksProps = RefDefaults & {
   entityRefs: EntityReference[];
 };
 
@@ -65,12 +89,15 @@ export type EntityRefLinksProps = {
  *
  * @public
  */
-export const EntityRefLinks = ({ entityRefs }: EntityRefLinksProps) => (
+export const EntityRefLinks = ({
+  entityRefs,
+  ...defaults
+}: EntityRefLinksProps) => (
   <>
     {entityRefs.map((entityRef, index) => (
       <Fragment key={index}>
         {index > 0 && ', '}
-        <EntityRefLink entityRef={entityRef} />
+        <EntityRefLink entityRef={entityRef} {...defaults} />
       </Fragment>
     ))}
   </>

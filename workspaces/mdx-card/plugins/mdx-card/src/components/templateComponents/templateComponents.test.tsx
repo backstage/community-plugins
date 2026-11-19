@@ -62,7 +62,8 @@ describe('template components', () => {
     await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApiMock()]]}>
         <EntityRefLinks
-          entityRefs={['group:default/team-a', 'component:default/service-a']}
+          entityRefs={['team-a', 'component:default/service-a']}
+          defaultKind="group"
         />
       </TestApiProvider>,
       {

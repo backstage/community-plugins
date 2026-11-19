@@ -27,13 +27,33 @@ app:
   extensions:
     - entity-card:mdx-card:
         config:
-          title: Ownership
+          title: Entity summary
+          filter: kind:component
           dataFetchers:
-            - name: owner
+            - name: details
               pluginId: catalog
               apiUrl: /entities/by-name/{{ entity.kind }}/{{ entity.metadata.namespace }}/{{ entity.metadata.name }}
+            - name: sameOwner
+              pluginId: catalog
+              apiUrl: /entities/by-query?filter=spec.owner={{ entity.spec.owner }}&limit=10
           template: |
-            This {props.entity.kind} is owned by <EntityRefLinks entityRefs={[props.entity.spec.owner]} />.
+            **{props.details.metadata.name}** is a {props.details.spec.type} owned by <EntityRefLink entityRef={props.details.spec.owner} defaultKind="group" />.
+
+            <MetadataTable
+              metadata={{
+                lifecycle: props.details.spec.lifecycle,
+                system: props.details.spec.system,
+                relations: props.details.relations.length,
+              }}
+            />
+
+            #### Owned by {props.details.spec.owner}
+
+            <DataTable
+              label="Entities with the same owner"
+              columns={[{ title: 'Kind', field: 'kind' }, { title: 'Name', field: 'name' }]}
+              data={props.sameOwner.items.map(e => ({ kind: e.kind, name: e.metadata.name }))}
+            />
     - home-page-widget:mdx-card:
         config:
           title: Latest entities
@@ -48,7 +68,7 @@ app:
             />
 ```
 
-The entity card also accepts the standard `filter` and `type` options from `EntityCardBlueprint`.
+The entity card accepts the standard `filter` and `type` options from `EntityCardBlueprint`. The example above produces the card in the first screenshot.
 
 To add more than one MDX card, create your own extensions using the exported components:
 
@@ -83,7 +103,7 @@ import { EntityMdxCard } from '@backstage-community/plugin-mdx-card/legacy';
 <Grid item md={6}>
   <EntityMdxCard
     title="Ownership"
-    template="This {props.entity.kind} is owned by {props.entity.spec.owner}."
+    template={`This {props.entity.kind} is owned by <EntityRefLink entityRef={props.entity.spec.owner} defaultKind="group" />.`}
   />
 </Grid>;
 ```
@@ -157,6 +177,59 @@ Templates are compiled with `@mdx-js/mdx` and support [GitHub Flavored Markdown]
 | `props.entity`        | The current entity. Only available on entity pages                                                   |
 | `props.<fetcherName>` | The JSON response of the data fetcher with that `name`                                               |
 
+### Writing templates
+
+Templates are Markdown with JSX. Plain text and Markdown work as usual, and JSX expressions in `{}` can use `props`. Use `Flex` and `Grid` to lay out components, and `Text` for styled text:
+
+```mdx
+<Flex direction="column" gap="3">
+  <Flex gap="2" align="center">
+    <Text variant="title-small">{props.entity.metadata.title ?? props.entity.metadata.name}</Text>
+    <Badge>{props.entity.spec.lifecycle}</Badge>
+  </Flex>
+
+  <Grid.Root columns="2" gap="4">
+    <Flex direction="column" gap="1">
+      <Text color="secondary">Owner</Text>
+      <EntityRefLink entityRef={props.entity.spec.owner} defaultKind="group" />
+    </Flex>
+    <Flex direction="column" gap="1">
+      <Text color="secondary">Tags</Text>
+      <Text>{(props.entity.metadata.tags ?? []).join(', ') || 'None'}</Text>
+    </Flex>
+  </Grid.Root>
+</Flex>
+```
+
+If a template fails to compile or throws while rendering, the card shows the error message instead of its content. Guard against missing data with optional chaining and defaults, for example `props.entity.metadata.tags ?? []`.
+
+### Available components
+
+Templates can use these components from [Backstage UI](https://ui.backstage.io/) (`@backstage/ui`). See its documentation for their props:
+
+| Group    | Components                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Layout   | `Box`, `Container`, `Flex`, `Grid` (as `Grid.Root` and `Grid.Item`), `Card`, `CardHeader`, `CardBody`, `CardFooter` |
+| Content  | `Text`, `Link`, `Avatar`, `Badge`, `Tag`, `TagGroup`, `Tooltip`, `TooltipTrigger`, `Alert`, `Skeleton`              |
+| Actions  | `Button`, `ButtonIcon`, `ButtonLink`                                                                                |
+| Grouping | `Accordion`, `AccordionGroup`, `AccordionTrigger`, `AccordionPanel`, `Tabs`, `TabList`, `Tab`, `TabPanel`           |
+| Lists    | `List`, `ListRow`, `TableRoot`, `TableHeader`, `TableBody`, `Column`, `Row`, `Cell`, `CellText`, `CellProfile`      |
+
+And these components from this plugin:
+
+| Component                                           | Description                                                                                                                                                  |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DataTable`                                         | Table from `columns` (`{ title, field }` items) and `data` (an array of objects)                                                                             |
+| `MetadataTable`                                     | Key and value list from a `metadata` object                                                                                                                  |
+| `EntityRefLink`                                     | Link to the entity page of `entityRef`, showing the entity's display name or `title`. Set `defaultKind` for refs without a kind, such as `spec.owner` values |
+| `EntityRefLinks`                                    | Comma separated links for an `entityRefs` array. Accepts `defaultKind` too                                                                                   |
+| `AreaChart`, `BarChart`, `LineChart`, `PieChart`    | Charts built on [Recharts](https://recharts.org/)                                                                                                            |
+| `ApiFetcher`, `ApiFetcherContent`, `ApiFetcherData` | Fetch data while the template renders                                                                                                                        |
+
+`BarChart`, `LineChart` and `AreaChart` take `data`, `xKey` and `yKeys`. `PieChart` takes `data` as `{ name, value }` items. All charts accept `height`, `width`, `colors`, `showLegend` and `showTooltip`.
+
+Pass the `components` prop to `EntityMdxCard`, `HomePageMdxCard` or `MdxCardContent` to make more components available. They are merged with `defaultMdxComponents`.
+
 ### Data fetchers
 
 Each data fetcher calls a backend plugin through the discovery API and the fetch API, so requests carry the user's Backstage token.
@@ -185,33 +258,6 @@ Responses must be JSON. When a request fails or returns another content type, th
 ```
 
 `ApiFetcher` also accepts a function as its child, which receives `{ data, loading, error }`.
-
-### Available components
-
-Templates can use these components from [Backstage UI](https://ui.backstage.io/) (`@backstage/ui`):
-
-| Group    | Components                                                                                                     |
-| -------- | -------------------------------------------------------------------------------------------------------------- |
-| Layout   | `Box`, `Container`, `Flex`, `Grid`, `Card`, `CardHeader`, `CardBody`, `CardFooter`                             |
-| Content  | `Text`, `Link`, `Avatar`, `Badge`, `Tag`, `TagGroup`, `Tooltip`, `TooltipTrigger`, `Alert`, `Skeleton`         |
-| Actions  | `Button`, `ButtonIcon`, `ButtonLink`                                                                           |
-| Grouping | `Accordion`, `AccordionGroup`, `AccordionTrigger`, `AccordionPanel`, `Tabs`, `TabList`, `Tab`, `TabPanel`      |
-| Lists    | `List`, `ListRow`, `TableRoot`, `TableHeader`, `TableBody`, `Column`, `Row`, `Cell`, `CellText`, `CellProfile` |
-
-And these components from this plugin:
-
-| Component                                           | Description                                                                          |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `DataTable`                                         | Table from `columns` (`{ title, field }` items) and `data` (an array of objects)     |
-| `MetadataTable`                                     | Key and value list from a `metadata` object                                          |
-| `EntityRefLink`                                     | Link to the entity page of `entityRef`, showing the entity's display name or `title` |
-| `EntityRefLinks`                                    | Comma separated links for an `entityRefs` array                                      |
-| `AreaChart`, `BarChart`, `LineChart`, `PieChart`    | Charts built on [Recharts](https://recharts.org/)                                    |
-| `ApiFetcher`, `ApiFetcherContent`, `ApiFetcherData` | Fetch data while the template renders                                                |
-
-`BarChart`, `LineChart` and `AreaChart` take `data`, `xKey` and `yKeys`. `PieChart` takes `data` as `{ name, value }` items. All charts accept `height`, `width`, `colors`, `showLegend` and `showTooltip`.
-
-Pass the `components` prop to `EntityMdxCard`, `HomePageMdxCard` or `MdxCardContent` to make more components available. They are merged with `defaultMdxComponents`.
 
 ## Security
 
