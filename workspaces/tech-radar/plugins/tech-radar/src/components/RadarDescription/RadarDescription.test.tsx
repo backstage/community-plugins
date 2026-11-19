@@ -17,7 +17,12 @@
 import { screen } from '@testing-library/react';
 
 import { Props, RadarDescription } from './RadarDescription';
-import { renderInTestApp } from '@backstage/test-utils';
+import {
+  mockApis,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
+import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { Ring } from '../../utils/types';
 
 const ring: Ring = {
@@ -46,5 +51,54 @@ describe('RadarDescription', () => {
     expect(radarDescription).toBeInTheDocument();
     expect(screen.getByText(String(minProps.description))).toBeInTheDocument();
     expect(screen.getByText(String('example-link'))).toBeInTheDocument();
+  });
+
+  it('should render the English texts by default', async () => {
+    await renderInTestApp(
+      <RadarDescription {...minProps} url="https://example.com/learn" />,
+    );
+
+    expect(screen.getByText('History')).toBeInTheDocument();
+    expect(screen.getByText('Moved in direction')).toBeInTheDocument();
+    expect(screen.getByText('Moved to ring')).toBeInTheDocument();
+    expect(screen.getByText('Moved on date')).toBeInTheDocument();
+    expect(screen.getByText('Description')).toBeInTheDocument();
+    expect(screen.getByText('LEARN MORE')).toBeInTheDocument();
+  });
+
+  it('should render translated texts', async () => {
+    const french: Record<string, string> = {
+      'radarTimeline.title': 'Historique',
+      'radarTimeline.tableHeader.movedInDirection': 'Déplacé dans la direction',
+      'radarDescription.learnMore': 'EN SAVOIR PLUS',
+    };
+    const base = mockApis.translation();
+    const translationApi: typeof base = {
+      translation$: ref => base.translation$(ref),
+      getTranslation: ref => {
+        const snapshot = base.getTranslation(ref);
+        if (!snapshot.ready) {
+          return snapshot;
+        }
+        return {
+          ...snapshot,
+          t: ((key: string, ...args: unknown[]) =>
+            french[key] ??
+            (snapshot.t as Function)(key, ...args)) as typeof snapshot.t,
+        };
+      },
+    };
+
+    await renderInTestApp(
+      <TestApiProvider apis={[[translationApiRef, translationApi]]}>
+        <RadarDescription {...minProps} url="https://example.com/learn" />
+      </TestApiProvider>,
+    );
+
+    expect(screen.getByText('Historique')).toBeInTheDocument();
+    expect(screen.getByText('Déplacé dans la direction')).toBeInTheDocument();
+    expect(screen.getByText('EN SAVOIR PLUS')).toBeInTheDocument();
+    expect(screen.queryByText('History')).not.toBeInTheDocument();
+    expect(screen.queryByText('LEARN MORE')).not.toBeInTheDocument();
   });
 });
