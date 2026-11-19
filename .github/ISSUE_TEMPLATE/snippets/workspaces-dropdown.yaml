@@ -91,7 +91,6 @@ attributes:
     - puppetdb
     - quay
     - rbac
-    - report-portal
     - rollbar
     - scaffolder-backend-module-annotator
     - scaffolder-backend-module-kubernetes

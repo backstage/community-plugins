@@ -259,9 +259,6 @@ workspace/quay:
 workspace/rbac:
   - "Workspace\\s*rbac"
 
-workspace/report-portal:
-  - "Workspace\\s*report-portal"
-
 workspace/rollbar:
   - "Workspace\\s*rollbar"
 
