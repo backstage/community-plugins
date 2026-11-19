@@ -97,6 +97,7 @@ describe('createListBuildsAction', () => {
     );
     expect(result.output.builds).toHaveLength(1);
     expect(result.output.builds[0]).toMatchObject({
+      instanceName: 'default',
       name: 'my-folder/my-pipeline',
       status: 'SUCCESS',
       inQueue: false,
@@ -106,6 +107,83 @@ describe('createListBuildsAction', () => {
         building: false,
       },
     });
+  });
+
+  it('returns identical job names from different Jenkins instances separately', async () => {
+    mockJenkinsInfoProvider.getInstances = jest.fn().mockResolvedValue([
+      {
+        instanceName: 'prod',
+        baseUrl: 'http://jenkins-prod',
+        fullJobNames: ['my-folder/my-pipeline'],
+        projectCountLimit: 50,
+      },
+      {
+        instanceName: 'dev',
+        baseUrl: 'http://jenkins-dev',
+        fullJobNames: ['my-folder/my-pipeline'],
+        projectCountLimit: 50,
+      },
+    ]);
+    const registration = mockActionsRegistry.register.mock.calls[0][0];
+
+    const result = await registration.action({
+      input: { name: 'my-service' },
+      credentials: mockCredentials.user(),
+      logger: mockServices.logger.mock(),
+    });
+
+    expect(mockJenkinsApi.getProjects).toHaveBeenCalledTimes(2);
+    expect(result.output.builds).toEqual([
+      expect.objectContaining({
+        instanceName: 'prod',
+        name: 'my-folder/my-pipeline',
+      }),
+      expect.objectContaining({
+        instanceName: 'dev',
+        name: 'my-folder/my-pipeline',
+      }),
+    ]);
+  });
+
+  it('reports a failing instance without hiding the builds of the others', async () => {
+    mockJenkinsInfoProvider.getInstances = jest.fn().mockResolvedValue([
+      {
+        instanceName: 'prod',
+        baseUrl: 'http://jenkins-prod',
+        fullJobNames: ['my-folder/my-pipeline'],
+        projectCountLimit: 50,
+      },
+      {
+        instanceName: 'dev',
+        baseUrl: 'http://jenkins-dev',
+        fullJobNames: ['my-folder/my-pipeline'],
+        projectCountLimit: 50,
+      },
+    ]);
+    mockJenkinsApi.getProjects.mockImplementation(async jenkinsInfo => {
+      if (jenkinsInfo.instanceName === 'prod') {
+        throw new Error('connect ECONNREFUSED');
+      }
+      return [{ ...mockProject, lastBuild: null }];
+    });
+    const registration = mockActionsRegistry.register.mock.calls[0][0];
+
+    const result = await registration.action({
+      input: { name: 'my-service' },
+      credentials: mockCredentials.user(),
+      logger: mockServices.logger.mock(),
+    });
+
+    expect(result.output.builds).toEqual([
+      expect.objectContaining({ instanceName: 'dev' }),
+    ]);
+    expect(result.output.errors).toEqual([
+      {
+        instanceName: 'prod',
+        message:
+          "Unable to fetch projects from Jenkins instance 'prod', for my-folder/my-pipeline; caused by Error: connect ECONNREFUSED",
+      },
+    ]);
   });
 
   it('applies default kind and namespace when not provided', async () => {

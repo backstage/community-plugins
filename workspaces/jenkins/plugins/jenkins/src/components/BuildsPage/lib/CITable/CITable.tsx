@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Table, TableColumn } from '@backstage/core-components';
+import { Table, TableColumn, WarningPanel } from '@backstage/core-components';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 import RetryIcon from '@material-ui/icons/Replay';
-import { Project } from '../../../../api/JenkinsApi';
+import { JenkinsInstanceError, Project } from '../../../../api/JenkinsApi';
 import JenkinsLogo from '../../../../assets/JenkinsLogo.svg';
 import { useBuilds } from '../../../useBuilds';
 import { columnFactories } from './columns';
 import { defaultCITableColumns } from './presets';
+
+const useStyles = makeStyles({
+  // Jenkins errors embed long request URLs that would otherwise widen the
+  // page, and the backend separates the errors of several instances with
+  // newlines.
+  errorMessage: {
+    overflowWrap: 'anywhere',
+    whiteSpace: 'pre-line',
+  },
+});
 
 type Props = {
   title?: string;
@@ -34,6 +45,8 @@ type Props = {
   pageSize: number;
   onChangePageSize: (pageSize: number) => void;
   columns: TableColumn<Project>[];
+  error?: { message: string };
+  instanceErrors?: JenkinsInstanceError[];
 };
 
 export const CITableView = ({
@@ -47,39 +60,81 @@ export const CITableView = ({
   onChangePageSize,
   columns,
   total,
+  error,
+  instanceErrors,
 }: Props) => {
+  const classes = useStyles();
   const projectsInPage = projects?.slice(
     page * pageSize,
     Math.min(projects.length, (page + 1) * pageSize),
   );
+  // The instance column is noise for the common single-instance entity, so
+  // the default columns only show it when the jobs come from several.
+  const hasSeveralInstances =
+    new Set(projects?.map(project => project.instanceName)).size > 1;
+  const tableColumns =
+    columns && columns.length !== 0
+      ? columns
+      : defaultCITableColumns.filter(
+          column => hasSeveralInstances || column.field !== 'instanceName',
+        );
   return (
-    <Table
-      isLoading={loading}
-      options={{ paging: true, pageSize, padding: 'dense' }}
-      totalCount={total}
-      page={page}
-      actions={[
-        {
-          icon: () => <RetryIcon />,
-          tooltip: 'Refresh Data',
-          isFreeAction: true,
-          onClick: () => retry(),
-        },
-      ]}
-      data={projectsInPage ?? []}
-      onPageChange={onChangePage}
-      onRowsPerPageChange={onChangePageSize}
-      title={
-        <Box display="flex" alignItems="center">
-          <img src={JenkinsLogo} alt="Jenkins logo" height="50px" />
-          <Box mr={2} />
-          <Typography variant="h6">{title}</Typography>
+    <>
+      {error && (
+        <Box mb={2}>
+          {/* Passed as children, not message: message is wrapped in a <p>. */}
+          <WarningPanel severity="error" title="Can't load Jenkins projects">
+            <Typography variant="body1" className={classes.errorMessage}>
+              {error.message}
+            </Typography>
+          </WarningPanel>
         </Box>
-      }
-      columns={
-        columns && columns.length !== 0 ? columns : defaultCITableColumns
-      }
-    />
+      )}
+      {instanceErrors && instanceErrors.length > 0 && (
+        <Box mb={2}>
+          <WarningPanel
+            title={`Couldn't load projects from Jenkins instance(s): ${instanceErrors
+              .map(e => e.instanceName)
+              .join(', ')}`}
+          >
+            {instanceErrors.map(e => (
+              <Typography
+                key={e.instanceName}
+                variant="body1"
+                className={classes.errorMessage}
+              >
+                {e.message}
+              </Typography>
+            ))}
+          </WarningPanel>
+        </Box>
+      )}
+      <Table
+        isLoading={loading}
+        options={{ paging: true, pageSize, padding: 'dense' }}
+        totalCount={total}
+        page={page}
+        actions={[
+          {
+            icon: () => <RetryIcon />,
+            tooltip: 'Refresh Data',
+            isFreeAction: true,
+            onClick: () => retry(),
+          },
+        ]}
+        data={projectsInPage ?? []}
+        onPageChange={onChangePage}
+        onRowsPerPageChange={onChangePageSize}
+        title={
+          <Box display="flex" alignItems="center">
+            <img src={JenkinsLogo} alt="Jenkins logo" height="50px" />
+            <Box mr={2} />
+            <Typography variant="h6">{title}</Typography>
+          </Box>
+        }
+        columns={tableColumns}
+      />
+    </>
   );
 };
 
