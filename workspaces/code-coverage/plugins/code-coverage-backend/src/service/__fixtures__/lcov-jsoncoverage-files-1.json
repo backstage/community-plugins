@@ -43,7 +43,8 @@
         "missed": 0,
         "available": 1
       }
-    }
+    },
+    "functionHits": [5]
   },
   {
     "filename": "src/math.js",
@@ -98,6 +99,7 @@
         "missed": 0,
         "available": 1
       }
-    }
+    },
+    "functionHits": [1, 0, 3]
   }
 ]

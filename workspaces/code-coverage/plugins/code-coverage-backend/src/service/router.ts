@@ -113,6 +113,7 @@ export const makeRouter = async (
       aggregate: {
         line: aggregate.line,
         branch: aggregate.branch,
+        function: aggregate.function,
       },
     });
   });
