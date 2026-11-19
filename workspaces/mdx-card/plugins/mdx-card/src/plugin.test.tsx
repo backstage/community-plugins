@@ -20,7 +20,8 @@ import {
 } from '@backstage/frontend-test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { homePageWidgetDataRef } from '@backstage/plugin-home-react/alpha';
-import { mdxEntityCard, mdxHomePageWidget } from './plugin';
+import { coreExtensionData } from '@backstage/frontend-plugin-api';
+import { mdxCardEditorPage, mdxEntityCard, mdxHomePageWidget } from './plugin';
 
 describe('mdxEntityCard', () => {
   it('renders the template from extension config', async () => {
@@ -63,5 +64,23 @@ describe('mdxHomePageWidget', () => {
 
     expect(await screen.findByText('Configured widget')).toBeInTheDocument();
     expect(await screen.findByText(/^Hello /)).toBeInTheDocument();
+  });
+});
+
+describe('mdxCardEditorPage', () => {
+  it('shows in the sidebar by default', () => {
+    const tester = createExtensionTester(mdxCardEditorPage);
+
+    expect(tester.get(coreExtensionData.routePath)).toBe('/mdx-cards');
+    expect(tester.get(coreExtensionData.icon)).toBeDefined();
+  });
+
+  it('can be left out of the sidebar', () => {
+    const tester = createExtensionTester(mdxCardEditorPage, {
+      config: { showInSidebar: false },
+    });
+
+    expect(tester.get(coreExtensionData.routePath)).toBe('/mdx-cards');
+    expect(tester.get(coreExtensionData.icon)).toBeUndefined();
   });
 });

@@ -143,12 +143,28 @@ Instead of writing templates in config or code, you can store them with the MDX 
        - page:mdx-card: true
    ```
 
-   The page is mounted at `/mdx-cards` and appears in the sidebar. In the legacy frontend system, add a route in `packages/app/src/App.tsx`:
+   The page is mounted at `/mdx-cards` and appears in the sidebar. To keep it out of the sidebar, for example so only people who know the URL use it, set `showInSidebar` to `false`:
+
+   ```yaml
+   app:
+     extensions:
+       - page:mdx-card:
+           config:
+             showInSidebar: false
+   ```
+
+   In the legacy frontend system, add a route in `packages/app/src/App.tsx`:
 
    ```tsx
    import { MdxCardEditorPage } from '@backstage-community/plugin-mdx-card/legacy';
 
    <Route path="/mdx-cards" element={<MdxCardEditorPage />} />;
+   ```
+
+   The legacy system doesn't add a sidebar entry. If you want one, add it to `packages/app/src/components/Root/Root.tsx`:
+
+   ```tsx
+   <SidebarItem icon={DashboardIcon} to="mdx-cards" text="MDX Cards" />
    ```
 
 3. Reference a stored template from a card with `templateRef` instead of `template`:

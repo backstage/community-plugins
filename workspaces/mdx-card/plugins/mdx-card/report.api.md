@@ -254,15 +254,15 @@ const _default: OverridableFrontendPlugin<
       params: HomePageWidgetBlueprintParams;
     }>;
     'page:mdx-card': OverridableExtensionDefinition<{
-      kind: 'page';
-      name: undefined;
       config: {
+        showInSidebar: boolean;
         path: string | undefined;
         title: string | undefined;
       };
       configInput: {
-        path?: string | undefined;
-        title?: string | undefined;
+        showInSidebar?: boolean | undefined;
+        path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -334,6 +334,8 @@ const _default: OverridableFrontendPlugin<
           }
         >;
       };
+      kind: 'page';
+      name: undefined;
       params: {
         path: string;
         title?: string | TranslationRefTuple<undefined>;
@@ -468,15 +470,15 @@ export type MdxCardContentProps = MdxCardProps & {
 
 // @public
 export const mdxCardEditorPage: OverridableExtensionDefinition<{
-  kind: 'page';
-  name: undefined;
   config: {
+    showInSidebar: boolean;
     path: string | undefined;
     title: string | undefined;
   };
   configInput: {
-    path?: string | undefined;
-    title?: string | undefined;
+    showInSidebar?: boolean | undefined;
+    path?: string | undefined | undefined;
+    title?: string | undefined | undefined;
   };
   output:
     | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -548,6 +550,8 @@ export const mdxCardEditorPage: OverridableExtensionDefinition<{
       }
     >;
   };
+  kind: 'page';
+  name: undefined;
   params: {
     path: string;
     title?: string | TranslationRefTuple<undefined>;

@@ -112,21 +112,27 @@ export const mdxHomePageWidget = HomePageWidgetBlueprint.makeWithOverrides({
 });
 
 /**
- * Page for creating, editing and previewing stored MDX card templates.
+ * Page for creating, editing and previewing stored MDX card templates. Set
+ * `showInSidebar: false` in its config to leave it out of the sidebar.
  *
  * @public
  */
-export const mdxCardEditorPage = PageBlueprint.make({
+export const mdxCardEditorPage = PageBlueprint.makeWithOverrides({
   disabled: true,
-  params: {
-    path: '/mdx-cards',
-    title: 'MDX Cards',
-    icon: <RiLayoutMasonryLine />,
-    routeRef: mdxCardEditorRouteRef,
-    loader: () =>
-      import('./components/MdxCardEditorPage').then(m => (
-        <m.MdxCardEditorPage />
-      )),
+  configSchema: {
+    showInSidebar: z.boolean().default(true),
+  },
+  factory(originalFactory, { config }) {
+    return originalFactory({
+      path: '/mdx-cards',
+      title: 'MDX Cards',
+      ...(config.showInSidebar ? { icon: <RiLayoutMasonryLine /> } : {}),
+      routeRef: mdxCardEditorRouteRef,
+      loader: () =>
+        import('./components/MdxCardEditorPage').then(m => (
+          <m.MdxCardEditorPage />
+        )),
+    });
   },
 });
 
