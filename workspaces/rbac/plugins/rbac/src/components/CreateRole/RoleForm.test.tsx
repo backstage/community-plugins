@@ -589,6 +589,7 @@ describe('Edit RoleForm', () => {
       expect.objectContaining({ permission: 'catalog.entity.create' }),
     ]);
     expect(rbacApi.deleteConditionalPolicies).toHaveBeenCalledWith(2);
+    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledTimes(1);
     expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
       1,
       expect.objectContaining({
@@ -616,19 +617,8 @@ describe('Edit RoleForm', () => {
     expect(rbacApi.createPolicies).not.toHaveBeenCalled();
     expect(rbacApi.deleteConditionalPolicies).not.toHaveBeenCalled();
     expect(rbacApi.createConditionalPermission).not.toHaveBeenCalled();
-    // Existing conditional policies are re-sent carrying the new role ref;
-    // the backend moves everything else during the role update.
-    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
-      1,
-      expect.objectContaining({
-        roleEntityRef: 'role:default/platform-admins',
-      }),
-    );
-    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
-      2,
-      expect.objectContaining({
-        roleEntityRef: 'role:default/platform-admins',
-      }),
-    );
+    // The backend moves every policy to the new ref during the role update,
+    // so a pure rename does not re-send the conditional policies either.
+    expect(rbacApi.updateConditionalPolicies).not.toHaveBeenCalled();
   });
 });

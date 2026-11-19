@@ -74,16 +74,23 @@ describe('getRoleChanges', () => {
     expect(changes.addedConditions).toEqual([]);
     expect(changes.removedConditions).toEqual([]);
     expect(changes.changedConditions).toEqual([]);
-    // Existing conditional policies are always re-sent on save.
-    expect(changes.updatedConditions.map(({ id }) => id)).toEqual([1, 2]);
     expect(changes.previousRole).toEqual(changes.currentRole);
   });
 
-  it('treats a missing and an empty description or owner as the same value', () => {
+  it('treats a missing and an empty description as the same value', () => {
     const changes = getRoleChanges(
-      { ...initialValues, description: undefined, owner: undefined },
-      { ...initialValues, description: '', owner: '' },
+      { ...initialValues, description: undefined },
+      { ...initialValues, description: '' },
     );
+
+    expect(changes.detailChanges).toEqual([]);
+  });
+
+  it('does not report owner changes, which the backend drops on save', () => {
+    const changes = getRoleChanges(initialValues, {
+      ...initialValues,
+      owner: 'user:default/someone-else',
+    });
 
     expect(changes.detailChanges).toEqual([]);
   });
@@ -109,7 +116,6 @@ describe('getRoleChanges', () => {
         previous: 'Admin role',
         current: 'Updated description',
       },
-      { field: 'owner', previous: 'user:default/owner', current: '' },
     ]);
     expect(changes.addedMembers).toEqual([newMember]);
     expect(changes.removedMembers).toEqual([userMember]);
@@ -139,8 +145,14 @@ describe('getRoleChanges', () => {
     expect(changes.removedConditions).toEqual([
       { id: 2, row: conditionalRow(2, 'remove-me') },
     ]);
-    expect(changes.updatedConditions.map(({ id }) => id)).toEqual([1]);
-    expect(changes.changedConditions).toEqual(changes.updatedConditions);
+    expect(changes.changedConditions).toEqual([
+      {
+        id: 1,
+        updateCondition: expect.objectContaining({
+          conditions: expect.objectContaining({ params: { label: 'edited' } }),
+        }),
+      },
+    ]);
     expect(changes.currentRole.memberReferences).toEqual([
       'group:default/team-a',
       'user:default/bob',
@@ -162,12 +174,44 @@ describe('getRoleChanges', () => {
     ]);
     expect(changes.addedPermissions).toEqual([]);
     expect(changes.removedPermissions).toEqual([]);
+    // The backend moves the conditional policies to the new ref during the
+    // role update, so a pure rename sends no condition updates.
     expect(changes.changedConditions).toEqual([]);
-    expect(
-      changes.updatedConditions.map(
-        ({ updateCondition }) => updateCondition.roleEntityRef,
-      ),
-    ).toEqual(['role:default/platform-admins', 'role:default/platform-admins']);
+  });
+
+  it('diffs a conditional policy spanning several rows as one policy', () => {
+    const rowA = conditionalRow(7, 'multi');
+    const rowB: PermissionsData = {
+      ...conditionalRow(7, 'multi'),
+      permission: 'catalog.entity.read',
+      policies: [{ policy: 'Read', effect: 'allow' }],
+    };
+    const multiRowValues: RoleFormValues = {
+      ...initialValues,
+      permissionPoliciesRows: [rowA, rowB],
+    };
+
+    const unchanged = getRoleChanges(multiRowValues, { ...multiRowValues });
+    expect(unchanged.changedConditions).toEqual([]);
+
+    const changes = getRoleChanges(multiRowValues, {
+      ...multiRowValues,
+      permissionPoliciesRows: [
+        conditionalRow(7, 'edited'),
+        { ...rowB, conditions: conditionalRow(7, 'edited').conditions },
+      ],
+    });
+    expect(changes.changedConditions).toEqual([
+      {
+        id: 7,
+        updateCondition: expect.objectContaining({
+          permissionMapping: [
+            { name: 'catalog.entity.delete', action: 'delete' },
+            { name: 'catalog.entity.read', action: 'read' },
+          ],
+        }),
+      },
+    ]);
   });
 
   it('ignores key order when deciding whether a conditional policy changed', () => {

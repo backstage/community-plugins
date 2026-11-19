@@ -114,7 +114,9 @@ export const RoleForm = ({
           rbacApi,
           t,
         );
-        await modifyConditions(changes.updatedConditions, rbacApi, t);
+        // Only the conditional policies whose content changed are re-sent;
+        // on a rename the backend moves the untouched ones to the new ref.
+        await modifyConditions(changes.changedConditions, rbacApi, t);
         await createConditions(changes.addedConditions, rbacApi, t);
 
         navigateTo(navigate, t, roleName, newName, 'updated', step);
