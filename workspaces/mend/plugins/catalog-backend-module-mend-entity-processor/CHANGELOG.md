@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-mend-entity-processor
 
+## 0.3.0
+
+### Minor Changes
+
+- cf0cd92: Backstage version bump to v1.55.1
+
 ## 0.2.0
 
 ### Minor Changes

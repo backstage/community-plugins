@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 2.2.0
+
+### Minor Changes
+
+- cf0cd92: Backstage version bump to v1.55.1
+
 ## 2.1.0
 
 ### Minor Changes
