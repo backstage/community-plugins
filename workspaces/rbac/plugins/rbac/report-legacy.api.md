@@ -60,7 +60,10 @@ export type RBACAPI = {
   getMembersByRefs: (
     entityRefs: string[],
   ) => Promise<(MemberEntity | undefined)[] | Response>;
-  searchMembers: (searchTerm: string) => Promise<MemberEntity[] | Response>;
+  searchMembers: (
+    options?: SearchMembersOptions,
+  ) => Promise<SearchMembersResult | Response>;
+  getMemberNamespaces: () => Promise<string[] | Response>;
   listPermissions: () => Promise<PluginPermissionMetaData[] | Response>;
   createRole: (role: Role) => Promise<RoleError | Response>;
   updateRole: (oldRole: Role, newRole: Role) => Promise<RoleError | Response>;
@@ -118,6 +121,29 @@ export type RoleError = {
     name: string;
     message: string;
   };
+};
+
+// @public
+export type SearchMembersOptions = {
+  searchTerm?: string;
+  limit?: number;
+  offset?: number;
+  kind?: 'user' | 'group';
+  namespace?: string;
+  orderBy?: SearchMembersOrderBy;
+  orderDirection?: SearchMembersOrderDirection;
+};
+
+// @public
+export type SearchMembersOrderBy = 'name' | 'type' | 'namespace';
+
+// @public
+export type SearchMembersOrderDirection = 'asc' | 'desc';
+
+// @public
+export type SearchMembersResult = {
+  items: MemberEntity[];
+  totalItems: number;
 };
 
 // (No @packageDocumentation comment for this package)

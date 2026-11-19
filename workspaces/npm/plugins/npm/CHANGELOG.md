@@ -1,5 +1,25 @@
 # @backstage-community/plugin-npm
 
+## 1.29.0
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.29.0
+
+## 1.28.0
+
+### Minor Changes
+
+- a37be92: Cleanup and version alignment to prepare the migration from Material UI to Backstage UI.
+
+  - The minimum supported Backstage version is now 1.54.
+  - The frontend plugin uses the new frontend plugin APIs for translations and backend requests.
+  - The unused root route of the legacy frontend plugin was removed.
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.28.0
+
 ## 1.27.0
 
 ### Minor Changes

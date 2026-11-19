@@ -29,6 +29,12 @@ export const checks = [
     description:
       'Verifies that a Group has been set as the owner for this entity',
     factIds: ['entityOwnershipFactRetriever'],
+    // Maturity metadata: used by the tech-insights-maturity plugin.
+    metadata: {
+      category: 'Ownership',
+      rank: 1, // Bronze
+      solution: 'Set a Group as the owner in spec.owner',
+    },
     rule: {
       conditions: {
         all: [
@@ -47,6 +53,11 @@ export const checks = [
     name: 'API definition Check',
     description: 'Verifies that a API has a definition set',
     factIds: ['apiDefinitionFactRetriever'],
+    metadata: {
+      category: 'Documentation',
+      rank: 2, // Silver
+      solution: 'Add an API definition to spec.definition',
+    },
     rule: {
       conditions: {
         all: [

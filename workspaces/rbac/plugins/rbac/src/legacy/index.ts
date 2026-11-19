@@ -18,7 +18,13 @@ export { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
 
 export { rbacPlugin, RbacPage, Administration } from './plugin';
 export { rbacApiRef } from '../api/RBACBackendClient';
-export type { RBACAPI } from '../api/RBACBackendClient';
+export type {
+  RBACAPI,
+  SearchMembersOptions,
+  SearchMembersOrderBy,
+  SearchMembersOrderDirection,
+  SearchMembersResult,
+} from '../api/RBACBackendClient';
 
 export type {
   MemberEntity,

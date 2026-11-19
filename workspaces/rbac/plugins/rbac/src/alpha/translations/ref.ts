@@ -30,9 +30,34 @@ export const rbacMessages = {
     titleWithCount: 'All roles ({{count}})',
     headers: {
       name: 'Name',
+      source: 'Source',
       usersAndGroups: 'Users and groups',
       accessiblePlugins: 'Accessible plugins',
       actions: 'Actions',
+    },
+    sources: {
+      appConfig: 'App Config',
+      csv: 'CSV',
+      form: 'Form',
+      legacy: 'Legacy',
+      tooltips: {
+        appConfig: 'Defined under permission.rbac.admin in app-config.yaml.',
+        csv: 'Defined in the CSV policy file referenced by permission.rbac.policies-csv-file in app-config.yaml.',
+        form: 'Created via the RBAC form in the UI. Can also be managed via the REST API.',
+        legacy:
+          'Created before role sources were recorded. Can be managed via the REST API or CSV policy file.',
+        generic:
+          'This role is managed by its source and cannot be changed in the UI.',
+      },
+      actionTooltips: {
+        appConfig:
+          'This role is managed via application configuration (permission.rbac.admin in app-config.yaml). Update the config and redeploy to make changes.',
+        csv: 'This role is managed via a CSV policy file. Update the CSV file and redeploy to make changes.',
+        legacy:
+          'This is a legacy role and cannot be changed in the UI. Update it through the REST API or CSV policy file.',
+        generic:
+          'This role is managed by its source and cannot be changed in the UI.',
+      },
     },
     defaultRoleUsersAndGroups: 'All users and all groups',
     emptyContent: 'No records found',
@@ -191,6 +216,16 @@ export const rbacMessages = {
     unauthorizedToEdit: 'Unauthorized to edit',
     noRecordsFound: 'No records found',
     selectUsersAndGroups: 'Select users and groups',
+    addMembersAndGroups: 'Add members and groups',
+    searchMembers: 'Search',
+    searchByName: 'Search by name',
+    kind: 'Kind',
+    kindAll: 'All',
+    namespace: 'Namespace',
+    namespaceAll: 'All',
+    allResults: 'All ({{count}})',
+    selectedCount: '{{count}} selected',
+    add: 'Add',
     clearSearch: 'clear search',
     closeDrawer: 'Close the drawer',
     remove: 'Remove',
@@ -234,7 +269,10 @@ export const rbacMessages = {
     childGroupsCount: '{{count}} child groups',
     searchAndSelectUsersGroups:
       'Search and select users and groups to be added. Selected users and groups will appear in the table below.',
+    searchAndFilterCatalog:
+      'Search and filter the catalog to add users and groups. This replaces a 100-item dropdown for large member lists.',
     noUsersAndGroupsFound: 'No users and groups found.',
+    noMembersMatchSearch: 'No members match your search.',
     errorFetchingUserGroups: 'Error fetching user and groups: {{error}}',
     nameRequired: 'Name is required',
     noMemberSelected: 'No member selected',

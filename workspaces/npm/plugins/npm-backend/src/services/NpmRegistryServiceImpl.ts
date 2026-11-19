@@ -15,10 +15,10 @@
  */
 import {
   BackstageCredentials,
-  BackstageUserPrincipal,
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { NotFoundError } from '@backstage/errors';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 
@@ -50,12 +50,19 @@ export class NpmRegistryServiceImpl implements NpmRegistryService {
 
   async getPackageInfo(
     entityRef: string,
-    options: { credentials: BackstageCredentials<BackstageUserPrincipal> },
+    options: { credentials: BackstageCredentials },
   ): Promise<NpmRegistryPackageInfo> {
     const entity = await this.catalog.getEntityByRef(entityRef, options);
     if (!entity) {
       throw new NotFoundError(`No entity found for ref '${entityRef}'`);
     }
+    return this.getPackageInfoForEntity(entity);
+  }
+
+  async getPackageInfoForEntity(
+    entity: Entity,
+  ): Promise<NpmRegistryPackageInfo> {
+    const entityRef = stringifyEntityRef(entity);
 
     const config = this.config.getOptional<Config['npm']>('npm');
     const defaultRegistry = config?.defaultRegistry;

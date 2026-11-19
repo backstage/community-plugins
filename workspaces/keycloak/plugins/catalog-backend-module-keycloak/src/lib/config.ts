@@ -16,6 +16,7 @@
 
 import { readSchedulerServiceTaskScheduleDefinitionFromConfig } from '@backstage/backend-plugin-api';
 import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import { KubernetesValidatorFunctions } from '@backstage/catalog-model';
 import type { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
 
@@ -93,6 +94,18 @@ export type KeycloakProviderConfig = {
   groupQuerySize?: number;
 
   /**
+   * Namespace for users ingested from this provider.
+   * @defaultValue default
+   */
+  userNamespace?: string;
+
+  /**
+   * Namespace for groups ingested from this provider.
+   * @defaultValue default
+   */
+  groupNamespace?: string;
+
+  /**
    * Maximum request concurrency to prevent DoS attacks on the Keycloak server.
    */
   maxConcurrency?: number;
@@ -121,11 +134,29 @@ const readProviderConfig = (
     providerConfigInstance.getOptionalNumber('userQuerySize');
   const groupQuerySize =
     providerConfigInstance.getOptionalNumber('groupQuerySize');
+  const userNamespace =
+    providerConfigInstance.getOptionalString('userNamespace');
+  const groupNamespace =
+    providerConfigInstance.getOptionalString('groupNamespace');
   const maxConcurrency =
     providerConfigInstance.getOptionalNumber('maxConcurrency');
   const briefRepresentation = providerConfigInstance.getOptionalBoolean(
     'briefRepresentation',
   );
+
+  for (const [name, namespace] of [
+    ['userNamespace', userNamespace],
+    ['groupNamespace', groupNamespace],
+  ]) {
+    if (
+      namespace !== undefined &&
+      !KubernetesValidatorFunctions.isValidNamespace(namespace)
+    ) {
+      throw new InputError(
+        `The namespace '${namespace}' in the '${name}' configuration for Keycloak provider '${id}' must be a string that is sequences of [a-z0-9] separated by [-], at most 63 characters in total`,
+      );
+    }
+  }
 
   if (clientId && !clientSecret) {
     throw new InputError(
@@ -165,6 +196,8 @@ const readProviderConfig = (
     schedule,
     userQuerySize,
     groupQuerySize,
+    userNamespace,
+    groupNamespace,
     maxConcurrency,
     briefRepresentation,
   };

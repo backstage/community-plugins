@@ -154,7 +154,19 @@ export class AwsConfigInfrastructureProvider
       );
     }
 
-    const parsed = this.parseResponse(response);
+    const parsed = this.parseResponse(response).filter(
+      resource =>
+        !this.config.filters.excludeTags?.some(exclusion =>
+          resource.tags?.some(
+            tag =>
+              tag.key === exclusion.key &&
+              (exclusion.valuePattern !== undefined
+                ? exclusion.valuePattern.test(tag.value)
+                : exclusion.value === undefined ||
+                  tag.value === exclusion.value),
+          ),
+        ),
+    );
 
     entities = entities.concat(
       await Promise.all(
@@ -312,7 +324,7 @@ export class AwsConfigInfrastructureProvider
 
     const tagMap: any = {};
 
-    resource.tags.forEach(e => {
+    resource.tags?.forEach(e => {
       tagMap[e.key] = e.value;
     });
 

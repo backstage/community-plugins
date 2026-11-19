@@ -1,5 +1,18 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.2.0
+
+### Minor Changes
+
+- 18e546f: Backstage version bump to v1.56.5
+
+### Patch Changes
+
+- 1c677d3: Updated dependency `supertest` to `7.3.2`.
+- Updated dependencies [18e546f]
+  - @backstage-community/plugin-rbac-common@2.2.0
+  - @backstage-community/plugin-rbac-node@2.2.0
+
 ## 8.1.8
 
 ### Patch Changes

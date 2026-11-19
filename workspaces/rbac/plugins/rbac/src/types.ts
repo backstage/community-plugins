@@ -35,6 +35,11 @@ export type RolesData = {
   accessiblePlugins: string[];
   /** When true, this role is the default role for all users and groups. */
   isDefault?: boolean;
+  /**
+   * Origin of the role: 'rest' | 'csv-file' | 'configuration' | 'legacy'.
+   * Only 'rest' (Form/UI) roles can be edited or deleted in the UI.
+   */
+  source?: string;
 };
 
 export type MembersData = {

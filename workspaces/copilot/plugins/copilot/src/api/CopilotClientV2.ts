@@ -31,8 +31,13 @@ import {
   V2MetricsByModelFeatureRow,
   V2MetricsByLanguageModelRow,
   V2PrMetricsRow,
+  V2CostCenterListResponse,
 } from '@backstage-community/plugin-copilot-common';
-import { CopilotApiV2, V2MetricsParams } from './CopilotApiV2';
+import {
+  CopilotApiV2,
+  V2DashboardParams,
+  V2MetricsParams,
+} from './CopilotApiV2';
 
 export class CopilotClientV2 implements CopilotApiV2 {
   public constructor(
@@ -90,18 +95,18 @@ export class CopilotClientV2 implements CopilotApiV2 {
       to?: string;
     },
   ): Promise<string[]> {
-    const queryString = new URLSearchParams();
-    queryString.append('type', params.type);
-    queryString.append('entityId', params.entityId);
+    return this.get<string[]>(`v2/teams?${this.buildScopeQuery(params)}`);
+  }
 
-    if (params.from) {
-      queryString.append('from', params.from);
-    }
-    if (params.to) {
-      queryString.append('to', params.to);
-    }
-
-    return this.get<string[]>(`v2/teams?${queryString}`);
+  public async fetchCostCenters(
+    params: Pick<V2MetricsParams, 'type' | 'entityId'> & {
+      from?: string;
+      to?: string;
+    },
+  ): Promise<V2CostCenterListResponse> {
+    return this.get<V2CostCenterListResponse>(
+      `v2/cost-centers?${this.buildScopeQuery(params)}`,
+    );
   }
 
   public async getPeriodRange(
@@ -167,6 +172,14 @@ export class CopilotClientV2 implements CopilotApiV2 {
     );
   }
 
+  public async getNoCostCenterDashboardData(
+    params: V2DashboardParams,
+  ): Promise<V2DashboardData> {
+    return this.get<V2DashboardData>(
+      `v2/no-cost-center/dashboard?${this.buildScopeQuery(params)}`,
+    );
+  }
+
   private buildMetricsQuery(params: V2MetricsParams): URLSearchParams {
     const queryString = new URLSearchParams();
     queryString.append('type', params.type);
@@ -177,7 +190,29 @@ export class CopilotClientV2 implements CopilotApiV2 {
     if (params.team) {
       queryString.append('team', params.team);
     }
+    if (params.costCenter !== undefined) {
+      queryString.append('costCenter', params.costCenter);
+    }
 
+    return queryString;
+  }
+
+  private buildScopeQuery(
+    params: Pick<V2MetricsParams, 'type' | 'entityId'> & {
+      from?: string;
+      to?: string;
+    },
+  ): URLSearchParams {
+    const queryString = new URLSearchParams();
+    queryString.append('type', params.type);
+    queryString.append('entityId', params.entityId);
+
+    if (params.from) {
+      queryString.append('from', params.from);
+    }
+    if (params.to) {
+      queryString.append('to', params.to);
+    }
     return queryString;
   }
 

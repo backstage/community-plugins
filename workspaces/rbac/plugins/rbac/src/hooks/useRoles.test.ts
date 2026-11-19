@@ -25,10 +25,12 @@ jest.mock('@backstage/core-plugin-api', () => ({
       {
         memberReferences: ['user:default/guest'],
         name: 'role:default/guests',
+        metadata: { source: 'rest' },
       },
       {
         memberReferences: ['user:default/debsmita1', 'group:default/admins'],
         name: 'role:default/rbac_admin',
+        metadata: { source: 'configuration' },
       },
     ]),
     getPolicies: jest

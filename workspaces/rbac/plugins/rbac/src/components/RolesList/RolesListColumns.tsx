@@ -15,16 +15,20 @@
  */
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link, TableColumn } from '@backstage/core-components';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { Focusable, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-
+import { rbacTranslationRef } from '../../alpha/translations';
 import { RolesData } from '../../types';
 import { getMembers } from '../../utils/rbac-utils';
+import {
+  getRoleSourceActionTooltip,
+  getRoleSourceLabel,
+  isRoleEditableInUI,
+} from '../../utils/role-source-utils';
 import EditRole from '../EditRole';
 import DeleteRole from './DeleteRole';
-import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../alpha/translations';
+import { RoleSource } from './RoleSource';
 
 export const getColumns = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,
@@ -39,6 +43,25 @@ export const getColumns = (
         const { kind, namespace, name } = parseEntityRef(props.name);
         return (
           <Link to={`roles/${kind}/${namespace}/${name}`}>{props.name}</Link>
+        );
+      },
+    },
+    {
+      title: t('table.headers.source'),
+      field: 'source',
+      type: 'string',
+      render: (props: RolesData) => <RoleSource source={props.source} />,
+      customSort: (a, b) => {
+        const labelA = getRoleSourceLabel(a.source, t);
+        const labelB = getRoleSourceLabel(b.source, t);
+        return labelA.localeCompare(labelB, locale);
+      },
+      customFilterAndSearch: (filter, rowData) => {
+        const label = getRoleSourceLabel(rowData.source, t);
+        const upper = filter.toLocaleUpperCase(locale);
+        return (
+          label.toLocaleUpperCase(locale).includes(upper) ||
+          (rowData.source ?? '').toLocaleUpperCase(locale).includes(upper)
         );
       },
     },
@@ -77,13 +100,16 @@ export const getColumns = (
         const plsOverflowCount = pls.length > 2 ? `+ ${pls.length - 2}` : '';
 
         return pls.length > 0 ? (
-          <Tooltip title={plsTooltip || ''} placement="top-start">
-            <Typography>
-              {pls.length === 1
-                ? `${pls[0]}`
-                : `${pls[0]}, ${pls[1]} ${plsOverflowCount}`}
-            </Typography>
-          </Tooltip>
+          <TooltipTrigger delay={0}>
+            <Focusable>
+              <Text as="span" variant="body-medium">
+                {pls.length === 1
+                  ? `${pls[0]}`
+                  : `${pls[0]}, ${pls[1]} ${plsOverflowCount}`}
+              </Text>
+            </Focusable>
+            <Tooltip>{plsTooltip}</Tooltip>
+          </TooltipTrigger>
         ) : (
           '-'
         );
@@ -93,22 +119,25 @@ export const getColumns = (
       title: t('table.headers.actions'),
       sorting: false,
       render: (props: RolesData) => {
+        const sourceEditable = isRoleEditableInUI(props.source);
         const canEdit =
-          !props.isDefault && props.actionsPermissionResults.edit.allowed;
-        const defaultRoleTooltip = props.isDefault
+          !props.isDefault &&
+          sourceEditable &&
+          props.actionsPermissionResults.edit.allowed;
+        const actionTooltip = props.isDefault
           ? t('errors.defaultRoleReadOnly')
-          : undefined;
+          : getRoleSourceActionTooltip(props.source, t);
         return (
           <>
             <EditRole
               canEdit={canEdit}
               roleName={props.name}
-              tooltip={defaultRoleTooltip}
+              tooltip={actionTooltip}
             />
             <DeleteRole
               canEdit={canEdit}
               roleName={props.name}
-              tooltip={defaultRoleTooltip}
+              tooltip={actionTooltip}
             />
           </>
         );

@@ -8298,11 +8298,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.10.12":
-  version: 2.10.34
-  resolution: "baseline-browser-mapping@npm:2.10.34"
+  version: 2.11.25
+  resolution: "baseline-browser-mapping@npm:2.11.25"
   bin:
     baseline-browser-mapping: dist/cli.cjs
-  checksum: 10/d0f2e4792b04b2f305e60ca5bf591fa92a2ee39125d8d8e39959e06d8ea68832a026782acd71050f27e44dc676e2de621c87aa698a47976b4e82ce735cd70fc1
+  checksum: 10/3f59955a3e836bae87e9a78c4823d83cd0928a2c054904c60aaa5f25b617faa89aa45bd91035b7171d11637efeb43b82bc5206f474c580aca701968427571688
   languageName: node
   linkType: hard
 
@@ -8433,12 +8433,12 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.13
-  resolution: "brace-expansion@npm:1.1.13"
+  version: 1.1.21
+  resolution: "brace-expansion@npm:1.1.21"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10/b5f4329fdbe9d2e25fa250c8f866ebd054ba946179426e99b86dcccddabdb1d481f0e40ee5430032e62a7d0a6c2837605ace6783d015aa1d65d85ca72154d936
+  checksum: 10/6c0ed34107cb3bd3f44c01d90ec8c01baa3ed75b7755617e2e5797b5908bbf20b313edf575612b200a783b84c7d1826aec2f7a2f03de9905bbfae5dc3dea6a95
   languageName: node
   linkType: hard
 
@@ -9198,9 +9198,9 @@ __metadata:
   linkType: hard
 
 "colord@npm:^2.9.1":
-  version: 2.9.1
-  resolution: "colord@npm:2.9.1"
-  checksum: 10/d2148aafdb8a1b23f0ec4beacb2de3408d734287a6ba7a2ea7da5cd318cfb51f98959a23401206b8312dacf12ed361c8516d4be274d10573ceff5fd442b5736b
+  version: 2.10.0
+  resolution: "colord@npm:2.10.0"
+  checksum: 10/0983763f320b52e9026a59bd7f7633f1487130310d1f381901d14939b3a6e0aef3128c8bd8e5669ededbda0b69e6ba12c801c8905fce6de359284d1ff5d48431
   languageName: node
   linkType: hard
 
@@ -11683,13 +11683,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.4.1":
-  version: 4.5.4
-  resolution: "fast-xml-parser@npm:4.5.4"
+  version: 4.5.7
+  resolution: "fast-xml-parser@npm:4.5.7"
   dependencies:
     strnum: "npm:^1.0.5"
   bin:
     fxparser: src/cli/cli.js
-  checksum: 10/991f11a15d82be778c3452e5f1109975d66276bb951ba4db87417507da15d0b1c09d15a4e4db15a216cf3315b4325f66ff3b7f9b7557d6a2055103755fb39cce
+  checksum: 10/209e84e4ad97f98eb877e6e42097db2f0797bf05388e58f08e6f2967d05d74e69407dec9fc3c9390503e1a08b7eb608fc604944cb9fe5ec7b56cd94647150300
   languageName: node
   linkType: hard
 
@@ -16539,9 +16539,9 @@ __metadata:
   linkType: hard
 
 "node-forge@npm:^1":
-  version: 1.3.1
-  resolution: "node-forge@npm:1.3.1"
-  checksum: 10/05bab6868633bf9ad4c3b1dd50ec501c22ffd69f556cdf169a00998ca1d03e8107a6032ba013852f202035372021b845603aeccd7dfcb58cdb7430013b3daa8d
+  version: 1.4.3
+  resolution: "node-forge@npm:1.4.3"
+  checksum: 10/e0341f893234fd15aeb52c704ad1ea3b31f0bd8671f2c2aa45abaef9dac928ebbf473c7fcfca69994e90478d71936d0cc1b2001bc4b81ab70b86da0d676060c1
   languageName: node
   linkType: hard
 
