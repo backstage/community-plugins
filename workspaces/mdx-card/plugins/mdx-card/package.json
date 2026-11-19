@@ -1,0 +1,106 @@
+{
+  "name": "@backstage-community/plugin-mdx-card",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "mdx-card",
+    "pluginPackages": [
+      "@backstage-community/plugin-mdx-card"
+    ]
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./legacy": "./src/legacy.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "legacy": [
+        "src/legacy.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.10.3",
+    "@backstage/core-components": "^0.18.16",
+    "@backstage/core-plugin-api": "^1.13.0",
+    "@backstage/frontend-plugin-api": "^1.0.0",
+    "@backstage/plugin-catalog-react": "^4.0.0",
+    "@backstage/plugin-home-react": "^0.1.44",
+    "@backstage/types": "^1.2.2",
+    "@mdx-js/mdx": "^3.1.0",
+    "@mdx-js/react": "^3.1.0",
+    "@mui/material": "^5.15.16",
+    "@types/mdx": "^2.0.13",
+    "nunjucks": "^3.2.4",
+    "react-error-boundary": "^4.0.13",
+    "react-use": "^17.6.0",
+    "recharts": "^2.12.7",
+    "remark-gfm": "^4.0.1",
+    "zod": "^3.25.76 || ^4.0.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.36.8",
+    "@backstage/dev-utils": "^1.2.0",
+    "@backstage/frontend-defaults": "^0.5.8",
+    "@backstage/frontend-test-utils": "^1.0.0",
+    "@backstage/plugin-app-react": "^0.3.0",
+    "@backstage/plugin-catalog": "^2.1.0",
+    "@backstage/test-utils": "^1.8.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/lodash": "^4.17.0",
+    "@types/nunjucks": "^3.2.6",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mdx-card/plugins/mdx-card"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "mdx"
+  ],
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "author": "Roadie",
+  "jest": {
+    "moduleNameMapper": {
+      "^estree-walker$": "<rootDir>/../../../node_modules/@mdx-js/mdx/node_modules/estree-walker/src/index.js"
+    }
+  }
+}
