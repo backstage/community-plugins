@@ -25,13 +25,19 @@ export const EntityMaturityRankWidget: (input: {
 }) => JSX_2.Element;
 
 // @public (undocumented)
-export const EntityMaturityScorecardContent: () => JSX_2.Element;
+export const EntityMaturityScorecardContent: (
+  input: MaturityDisplayProps,
+) => JSX_2.Element;
 
 // @public (undocumented)
-export const EntityMaturitySummaryCard: () => JSX_2.Element;
+export const EntityMaturitySummaryCard: (
+  props: MaturityDisplayProps,
+) => JSX_2.Element;
 
 // @public (undocumented)
-export const EntityMaturitySummaryContent: () => JSX_2.Element;
+export const EntityMaturitySummaryContent: (
+  input: MaturityDisplayProps,
+) => JSX_2.Element;
 
 // @public
 export type MaturityApi = TechInsightsApi & {
@@ -78,8 +84,13 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   getMaturitySummary(entity: Entity): Promise<MaturitySummary>;
 }
 
+// @public
+export interface MaturityDisplayProps {
+  title?: string;
+}
+
 // @public (undocumented)
-export const MaturityPage: () => JSX_2.Element;
+export const MaturityPage: (props: MaturityDisplayProps) => JSX_2.Element;
 
 // @public (undocumented)
 export const techInsightsMaturityPlugin: BackstagePlugin<
