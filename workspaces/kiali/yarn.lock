@@ -3255,8 +3255,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-catalog-backend@npm:^3.8.0, @backstage/plugin-catalog-backend@npm:^3.8.1":
-  version: 3.9.2
-  resolution: "@backstage/plugin-catalog-backend@npm:3.9.2"
+  version: 3.9.3
+  resolution: "@backstage/plugin-catalog-backend@npm:3.9.3"
   dependencies:
     "@backstage/backend-openapi-utils": "npm:^0.7.1"
     "@backstage/backend-plugin-api": "npm:^1.10.0"
@@ -3292,7 +3292,7 @@ __metadata:
     yn: "npm:^4.0.0"
     zod: "npm:^3.25.76 || ^4.0.0"
     zod-validation-error: "npm:^5.0.0"
-  checksum: 10/920d31a5bb996b158b95147e53747c8dbe59c9af877852d8b6673306e80e229d3524d05f2b02bdc46b152e4a9e6c42b2d9239807491a6871a96e9c4028dc259d
+  checksum: 10/9d4f8eaed3800324ec9dd90523bc9c2e9425077a3ee09e1d8973c90b5019e243156fe0e2ca1647a2581874d5e4f75bbb06cc0f0d70ee1f609a246affd0cd3941
   languageName: node
   linkType: hard
 
