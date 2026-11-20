@@ -1,5 +1,11 @@
 # @backstage-community/plugin-periskop-backend
 
+## 0.25.1
+
+### Patch Changes
+
+- 5e9aee0: Remove an unused backend dependency and two unused frontend test dependencies.
+
 ## 0.25.0
 
 ### Minor Changes
