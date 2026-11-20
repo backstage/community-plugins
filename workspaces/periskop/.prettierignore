@@ -3,5 +3,4 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
-plugins/periskop/knip-report.md
-plugins/periskop-backend/knip-report.md
+knip-report.md
