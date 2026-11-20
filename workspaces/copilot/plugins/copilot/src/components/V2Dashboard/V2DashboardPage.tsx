@@ -24,6 +24,7 @@ import {
 } from 'react';
 import {
   Alert,
+  Button,
   DateRangePicker,
   Flex,
   Grid,
@@ -48,7 +49,12 @@ import { parseDate } from '@internationalized/date';
 import { DateTime } from 'luxon';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { CopilotPage } from '../Pages/CopilotPage';
-import { useV2CostCenters, useV2DashboardData, useV2Teams } from './hooks';
+import {
+  useV2CostCenters,
+  useV2DashboardData,
+  useV2OrganizationTeamOptions,
+  useV2Teams,
+} from './hooks';
 import { CopilotUsageSummary } from './CopilotUsageSummary';
 import { CodeGenerationSummary } from './CodeGenerationSummary';
 import {
@@ -107,10 +113,31 @@ type CostCenterSelection =
   | { kind: 'all' }
   | { kind: 'costCenter'; id: string }
   | { kind: 'noCostCenter' };
+type OrganizationTeamSelection =
+  | {
+      target: 'organizationTeam';
+      organization: undefined;
+      team: undefined;
+    }
+  | {
+      target: 'organizationTeam';
+      organization: string;
+      team: string | undefined;
+    };
+type FilterSelection =
+  | { target: 'team' | 'enterpriseTeam'; team: string | undefined }
+  | OrganizationTeamSelection
+  | { target: 'costCenter'; costCenter: CostCenterSelection };
+type ScopedFilterSelection = {
+  scopeKey: string;
+  value: FilterSelection;
+};
 
 const ALL_COST_CENTERS_OPTION = 'all';
+const ALL_ORGANIZATIONS_OPTION = 'all-organizations';
 const UNASSIGNED_OPTION = 'no-cost-center';
 const COST_CENTER_OPTION_PREFIX = 'cost-center:';
+const ORGANIZATION_OPTION_PREFIX = 'organization:';
 const TEAM_TARGET_LABELS: Record<TeamFilterTarget, string> = {
   team: 'Team',
   enterpriseTeam: 'Enterprise team',
@@ -119,6 +146,19 @@ const TEAM_TARGET_LABELS: Record<TeamFilterTarget, string> = {
 
 const getCostCenterOptionValue = (id: string) =>
   `${COST_CENTER_OPTION_PREFIX}${id}`;
+
+const createEmptyFilterSelection = (target: FilterTarget): FilterSelection => {
+  if (target === 'costCenter') {
+    return { target, costCenter: { kind: 'all' } };
+  }
+  if (target === 'organizationTeam') {
+    return { target, organization: undefined, team: undefined };
+  }
+  return { target, team: undefined };
+};
+
+const getOrganizationTeamOptionValue = (organization: string, team: string) =>
+  `${organization}/${team}`;
 
 const getCostCenterSelectionOptionValue = (
   selection: CostCenterSelection,
@@ -216,6 +256,9 @@ export const V2DashboardPage = () => {
     configApi.getOptionalBoolean('copilot.ingestTeams') ?? false;
   const ingestCostCenters =
     configApi.getOptionalBoolean('copilot.ingestCostCenters') ?? false;
+  const ingestOrganizationTeamReports =
+    configApi.getOptionalBoolean('copilot.ingestOrganizationTeamReports') ??
+    false;
   const defaultView = configApi.getOptionalString('copilot.defaultView') as
     | 'enterprise'
     | 'organization'
@@ -242,22 +285,36 @@ export const V2DashboardPage = () => {
     ingestCostCenters &&
     (type === 'enterprise' || Boolean(enterprise && organization));
   const organizationTeamScopeEnabled =
-    type === 'enterprise' && Boolean(enterprise && organization && ingestTeams);
+    type === 'enterprise' &&
+    Boolean(
+      enterprise &&
+        (ingestOrganizationTeamReports || (organization && ingestTeams)),
+    );
+  const configuredOrganizationTeamScopeEnabled =
+    type === 'organization' &&
+    Boolean(enterprise && organization && ingestOrganizationTeamReports);
   const defaultTeamTarget: FilterTarget =
     type === 'enterprise' ? 'enterpriseTeam' : 'team';
   const teamTargets = useMemo<FilterTarget[]>(
     () => [
-      defaultTeamTarget,
+      ...(ingestTeams || configuredOrganizationTeamScopeEnabled
+        ? [defaultTeamTarget]
+        : []),
       ...(organizationTeamScopeEnabled ? ['organizationTeam' as const] : []),
     ],
-    [defaultTeamTarget, organizationTeamScopeEnabled],
+    [
+      defaultTeamTarget,
+      ingestTeams,
+      organizationTeamScopeEnabled,
+      configuredOrganizationTeamScopeEnabled,
+    ],
   );
   const filterTargets = useMemo<FilterTarget[]>(
     () => [
       ...(costCenterScopeEnabled ? ['costCenter' as const] : []),
-      ...(ingestTeams ? teamTargets : []),
+      ...teamTargets,
     ],
-    [costCenterScopeEnabled, ingestTeams, teamTargets],
+    [costCenterScopeEnabled, teamTargets],
   );
   const filterTargetToggleAvailable = filterTargets.length > 1;
 
@@ -266,47 +323,41 @@ export const V2DashboardPage = () => {
   );
   const [to, setTo] = useState(DateTime.now().toFormat('yyyy-MM-dd'));
   const scopeKey = JSON.stringify([type, entityId]);
-  const [filterTargetSelection, setFilterTargetSelection] = useState<{
-    scopeKey: string;
-    value: FilterTarget;
-  }>({ scopeKey, value: defaultTeamTarget });
-  const selectedFilterTarget =
-    filterTargetSelection.scopeKey === scopeKey &&
-    filterTargets.includes(filterTargetSelection.value)
-      ? filterTargetSelection.value
-      : defaultTeamTarget;
-  let filterTarget: FilterTarget | undefined;
-  if (filterTargetToggleAvailable) {
-    filterTarget = selectedFilterTarget;
-  } else if (costCenterScopeEnabled) {
-    filterTarget = 'costCenter';
-  } else if (ingestTeams) {
-    filterTarget = defaultTeamTarget;
-  }
-  const teamSelectionScopeKey = JSON.stringify([scopeKey, filterTarget]);
-  const [teamSelection, setTeamSelection] = useState<{
-    scopeKey: string;
-    value: string | undefined;
-  }>({ scopeKey, value: undefined });
-  const [costCenterSelection, setCostCenterSelection] = useState<{
-    scopeKey: string;
-    value: CostCenterSelection;
-  }>({ scopeKey, value: { kind: 'all' } });
+  const [filterSelection, setFilterSelection] = useState<ScopedFilterSelection>(
+    {
+      scopeKey,
+      value: createEmptyFilterSelection(defaultTeamTarget),
+    },
+  );
+  const currentFilterSelection =
+    filterSelection.scopeKey === scopeKey &&
+    filterTargets.includes(filterSelection.value.target)
+      ? filterSelection.value
+      : undefined;
+  const filterTarget: FilterTarget | undefined =
+    currentFilterSelection?.target ?? teamTargets[0] ?? filterTargets[0];
+  const activeFilterSelection =
+    currentFilterSelection?.target === filterTarget
+      ? currentFilterSelection
+      : undefined;
+  const selectedOrganizationTeamOrganization =
+    activeFilterSelection?.target === 'organizationTeam'
+      ? activeFilterSelection.organization
+      : undefined;
+  const isPartialOrganizationTeamMode =
+    (filterTarget === 'organizationTeam' &&
+      selectedOrganizationTeamOrganization !== undefined) ||
+    (type === 'organization' && filterTarget === 'team');
   const selectedTeam =
-    teamSelection.scopeKey === teamSelectionScopeKey
-      ? teamSelection.value
+    activeFilterSelection && activeFilterSelection.target !== 'costCenter'
+      ? activeFilterSelection.team
       : undefined;
   const selectedCostCenter = useMemo<CostCenterSelection>(
     () =>
-      costCenterScopeEnabled && costCenterSelection.scopeKey === scopeKey
-        ? costCenterSelection.value
+      costCenterScopeEnabled && activeFilterSelection?.target === 'costCenter'
+        ? activeFilterSelection.costCenter
         : { kind: 'all' },
-    [
-      costCenterScopeEnabled,
-      costCenterSelection.scopeKey,
-      costCenterSelection.value,
-      scopeKey,
-    ],
+    [activeFilterSelection, costCenterScopeEnabled],
   );
   const isTeamTarget =
     filterTarget === 'team' ||
@@ -321,46 +372,79 @@ export const V2DashboardPage = () => {
     filterTarget === 'costCenter' && selectedCostCenter.kind === 'noCostCenter';
   const setSelectedTeam = useCallback(
     (value: string | undefined) => {
-      setTeamSelection({ scopeKey: teamSelectionScopeKey, value });
-      setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
+      if (filterTarget === 'organizationTeam') {
+        setFilterSelection({
+          scopeKey,
+          value:
+            selectedOrganizationTeamOrganization === undefined
+              ? {
+                  target: 'organizationTeam',
+                  organization: undefined,
+                  team: undefined,
+                }
+              : {
+                  target: 'organizationTeam',
+                  organization: selectedOrganizationTeamOrganization,
+                  team: value,
+                },
+        });
+      } else if (filterTarget === 'team' || filterTarget === 'enterpriseTeam') {
+        setFilterSelection({
+          scopeKey,
+          value: { target: filterTarget, team: value },
+        });
+      }
     },
-    [scopeKey, teamSelectionScopeKey],
+    [filterTarget, scopeKey, selectedOrganizationTeamOrganization],
   );
   const setSelectedCostCenter = useCallback(
     (value: CostCenterSelection) => {
-      setCostCenterSelection({ scopeKey, value });
-      setTeamSelection({
-        scopeKey: teamSelectionScopeKey,
-        value: undefined,
+      setFilterSelection({
+        scopeKey,
+        value: { target: 'costCenter', costCenter: value },
       });
     },
-    [scopeKey, teamSelectionScopeKey],
+    [scopeKey],
+  );
+  const setSelectedOrganizationTeamOrganization = useCallback(
+    (value: string | undefined, team?: string) => {
+      setFilterSelection({
+        scopeKey,
+        value:
+          value === undefined
+            ? {
+                target: 'organizationTeam',
+                organization: undefined,
+                team: undefined,
+              }
+            : { target: 'organizationTeam', organization: value, team },
+      });
+    },
+    [scopeKey],
   );
   const selectFilterTarget = useCallback(
     (value: FilterTarget) => {
-      if (value === selectedFilterTarget) {
+      if (value === filterTarget) {
         return;
       }
-      setFilterTargetSelection({ scopeKey, value });
-      if (value !== 'costCenter') {
-        setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
-      }
-      setTeamSelection({
-        scopeKey: JSON.stringify([scopeKey, value]),
-        value: undefined,
+      setFilterSelection({
+        scopeKey,
+        value: createEmptyFilterSelection(value),
       });
     },
-    [scopeKey, selectedFilterTarget],
+    [scopeKey, filterTarget],
   );
 
-  const useOrganizationTeamScope =
-    filterTarget === 'organizationTeam' && Boolean(activeTeam);
-  const dashboardType: MetricsScope = useOrganizationTeamScope
-    ? 'organization'
-    : type;
-  const dashboardEntityId = useOrganizationTeamScope
-    ? organization ?? ''
-    : entityId;
+  let dashboardType = type;
+  if (filterTarget === 'organizationTeam') {
+    dashboardType = selectedOrganizationTeamOrganization
+      ? 'organization'
+      : 'enterprise';
+  }
+  const dashboardEntityId =
+    filterTarget === 'organizationTeam'
+      ? selectedOrganizationTeamOrganization ?? entityId
+      : entityId;
   const params = useMemo(
     () => ({
       type: dashboardType,
@@ -373,18 +457,24 @@ export const V2DashboardPage = () => {
     [dashboardType, dashboardEntityId, from, to, activeTeam, activeCostCenter],
   );
 
-  const { data } = useV2DashboardData(params, activeNoCostCenter);
+  const dashboard = useV2DashboardData(params, activeNoCostCenter);
+  const data = dashboard.data;
   const costCenters = useV2CostCenters(type, entityId, from, to);
   const enterpriseTeams = useV2Teams(type, entityId, from, to);
-  const organizationTeams = useV2Teams(
-    'organization',
-    organization ?? '',
+  const organizationTeamOptions = useV2OrganizationTeamOptions(
+    selectedOrganizationTeamOrganization,
     from,
     to,
     organizationTeamScopeEnabled,
   );
-  const teams =
-    filterTarget === 'organizationTeam' ? organizationTeams : enterpriseTeams;
+  const teamOptionsLoading =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.loading
+      : enterpriseTeams.loading;
+  const teamOptionsError =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.error
+      : enterpriseTeams.error;
   const costCenterAvailability = getListAvailability(costCenters);
   const costCentersHaveOptions =
     costCenterAvailability.hasOptions ||
@@ -392,7 +482,17 @@ export const V2DashboardPage = () => {
       !costCenters.error &&
       costCenters.hasUsersWithoutCostCenter);
   const enterpriseTeamAvailability = getListAvailability(enterpriseTeams);
-  const organizationTeamAvailability = getListAvailability(organizationTeams);
+  const organizationTeamAvailability = {
+    knownEmpty:
+      !organizationTeamOptions.loading &&
+      !organizationTeamOptions.error &&
+      !organizationTeamOptions.hasPendingOrganizations &&
+      organizationTeamOptions.organizations.length === 0,
+    hasOptions:
+      !organizationTeamOptions.loading &&
+      !organizationTeamOptions.error &&
+      organizationTeamOptions.organizations.length > 0,
+  };
   const targetAvailability: Record<
     FilterTarget,
     ReturnType<typeof getListAvailability>
@@ -422,7 +522,8 @@ export const V2DashboardPage = () => {
     'No teams with Copilot data in the selected date range';
   const enterpriseTeamDescription =
     'Teams defined at the enterprise level in GitHub. They can include members from any organization in the enterprise.';
-  const organizationTeamDescription = `Teams defined within the ${organization} organization. Metrics come from that organization's Copilot reports.`;
+  const organizationTeamDescription =
+    'Teams defined in an organization. Each team is listed with its owning organization.';
   const teamTargetDescriptions: Partial<Record<TeamFilterTarget, string>> = {
     enterpriseTeam: enterpriseTeamDescription,
     organizationTeam: organizationTeamDescription,
@@ -469,33 +570,37 @@ export const V2DashboardPage = () => {
   }, [costCenters.hasUsersWithoutCostCenter, costCenters.items]);
 
   useEffect(() => {
-    if (teamSelection.scopeKey !== teamSelectionScopeKey) {
-      setTeamSelection({ scopeKey: teamSelectionScopeKey, value: undefined });
+    if (filterSelection.scopeKey !== scopeKey) {
+      setFilterSelection({
+        scopeKey,
+        value: createEmptyFilterSelection(defaultTeamTarget),
+      });
     }
-    if (costCenterSelection.scopeKey !== scopeKey) {
-      setCostCenterSelection({ scopeKey, value: { kind: 'all' } });
-    }
-    if (filterTargetSelection.scopeKey !== scopeKey) {
-      setFilterTargetSelection({ scopeKey, value: defaultTeamTarget });
-    }
-  }, [
-    scopeKey,
-    teamSelectionScopeKey,
-    defaultTeamTarget,
-    teamSelection.scopeKey,
-    costCenterSelection.scopeKey,
-    filterTargetSelection.scopeKey,
-  ]);
+  }, [scopeKey, defaultTeamTarget, filterSelection.scopeKey]);
 
   useEffect(() => {
-    if (
-      selectedTeam &&
-      !teams.loading &&
-      (teams.error || !teams.items.includes(selectedTeam))
-    ) {
+    if (!selectedTeam || teamOptionsLoading) {
+      return;
+    }
+
+    const teamExists =
+      filterTarget === 'organizationTeam'
+        ? organizationTeamOptions.teams.some(
+            ({ team }) => team === selectedTeam,
+          )
+        : enterpriseTeams.items.includes(selectedTeam);
+    if (teamOptionsError || !teamExists) {
       setSelectedTeam(undefined);
     }
-  }, [selectedTeam, setSelectedTeam, teams.error, teams.items, teams.loading]);
+  }, [
+    enterpriseTeams.items,
+    filterTarget,
+    organizationTeamOptions.teams,
+    selectedTeam,
+    setSelectedTeam,
+    teamOptionsError,
+    teamOptionsLoading,
+  ]);
 
   useEffect(() => {
     if (
@@ -522,7 +627,11 @@ export const V2DashboardPage = () => {
   ]);
 
   useEffect(() => {
-    if (!filterTargetToggleAvailable) {
+    if (
+      !filterTargetToggleAvailable ||
+      (filterTarget === 'organizationTeam' &&
+        selectedOrganizationTeamOrganization !== undefined)
+    ) {
       return;
     }
 
@@ -545,21 +654,43 @@ export const V2DashboardPage = () => {
     costCenterScopeEnabled,
     filterTarget,
     filterTargetToggleAvailable,
+    selectedOrganizationTeamOrganization,
     selectedTargetKnownEmpty,
     targetWithOptions,
     selectFilterTarget,
   ]);
 
-  const showFilter =
-    filterTarget !== undefined &&
-    (filterTargetToggleAvailable ||
-      (filterTarget === 'costCenter'
-        ? costCentersHaveOptions
-        : teams.items.length > 0));
   const teamSelectorLabel =
     filterTarget && filterTarget !== 'costCenter'
       ? TEAM_TARGET_LABELS[filterTarget]
       : 'Team';
+  const teamOptions =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.teams.map(
+          ({ organization: teamOrganization, team }) => ({
+            value: getOrganizationTeamOptionValue(teamOrganization, team),
+            label: selectedOrganizationTeamOrganization
+              ? team
+              : `${teamOrganization} / ${team}`,
+          }),
+        )
+      : enterpriseTeams.items.map(team => ({ value: team, label: team }));
+  const filterTargetHasOptions =
+    filterTarget === 'organizationTeam'
+      ? organizationTeamOptions.organizations.length > 0 ||
+        organizationTeamOptions.loading ||
+        selectedOrganizationTeamOrganization !== undefined
+      : filterTarget !== undefined &&
+        targetAvailability[filterTarget].hasOptions;
+  const showFilter =
+    filterTarget !== undefined &&
+    (filterTargetToggleAvailable || filterTargetHasOptions);
+  const organizationTeamAlertTitle = organizationTeamOptions.error
+    ? 'Unable to load organization team options.'
+    : 'Unable to load organization team dashboard.';
+  const organizationTeamAlertDescription = organizationTeamOptions.error
+    ? 'The organization team options request failed. Try again, or contact your Backstage administrator if the problem persists.'
+    : 'The organization team dashboard request failed. Try again, or contact your Backstage administrator if the problem persists.';
 
   const onDateRangeChange = useCallback(
     (value: RangeValue<DateValue> | null) => {
@@ -613,7 +744,7 @@ export const V2DashboardPage = () => {
                         aria-label="Filter by"
                         selectionMode="single"
                         disallowEmptySelection
-                        selectedKeys={[selectedFilterTarget]}
+                        selectedKeys={filterTarget ? [filterTarget] : []}
                         onSelectionChange={keys => {
                           const [selected] = Array.from(keys);
                           if (
@@ -656,27 +787,98 @@ export const V2DashboardPage = () => {
                     options={costCenterOptions}
                   />
                 )}
+                {filterTarget === 'organizationTeam' && (
+                  <Select
+                    searchable
+                    isDisabled={organizationTeamOptions.loading}
+                    label="Organization"
+                    selectedKey={
+                      selectedOrganizationTeamOrganization
+                        ? `${ORGANIZATION_OPTION_PREFIX}${selectedOrganizationTeamOrganization}`
+                        : ALL_ORGANIZATIONS_OPTION
+                    }
+                    onChange={key => {
+                      const value = key
+                        ? String(key)
+                        : ALL_ORGANIZATIONS_OPTION;
+                      setSelectedOrganizationTeamOrganization(
+                        value.startsWith(ORGANIZATION_OPTION_PREFIX)
+                          ? value.slice(ORGANIZATION_OPTION_PREFIX.length)
+                          : undefined,
+                      );
+                    }}
+                    options={[
+                      {
+                        value: ALL_ORGANIZATIONS_OPTION,
+                        label: 'All organizations',
+                      },
+                      ...organizationTeamOptions.organizations.map(org => ({
+                        value: `${ORGANIZATION_OPTION_PREFIX}${org}`,
+                        label: org,
+                      })),
+                    ]}
+                  />
+                )}
                 {isTeamTarget && (
                   <Select
                     searchable
-                    isDisabled={teams.loading}
+                    isDisabled={teamOptionsLoading || Boolean(teamOptionsError)}
                     label={teamSelectorLabel}
-                    selectedKey={activeTeam ?? ''}
-                    onChange={key =>
-                      setSelectedTeam(key ? String(key) : undefined)
+                    selectedKey={
+                      filterTarget === 'organizationTeam' &&
+                      selectedOrganizationTeamOrganization &&
+                      activeTeam
+                        ? getOrganizationTeamOptionValue(
+                            selectedOrganizationTeamOrganization,
+                            activeTeam,
+                          )
+                        : activeTeam ?? ''
                     }
+                    onChange={key => {
+                      const value = key ? String(key) : undefined;
+                      if (filterTarget === 'organizationTeam' && value) {
+                        const separator = value.indexOf('/');
+                        setSelectedOrganizationTeamOrganization(
+                          value.slice(0, separator),
+                          value.slice(separator + 1),
+                        );
+                      } else {
+                        setSelectedTeam(value);
+                      }
+                    }}
                     options={[
                       { value: '', label: 'All teams' },
-                      ...teams.items.map(team => ({
-                        value: team,
-                        label: team,
-                      })),
+                      ...teamOptions,
                     ]}
                   />
                 )}
               </Flex>
             )}
           </Flex>
+          {filterTarget === 'organizationTeam' &&
+            (organizationTeamOptions.error || dashboard.error) && (
+              <Alert
+                status="danger"
+                title={organizationTeamAlertTitle}
+                description={organizationTeamAlertDescription}
+                customActions={
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onPress={() => {
+                      if (organizationTeamOptions.error) {
+                        organizationTeamOptions.retry();
+                      }
+                      if (dashboard.error) {
+                        dashboard.retry();
+                      }
+                    }}
+                  >
+                    Retry
+                  </Button>
+                }
+              />
+            )}
 
           <Tabs defaultSelectedKey="copilot-usage">
             <TabList>
@@ -711,6 +913,7 @@ export const V2DashboardPage = () => {
                         variant="daily"
                         from={from}
                         to={to}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -721,6 +924,7 @@ export const V2DashboardPage = () => {
                         variant="weekly"
                         from={from}
                         to={to}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -728,7 +932,12 @@ export const V2DashboardPage = () => {
 
                 {/* Average Chat Requests per Active User */}
                 <ChartCard title="Average Chat Requests per Active User">
-                  <AvgChatRequestsChart data={data.daily} from={from} to={to} />
+                  <AvgChatRequestsChart
+                    data={data.daily}
+                    from={from}
+                    to={to}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
+                  />
                 </ChartCard>
 
                 {/* Requests per Chat Mode */}
@@ -737,6 +946,7 @@ export const V2DashboardPage = () => {
                     data={data.byFeature}
                     from={from}
                     to={to}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -748,6 +958,7 @@ export const V2DashboardPage = () => {
                         data={data.byFeature}
                         from={from}
                         to={to}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -757,6 +968,7 @@ export const V2DashboardPage = () => {
                         data={data.byFeature}
                         from={from}
                         to={to}
+                        fillMissingDays={!isPartialOrganizationTeamMode}
                       />
                     </ChartCard>
                   </Grid.Item>
@@ -768,6 +980,7 @@ export const V2DashboardPage = () => {
                     data={data.byModelFeature}
                     from={from}
                     to={to}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -791,6 +1004,7 @@ export const V2DashboardPage = () => {
                     data={data.byLanguage}
                     from={from}
                     to={to}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
                   />
                 </ChartCard>
 
@@ -827,6 +1041,7 @@ export const V2DashboardPage = () => {
                   summaries={data.customizationSummaries}
                   from={from}
                   to={to}
+                  fillMissingDays={!isPartialOrganizationTeamMode}
                 />
               </Flex>
             </TabPanel>
@@ -855,7 +1070,12 @@ export const V2DashboardPage = () => {
                     Total lines of code added and deleted from the codebase
                     across all modes
                   </Text>
-                  <DailyLOCChart data={data.daily} from={from} to={to} />
+                  <DailyLOCChart
+                    data={data.daily}
+                    from={from}
+                    to={to}
+                    fillMissingDays={!isPartialOrganizationTeamMode}
+                  />
                 </ChartCard>
 
                 {/* Row 3: User-initiated vs Agent-initiated by feature */}
@@ -973,6 +1193,7 @@ export const V2DashboardPage = () => {
                       data={data.daily}
                       from={from}
                       to={to}
+                      fillMissingDays={!isPartialOrganizationTeamMode}
                     />
                   </ChartCard>
                 </Flex>

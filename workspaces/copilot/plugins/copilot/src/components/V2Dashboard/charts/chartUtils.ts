@@ -66,6 +66,31 @@ export function fillDateRange(from: string, to: string): string[] {
   return days;
 }
 
+export function getChartDays(
+  data: Array<{ day: string }>,
+  from: string,
+  to: string,
+  fillMissingDays = true,
+): string[] {
+  if (fillMissingDays) {
+    return fillDateRange(from, to);
+  }
+
+  const firstDay = from.slice(0, 10);
+  const lastDay = to.slice(0, 10);
+  if (firstDay > lastDay) {
+    return [];
+  }
+
+  return [
+    ...new Set(
+      data
+        .map(row => row.day.slice(0, 10))
+        .filter(day => day >= firstDay && day <= lastDay),
+    ),
+  ].sort();
+}
+
 /** Shared x-axis tick label style: 45° angle to give room for date labels. */
 export const DATE_TICK_LABEL_STYLE = {
   angle: -45,

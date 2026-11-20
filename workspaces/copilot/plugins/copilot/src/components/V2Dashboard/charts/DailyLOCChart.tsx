@@ -26,6 +26,7 @@ interface Props {
   data: V2DailyTotal[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
 const NO_DATA = (
@@ -34,8 +35,18 @@ const NO_DATA = (
   </div>
 );
 
-export function DailyLOCChart({ data, from, to }: Props) {
-  const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
+export function DailyLOCChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
+  const aggregated = fillDailyTotalsGaps(
+    aggregateDailyTotals(data),
+    from,
+    to,
+    fillMissingDays,
+  );
   if (aggregated.length === 0) return NO_DATA;
 
   const days = aggregated.map(d => d.day);

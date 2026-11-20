@@ -1,0 +1,73 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import useAsyncRetry from 'react-use/lib/useAsyncRetry';
+import { useApi } from '@backstage/core-plugin-api';
+import { copilotApiV2Ref } from '../../../api';
+import type { V2OrganizationTeamOptions } from '../../../api';
+
+type OptionsResult = V2OrganizationTeamOptions & {
+  queryKey: string;
+  error?: Error;
+};
+
+export function useV2OrganizationTeamOptions(
+  organization: string | undefined,
+  from: string,
+  to: string,
+  enabled = true,
+) {
+  const api = useApi(copilotApiV2Ref);
+  const queryKey = JSON.stringify([organization, from, to, enabled]);
+  const { value, loading, retry } =
+    useAsyncRetry(async (): Promise<OptionsResult> => {
+      if (!enabled) {
+        return {
+          queryKey,
+          organizations: [],
+          teams: [],
+          hasPendingOrganizations: false,
+        };
+      }
+
+      try {
+        const options = await api.getOrganizationTeamOptions({
+          organization,
+          from,
+          to,
+        });
+        return { queryKey, ...options };
+      } catch (error) {
+        return {
+          queryKey,
+          organizations: [],
+          teams: [],
+          hasPendingOrganizations: false,
+          error: error instanceof Error ? error : new Error(String(error)),
+        };
+      }
+    }, [api, organization, from, to, enabled]);
+  const hasCurrentResult = value?.queryKey === queryKey;
+
+  return {
+    organizations: hasCurrentResult ? value.organizations : [],
+    teams: hasCurrentResult ? value.teams : [],
+    hasPendingOrganizations: hasCurrentResult && value.hasPendingOrganizations,
+    loading: loading || !hasCurrentResult,
+    error: hasCurrentResult ? value.error : undefined,
+    retry,
+  };
+}

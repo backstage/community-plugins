@@ -26,6 +26,7 @@ interface Props {
   data: V2DailyTotal[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
 const NO_DATA = (
@@ -39,8 +40,18 @@ const NO_DATA = (
  * selected timeframe. AI credits are only available from per-user data, so
  * this chart is only meaningful for team-scoped views.
  */
-export function AiCreditsConsumptionChart({ data, from, to }: Props) {
-  const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
+export function AiCreditsConsumptionChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
+  const aggregated = fillDailyTotalsGaps(
+    aggregateDailyTotals(data),
+    from,
+    to,
+    fillMissingDays,
+  );
   if (aggregated.length === 0) return NO_DATA;
 
   const days = aggregated.map(d => d.day);

@@ -20,6 +20,7 @@ import {
   filterLocRowsByMode,
   formatDay,
   fillDateRange,
+  getChartDays,
   getChatModelTotals,
   getMostUsedChatModel,
   isAgentCodeChangeFeature,
@@ -129,6 +130,19 @@ describe('fillDateRange', () => {
   });
 });
 
+describe('getChartDays', () => {
+  it('uses only days present in the data when coverage may be partial', () => {
+    expect(
+      getChartDays(
+        [{ day: '2026-08-09' }, { day: '2026-08-07' }, { day: '2026-08-09' }],
+        '2026-08-07',
+        '2026-08-10',
+        false,
+      ),
+    ).toEqual(['2026-08-07', '2026-08-09']);
+  });
+});
+
 const ZERO_ROW: V2DailyTotal = {
   day: '',
   metrics_type: 'organization',
@@ -199,5 +213,13 @@ describe('fillDailyTotalsGaps', () => {
 
   it('returns an empty array when the input data is empty', () => {
     expect(fillDailyTotalsGaps([], '2026-08-07', '2026-08-10')).toEqual([]);
+  });
+
+  it('keeps missing days unknown when report coverage may be partial', () => {
+    const data = [makeRow('2026-08-07'), makeRow('2026-08-09')];
+
+    expect(
+      fillDailyTotalsGaps(data, '2026-08-07', '2026-08-09', false),
+    ).toEqual(data);
   });
 });

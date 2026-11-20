@@ -15,7 +15,11 @@
  */
 
 import { TestDatabaseId, TestDatabases } from '@backstage/backend-test-utils';
-import { Knex } from 'knex';
+import { randomUUID } from 'node:crypto';
+import { rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import knexFactory, { Knex } from 'knex';
+import { DateTime } from 'luxon';
 import {
   V2DailyTotal,
   V2CustomizationMetricRow,
@@ -32,7 +36,10 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
 import type { CostCenterAggregateRows } from './DatabaseHandlerV2';
-import { DatabaseHandlerV2 } from './DatabaseHandlerV2';
+import {
+  DatabaseHandlerV2,
+  OrganizationIngestionLeaseLostError,
+} from './DatabaseHandlerV2';
 
 const costCenterMigration = jest.requireActual<{
   up(knex: Knex): Promise<void>;
@@ -217,6 +224,1685 @@ describe('DatabaseHandlerV2', () => {
 
     afterEach(async () => {
       await knex?.destroy();
+    });
+
+    async function syncOrganizations(
+      enterpriseId: string,
+      organizations: string[],
+      now: Date,
+    ): Promise<string> {
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        enterpriseId,
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          enterpriseId,
+          generation,
+          organizations,
+          now,
+        ),
+      ).resolves.toBe('synced');
+      return generation;
+    }
+
+    it.each(['commit', 'rollback', 'invalid replacement'])(
+      'keeps bound inserts and nested replacements in the lease transaction: %s',
+      async outcome => {
+        const now = new Date();
+        await syncOrganizations('ent-1', ['org-1'], now);
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'org-1',
+          now,
+          new Date(now.getTime() + 60_000),
+        );
+        const day = '2026-05-01';
+        const teamTotal = buildDailyTotal({ team_slug: 'platform' });
+        const operation = handler.withOrganizationIngestionLease(
+          lease!,
+          async database => {
+            await database.insertDailyTotals([buildDailyTotal()]);
+            await database.replaceTeamAggregates(
+              day,
+              'organization',
+              'org-1',
+              [buildUserTeam({ team_slug: 'platform' })],
+              {
+                dailyTotals:
+                  outcome === 'invalid replacement'
+                    ? [teamTotal, teamTotal]
+                    : [teamTotal],
+                byFeature: [],
+                byIde: [],
+                byLanguageFeature: [],
+                byModelFeature: [],
+                byLanguageModel: [],
+                customizationMetrics: [],
+                costCenterCustomizationMetrics: [],
+              },
+            );
+            await database.replaceCostCenterAggregates(
+              day,
+              'organization',
+              'org-1',
+              [
+                {
+                  day,
+                  metrics_type: 'organization',
+                  entity_id: 'org-1',
+                  user_id: 1,
+                  user_login: 'user-1',
+                  cost_center_id: 'cc-a',
+                },
+              ],
+              makeCostCenterAggregateRows(
+                day,
+                [
+                  {
+                    costCenterId: 'cc-a',
+                    teamSlug: '',
+                    activeUsers: 1,
+                    locAdded: 10,
+                  },
+                ],
+                'organization',
+                'org-1',
+              ),
+            );
+            await database.upsertIngestionLog(buildIngestionLog());
+            if (outcome === 'rollback') {
+              throw new Error('Abort organization writes');
+            }
+          },
+        );
+
+        const error = await operation.then(
+          () => undefined,
+          (cause: Error) => cause,
+        );
+        const expectedMessage = {
+          commit: /^$/,
+          rollback: /Abort organization writes/,
+          'invalid replacement': /unique|duplicate/i,
+        }[outcome];
+        expect(error?.message ?? '').toMatch(expectedMessage!);
+        for (const table of [
+          ...costCenterAggregateTables,
+          'copilot_user_teams',
+          'copilot_user_cost_centers',
+          'copilot_cost_center_aggregation_log',
+          'copilot_ingestion_log',
+        ]) {
+          const committedCount = table === 'copilot_daily_totals' ? 3 : 1;
+          const expectedCount = outcome === 'commit' ? committedCount : 0;
+          expect(await knex(table).select('day')).toHaveLength(expectedCount);
+        }
+      },
+    );
+
+    it('fences organization work, hides inaccessible orgs, and retains history', async () => {
+      const now = new Date();
+      const nextAttemptAt = new Date(now.getTime() + 60_000);
+      await syncOrganizations('ent-1', ['Org-A', 'org-a', 'Org-B'], now);
+
+      const organizationsToIngest =
+        await handler.getEnterpriseOrganizationsToIngest(
+          'ent-1',
+          now,
+          5,
+          1,
+          'org-b',
+        );
+      expect(organizationsToIngest).toEqual(['Org-A']);
+
+      const firstLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      expect(firstLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          nextAttemptAt,
+        ),
+      ).resolves.toBeUndefined();
+
+      await handler.withOrganizationIngestionLease(
+        firstLease!,
+        async database => {
+          await database.updateEnterpriseOrganizationState(firstLease!, {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: new Date(),
+          });
+        },
+      );
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+
+      const secondStartedAt = new Date();
+      const secondExpiresAt = new Date(secondStartedAt.getTime() + 60_000);
+      const secondLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        secondStartedAt,
+        secondExpiresAt,
+      );
+      expect(secondLease).toBeDefined();
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          firstLease!,
+          secondStartedAt,
+          secondExpiresAt,
+        ),
+      ).resolves.toBe(false);
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+      const staleOperation = jest.fn();
+      await expect(
+        handler.withOrganizationIngestionLease(firstLease!, staleOperation),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      expect(staleOperation).not.toHaveBeenCalled();
+      await expect(
+        handler.updateEnterpriseOrganizationState(firstLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: secondStartedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          secondStartedAt,
+          secondExpiresAt,
+          firstLease!,
+        ),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      const currentOrganization = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('lease_owner', 'access_state', 'reports_ready');
+      expect(currentOrganization).toMatchObject({
+        lease_owner: secondLease!.owner,
+        access_state: 'accessible',
+      });
+      expect(Boolean(currentOrganization?.reports_ready)).toBe(true);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          secondLease!,
+          secondStartedAt,
+          new Date(secondExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+      await handler.releaseEnterpriseOrganizationLease(secondLease!);
+
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-B', team_slug: '' }),
+      ]);
+      const inaccessibleLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-B',
+        new Date(),
+        new Date(Date.now() + 60_000),
+      );
+      expect(inaccessibleLease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(inaccessibleLease!, {
+        accessState: 'inaccessible',
+        reportsReady: false,
+        lastAttemptedAt: new Date(),
+        nextAttemptAt: new Date(Date.now() + 60_000),
+      });
+      await handler.releaseEnterpriseOrganizationLease(inaccessibleLease!);
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      await syncOrganizations('ent-1', ['Org-A'], new Date());
+      await expect(
+        knex('copilot_daily_totals').where({
+          metrics_type: 'organization',
+          entity_id: 'Org-B',
+        }),
+      ).resolves.toHaveLength(1);
+    });
+
+    it('fences out-of-order directory refreshes across independent connections', async () => {
+      const now = new Date();
+      const day = now.toISOString().slice(0, 10);
+      let primaryClient: Knex | undefined;
+      let secondaryClient: Knex | undefined;
+      let sqliteFile: string | undefined;
+      let primaryHandler = handler;
+
+      try {
+        if (databaseId === 'SQLITE_3') {
+          sqliteFile = join(
+            process.cwd(),
+            `.copilot-directory-${randomUUID()}.sqlite3`,
+          );
+          const sqliteConfig = {
+            client: knex.client.config.client,
+            connection: sqliteFile,
+            useNullAsDefault: true,
+            pool: { min: 0, max: 1 },
+          };
+          primaryClient = knexFactory(sqliteConfig);
+          secondaryClient = knexFactory(sqliteConfig);
+          await primaryClient.migrate.latest({ directory: migrationsDir });
+          primaryHandler = await DatabaseHandlerV2.create({
+            database: {
+              getClient: async () => primaryClient!,
+              migrations: { skip: true },
+            } as any,
+          });
+        } else {
+          secondaryClient = knexFactory({
+            client: knex.client.config.client,
+            connection: knex.client.config.connection,
+            pool: { min: 0, max: 1 },
+          });
+        }
+
+        const secondaryHandler = await DatabaseHandlerV2.create({
+          database: {
+            getClient: async () => secondaryClient!,
+            migrations: { skip: true },
+          } as any,
+        });
+        const [firstGeneration, secondGeneration] =
+          databaseId === 'SQLITE_3'
+            ? [
+                await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+                await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+              ]
+            : await Promise.all([
+                primaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+                secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+              ]);
+        const firstIsOlder = BigInt(firstGeneration) < BigInt(secondGeneration);
+        const olderRun = {
+          handler: firstIsOlder ? primaryHandler : secondaryHandler,
+          generation: firstIsOlder ? firstGeneration : secondGeneration,
+        };
+        const newerRun = {
+          handler: firstIsOlder ? secondaryHandler : primaryHandler,
+          generation: firstIsOlder ? secondGeneration : firstGeneration,
+        };
+
+        await expect(
+          newerRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            newerRun.generation,
+            ['Newer-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await expect(
+          olderRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            olderRun.generation,
+            ['Older-Org'],
+            now,
+          ),
+        ).resolves.toBe('superseded');
+        await expect(
+          olderRun.handler.markEnterpriseOrganizationDirectoryFailed(
+            'ent-1',
+            olderRun.generation,
+            now,
+          ),
+        ).resolves.toBe('superseded');
+
+        const stateClient = primaryClient ?? knex;
+        const directory = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(directory?.is_complete)).toBe(true);
+        expect(String(directory?.sync_generation)).toBe(newerRun.generation);
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Newer-Org']);
+
+        const acceptedGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          primaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            acceptedGeneration,
+            ['Accepted-Org', 'Claim-Only-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        const acceptedLeaseExpiresAt = new Date(Date.now() + 60 * 60 * 1_000);
+        const acceptedLease =
+          await primaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Accepted-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            acceptedGeneration,
+          );
+        expect(acceptedLease).toBeDefined();
+        await primaryHandler.updateEnterpriseOrganizationState(acceptedLease!, {
+          accessState: 'accessible',
+          reportsReady: true,
+          lastAttemptedAt: now,
+        });
+
+        const supersedingGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        expect(BigInt(supersedingGeneration)).toBeGreaterThan(
+          BigInt(acceptedGeneration),
+        );
+        await expect(
+          primaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Claim-Only-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            acceptedGeneration,
+          ),
+        ).resolves.toBeUndefined();
+        await expect(
+          primaryHandler.updateEnterpriseOrganizationState(acceptedLease!, {
+            accessState: 'inaccessible',
+            reportsReady: false,
+            lastAttemptedAt: now,
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+        let staleWriteRan = false;
+        await expect(
+          primaryHandler.withOrganizationIngestionLease(
+            acceptedLease!,
+            async database => {
+              staleWriteRan = true;
+              await database.insertDailyTotals([
+                buildDailyTotal({
+                  day,
+                  entity_id: 'Accepted-Org',
+                }),
+              ]);
+            },
+          ),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+        expect(staleWriteRan).toBe(false);
+        const acceptedOrganization = await stateClient(
+          'copilot_enterprise_organizations',
+        )
+          .where({
+            enterprise_id: 'ent-1',
+            organization_key: 'accepted-org',
+          })
+          .first('access_state', 'reports_ready');
+        expect(acceptedOrganization?.access_state).toBe('accessible');
+        expect(Boolean(acceptedOrganization?.reports_ready)).toBe(true);
+        await expect(
+          stateClient('copilot_daily_totals').where({
+            day,
+            metrics_type: 'organization',
+            entity_id: 'Accepted-Org',
+          }),
+        ).resolves.toHaveLength(0);
+        const supersedingDirectory = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(supersedingDirectory?.is_complete)).toBe(true);
+        expect(String(supersedingDirectory?.sync_generation)).toBe(
+          supersedingGeneration,
+        );
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .orderBy('organization_login', 'asc')
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Accepted-Org', 'Claim-Only-Org']);
+
+        await expect(
+          secondaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            supersedingGeneration,
+            ['Current-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        const currentLease =
+          await secondaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Current-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            supersedingGeneration,
+          );
+        expect(currentLease).toBeDefined();
+        await secondaryHandler.updateEnterpriseOrganizationState(
+          currentLease!,
+          {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: now,
+          },
+        );
+        await secondaryHandler.releaseEnterpriseOrganizationLease(
+          currentLease!,
+        );
+        await primaryHandler.releaseEnterpriseOrganizationLease(acceptedLease!);
+
+        const emptyGeneration =
+          await newerRun.handler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          olderRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            emptyGeneration,
+            [],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual([]);
+
+        const lastGoodGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await primaryHandler.syncEnterpriseOrganizations(
+          'ent-1',
+          lastGoodGeneration,
+          ['Last-Good-Org'],
+          now,
+        );
+        const delayedGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        const failedNewerGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          secondaryHandler.markEnterpriseOrganizationDirectoryFailed(
+            'ent-1',
+            failedNewerGeneration,
+            now,
+          ),
+        ).resolves.toBe('marked');
+        await expect(
+          primaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            delayedGeneration,
+            ['Stale-Org'],
+            now,
+          ),
+        ).resolves.toBe('superseded');
+        const afterStaleSuccess = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(afterStaleSuccess?.is_complete)).toBe(false);
+        expect(String(afterStaleSuccess?.sync_generation)).toBe(
+          failedNewerGeneration,
+        );
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Last-Good-Org']);
+
+        const baselineGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await primaryHandler.syncEnterpriseOrganizations(
+          'ent-1',
+          baselineGeneration,
+          ['Before-Failed-Refresh'],
+          now,
+        );
+        const failedGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        if (stateClient.client.config.client === 'better-sqlite3') {
+          await stateClient.raw(`
+            CREATE TRIGGER fail_directory_test_insert
+            BEFORE INSERT ON copilot_enterprise_organizations
+            WHEN NEW.organization_key = 'trigger-failure'
+            BEGIN
+              SELECT RAISE(ABORT, 'forced directory insert failure');
+            END
+          `);
+        } else {
+          await stateClient.raw(`
+            CREATE OR REPLACE FUNCTION fail_directory_test_insert()
+            RETURNS trigger AS $$
+            BEGIN
+              IF NEW.organization_key = 'trigger-failure' THEN
+                RAISE EXCEPTION 'forced directory insert failure';
+              END IF;
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql
+          `);
+          await stateClient.raw(`
+            CREATE TRIGGER fail_directory_test_insert
+            BEFORE INSERT ON copilot_enterprise_organizations
+            FOR EACH ROW EXECUTE FUNCTION fail_directory_test_insert()
+          `);
+        }
+
+        await expect(
+          secondaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            failedGeneration,
+            ['trigger-failure'],
+            now,
+          ),
+        ).rejects.toThrow('forced directory insert failure');
+        const afterFailure = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(afterFailure?.is_complete)).toBe(true);
+        expect(String(afterFailure?.sync_generation)).toBe(failedGeneration);
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Before-Failed-Refresh']);
+      } finally {
+        await secondaryClient?.destroy();
+        await primaryClient?.destroy();
+        if (sqliteFile) {
+          await Promise.all([
+            rm(sqliteFile, { force: true }),
+            rm(`${sqliteFile}-wal`, { force: true }),
+            rm(`${sqliteFile}-shm`, { force: true }),
+          ]);
+        }
+      }
+    });
+
+    it('adopts the historical organization ID before configured ingestion and preserves scoped data', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      const day = '2026-05-01';
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day, entity_id: 'Org-A' }),
+        buildDailyTotal({ day, entity_id: 'Org-A', team_slug: 'platform' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({ day, entity_id: 'Org-A' }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({ day, entity_id: 'Org-A', team_slug: 'platform' }),
+      ]);
+
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['ORG-A'],
+          now,
+          'org-a',
+        ),
+      ).resolves.toEqual({
+        configuredOrganizationLogin: 'Org-A',
+        configuredOrganizationAmbiguous: false,
+      });
+
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'org-a',
+        now,
+        new Date(now.getTime() + 60_000),
+      );
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      await expect(
+        handler.getDailyTotals('organization', 'Org-A', day, day),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getDailyTotals('organization', 'org-a', day, day),
+      ).resolves.toHaveLength(0);
+      await expect(
+        handler.getUserMetricsForDay('organization', 'Org-A', day),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getUserMetricsForDay('organization', 'org-a', day),
+      ).resolves.toHaveLength(0);
+      await expect(
+        handler.getTeams('organization', 'Org-A', day, day, 1),
+      ).resolves.toEqual(['platform']);
+      await expect(
+        handler.getTeams('organization', 'org-a', day, day, 1),
+      ).resolves.toEqual([]);
+    });
+
+    it('pauses configured ingestion when historical organization IDs differ only by case', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-01', entity_id: 'Org-A' }),
+        buildDailyTotal({ day: '2026-05-02', entity_id: 'org-a' }),
+      ]);
+
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['ORG-A'],
+          now,
+          'org-a',
+        ),
+      ).resolves.toEqual({
+        configuredOrganizationLogin: undefined,
+        configuredOrganizationAmbiguous: true,
+      });
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: true,
+        organizations: [],
+      });
+    });
+
+    it('fences expired leases across directory revocation and reactivation', async () => {
+      const now = new Date();
+      const firstExpiresAt = new Date(now.getTime() + 60_000);
+      await syncOrganizations('ent-1', ['Org-A'], now);
+
+      const firstLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        firstExpiresAt,
+      );
+      expect(firstLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          firstExpiresAt,
+        ),
+      ).resolves.toBeUndefined();
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          firstLease!,
+          now,
+          firstExpiresAt,
+        ),
+      ).resolves.toBe(true);
+
+      const takeoverAt = new Date(firstExpiresAt.getTime() + 1);
+      const secondExpiresAt = new Date(takeoverAt.getTime() + 60_000);
+      const secondLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        takeoverAt,
+        secondExpiresAt,
+      );
+      expect(secondLease).toBeDefined();
+
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+      await handler.updateEnterpriseOrganizationState(secondLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: takeoverAt,
+      });
+      await expect(
+        handler.updateEnterpriseOrganizationState(firstLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: takeoverAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          secondLease!,
+          takeoverAt,
+          new Date(secondExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+
+      const revokedAt = new Date(takeoverAt.getTime() + 1);
+      await syncOrganizations('ent-1', [], revokedAt);
+      await expect(
+        handler.updateEnterpriseOrganizationState(secondLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: revokedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      const reactivatedAt = new Date(revokedAt.getTime() + 1);
+      await syncOrganizations('ent-1', ['Org-A'], reactivatedAt);
+      const thirdExpiresAt = new Date(reactivatedAt.getTime() + 60_000);
+      const thirdLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        reactivatedAt,
+        thirdExpiresAt,
+      );
+      expect(thirdLease).toBeDefined();
+
+      await handler.releaseEnterpriseOrganizationLease(secondLease!);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          thirdLease!,
+          reactivatedAt,
+          new Date(thirdExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+      await expect(
+        handler.updateEnterpriseOrganizationState(secondLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: reactivatedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await handler.updateEnterpriseOrganizationState(thirdLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: reactivatedAt,
+      });
+      await handler.releaseEnterpriseOrganizationLease(thirdLease!);
+    });
+
+    it.each(['same-generation', 'previous-generation'] as const)(
+      'revokes an accessible organization and invalidates a live %s lease',
+      async leaseGeneration => {
+        const now = new Date();
+        const firstGeneration =
+          await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+        await expect(
+          handler.syncEnterpriseOrganizations(
+            'ent-1',
+            firstGeneration,
+            ['Org-A'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await handler.insertDailyTotals([
+          buildDailyTotal({ entity_id: 'Org-A' }),
+        ]);
+        await expect(
+          handler.markLegacyConfiguredOrganization(
+            'ent-1',
+            'Org-A',
+            now,
+            new Date(now.getTime() + 60_000),
+            undefined,
+            firstGeneration,
+          ),
+        ).resolves.toBe('updated');
+
+        const leaseStartedAt = new Date(now.getTime() + 1);
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          leaseStartedAt,
+          new Date(leaseStartedAt.getTime() + 60_000),
+          true,
+          firstGeneration,
+        );
+        expect(lease).toBeDefined();
+        expect(
+          await handler.getEnterpriseOrganizationDirectory('ent-1'),
+        ).toEqual({
+          complete: true,
+          hasPendingOrganizations: false,
+          organizations: ['Org-A'],
+        });
+
+        let denialGeneration = firstGeneration;
+        let refreshResult:
+          | Awaited<ReturnType<typeof handler.syncEnterpriseOrganizations>>
+          | undefined;
+        if (leaseGeneration === 'previous-generation') {
+          denialGeneration =
+            await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+          refreshResult = await handler.syncEnterpriseOrganizations(
+            'ent-1',
+            denialGeneration,
+            ['Org-A'],
+            new Date(leaseStartedAt.getTime() + 1),
+          );
+        }
+        expect(refreshResult).toBe(
+          leaseGeneration === 'previous-generation' ? 'synced' : undefined,
+        );
+        const stillVisible = await handler.getEnterpriseOrganizationDirectory(
+          'ent-1',
+        );
+        expect(stillVisible.organizations).toEqual(['Org-A']);
+        const stillLeased = await knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+          .first('lease_owner', 'access_state', 'reports_ready');
+        expect(stillLeased).toMatchObject({
+          lease_owner: lease!.owner,
+          access_state: 'accessible',
+        });
+        expect(Boolean(stillLeased?.reports_ready)).toBe(true);
+
+        const deniedAt = new Date(leaseStartedAt.getTime() + 2);
+        await expect(
+          handler.markEnterpriseOrganizationInaccessible(
+            'ent-1',
+            'Org-A',
+            deniedAt,
+            new Date(deniedAt.getTime() + 24 * 60 * 60_000),
+            denialGeneration,
+          ),
+        ).resolves.toBe('updated');
+
+        await expect(
+          handler.getEnterpriseOrganizationDirectory('ent-1'),
+        ).resolves.toEqual({
+          complete: true,
+          hasPendingOrganizations: false,
+          organizations: [],
+        });
+        const inaccessible = await knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+          .first(
+            'access_state',
+            'reports_ready',
+            'lease_owner',
+            'lease_expires_at',
+          );
+        expect(inaccessible?.access_state).toBe('inaccessible');
+        expect(Boolean(inaccessible?.reports_ready)).toBe(false);
+        expect(inaccessible?.lease_owner).toBeNull();
+        expect(inaccessible?.lease_expires_at).toBeNull();
+
+        const attemptedWrite = jest.fn();
+        await expect(
+          handler.withOrganizationIngestionLease(lease!, async () => {
+            attemptedWrite();
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+        expect(attemptedWrite).not.toHaveBeenCalled();
+        await expect(
+          handler.updateEnterpriseOrganizationState(lease!, {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: deniedAt,
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      },
+    );
+
+    it('does not let a stale denial override a newer success or lease', async () => {
+      const now = new Date();
+      const oldGeneration =
+        await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          oldGeneration,
+          ['Org-A'],
+          now,
+        ),
+      ).resolves.toBe('synced');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-A' }),
+      ]);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          now,
+          new Date(now.getTime() + 60_000),
+          undefined,
+          oldGeneration,
+        ),
+      ).resolves.toBe('updated');
+
+      const newGeneration =
+        await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          newGeneration,
+          ['Org-A'],
+          new Date(now.getTime() + 1),
+        ),
+      ).resolves.toBe('synced');
+      const leaseStartedAt = new Date(now.getTime() + 2);
+      const currentLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        leaseStartedAt,
+        new Date(leaseStartedAt.getTime() + 60_000),
+        true,
+        newGeneration,
+      );
+      expect(currentLease).toBeDefined();
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          leaseStartedAt,
+          new Date(leaseStartedAt.getTime() + 60_000),
+          currentLease,
+        ),
+      ).resolves.toBe('updated');
+
+      const staleDenialAt = new Date(leaseStartedAt.getTime() + 1);
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          staleDenialAt,
+          new Date(staleDenialAt.getTime() + 24 * 60 * 60_000),
+          oldGeneration,
+        ),
+      ).resolves.toBe('superseded');
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      const stillCurrent = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('access_state', 'reports_ready', 'lease_owner');
+      expect(stillCurrent).toMatchObject({
+        access_state: 'accessible',
+        lease_owner: currentLease!.owner,
+      });
+      expect(Boolean(stillCurrent?.reports_ready)).toBe(true);
+      const currentWrite = jest.fn();
+      await expect(
+        handler.withOrganizationIngestionLease(currentLease!, async () => {
+          currentWrite();
+        }),
+      ).resolves.toBeUndefined();
+      expect(currentWrite).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps generation-less denials from revoking a successful organization or lease', async () => {
+      const now = new Date();
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['Org-A'],
+          now,
+        ),
+      ).resolves.toBe('synced');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-A' }),
+      ]);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          now,
+          new Date(now.getTime() + 60_000),
+          undefined,
+          generation,
+        ),
+      ).resolves.toBe('updated');
+
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          new Date(now.getTime() + 1),
+          new Date(now.getTime() + 24 * 60 * 60_000),
+        ),
+      ).resolves.toBe('not-current');
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toMatchObject({ organizations: ['Org-A'] });
+
+      const leaseStartedAt = new Date(now.getTime() + 2);
+      const lease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        leaseStartedAt,
+        new Date(leaseStartedAt.getTime() + 60_000),
+        true,
+        generation,
+      );
+      expect(lease).toBeDefined();
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          new Date(leaseStartedAt.getTime() + 1),
+          new Date(leaseStartedAt.getTime() + 24 * 60 * 60_000),
+        ),
+      ).resolves.toBe('not-current');
+
+      const currentWrite = jest.fn();
+      await expect(
+        handler.withOrganizationIngestionLease(lease!, async () => {
+          currentWrite();
+        }),
+      ).resolves.toBeUndefined();
+      expect(currentWrite).toHaveBeenCalledTimes(1);
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toMatchObject({ organizations: ['Org-A'] });
+    });
+
+    if (databaseId === 'POSTGRES_18') {
+      it('serializes a denial and a leased write in directory-before-organization order', async () => {
+        const now = new Date();
+        const generation = await syncOrganizations('ent-1', ['Org-A'], now);
+        await handler.insertDailyTotals([
+          buildDailyTotal({ entity_id: 'Org-A' }),
+        ]);
+        await expect(
+          handler.markLegacyConfiguredOrganization(
+            'ent-1',
+            'Org-A',
+            now,
+            new Date(now.getTime() + 60_000),
+            undefined,
+            generation,
+          ),
+        ).resolves.toBe('updated');
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          new Date(now.getTime() + 60_000),
+          true,
+          generation,
+        );
+        expect(lease).toBeDefined();
+
+        const createIndependentHandler = async () => {
+          const client = knexFactory({
+            ...knex.client.config,
+            pool: { min: 0, max: 1 },
+          });
+          const independentHandler = await DatabaseHandlerV2.create({
+            database: {
+              getClient: async () => client,
+              migrations: { skip: true },
+            } as any,
+          });
+          return { client, handler: independentHandler };
+        };
+        const blockerClient = knexFactory({
+          ...knex.client.config,
+          pool: { min: 0, max: 1 },
+        });
+        const observerClient = knexFactory({
+          ...knex.client.config,
+          pool: { min: 0, max: 1 },
+        });
+        const denial = await createIndependentHandler();
+        const writer = await createIndependentHandler();
+
+        let releaseOrganizationRow!: () => void;
+        let organizationRowLocked!: () => void;
+        const organizationRowLockedPromise = new Promise<void>(resolve => {
+          organizationRowLocked = resolve;
+        });
+        const releaseOrganizationRowPromise = new Promise<void>(resolve => {
+          releaseOrganizationRow = resolve;
+        });
+        const blockerPromise = blockerClient.transaction(async transaction => {
+          await transaction('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+            .forUpdate()
+            .first('organization_key');
+          organizationRowLocked();
+          await releaseOrganizationRowPromise;
+        });
+
+        const waitForLockWait = async (tableName: string) => {
+          const deadline = Date.now() + 10_000;
+          while (Date.now() < deadline) {
+            const result = await observerClient.raw(
+              `SELECT EXISTS (
+                 SELECT 1
+                 FROM pg_stat_activity
+                 WHERE datname = current_database()
+                   AND state = 'active'
+                   AND wait_event_type = 'Lock'
+                   AND query ILIKE ?
+               ) AS waiting`,
+              [`%${tableName}%`],
+            );
+            if (result.rows[0]?.waiting) {
+              return true;
+            }
+            await new Promise(resolve => setTimeout(resolve, 10));
+          }
+          return false;
+        };
+
+        let denialPromise: Promise<string> | undefined;
+        let writerPromise: Promise<void> | undefined;
+        try {
+          await organizationRowLockedPromise;
+          denialPromise = denial.handler.markEnterpriseOrganizationInaccessible(
+            'ent-1',
+            'Org-A',
+            now,
+            new Date(now.getTime() + 24 * 60 * 60_000),
+            generation,
+          );
+          await expect(
+            waitForLockWait('copilot_enterprise_organizations'),
+          ).resolves.toBe(true);
+
+          const attemptedWrite = jest.fn();
+          writerPromise = writer.handler.withOrganizationIngestionLease(
+            lease!,
+            async () => {
+              attemptedWrite();
+            },
+          );
+          await expect(
+            waitForLockWait('copilot_enterprise_organization_directory'),
+          ).resolves.toBe(true);
+
+          releaseOrganizationRow();
+          await expect(denialPromise).resolves.toBe('updated');
+          await expect(writerPromise).rejects.toBeInstanceOf(
+            OrganizationIngestionLeaseLostError,
+          );
+          expect(attemptedWrite).not.toHaveBeenCalled();
+          await expect(
+            handler.getEnterpriseOrganizationDirectory('ent-1'),
+          ).resolves.toMatchObject({ organizations: [] });
+        } finally {
+          releaseOrganizationRow();
+          await Promise.allSettled([
+            blockerPromise,
+            ...(denialPromise ? [denialPromise] : []),
+            ...(writerPromise ? [writerPromise] : []),
+          ]);
+          await Promise.all([
+            blockerClient.destroy(),
+            observerClient.destroy(),
+            denial.client.destroy(),
+            writer.client.destroy(),
+          ]);
+        }
+      });
+    }
+
+    it('keeps organization status updates scoped and prevents unfenced revocation of active access', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      const nextAttemptAt = new Date(now.getTime() + 60_000);
+      const target = { enterprise_id: 'ent-1', organization_key: 'org-a' };
+      const getOrganization = (enterpriseId: string, key: string) =>
+        knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: enterpriseId, organization_key: key })
+          .first('access_state', 'lease_owner', 'lease_expires_at');
+
+      const generation = await syncOrganizations(
+        'ent-1',
+        ['Org-A', 'Org-B'],
+        now,
+      );
+      await syncOrganizations('ent-2', ['Org-A'], now);
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          now,
+          nextAttemptAt,
+        ),
+      ).resolves.toBe('not-current');
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-b' })
+        .update({
+          access_state: 'accessible',
+          lease_owner: 'expired-other-org',
+          lease_expires_at: now,
+        });
+      await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-2', organization_key: 'org-a' })
+        .update({
+          access_state: 'accessible',
+          lease_owner: 'expired-other-enterprise',
+          lease_expires_at: now,
+        });
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ access_state: 'accessible', next_attempt_at: null });
+      const expiredLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        now,
+      );
+      expect(expiredLease).toBeDefined();
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+        generation,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+        lease_owner: null,
+        lease_expires_at: null,
+      });
+      await expect(getOrganization('ent-1', 'org-b')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: 'expired-other-org',
+      });
+      await expect(getOrganization('ent-2', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: 'expired-other-enterprise',
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .whereIn('enterprise_id', ['ent-1', 'ent-2'])
+        .update({ access_state: 'inaccessible' });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+      await expect(getOrganization('ent-1', 'org-b')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+      await expect(getOrganization('ent-2', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+
+      const newLeaseStartedAt = new Date(now.getTime() + 1);
+      const newLeaseExpiresAt = new Date(now.getTime() + 60_001);
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ next_attempt_at: null });
+      const newLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        newLeaseExpiresAt,
+      );
+      expect(newLease).toBeDefined();
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: newLease!.owner,
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ access_state: 'inaccessible' });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+        lease_owner: newLease!.owner,
+      });
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          newLeaseStartedAt,
+          nextAttemptAt,
+          expiredLease!,
+        ),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      await handler.releaseEnterpriseOrganizationLease(newLease!);
+    });
+
+    it('keeps configured-organization ownership behind the shared lease', async () => {
+      const now = new Date('2026-11-17T00:00:00.000Z');
+      const leaseExpiresAt = new Date(now.getTime() + 10 * 60_000);
+      await syncOrganizations('ent-1', ['Org-A'], now);
+
+      const scheduledLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        leaseExpiresAt,
+      );
+      expect(scheduledLease).toBeDefined();
+
+      const configuredAt = new Date(now.getTime() + 1_000);
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        configuredAt,
+        new Date(configuredAt.getTime() + 25 * 60 * 60_000),
+      );
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          configuredAt,
+          leaseExpiresAt,
+          true,
+        ),
+      ).resolves.toBeUndefined();
+      await handler.updateEnterpriseOrganizationState(scheduledLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: new Date(configuredAt.getTime() + 1_000),
+      });
+      await handler.releaseEnterpriseOrganizationLease(scheduledLease!);
+
+      const legacyStart = new Date(configuredAt.getTime() + 2_000);
+      const nextAttemptAt = new Date(legacyStart.getTime() + 25 * 60 * 60_000);
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        legacyStart,
+        nextAttemptAt,
+      );
+      await expect(
+        handler.getEnterpriseOrganizationsToIngest('ent-1', legacyStart, 5, 1),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          legacyStart,
+          leaseExpiresAt,
+        ),
+      ).resolves.toBeUndefined();
+      const legacyLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        legacyStart,
+        leaseExpiresAt,
+        true,
+      );
+      expect(legacyLease).toBeDefined();
+      await handler.releaseEnterpriseOrganizationLease(legacyLease!);
+    });
+
+    it('allows manual discovered-organization backfills during cooldown without bypassing leases', async () => {
+      const refreshedAt = new Date('2026-11-17T00:00:00.000Z');
+      const refreshLeaseExpiresAt = new Date(
+        refreshedAt.getTime() + 10 * 60_000,
+      );
+      const nextAttemptAt = new Date(refreshedAt.getTime() + 23 * 60 * 60_000);
+      await syncOrganizations('ent-1', ['Org-A'], refreshedAt);
+
+      const refreshLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        refreshedAt,
+        refreshLeaseExpiresAt,
+      );
+      expect(refreshLease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(refreshLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: refreshedAt,
+        nextAttemptAt,
+      });
+      await handler.releaseEnterpriseOrganizationLease(refreshLease!);
+
+      const backfillStartedAt = new Date(refreshedAt.getTime() + 1_000);
+      const backfillExpiresAt = new Date(
+        backfillStartedAt.getTime() + 10 * 60_000,
+      );
+      await expect(
+        handler.getEnterpriseOrganizationsToIngest(
+          'ent-1',
+          backfillStartedAt,
+          5,
+          1,
+        ),
+      ).resolves.toEqual([]);
+
+      const backfillLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        backfillStartedAt,
+        backfillExpiresAt,
+        true,
+      );
+      expect(backfillLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          backfillStartedAt,
+          backfillExpiresAt,
+          true,
+        ),
+      ).resolves.toBeUndefined();
+      const backfillCompletedAt = new Date(backfillStartedAt.getTime() + 1_000);
+      await handler.updateEnterpriseOrganizationState(backfillLease!, {
+        accessState: 'accessible',
+        lastAttemptedAt: backfillCompletedAt,
+      });
+      const currentOrganization = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('next_attempt_at');
+      expect(new Date(currentOrganization?.next_attempt_at).getTime()).toBe(
+        nextAttemptAt.getTime(),
+      );
+      await handler.releaseEnterpriseOrganizationLease(backfillLease!);
+    });
+
+    it('resolves an accessible organization key to its canonical login', async () => {
+      const now = new Date();
+      await syncOrganizations('ent-1', ['Org-A'], now);
+      const lease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        new Date(now.getTime() + 60_000),
+      );
+      expect(lease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(lease!, {
+        accessState: 'accessible',
+        reportsReady: false,
+        lastAttemptedAt: now,
+      });
+
+      await expect(
+        handler.getCurrentAccessibleEnterpriseOrganizationLogin(
+          'ent-1',
+          'oRg-a',
+        ),
+      ).resolves.toBe('Org-A');
+
+      await handler.updateEnterpriseOrganizationState(lease!, {
+        accessState: 'inaccessible',
+        reportsReady: false,
+        lastAttemptedAt: new Date(),
+      });
+      await expect(
+        handler.getCurrentAccessibleEnterpriseOrganizationLogin(
+          'ent-1',
+          'oRg-a',
+        ),
+      ).resolves.toBeUndefined();
+      await handler.releaseEnterpriseOrganizationLease(lease!);
+    });
+
+    it('lists organization teams with their owning organization from membership history', async () => {
+      const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
+      const organizations = ['Org-A', 'Org-B'];
+      await knex('copilot_user_teams').insert([
+        buildUserTeam({
+          day,
+          entity_id: 'Org-A',
+          user_id: 1,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-A',
+          user_id: 2,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-B',
+          user_id: 1,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-B',
+          user_id: 3,
+          team_slug: 'shared',
+        }),
+      ]);
+      const historyDay = DateTime.utc()
+        .minus({ days: 2 })
+        .toFormat('yyyy-MM-dd');
+      await knex('copilot_user_teams').insert(
+        buildUserTeam({
+          day: historyDay,
+          entity_id: 'Org-A',
+          user_id: 1,
+          team_slug: 'historic-only',
+        }),
+      );
+
+      await expect(
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 2),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 3),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(['Org-A'], day, day, 1),
+      ).resolves.toEqual([{ organization: 'Org-A', team: 'shared' }]);
+      await expect(
+        handler.getTeams('organization', 'Org-A', day, day, 2),
+      ).resolves.toEqual(['shared']);
+      await expect(
+        handler.getAccessibleOrganizationTeams([], day, day, 1),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          undefined,
+          historyDay,
+          1,
+        ),
+      ).resolves.toEqual([{ organization: 'Org-A', team: 'historic-only' }]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          day,
+          undefined,
+          1,
+        ),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          undefined,
+          undefined,
+          1,
+        ),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'historic-only' },
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
     });
 
     it('re-ingests incomplete reports from the customization availability date', async () => {
@@ -1796,6 +3482,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals computes rolling weekly/monthly active users for teams', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
       ]);
@@ -1854,6 +3541,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals anchors rolling windows to each returned day', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-11', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-08', team_slug: 'team-a' }),
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
@@ -1940,6 +3628,10 @@ describe('DatabaseHandlerV2', () => {
           used_chat: false,
         },
       ];
+      const fakeCoverageRows = buildTeamCoverageRows(
+        '2026-04-13',
+        '2026-05-10',
+      );
       const fakeQuery = {
         join: jest.fn().mockReturnThis(),
         leftJoin: jest.fn().mockReturnThis(),
@@ -1948,7 +3640,14 @@ describe('DatabaseHandlerV2', () => {
         whereRaw: jest.fn().mockReturnThis(),
         select: jest.fn().mockResolvedValue(fakeActivityRows),
       };
-      (handler as any).db = jest.fn().mockReturnValue(fakeQuery);
+      const fakeCoverageQuery = {
+        where: jest.fn().mockReturnThis(),
+        whereBetween: jest.fn().mockReturnThis(),
+        select: jest.fn().mockResolvedValue(fakeCoverageRows),
+      };
+      (handler as any).db = jest.fn((table: string) =>
+        table === 'copilot_ingestion_log' ? fakeCoverageQuery : fakeQuery,
+      );
 
       try {
         const rows = await (handler as any).enrichScopedRollingActiveUsers(
@@ -1976,6 +3675,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals only counts users active within the selected team', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
       ]);
@@ -2015,7 +3715,221 @@ describe('DatabaseHandlerV2', () => {
       expect(rows[0].monthly_active_users).toBe(1);
     });
 
+    it.each([
+      {
+        missingComponent: 'users',
+        components_loaded: JSON.stringify(['totals', 'teams']),
+      },
+      {
+        missingComponent: 'teams',
+        components_loaded: JSON.stringify(['totals', 'users']),
+      },
+    ])(
+      'withholds team rolling counts when $missingComponent coverage is missing',
+      async ({ components_loaded }) => {
+        const currentDay = '2026-05-10';
+        await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+          '2026-05-09': { components_loaded },
+        });
+        await handler.insertDailyTotals([
+          buildDailyTotal({ day: currentDay, team_slug: 'team-a' }),
+        ]);
+        await handler.insertUserMetrics([
+          buildUserMetric({
+            day: currentDay,
+            user_id: 1,
+            user_login: 'u1',
+            used_agent: false,
+            used_chat: false,
+          }),
+        ]);
+        await handler.insertUserTeams([
+          buildUserTeam({
+            day: currentDay,
+            user_id: 1,
+            user_login: 'u1',
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ]);
+
+        const rows = await handler.getDailyTotals(
+          'organization',
+          'org-1',
+          currentDay,
+          currentDay,
+          'team-a',
+        );
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].weekly_active_users).toBeUndefined();
+        expect(rows[0].monthly_active_users).toBeUndefined();
+        expect(rows[0].monthly_active_agent_users).toBeUndefined();
+        expect(rows[0].monthly_active_chat_users).toBeUndefined();
+      },
+    );
+
+    it('keeps weekly team counts when a gap is only in monthly coverage', async () => {
+      const currentDay = '2026-05-10';
+      const gapDay = '2026-05-01';
+      await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+        [gapDay]: { components_loaded: JSON.stringify(['totals', 'users']) },
+      });
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: currentDay, team_slug: 'team-a' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+      ]);
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+
+      await knex('copilot_ingestion_log')
+        .where({
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          day: gapDay,
+        })
+        .update({
+          status: 'error',
+          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
+        });
+
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBe(1);
+      expect(rows[0].monthly_active_agent_users).toBe(0);
+      expect(rows[0].monthly_active_chat_users).toBe(0);
+    });
+
+    it('combines team completeness with no-cost-center completeness', async () => {
+      const currentDay = '2026-05-10';
+      const incompleteDay = '2026-05-09';
+      await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+        [incompleteDay]: {
+          components_loaded: JSON.stringify(['totals', 'users']),
+        },
+      });
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({
+          day: currentDay,
+          team_slug: 'team-a',
+          cost_center_id: '',
+        }),
+        without_cost_center: true,
+      });
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+      ]);
+      for (const day of [
+        '2026-05-04',
+        '2026-05-05',
+        '2026-05-06',
+        '2026-05-07',
+        '2026-05-08',
+        currentDay,
+      ]) {
+        await handler.markCostCenterAggregationDone(
+          day,
+          'organization',
+          'org-1',
+        );
+      }
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBeUndefined();
+
+      await handler.markCostCenterAggregationDone(
+        incompleteDay,
+        'organization',
+        'org-1',
+      );
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows[0].weekly_active_users).toBeUndefined();
+
+      await knex('copilot_ingestion_log')
+        .where({
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          day: incompleteDay,
+        })
+        .update({
+          status: 'error',
+          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
+        });
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+    });
+
     it('computes rolling active users for cost centers and teams independently', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({
           day: '2026-05-10',
@@ -3191,6 +5105,54 @@ function buildIngestionLog(
     source: 'scheduled',
     ...overrides,
   };
+}
+
+function buildTeamCoverageRows(
+  from: string,
+  to: string,
+  overrides: Record<
+    string,
+    Partial<Pick<V2IngestionLogRow, 'status' | 'components_loaded'>>
+  > = {},
+): V2IngestionLogRow[] {
+  const start = DateTime.fromISO(from, { zone: 'utc' }).startOf('day');
+  const end = DateTime.fromISO(to, { zone: 'utc' }).startOf('day');
+  if (!start.isValid || !end.isValid || start > end) {
+    throw new Error('Invalid team coverage date range.');
+  }
+
+  const rows: V2IngestionLogRow[] = [];
+  for (let cursor = start; cursor <= end; cursor = cursor.plus({ days: 1 })) {
+    const day = cursor.toISODate();
+    if (!day) {
+      throw new Error('Invalid team coverage day.');
+    }
+
+    rows.push(
+      buildIngestionLog({
+        day,
+        components_loaded:
+          overrides[day]?.components_loaded ??
+          JSON.stringify(['totals', 'users', 'teams']),
+        status: overrides[day]?.status ?? 'success',
+      }),
+    );
+  }
+  return rows;
+}
+
+async function insertTeamCoverageLogs(
+  knex: Knex,
+  from: string,
+  to: string,
+  overrides: Record<
+    string,
+    Partial<Pick<V2IngestionLogRow, 'status' | 'components_loaded'>>
+  > = {},
+): Promise<void> {
+  await knex('copilot_ingestion_log').insert(
+    buildTeamCoverageRows(from, to, overrides),
+  );
 }
 
 function buildDailyTotal(overrides: Partial<V2DailyTotal> = {}): V2DailyTotal {

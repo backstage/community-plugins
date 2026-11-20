@@ -27,16 +27,29 @@ interface Props {
   variant: 'daily' | 'weekly';
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
-export function IDEActiveUsersChart({ data, variant, from, to }: Props) {
+export function IDEActiveUsersChart({
+  data,
+  variant,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
   const field =
     variant === 'daily' ? 'daily_active_users' : 'weekly_active_users';
   const label =
     variant === 'daily' ? 'Daily Active Users' : 'Weekly Active Users';
 
-  const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
+  const aggregated = fillDailyTotalsGaps(
+    aggregateDailyTotals(data),
+    from,
+    to,
+    fillMissingDays,
+  );
   const days = aggregated.map(d => d.day);
+  const isTeamScoped = data.some(row => row.team_slug !== '');
   const supportsRollingActiveUsers =
     variant === 'weekly' &&
     data.some(row => row.weekly_active_users !== undefined);
@@ -44,7 +57,7 @@ export function IDEActiveUsersChart({ data, variant, from, to }: Props) {
     if (
       variant === 'weekly' &&
       d.weekly_active_users === undefined &&
-      supportsRollingActiveUsers
+      (isTeamScoped || supportsRollingActiveUsers || !fillMissingDays)
     ) {
       return null;
     }
