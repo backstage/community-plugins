@@ -1,5 +1,11 @@
 # @backstage-community/plugin-auth-backend-module-pingfederate-provider
 
+## 0.5.0
+
+### Minor Changes
+
+- 65201ca: Backstage version bump to v1.56.2
+
 ## 0.4.0
 
 ### Minor Changes
