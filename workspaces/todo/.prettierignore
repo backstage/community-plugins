@@ -2,5 +2,4 @@ dist
 dist-types
 coverage
 .vscode
-plugins/todo/knip-report.md
-plugins/todo-backend/knip-report.md
+knip-report.md
