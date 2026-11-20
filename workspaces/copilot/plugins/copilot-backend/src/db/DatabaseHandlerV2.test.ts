@@ -473,7 +473,8 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('fences out-of-order directory refreshes across independent connections', async () => {
-      const now = new Date('2026-11-20T00:00:00.000Z');
+      const now = new Date();
+      const day = now.toISOString().slice(0, 10);
       let primaryClient: Knex | undefined;
       let secondaryClient: Knex | undefined;
       let sqliteFile: string | undefined;
@@ -592,7 +593,7 @@ describe('DatabaseHandlerV2', () => {
             now,
           ),
         ).resolves.toBe('synced');
-        const acceptedLeaseExpiresAt = new Date(now.getTime() + 60_000);
+        const acceptedLeaseExpiresAt = new Date(Date.now() + 60 * 60 * 1_000);
         const acceptedLease =
           await primaryHandler.claimEnterpriseOrganizationLease(
             'ent-1',
@@ -642,7 +643,7 @@ describe('DatabaseHandlerV2', () => {
               staleWriteRan = true;
               await database.insertDailyTotals([
                 buildDailyTotal({
-                  day: '2026-11-20',
+                  day,
                   entity_id: 'Accepted-Org',
                 }),
               ]);
@@ -662,7 +663,7 @@ describe('DatabaseHandlerV2', () => {
         expect(Boolean(acceptedOrganization?.reports_ready)).toBe(true);
         await expect(
           stateClient('copilot_daily_totals').where({
-            day: '2026-11-20',
+            day,
             metrics_type: 'organization',
             entity_id: 'Accepted-Org',
           }),
