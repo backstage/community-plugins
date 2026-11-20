@@ -3,6 +3,4 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
-plugins/vault/knip-report.md
-plugins/vault-backend/knip-report.md
-plugins/vault-node/knip-report.md
+knip-report.md
