@@ -2697,7 +2697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/connections@npm:^0.4.0, @backstage/connections@npm:^0.4.1, @backstage/connections@npm:^0.4.2":
+"@backstage/connections@npm:^0.4.0, @backstage/connections@npm:^0.4.2":
   version: 0.4.2
   resolution: "@backstage/connections@npm:0.4.2"
   dependencies:
@@ -2958,19 +2958,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration-aws-node@npm:^0.2.0, @backstage/integration-aws-node@npm:^0.2.1, @backstage/integration-aws-node@npm:^0.2.2, @backstage/integration-aws-node@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "@backstage/integration-aws-node@npm:0.2.3"
+"@backstage/integration-aws-node@npm:^0.2.0, @backstage/integration-aws-node@npm:^0.2.1, @backstage/integration-aws-node@npm:^0.2.2, @backstage/integration-aws-node@npm:^0.2.3, @backstage/integration-aws-node@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@backstage/integration-aws-node@npm:0.2.4"
   dependencies:
     "@aws-sdk/client-sts": "npm:^3.350.0"
     "@aws-sdk/credential-provider-node": "npm:^3.350.0"
     "@aws-sdk/credential-providers": "npm:^3.350.0"
     "@aws-sdk/types": "npm:^3.347.0"
     "@aws-sdk/util-arn-parser": "npm:^3.310.0"
-    "@backstage/config": "npm:^1.3.10"
-    "@backstage/connections": "npm:^0.4.1"
-    "@backstage/errors": "npm:^1.3.2"
-  checksum: 10/e2ab90f486b0eb41fde460de5ac44aeb19a147e69f2a7be42911caf6a60d6a7dfa5cdce0753c1a16317e6c6bd6efe7720a255e66b3213184e9ebea90c8c21ae9
+    "@backstage/config": "npm:^1.3.11"
+    "@backstage/connections": "npm:^0.4.2"
+    "@backstage/errors": "npm:^1.4.0"
+  checksum: 10/fb3ba2ae3d9d7f261147826ce239515ed5bc8a215310630ba655e00a217f707d20ea9cda7ad21486c7461d81bc92bfc1457f78eaa1a4a2e1b5336f89fe8a990f
   languageName: node
   linkType: hard
 
@@ -4279,18 +4279,18 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-techdocs-backend@npm:^2.2.1":
-  version: 2.4.1
-  resolution: "@backstage/plugin-techdocs-backend@npm:2.4.1"
+  version: 2.4.3
+  resolution: "@backstage/plugin-techdocs-backend@npm:2.4.3"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.11.0"
-    "@backstage/catalog-client": "npm:^1.16.3"
-    "@backstage/catalog-model": "npm:^1.10.2"
-    "@backstage/config": "npm:^1.3.10"
-    "@backstage/errors": "npm:^1.3.2"
-    "@backstage/integration": "npm:^2.1.3"
-    "@backstage/plugin-catalog-node": "npm:^2.2.6"
-    "@backstage/plugin-techdocs-common": "npm:^0.1.2"
-    "@backstage/plugin-techdocs-node": "npm:^2.2.0"
+    "@backstage/backend-plugin-api": "npm:^1.12.0"
+    "@backstage/catalog-client": "npm:^1.16.4"
+    "@backstage/catalog-model": "npm:^1.10.3"
+    "@backstage/config": "npm:^1.3.11"
+    "@backstage/errors": "npm:^1.4.0"
+    "@backstage/integration": "npm:^2.2.0"
+    "@backstage/plugin-catalog-node": "npm:^3.0.0"
+    "@backstage/plugin-techdocs-common": "npm:^0.1.3"
+    "@backstage/plugin-techdocs-node": "npm:^2.3.0"
     "@backstage/types": "npm:^1.2.2"
     express: "npm:^4.22.0"
     express-promise-router: "npm:^4.1.0"
@@ -4298,16 +4298,16 @@ __metadata:
     knex: "npm:^3.0.0"
     p-limit: "npm:^3.1.0"
     winston: "npm:^3.2.1"
-  checksum: 10/cd4f62beb6a4b7fb0b10b06e2cf97a9555c686c7f498bd0431aa1a381d66b3dab1ee7adbd1c793f7dda00efc250f0d2bf986dc8531a078865aff51e2db956b6e
+  checksum: 10/dadc9eb0be9bc776f4486d3558f781c896ca857621e3aa211630db9f4a55729cea17df07e913d0627b3b09e3379181e5865420af15b0618f3ecde674734bd90a
   languageName: node
   linkType: hard
 
-"@backstage/plugin-techdocs-common@npm:^0.1.1, @backstage/plugin-techdocs-common@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@backstage/plugin-techdocs-common@npm:0.1.2"
+"@backstage/plugin-techdocs-common@npm:^0.1.1, @backstage/plugin-techdocs-common@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@backstage/plugin-techdocs-common@npm:0.1.3"
   dependencies:
-    "@backstage/plugin-permission-common": "npm:^0.9.12"
-  checksum: 10/b099c4e5532be6743791498724507035ff87792761820491b129f1249c9efc917123fcdadaffb6a021bebec2e5f21bca2c3e36906b79f611b875d35e00b1ff29
+    "@backstage/plugin-permission-common": "npm:^0.9.13"
+  checksum: 10/0289a86bca1fcc74e5477d3463244f86585a702e163e0a8ace55709e770cdbb4afc827bdfaac41239c68d4eac95fee2476ff7ef85aaab7ffeacf81f442bf2e8f
   languageName: node
   linkType: hard
 
@@ -4375,9 +4375,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-techdocs-node@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@backstage/plugin-techdocs-node@npm:2.2.0"
+"@backstage/plugin-techdocs-node@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@backstage/plugin-techdocs-node@npm:2.3.0"
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.350.0"
     "@aws-sdk/credential-providers": "npm:^3.350.0"
@@ -4385,14 +4385,14 @@ __metadata:
     "@aws-sdk/types": "npm:^3.347.0"
     "@azure/identity": "npm:^4.0.0"
     "@azure/storage-blob": "npm:^12.5.0"
-    "@backstage/backend-plugin-api": "npm:^1.11.0"
-    "@backstage/catalog-model": "npm:^1.10.2"
-    "@backstage/config": "npm:^1.3.10"
-    "@backstage/errors": "npm:^1.3.2"
-    "@backstage/integration": "npm:^2.1.3"
-    "@backstage/integration-aws-node": "npm:^0.2.3"
-    "@backstage/plugin-search-common": "npm:^1.2.26"
-    "@backstage/plugin-techdocs-common": "npm:^0.1.2"
+    "@backstage/backend-plugin-api": "npm:^1.12.0"
+    "@backstage/catalog-model": "npm:^1.10.3"
+    "@backstage/config": "npm:^1.3.11"
+    "@backstage/errors": "npm:^1.4.0"
+    "@backstage/integration": "npm:^2.2.0"
+    "@backstage/integration-aws-node": "npm:^0.2.4"
+    "@backstage/plugin-search-common": "npm:^1.2.27"
+    "@backstage/plugin-techdocs-common": "npm:^0.1.3"
     "@google-cloud/storage": "npm:^7.0.0"
     "@smithy/node-http-handler": "npm:^3.0.0"
     "@trendyol-js/openstack-swift-sdk": "npm:^0.0.7"
@@ -4409,7 +4409,7 @@ __metadata:
     p-limit: "npm:^3.1.0"
     recursive-readdir: "npm:^2.2.2"
     winston: "npm:^3.2.1"
-  checksum: 10/e7f28cf8de1e3f7571b9707d07d5755efe49f8db8740a90408aa1d011dee541bb7f39bdeb6fcd400a76fc2da1e8cffec7ac40875f2b6b6065ab917263af22017
+  checksum: 10/20af289092c9a4e1a3129ceb311682f6b9573037e13816a4f0dfce9e833ea2d16f1c781272623658ad19db88ae11e31dc1178f9ef773fd7fa7eb77af7418300e
   languageName: node
   linkType: hard
 
