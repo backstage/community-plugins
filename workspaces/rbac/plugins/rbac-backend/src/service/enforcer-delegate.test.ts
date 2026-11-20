@@ -73,9 +73,16 @@ const secondPolicy = [
   'create',
   'allow',
 ];
+const thirdPolicy = [
+  'role:default/ops-team',
+  'catalog-entity',
+  'delete',
+  'allow',
+];
 
 const groupingPolicy = ['user:default/tom', 'role:default/dev-team'];
 const secondGroupingPolicy = ['user:default/tim', 'role:default/qa-team'];
+const thirdGroupingPolicy = ['user:default/sam', 'role:default/ops-team'];
 
 describe('EnforcerDelegate', () => {
   let enfRemovePolicySpy: jest.SpyInstance<Promise<boolean>, string[], any>;
@@ -339,7 +346,11 @@ describe('EnforcerDelegate', () => {
     });
 
     it('should return policies matching any of the role filters', async () => {
-      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+      const enfDelegate = await createEnfDelegate([
+        policy,
+        secondPolicy,
+        thirdPolicy,
+      ]);
 
       const policies = await enfDelegate.getFilteredPolicy(
         0,
@@ -349,6 +360,7 @@ describe('EnforcerDelegate', () => {
 
       expect(policies).toEqual(expect.arrayContaining([policy, secondPolicy]));
       expect(policies).toHaveLength(2);
+      expect(policies).not.toContainEqual(thirdPolicy);
     });
 
     it('should return filtered policy by policy effect', async () => {
@@ -414,6 +426,25 @@ describe('EnforcerDelegate', () => {
 
       expect(policies).toEqual([policy, secondPolicy]);
     });
+
+    it('should handle ~1000 role filters on SQLite adapter without exceeding expression limit', async () => {
+      const policiesCount = 1000;
+      const policiesList: string[][] = [];
+      const filters: string[][] = [];
+      for (let i = 0; i < policiesCount; i++) {
+        const roleEntityRef = `role:default/stress-role-${i}`;
+        policiesList.push([roleEntityRef, 'catalog-entity', 'read', 'allow']);
+        filters.push([roleEntityRef]);
+      }
+
+      const enfDelegate = await createEnfDelegate(policiesList);
+      adapterLoaderFilterGroupingPolicySpy.mockClear();
+
+      const policies = await enfDelegate.getFilteredPolicy(0, ...filters);
+
+      expect(policies).toHaveLength(policiesCount);
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(10);
+    });
   });
 
   describe('getFilteredGroupingPolicy', () => {
@@ -464,7 +495,7 @@ describe('EnforcerDelegate', () => {
     it('should return grouping policies matching any of the role filters', async () => {
       const enfDelegate = await createEnfDelegate(
         [],
-        [groupingPolicy, secondGroupingPolicy],
+        [groupingPolicy, secondGroupingPolicy, thirdGroupingPolicy],
       );
 
       const policies = await enfDelegate.getFilteredGroupingPolicy(
@@ -477,6 +508,7 @@ describe('EnforcerDelegate', () => {
         expect.arrayContaining([groupingPolicy, secondGroupingPolicy]),
       );
       expect(policies).toHaveLength(2);
+      expect(policies).not.toContainEqual(thirdGroupingPolicy);
     });
 
     it('should return filtered grouping policy by role name with index offset', async () => {
