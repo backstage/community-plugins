@@ -370,13 +370,12 @@ __metadata:
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
     "@codemirror/view": "npm:^6.0.0"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
-    "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@react-hookz/web": "npm:^25.0.0"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/lodash": "npm:^4.14.151"
@@ -1744,7 +1743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.19.0":
+"@backstage/ui@backstage:^::backstage=1.56.2&npm=0.19.0, @backstage/ui@npm:^0.19.0":
   version: 0.19.0
   resolution: "@backstage/ui@npm:0.19.0"
   dependencies:
