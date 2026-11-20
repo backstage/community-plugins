@@ -15,7 +15,7 @@
  */
 
 import {
-  MockStorageApi,
+  mockApis,
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/test-utils';
@@ -31,7 +31,7 @@ describe('Shortcuts', () => {
       <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
         <TestApiProvider
           apis={[
-            [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+            [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
           ]}
         >
           <Shortcuts />

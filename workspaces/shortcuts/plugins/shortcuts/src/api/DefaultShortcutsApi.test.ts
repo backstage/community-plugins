@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MockStorageApi } from '@backstage/test-utils';
+import { mockApis } from '@backstage/test-utils';
 import { pageTheme } from '@backstage/theme';
 import { Shortcut } from '../types';
 import { DefaultShortcutsApi } from './DefaultShortcutsApi';
@@ -23,7 +23,7 @@ import { ShortcutApi } from './ShortcutApi';
 describe('DefaultShortcutsApi', () => {
   it('should observe shortcuts', async () => {
     const shortcutApi: ShortcutApi = new DefaultShortcutsApi(
-      MockStorageApi.create(),
+      mockApis.storage(),
     );
     const shortcut: Shortcut = { id: 'id', title: 'title', url: '/url' };
 
@@ -47,7 +47,7 @@ describe('DefaultShortcutsApi', () => {
   });
 
   it('should add shortcuts with ids', async () => {
-    const storageApi = MockStorageApi.create();
+    const storageApi = mockApis.storage();
     const shortcutApi: ShortcutApi = new DefaultShortcutsApi(storageApi);
     const shortcut: Omit<Shortcut, 'id'> = { title: 'title', url: '/url' };
     const spy = jest.spyOn(storageApi, 'set');
@@ -60,7 +60,7 @@ describe('DefaultShortcutsApi', () => {
   });
 
   it('should update shortcuts', async () => {
-    const storageApi = MockStorageApi.create();
+    const storageApi = mockApis.storage();
     const shortcutApi: ShortcutApi = new DefaultShortcutsApi(storageApi);
     const shortcut: Shortcut = { id: 'someid', title: 'title', url: '/url' };
     const spy = jest.spyOn(storageApi, 'set');
@@ -73,7 +73,7 @@ describe('DefaultShortcutsApi', () => {
   });
 
   it('should remove shortcuts', async () => {
-    const storageApi = MockStorageApi.create();
+    const storageApi = mockApis.storage();
     const shortcutApi: ShortcutApi = new DefaultShortcutsApi(storageApi);
     const shortcut: Shortcut = { id: 'someid', title: 'title', url: '/url' };
     const spy = jest.spyOn(storageApi, 'set');
@@ -83,7 +83,7 @@ describe('DefaultShortcutsApi', () => {
   });
 
   it('should get a color', () => {
-    const storageApi = MockStorageApi.create();
+    const storageApi = mockApis.storage();
     const shortcutApi: ShortcutApi = new DefaultShortcutsApi(storageApi);
 
     expect(shortcutApi.getColor('/catalog')).toEqual(pageTheme.home.colors[0]);
