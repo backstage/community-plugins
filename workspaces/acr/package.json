@@ -42,13 +42,13 @@
     "directory": "workspaces/acr"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.5",
-    "@backstage/cli-defaults": "^0.1.5",
+    "@backstage/cli": "^0.36.7",
+    "@backstage/cli-defaults": "^0.1.7",
     "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.19.0",
+    "@backstage/repo-tools": "^0.19.2",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30.0.0",
-    "@playwright/test": "1.64.1",
+    "@playwright/test": "1.65.1",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
     "jest": "^30.0.0",

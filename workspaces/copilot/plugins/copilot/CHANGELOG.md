@@ -1,5 +1,54 @@
 # @backstage-community/plugin-copilot
 
+## 1.9.0
+
+### Minor Changes
+
+- f2b70cf: Enable organization-team filtering in the enterprise dashboard when
+  `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are
+  configured. The enterprise view's Team filter is now labelled Enterprise team
+  to distinguish it from organization teams.
+
+## 1.8.0
+
+### Minor Changes
+
+- 55359b1: Add opt-in cost-center filtering and a separate **No cost center** dashboard scope. Incomplete GitHub membership snapshots are not applied, preventing partial rosters from skewing cost-center aggregates. Organization team data requires the GitHub App's Copilot metrics: read permission; 403/404 user-team reports are logged as errors and skipped. Backfills preserve existing totals and limit newly required user, team, and cost-center data to GitHub's rolling report window.
+
+### Patch Changes
+
+- d2e695b: Clear team selections when the dashboard scope changes and hide outdated options while teams load.
+- Updated dependencies [55359b1]
+  - @backstage-community/plugin-copilot-common@1.6.0
+
+## 1.7.0
+
+### Minor Changes
+
+- af4e2f3: Updated visualisation of Agent Harness view
+
+## 1.6.0
+
+### Minor Changes
+
+- 7e226cd: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7e226cd]
+  - @backstage-community/plugin-copilot-common@1.5.0
+
+## 1.5.0
+
+### Minor Changes
+
+- e8a706e: Show named GitHub Copilot customization usage for skills, agents, MCP servers, commands, plugins, and future compatible categories.
+
+### Patch Changes
+
+- Updated dependencies [e8a706e]
+  - @backstage-community/plugin-copilot-common@1.4.0
+
 ## 1.4.1
 
 ### Patch Changes

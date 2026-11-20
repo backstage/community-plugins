@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-insights": "workspace:^",
+    "@backstage-community/plugin-tech-insights-maturity": "workspace:^",
     "@backstage/app-defaults": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/cli": "backstage:^",

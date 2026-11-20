@@ -38,7 +38,9 @@ import {
   type ProfileInfoApi,
   type SessionApi,
 } from '@backstage/frontend-plugin-api';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 
 import rbacPlugin, { rbacTranslationsModule } from '../src';
 import { devSidebarContent } from './shared';
@@ -86,6 +88,12 @@ const devNavModule = createFrontendModule({
             providers={[
               'guest',
               {
+                id: 'github-auth-provider',
+                title: 'GitHub',
+                message: 'Sign in using GitHub',
+                apiRef: githubAuthApiRef,
+              },
+              {
                 id: 'oidc',
                 title: 'Keycloak OIDC',
                 message: 'Sign in with Keycloak (multi-user testing)',
@@ -104,7 +112,12 @@ const devNavModule = createFrontendModule({
 const defaultPage = '/rbac';
 
 const app = createApp({
-  features: [rbacPlugin, rbacTranslationsModule, devNavModule],
+  features: [
+    rbacPlugin,
+    rbacTranslationsModule,
+    userSettingsPlugin,
+    devNavModule,
+  ],
 });
 
 const root = app.createRoot();

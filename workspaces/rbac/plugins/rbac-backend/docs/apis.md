@@ -688,6 +688,8 @@ Returns a status code of 201 and json with id upon success:
 }
 ```
 
+Returns a status code of 400 if a rule used in `conditions` is not declared by the plugin `pluginId` for the given `resourceType`, and 503 if the permission metadata of that plugin could not be retrieved to verify the rules.
+
 ---
 
 ### PUT condition
@@ -729,6 +731,8 @@ body:
 ```
 
 Returns a status code of 200 upon success.
+
+Returns a status code of 400 if a rule used in `conditions` is not declared by the plugin `pluginId` for the given `resourceType`, and 503 if the permission metadata of that plugin could not be retrieved to verify the rules.
 
 ---
 
@@ -926,6 +930,7 @@ Returns a status code of 200 and json with actual object stored in the server:
 | 403  | Refusal to authorize                            |
 | 404  | Could not find resource                         |
 | 409  | Conflict with current state and target resource |
+| 503  | Plugin permission metadata could not be fetched |
 
 ---
 

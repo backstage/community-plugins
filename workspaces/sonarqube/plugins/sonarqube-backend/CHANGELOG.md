@@ -1,5 +1,17 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 1.4.0
+
+### Minor Changes
+
+- 4b874dd: Backstage version bump to v1.56.2
+
+## 1.3.1
+
+### Patch Changes
+
+- f1f089b: Added the top level `sonarqube.authType` option to the config schema. The plugin already read it, but tools that build their settings from the schema could not set it, so single instance setups against SonarQube Cloud fell back to `Basic` auth. The `authType` of each instance is no longer sent to the frontend, which never used it.
+
 ## 1.3.0
 
 ### Minor Changes

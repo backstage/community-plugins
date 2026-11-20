@@ -18,12 +18,12 @@ import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 export const entityActionItemsCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -63,12 +63,12 @@ export const entityActionItemsCard: OverridableExtensionDefinition<{
 export const entityActionItemsTopCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -108,12 +108,12 @@ export const entityActionItemsTopCard: OverridableExtensionDefinition<{
 export const entityMTDCostOverviewCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -153,12 +153,12 @@ export const entityMTDCostOverviewCard: OverridableExtensionDefinition<{
 export const entityResourcesHistoryCPUCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -198,12 +198,12 @@ export const entityResourcesHistoryCPUCard: OverridableExtensionDefinition<{
 export const entityResourcesHistoryMemoryCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -243,12 +243,12 @@ export const entityResourcesHistoryMemoryCard: OverridableExtensionDefinition<{
 export const entityResourcesHistoryPodCountCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -288,12 +288,12 @@ export const entityResourcesHistoryPodCountCard: OverridableExtensionDefinition<
 export const entityVulnerabilitiesCard: OverridableExtensionDefinition<{
   config: {
     props: Record<string, never>;
-    filter: FilterPredicate | undefined;
+    filter: string | FilterPredicate | undefined;
     type: 'content' | 'info' | undefined;
   };
   configInput: {
     props?: Record<string, never> | undefined;
-    filter?: FilterPredicate | undefined;
+    filter?: string | FilterPredicate | undefined;
     type?: 'content' | 'info' | undefined | undefined;
   };
   output:
@@ -369,12 +369,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/action-items': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -412,12 +412,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/action-items-top': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -455,12 +455,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/mtd-cost-overview': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -498,12 +498,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/resources-history-cpu': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -541,12 +541,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/resources-history-memory': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -584,12 +584,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/resources-history-pod-count': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
@@ -627,12 +627,12 @@ const fairwindsInsightsFrontendPlugin: OverridableFrontendPlugin<
     'entity-card:fairwinds-insights/vulnerabilities': OverridableExtensionDefinition<{
       config: {
         props: Record<string, never>;
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
         props?: Record<string, never> | undefined;
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:

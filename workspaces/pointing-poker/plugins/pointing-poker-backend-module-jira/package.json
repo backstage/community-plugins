@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-pointing-poker-backend-module-jira",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Jira ticket provider module for the Pointing Poker Backstage plugin",
   "backstage": {
     "role": "backend-plugin-module",

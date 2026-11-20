@@ -76,11 +76,11 @@ const announcementsPlugin: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'announcements';
       config: {
-        filter: FilterPredicate | undefined;
+        filter: string | FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
+        filter?: string | FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined;
       };
       output:
@@ -109,7 +109,11 @@ const announcementsPlugin: OverridableFrontendPlugin<
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
-        filter?: FilterPredicate | ((entity: Entity) => boolean) | undefined;
+        filter?:
+          | string
+          | FilterPredicate
+          | ((entity: Entity) => boolean)
+          | undefined;
         type?: EntityCardType | undefined;
       };
     }>;

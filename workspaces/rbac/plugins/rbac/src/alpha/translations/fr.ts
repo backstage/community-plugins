@@ -34,9 +34,32 @@ const rbacTranslationFr = createTranslationMessages({
     'table.title': 'Tous les rôles',
     'table.titleWithCount': 'Tous les rôles ({{count}})',
     'table.headers.name': 'Nom',
+    'table.headers.source': 'Source',
     'table.headers.usersAndGroups': 'Utilisateurs et groupes',
     'table.headers.accessiblePlugins': 'Plugins accessibles',
     'table.headers.actions': 'Actes',
+    'table.sources.appConfig': 'Config. de l’application',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'Formulaire',
+    'table.sources.legacy': 'Hérité',
+    'table.sources.tooltips.appConfig':
+      'Défini sous permission.rbac.admin dans app-config.yaml.',
+    'table.sources.tooltips.csv':
+      'Défini dans le fichier de stratégies CSV référencé par permission.rbac.policies-csv-file dans app-config.yaml.',
+    'table.sources.tooltips.form':
+      'Créé via le formulaire RBAC dans l’interface utilisateur. Peut également être géré via l’API REST.',
+    'table.sources.tooltips.legacy':
+      'Créé avant l’enregistrement des sources de rôles. Peut être géré via l’API REST ou le fichier de stratégies CSV.',
+    'table.sources.tooltips.generic':
+      'Ce rôle est géré par sa source et ne peut pas être modifié dans l’interface utilisateur.',
+    'table.sources.actionTooltips.appConfig':
+      'Ce rôle est géré via la configuration de l’application (permission.rbac.admin dans app-config.yaml). Mettez à jour la configuration et redéployez pour apporter des modifications.',
+    'table.sources.actionTooltips.csv':
+      'Ce rôle est géré via un fichier de stratégies CSV. Mettez à jour le fichier CSV et redéployez pour apporter des modifications.',
+    'table.sources.actionTooltips.legacy':
+      'Il s’agit d’un rôle hérité qui ne peut pas être modifié dans l’interface utilisateur. Mettez-le à jour via l’API REST ou le fichier de stratégies CSV.',
+    'table.sources.actionTooltips.generic':
+      'Ce rôle est géré par sa source et ne peut pas être modifié dans l’interface utilisateur.',
     'table.defaultRoleUsersAndGroups':
       'Tous les utilisateurs et tous les groupes',
     'table.emptyContent': 'Aucun enregistrement trouvé',
@@ -174,6 +197,16 @@ const rbacTranslationFr = createTranslationMessages({
     'common.noRecordsFound': 'Aucun enregistrement trouvé',
     'common.selectUsersAndGroups':
       'Sélectionner les utilisateurs et les groupes',
+    'common.addMembersAndGroups': 'Ajouter des membres et des groupes',
+    'common.searchMembers': 'Rechercher',
+    'common.searchByName': 'Rechercher par nom',
+    'common.kind': 'Type',
+    'common.kindAll': 'Tous',
+    'common.namespace': 'Espace de noms',
+    'common.namespaceAll': 'Tous',
+    'common.allResults': 'Tous ({{count}})',
+    'common.selectedCount': '{{count}} sélectionné(s)',
+    'common.add': 'Ajouter',
     'common.clearSearch': 'supprimer la recherche',
     'common.closeDrawer': 'Fermez le tiroir',
     'common.remove': 'Supprimer',
@@ -223,7 +256,11 @@ const rbacTranslationFr = createTranslationMessages({
     'common.childGroupsCount': '{{count}} groupes enfants',
     'common.searchAndSelectUsersGroups':
       'Recherchez et sélectionnez les utilisateurs et les groupes à ajouter. Les utilisateurs et groupes sélectionnés apparaîtront dans le tableau ci-dessous.',
+    'common.searchAndFilterCatalog':
+      'Recherchez et filtrez le catalogue pour ajouter des utilisateurs et des groupes. Cela remplace une liste déroulante de 100 éléments pour les grandes listes de membres.',
     'common.noUsersAndGroupsFound': 'Aucun utilisateur ni groupe trouvé.',
+    'common.noMembersMatchSearch':
+      'Aucun membre ne correspond à votre recherche.',
     'common.errorFetchingUserGroups':
       "Erreur lors de la récupération de l'utilisateur et des groupes : {{error}}",
     'common.nameRequired': 'Le nom est obligatoire',

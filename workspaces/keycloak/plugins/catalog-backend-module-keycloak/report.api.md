@@ -100,6 +100,8 @@ export type KeycloakProviderConfig = {
   schedule?: SchedulerServiceTaskScheduleDefinition;
   userQuerySize?: number;
   groupQuerySize?: number;
+  userNamespace?: string;
+  groupNamespace?: string;
   maxConcurrency?: number;
   briefRepresentation?: boolean;
 };

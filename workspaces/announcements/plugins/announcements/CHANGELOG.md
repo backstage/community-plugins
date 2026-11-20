@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 2.15.0
+
+### Minor Changes
+
+- 7f450a0: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7f450a0]
+  - @backstage-community/plugin-announcements-common@0.26.0
+  - @backstage-community/plugin-announcements-react@0.31.0
+
 ## 2.14.1
 
 ### Patch Changes

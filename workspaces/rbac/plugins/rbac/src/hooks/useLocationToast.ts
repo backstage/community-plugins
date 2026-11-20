@@ -14,17 +14,37 @@
  * limitations under the License.
  */
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const useLocationToast = (
   setToastMessage: (message: string) => void,
 ) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const toastMessage = location.state?.toastMessage as string | undefined;
 
   useEffect(() => {
-    if (location?.state?.toastMessage) {
-      setToastMessage(location.state.toastMessage);
+    if (!toastMessage) {
+      return;
     }
+
+    setToastMessage(toastMessage);
+    // Drop toastMessage from history so a refresh does not show it again.
+    navigate(`${location.pathname}${location.search}${location.hash}`, {
+      replace: true,
+      state: { ...location.state, toastMessage: undefined },
+    });
+  }, [
+    toastMessage,
+    location.pathname,
+    location.search,
+    location.hash,
+    location.state,
+    navigate,
+    setToastMessage,
+  ]);
+
+  useEffect(() => {
     return () => setToastMessage('');
-  }, [location, setToastMessage]);
+  }, [setToastMessage]);
 };

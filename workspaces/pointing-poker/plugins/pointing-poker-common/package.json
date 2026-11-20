@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-pointing-poker-common",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Common types and utilities for the Pointing Poker Backstage plugin",
   "backstage": {
     "role": "common-library",

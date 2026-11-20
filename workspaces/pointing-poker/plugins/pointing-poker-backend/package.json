@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-pointing-poker-backend",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Backend plugin for Pointing Poker — session management and ticket provider extension point",
   "backstage": {
     "role": "backend-plugin",

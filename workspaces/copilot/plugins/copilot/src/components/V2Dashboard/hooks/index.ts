@@ -15,4 +15,5 @@
  */
 
 export { useV2Teams } from './useV2Teams';
+export { useV2CostCenters } from './useV2CostCenters';
 export { useV2DashboardData } from './useV2DashboardData';

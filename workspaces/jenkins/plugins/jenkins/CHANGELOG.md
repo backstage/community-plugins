@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jenkins
 
+## 0.36.0
+
+### Minor Changes
+
+- bacbeba: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [bacbeba]
+  - @backstage-community/plugin-jenkins-common@0.24.0
+
 ## 0.35.0
 
 ### Minor Changes
