@@ -373,12 +373,12 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/ui": "backstage:^"
+    "@graphiql/react": "npm:^0.26.2"
     "@material-ui/core": "npm:^4.12.2"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@testing-library/user-event": "npm:^14.5.2"
-    "@types/codemirror": "npm:^5.0.0"
     "@types/react": "npm:^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
     graphiql: "npm:^3.0.6"
@@ -6567,7 +6567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/codemirror@npm:^5.0.0, @types/codemirror@npm:^5.60.8":
+"@types/codemirror@npm:^5.60.8":
   version: 5.60.15
   resolution: "@types/codemirror@npm:5.60.15"
   dependencies:
