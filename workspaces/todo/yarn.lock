@@ -2024,7 +2024,6 @@ __metadata:
     "@backstage/backend-openapi-utils": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/backend-test-utils": "backstage:^"
-    "@backstage/catalog-client": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
@@ -2037,7 +2036,6 @@ __metadata:
     express: "npm:^4.17.1"
     leasot: "npm:^12.0.0"
     supertest: "npm:^7.0.0"
-    yn: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -2296,7 +2294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@backstage:^::backstage=1.56.2&npm=1.16.3, @backstage/catalog-client@npm:^1.16.3":
+"@backstage/catalog-client@npm:^1.16.3":
   version: 1.16.3
   resolution: "@backstage/catalog-client@npm:1.16.3"
   dependencies:
