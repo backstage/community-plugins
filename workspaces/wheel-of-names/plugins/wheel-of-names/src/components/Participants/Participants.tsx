@@ -327,6 +327,7 @@ export const Participants = ({
 
         {/* Search field */}
         <TextField
+          id="wheel-of-names-search"
           label="Search users and groups"
           variant="outlined"
           fullWidth
