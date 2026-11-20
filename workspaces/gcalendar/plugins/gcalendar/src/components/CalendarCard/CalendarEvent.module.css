@@ -1,0 +1,45 @@
+@layer components {
+  .event {
+    margin-bottom: var(--bui-space-2);
+  }
+
+  .passed {
+    opacity: 0.6;
+    transition: opacity 150ms ease-in-out;
+  }
+
+  .passed:hover {
+    opacity: 1;
+  }
+
+  .declined {
+    text-decoration: line-through;
+  }
+
+  .calendarColor {
+    width: 8px;
+    align-self: stretch;
+    border-radius: var(--bui-radius-2);
+  }
+
+  .calendarColorPrimary {
+    background-color: var(--bui-accent-bg);
+  }
+
+  .content {
+    flex: 1;
+  }
+
+  .zoomLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--bui-radius-full);
+  }
+
+  .zoomLink:hover {
+    background-color: var(--bui-bg-neutral-2);
+  }
+}

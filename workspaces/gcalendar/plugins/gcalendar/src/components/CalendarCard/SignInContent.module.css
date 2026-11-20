@@ -1,0 +1,20 @@
+@layer components {
+  .root {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+
+  .preview {
+    opacity: 0.3;
+    filter: blur(1.5px);
+    padding: var(--bui-space-2);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
