@@ -1,5 +1,6 @@
 ---
 '@backstage-community/plugin-periskop-backend': patch
+'@backstage-community/plugin-periskop': patch
 ---
 
-Removed an unused dependency from the Periskop backend plugin.
+Remove an unused backend dependency and two unused frontend test dependencies.
