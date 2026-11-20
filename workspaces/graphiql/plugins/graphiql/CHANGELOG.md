@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.22.1
+
+### Patch Changes
+
+- 4d0b2cc: Declare the GraphiQL React dependency used by the plugin’s public types and remove the redundant CodeMirror types dependency.
+
 ## 0.22.0
 
 ### Minor Changes
