@@ -1,5 +1,16 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.28.0
+
+### Minor Changes
+
+- 1dba6bd: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- 41d7878: Updated dependency `@playwright/test` to `1.65.0`.
+- e967dcf: Updated dependency `@testing-library/user-event` to `14.6.9`.
+
 ## 1.27.5
 
 ### Patch Changes
