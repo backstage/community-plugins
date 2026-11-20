@@ -34,6 +34,8 @@ import type {
 import { GithubClientV2 } from '../client/GithubClientV2';
 import {
   InaccessibleEnterpriseOrganizationError,
+  isOrganizationReportNotFoundError,
+  isOrganizationReportPermissionError,
   type CostCenterMembershipSnapshot,
 } from '../client/GithubClientV2';
 import {
@@ -73,6 +75,8 @@ type IngestPlan = {
 type OrganizationTeamDirectoryRun = {
   generation: EnterpriseOrganizationDirectoryGeneration;
   configuredOrganizationAvailable: boolean;
+  configuredOrganizationLogin?: string;
+  configuredOrganizationAccessVerified: boolean;
 };
 
 export type TaskManagementV2Options = {
@@ -119,15 +123,32 @@ function getReportWindowStartDate(now = DateTime.utc()): string {
 }
 
 function getHttpStatus(error: unknown): number | undefined {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'status' in error &&
-    typeof error.status === 'number'
-  ) {
-    return error.status;
+  if (typeof error === 'object' && error !== null) {
+    if ('status' in error && typeof error.status === 'number') {
+      return error.status;
+    }
+    if (
+      'response' in error &&
+      typeof error.response === 'object' &&
+      error.response !== null &&
+      'status' in error.response &&
+      typeof error.response.status === 'number'
+    ) {
+      return error.response.status;
+    }
   }
   return undefined;
+}
+
+function getOrganizationAccessDenial(
+  error: unknown,
+): InaccessibleEnterpriseOrganizationError | undefined {
+  if (!isOrganizationReportPermissionError(error)) {
+    return undefined;
+  }
+  return error instanceof InaccessibleEnterpriseOrganizationError
+    ? error
+    : new InaccessibleEnterpriseOrganizationError(getHttpStatus(error) ?? 403);
 }
 
 function logOrganizationMetricsPermissionError(
@@ -136,7 +157,11 @@ function logOrganizationMetricsPermissionError(
   day: string,
   error: unknown,
 ): boolean {
-  const status = getHttpStatus(error);
+  if (!isOrganizationReportPermissionError(error)) {
+    return isOrganizationReportNotFoundError(error);
+  }
+
+  const status = getHttpStatus(error) ?? 403;
   if (status !== 403 && status !== 404) {
     return false;
   }
@@ -239,13 +264,42 @@ export class TaskManagementV2 {
       return;
     }
 
+    let organizationDirectoryRun: OrganizationTeamDirectoryRun | undefined;
+    if (ingestOrganizationTeamReports) {
+      if (!enterprise) {
+        logger.warn(
+          '[TaskManagementV2] copilot.ingestOrganizationTeamReports is enabled, but copilot.enterprise is not configured; skipping multi-organization team ingestion.',
+        );
+      } else {
+        organizationDirectoryRun = await this.runOrganizationTeamIngestion(
+          enterprise,
+          organization,
+        );
+      }
+    }
+
     const entities: Array<{ metricsType: MetricsScope; entityId: string }> = [];
 
     if (enterprise) {
       entities.push({ metricsType: 'enterprise', entityId: enterprise });
     }
     if (organization) {
-      entities.push({ metricsType: 'organization', entityId: organization });
+      if (
+        enterprise &&
+        ingestOrganizationTeamReports &&
+        !organizationDirectoryRun?.configuredOrganizationAvailable
+      ) {
+        logger.info(
+          `[TaskManagementV2] Skipping configured organization:${organization}; it is not available for ingestion.`,
+        );
+      } else {
+        entities.push({
+          metricsType: 'organization',
+          entityId:
+            organizationDirectoryRun?.configuredOrganizationLogin ??
+            organization,
+        });
+      }
     }
 
     if (!entities.length) {
@@ -366,26 +420,6 @@ export class TaskManagementV2 {
       }
     }
 
-    let organizationDirectoryGeneration: string | undefined;
-    let configuredOrganizationAvailable = false;
-    if (ingestOrganizationTeamReports) {
-      if (!enterprise) {
-        logger.warn(
-          '[TaskManagementV2] copilot.ingestOrganizationTeamReports is enabled, but copilot.enterprise is not configured; skipping multi-organization team ingestion.',
-        );
-      } else {
-        const directoryRun = await this.runOrganizationTeamIngestion(
-          enterprise,
-          organization,
-        );
-        if (directoryRun) {
-          organizationDirectoryGeneration = directoryRun.generation;
-          configuredOrganizationAvailable =
-            directoryRun.configuredOrganizationAvailable;
-        }
-      }
-    }
-
     for (const plan of plans) {
       let organizationLease: OrganizationIngestionLease | undefined;
       if (
@@ -393,7 +427,7 @@ export class TaskManagementV2 {
         enterprise &&
         plan.entity.metricsType === 'organization'
       ) {
-        if (!configuredOrganizationAvailable) {
+        if (!organizationDirectoryRun?.configuredOrganizationAvailable) {
           continue;
         }
         const leaseStartedAt = DateTime.utc();
@@ -405,14 +439,14 @@ export class TaskManagementV2 {
             .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
             .toJSDate(),
           true,
-          organizationDirectoryGeneration,
+          organizationDirectoryRun.generation,
         );
         if (!organizationLease) {
           if (
-            organizationDirectoryGeneration &&
+            organizationDirectoryRun.generation &&
             !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
               enterprise,
-              organizationDirectoryGeneration,
+              organizationDirectoryRun.generation,
             ))
           ) {
             logger.debug(
@@ -430,6 +464,10 @@ export class TaskManagementV2 {
       try {
         const loadedUserReportDays = new Set<string>();
         const refreshedUserReportDays = new Set<string>();
+        let organizationAccessVerified =
+          organizationDirectoryRun?.configuredOrganizationLogin ===
+            plan.entity.entityId &&
+          organizationDirectoryRun.configuredOrganizationAccessVerified;
         for (const day of plan.missingDays) {
           if (organizationLease) {
             await this.renewOrganizationIngestionLease(organizationLease);
@@ -452,6 +490,7 @@ export class TaskManagementV2 {
           if (userReport.refreshed) {
             refreshedUserReportDays.add(day);
           }
+          organizationAccessVerified ||= userReport.accessVerified;
 
           if (backfillDelayMs > 0) {
             await delay(backfillDelayMs);
@@ -496,6 +535,10 @@ export class TaskManagementV2 {
               if (error instanceof OrganizationIngestionLeaseLostError) {
                 throw error;
               }
+              const accessDenial = getOrganizationAccessDenial(error);
+              if (organizationLease && accessDenial) {
+                throw accessDenial;
+              }
               logger.error(
                 `[TaskManagementV2] Failed cost-center aggregation for ${plan.entity.metricsType}:${plan.entity.entityId} on ${day}; the day will be retried.`,
                 error,
@@ -504,11 +547,11 @@ export class TaskManagementV2 {
           }
         }
 
-        if (organizationLease && enterprise && organization) {
+        if (organizationLease && enterprise && organizationAccessVerified) {
           const completedAt = DateTime.utc();
           await db.markLegacyConfiguredOrganization(
             enterprise,
-            organization,
+            plan.entity.entityId,
             completedAt.toJSDate(),
             completedAt
               .plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS })
@@ -517,13 +560,37 @@ export class TaskManagementV2 {
           );
         }
       } catch (error) {
+        const accessDenial = getOrganizationAccessDenial(error);
+        if (organizationLease && enterprise && accessDenial) {
+          const failedAt = DateTime.utc();
+          try {
+            await db.updateEnterpriseOrganizationState(organizationLease, {
+              accessState: 'inaccessible',
+              reportsReady: false,
+              lastAttemptedAt: failedAt.toJSDate(),
+              nextAttemptAt: failedAt.plus({ hours: 24 }).toJSDate(),
+            });
+          } catch (stateError) {
+            if (stateError instanceof OrganizationIngestionLeaseLostError) {
+              logger.debug(
+                `[TaskManagementV2] Ignored a stale configured-organization denial for ${plan.entity.entityId}.`,
+              );
+              continue;
+            }
+            throw stateError;
+          }
+          logger.warn(
+            `[TaskManagementV2] The configured organization is no longer accessible; hiding its organization-team filters while retaining imported history.`,
+          );
+          continue;
+        }
         if (
           error instanceof OrganizationIngestionLeaseLostError &&
           enterprise &&
-          organizationDirectoryGeneration &&
+          organizationDirectoryRun?.generation &&
           !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
             enterprise,
-            organizationDirectoryGeneration,
+            organizationDirectoryRun.generation,
           ))
         ) {
           logger.debug(
@@ -716,16 +783,18 @@ export class TaskManagementV2 {
 
     let organizationBackfillIncomplete = false;
     let organizationReportsReady = false;
+    let organizationAccessVerified = false;
     try {
       if (discoveredOrganization) {
         const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
         if (!yesterday) {
           throw new Error('Unable to compute yesterday date.');
         }
-        await api.verifyEnterpriseOrganizationAccess(
-          discoveredOrganization,
-          yesterday,
-        );
+        organizationAccessVerified =
+          await api.verifyEnterpriseOrganizationAccess(
+            discoveredOrganization,
+            yesterday,
+          );
       }
 
       const loadedUserReportDays = new Set<string>();
@@ -749,6 +818,7 @@ export class TaskManagementV2 {
               : {}),
           },
         );
+        organizationAccessVerified ||= userReport.accessVerified;
         if (discoveredOrganization) {
           if (!userReport.complete) {
             organizationBackfillIncomplete = true;
@@ -810,6 +880,10 @@ export class TaskManagementV2 {
             if (error instanceof OrganizationIngestionLeaseLostError) {
               throw error;
             }
+            const accessDenial = getOrganizationAccessDenial(error);
+            if (organizationLease && accessDenial) {
+              throw accessDenial;
+            }
             logger.error(
               `[TaskManagementV2] Failed cost-center aggregation for ${metricsType}:${backfillEntityId} on ${day}; the day will be retried.`,
               error,
@@ -821,7 +895,7 @@ export class TaskManagementV2 {
       if (discoveredOrganization && organizationLease) {
         const completedAt = DateTime.utc();
         await db.updateEnterpriseOrganizationState(organizationLease, {
-          accessState: 'accessible',
+          ...(organizationAccessVerified ? { accessState: 'accessible' } : {}),
           ...(organizationReportsReady ? { reportsReady: true } : {}),
           lastAttemptedAt: completedAt.toJSDate(),
           ...(organizationBackfillIncomplete
@@ -830,7 +904,12 @@ export class TaskManagementV2 {
               }
             : {}),
         });
-      } else if (organizationLease && enterprise && canonicalOrganization) {
+      } else if (
+        organizationAccessVerified &&
+        organizationLease &&
+        enterprise &&
+        canonicalOrganization
+      ) {
         const completedAt = DateTime.utc();
         await db.markLegacyConfiguredOrganization(
           enterprise,
@@ -841,11 +920,8 @@ export class TaskManagementV2 {
         );
       }
     } catch (error) {
-      if (
-        discoveredOrganization &&
-        organizationLease &&
-        error instanceof InaccessibleEnterpriseOrganizationError
-      ) {
+      const accessDenial = getOrganizationAccessDenial(error);
+      if (organizationLease && accessDenial) {
         const failedAt = DateTime.utc();
         await db.updateEnterpriseOrganizationState(organizationLease, {
           accessState: 'inaccessible',
@@ -853,7 +929,9 @@ export class TaskManagementV2 {
           lastAttemptedAt: failedAt.toJSDate(),
           nextAttemptAt: failedAt.plus({ hours: 24 }).toJSDate(),
         });
-        throw new Error('Organization is no longer available.');
+        if (discoveredOrganization) {
+          throw new Error('Organization is no longer available.');
+        }
       }
       throw error;
     } finally {
@@ -931,20 +1009,38 @@ export class TaskManagementV2 {
     entityId: string,
     organizationLease?: OrganizationIngestionLease,
     organizationReportTarget?: string,
-  ): Promise<boolean> {
+    onAccessVerified?: () => void,
+  ): Promise<{ loaded: boolean; accessVerified: boolean }> {
     const { api, logger } = this.options;
     let reportEnvelope: Awaited<
       ReturnType<GithubClientV2['fetchEnterpriseReportLinks']>
     >;
-    if (metricsType === 'enterprise') {
-      reportEnvelope = await api.fetchEnterpriseReportLinks(day);
-    } else if (organizationReportTarget) {
-      reportEnvelope = await api.fetchEnterpriseOrganizationReportLinks(
-        organizationReportTarget,
-        day,
-      );
-    } else {
-      reportEnvelope = await api.fetchOrganizationReportLinks(day);
+    try {
+      if (metricsType === 'enterprise') {
+        reportEnvelope = await api.fetchEnterpriseReportLinks(day);
+      } else if (organizationReportTarget) {
+        reportEnvelope = await api.fetchEnterpriseOrganizationReportLinks(
+          organizationReportTarget,
+          day,
+        );
+      } else {
+        reportEnvelope = await api.fetchOrganizationReportLinks(day);
+      }
+    } catch (error) {
+      if (
+        metricsType === 'organization' &&
+        isOrganizationReportNotFoundError(error)
+      ) {
+        logger.warn(
+          `[TaskManagementV2] No organization totals report is available on ${day}; continuing with other days.`,
+        );
+        return { loaded: false, accessVerified: false };
+      }
+      throw error;
+    }
+
+    if (metricsType === 'organization') {
+      onAccessVerified?.();
     }
 
     const totalLinks = reportEnvelope.download_links ?? [];
@@ -952,7 +1048,7 @@ export class TaskManagementV2 {
       logger.warn(
         `[TaskManagementV2] No download links for ${metricsType} totals on ${day} — report data may not yet be available for this period.`,
       );
-      return false;
+      return { loaded: false, accessVerified: true };
     }
 
     let totalRowsParsed = 0;
@@ -985,10 +1081,10 @@ export class TaskManagementV2 {
       logger.warn(
         `[TaskManagementV2] Parsed 0 daily rows for ${metricsType} totals on ${day} — not marking as success.`,
       );
-      return false;
+      return { loaded: false, accessVerified: true };
     }
 
-    return true;
+    return { loaded: true, accessVerified: true };
   }
 
   private async ingestUserReports(
@@ -997,10 +1093,12 @@ export class TaskManagementV2 {
     entityId: string,
     organizationLease?: OrganizationIngestionLease,
     organizationReportTarget?: string,
+    onAccessVerified?: () => void,
   ): Promise<{
     loaded: boolean;
     userMetrics: V2UserMetricRow[];
     userBreakdowns: UserBreakdownData[];
+    accessVerified: boolean;
   }> {
     const { api, logger } = this.options;
     let userReportEnvelope: Awaited<
@@ -1023,9 +1121,22 @@ export class TaskManagementV2 {
         metricsType === 'organization' &&
         logOrganizationMetricsPermissionError(logger, 'per-user', day, error)
       ) {
-        return { loaded: false, userMetrics: [], userBreakdowns: [] };
+        const accessDenial = getOrganizationAccessDenial(error);
+        if (accessDenial && (organizationLease || organizationReportTarget)) {
+          throw accessDenial;
+        }
+        return {
+          loaded: false,
+          userMetrics: [],
+          userBreakdowns: [],
+          accessVerified: false,
+        };
       }
       throw error;
+    }
+
+    if (metricsType === 'organization') {
+      onAccessVerified?.();
     }
 
     const userLinks = userReportEnvelope.download_links ?? [];
@@ -1033,7 +1144,12 @@ export class TaskManagementV2 {
       logger.warn(
         `[TaskManagementV2] No download links for ${metricsType} users on ${day} — user metrics will be skipped.`,
       );
-      return { loaded: false, userMetrics: [], userBreakdowns: [] };
+      return {
+        loaded: false,
+        userMetrics: [],
+        userBreakdowns: [],
+        accessVerified: true,
+      };
     }
 
     const userMetrics: V2UserMetricRow[] = [];
@@ -1067,7 +1183,7 @@ export class TaskManagementV2 {
       await db.insertUserMetricsByLanguageModel(breakdownRows.byLanguageModel);
     });
 
-    return { loaded: true, userMetrics, userBreakdowns };
+    return { loaded: true, userMetrics, userBreakdowns, accessVerified: true };
   }
 
   private async ingestTeamAggregates(
@@ -1079,7 +1195,8 @@ export class TaskManagementV2 {
     userReportLoaded: boolean,
     organizationLease?: OrganizationIngestionLease,
     organizationReportTarget?: string,
-  ): Promise<boolean> {
+    onAccessVerified?: () => void,
+  ): Promise<{ loaded: boolean; accessVerified: boolean }> {
     const { api, logger } = this.options;
     let userTeamsEnvelope: Awaited<
       ReturnType<GithubClientV2['fetchEnterpriseUserTeamsLinks']>
@@ -1100,23 +1217,32 @@ export class TaskManagementV2 {
         metricsType === 'organization' &&
         logOrganizationMetricsPermissionError(logger, 'user-teams', day, error)
       ) {
-        return false;
+        const accessDenial = getOrganizationAccessDenial(error);
+        if (accessDenial && (organizationLease || organizationReportTarget)) {
+          throw accessDenial;
+        }
+        return { loaded: false, accessVerified: false };
       }
       throw error;
     }
+
+    if (metricsType === 'organization') {
+      onAccessVerified?.();
+    }
+
     const userTeamLinks = userTeamsEnvelope.download_links ?? [];
     if (userTeamLinks.length === 0) {
       logger.warn(
         `[TaskManagementV2] No download links for ${metricsType} user-teams on ${day} — team aggregation will be skipped.`,
       );
-      return false;
+      return { loaded: false, accessVerified: true };
     }
 
     if (!userReportLoaded) {
       logger.warn(
         `[TaskManagementV2] Skipping ${metricsType} team aggregation for ${day} because the per-user report was not loaded.`,
       );
-      return false;
+      return { loaded: false, accessVerified: true };
     }
 
     const userTeams: V2UserTeamRow[] = [];
@@ -1144,7 +1270,7 @@ export class TaskManagementV2 {
       ),
     );
 
-    return userMetrics.length > 0;
+    return { loaded: userMetrics.length > 0, accessVerified: true };
   }
 
   private async ingestCostCenterAggregates(
@@ -1293,6 +1419,7 @@ export class TaskManagementV2 {
     refreshed: boolean;
     complete: boolean;
     totalsLoaded: boolean;
+    accessVerified: boolean;
   }> {
     const { db, logger } = this.options;
     const requiredComponents = getRequiredComponents(
@@ -1302,6 +1429,10 @@ export class TaskManagementV2 {
     const componentsLoaded = new Set<string>();
     let userReportsLoaded = false;
     let userReportsRefreshed = false;
+    let accessVerified = false;
+    const markAccessVerified = () => {
+      accessVerified = true;
+    };
 
     try {
       const previousLog = (
@@ -1314,17 +1445,19 @@ export class TaskManagementV2 {
         componentsLoaded.add(component);
       }
 
-      if (
-        !previouslyLoaded.has('totals') &&
-        (await this.ingestTotals(
+      if (!previouslyLoaded.has('totals')) {
+        const totals = await this.ingestTotals(
           day,
           metricsType,
           entityId,
           context.organizationLease,
           context.organizationReportTarget,
-        ))
-      ) {
-        componentsLoaded.add('totals');
+          markAccessVerified,
+        );
+        accessVerified ||= totals.accessVerified;
+        if (totals.loaded) {
+          componentsLoaded.add('totals');
+        }
       }
 
       if (context.ingestUsers) {
@@ -1343,6 +1476,7 @@ export class TaskManagementV2 {
               loaded: true,
               userMetrics: storedUserMetrics,
               userBreakdowns: storedUserBreakdowns,
+              accessVerified: false,
             }
           : await this.ingestUserReports(
               day,
@@ -1350,7 +1484,9 @@ export class TaskManagementV2 {
               entityId,
               context.organizationLease,
               context.organizationReportTarget,
+              markAccessVerified,
             );
+        accessVerified ||= userReport.accessVerified;
         userReportsLoaded = userReport.loaded;
         userReportsRefreshed = userReport.loaded && !reuseStoredReport;
         if (userReportsRefreshed && context.ingestCostCenters) {
@@ -1368,9 +1504,8 @@ export class TaskManagementV2 {
           componentsLoaded.add('users');
         }
 
-        if (
-          context.ingestTeams &&
-          (await this.ingestTeamAggregates(
+        if (context.ingestTeams) {
+          const teams = await this.ingestTeamAggregates(
             day,
             metricsType,
             entityId,
@@ -1379,9 +1514,12 @@ export class TaskManagementV2 {
             userReport.loaded,
             context.organizationLease,
             context.organizationReportTarget,
-          ))
-        ) {
-          componentsLoaded.add('teams');
+            markAccessVerified,
+          );
+          accessVerified ||= teams.accessVerified;
+          if (teams.loaded) {
+            componentsLoaded.add('teams');
+          }
         }
       }
 
@@ -1400,6 +1538,7 @@ export class TaskManagementV2 {
           componentsLoaded.has(component),
         ),
         totalsLoaded: componentsLoaded.has('totals'),
+        accessVerified,
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -1424,17 +1563,19 @@ export class TaskManagementV2 {
             source: context.source,
           }),
       );
+      const accessDenial = getOrganizationAccessDenial(error);
       if (
-        context.organizationReportTarget &&
-        error instanceof InaccessibleEnterpriseOrganizationError
+        (context.organizationLease || context.organizationReportTarget) &&
+        accessDenial
       ) {
-        throw error;
+        throw accessDenial;
       }
       return {
         loaded: userReportsLoaded,
         refreshed: userReportsRefreshed,
         complete: false,
         totalsLoaded: componentsLoaded.has('totals'),
+        accessVerified,
       };
     }
   }
@@ -1515,6 +1656,8 @@ export class TaskManagementV2 {
     }
 
     let organizations: string[];
+    let configuredOrganizationLogin: string | undefined;
+    let configuredOrganizationAmbiguous = false;
     try {
       organizations = await api.fetchEnterpriseOrganizations();
       const syncResult = await db.syncEnterpriseOrganizations(
@@ -1522,12 +1665,18 @@ export class TaskManagementV2 {
         generation,
         organizations,
         DateTime.utc().toJSDate(),
+        configuredOrganization,
       );
       if (syncResult === 'superseded') {
         logger.debug(
           '[TaskManagementV2] Discarded an enterprise organization directory snapshot superseded by a newer refresh.',
         );
         return undefined;
+      }
+      if (typeof syncResult !== 'string') {
+        configuredOrganizationLogin = syncResult.configuredOrganizationLogin;
+        configuredOrganizationAmbiguous =
+          syncResult.configuredOrganizationAmbiguous;
       }
     } catch (error) {
       let failureResult;
@@ -1569,13 +1718,18 @@ export class TaskManagementV2 {
       return undefined;
     }
 
+    const configuredOrganizationFromDirectory =
+      configuredOrganizationLogin ??
+      organizations.find(
+        item => item.toLowerCase() === configuredOrganization?.toLowerCase(),
+      );
+    let configuredOrganizationAccessVerified = false;
     let configuredOrganizationAvailable = false;
-    if (
-      configuredOrganization &&
-      organizations.some(
-        item => item.toLowerCase() === configuredOrganization.toLowerCase(),
-      )
-    ) {
+    if (configuredOrganization && configuredOrganizationAmbiguous) {
+      logger.error(
+        `[TaskManagementV2] Multiple historical organization IDs differ only by case for ${configuredOrganization}; organization ingestion is paused until the data is reconciled.`,
+      );
+    } else if (configuredOrganizationFromDirectory) {
       if (
         !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
           enterprise,
@@ -1592,32 +1746,38 @@ export class TaskManagementV2 {
         if (!yesterday) {
           throw new Error('Unable to compute yesterday date.');
         }
-        await api.verifyEnterpriseOrganizationAccess(
-          configuredOrganization,
-          yesterday,
-        );
-        const checkedAt = DateTime.utc();
-        const result = await db.markLegacyConfiguredOrganization(
-          enterprise,
-          configuredOrganization,
-          checkedAt.toJSDate(),
-          checkedAt.plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS }).toJSDate(),
-          undefined,
-          generation,
-        );
-        if (result === 'superseded') {
-          logger.debug(
-            '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+        configuredOrganizationAccessVerified =
+          await api.verifyEnterpriseOrganizationAccess(
+            configuredOrganizationFromDirectory,
+            yesterday,
           );
-          return undefined;
+        if (configuredOrganizationAccessVerified) {
+          const checkedAt = DateTime.utc();
+          const result = await db.markLegacyConfiguredOrganization(
+            enterprise,
+            configuredOrganizationFromDirectory,
+            checkedAt.toJSDate(),
+            checkedAt.plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS }).toJSDate(),
+            undefined,
+            generation,
+          );
+          if (result === 'superseded') {
+            logger.debug(
+              '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+            );
+            return undefined;
+          }
+          configuredOrganizationAvailable = result === 'updated';
+        } else {
+          configuredOrganizationAvailable = true;
         }
-        configuredOrganizationAvailable = result === 'updated';
       } catch (error) {
-        if (error instanceof InaccessibleEnterpriseOrganizationError) {
+        const accessDenial = getOrganizationAccessDenial(error);
+        if (accessDenial) {
           const failedAt = DateTime.utc();
           const result = await db.markEnterpriseOrganizationInaccessible(
             enterprise,
-            configuredOrganization,
+            configuredOrganizationFromDirectory,
             failedAt.toJSDate(),
             failedAt.plus({ hours: 24 }).toJSDate(),
             generation,
@@ -1669,7 +1829,7 @@ export class TaskManagementV2 {
       DateTime.utc().toJSDate(),
       ORGANIZATION_TEAM_MAX_ORGANIZATIONS_PER_RUN,
       1,
-      configuredOrganization,
+      configuredOrganizationFromDirectory ?? configuredOrganization,
       generation,
     );
     for (const organization of organizationsToIngest) {
@@ -1715,7 +1875,8 @@ export class TaskManagementV2 {
           continue;
         }
         const failedAt = DateTime.utc();
-        if (error instanceof InaccessibleEnterpriseOrganizationError) {
+        const accessDenial = getOrganizationAccessDenial(error);
+        if (accessDenial) {
           try {
             await db.updateEnterpriseOrganizationState(lease, {
               accessState: 'inaccessible',
@@ -1776,7 +1937,12 @@ export class TaskManagementV2 {
       );
       return undefined;
     }
-    return { generation, configuredOrganizationAvailable };
+    return {
+      generation,
+      configuredOrganizationAvailable,
+      configuredOrganizationLogin,
+      configuredOrganizationAccessVerified,
+    };
   }
 
   private async ingestEnterpriseOrganizationWorkItem(
@@ -1837,7 +2003,10 @@ export class TaskManagementV2 {
     }
 
     await this.renewOrganizationIngestionLease(lease);
-    await api.verifyEnterpriseOrganizationAccess(organization, yesterday);
+    let accessVerified = await api.verifyEnterpriseOrganizationAccess(
+      organization,
+      yesterday,
+    );
 
     const backfillDelayMs =
       config.getOptionalNumber('copilot.backfillDelayMs') ?? 200;
@@ -1855,6 +2024,7 @@ export class TaskManagementV2 {
         organizationLease: lease,
         organizationReportTarget: organization,
       });
+      accessVerified ||= result.accessVerified;
       if (!result.complete) {
         incomplete = true;
       }
@@ -1869,7 +2039,7 @@ export class TaskManagementV2 {
 
     const completedAt = DateTime.utc();
     await db.updateEnterpriseOrganizationState(lease, {
-      accessState: 'accessible',
+      ...(accessVerified ? { accessState: 'accessible' } : {}),
       ...(reportsReady ? { reportsReady: true } : {}),
       lastAttemptedAt: completedAt.toJSDate(),
       nextAttemptAt: completedAt

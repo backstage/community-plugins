@@ -138,7 +138,13 @@ export type EnterpriseOrganizationAccessState =
 
 export type EnterpriseOrganizationDirectoryGeneration = string;
 
-export type EnterpriseOrganizationDirectorySyncResult = 'synced' | 'superseded';
+export type EnterpriseOrganizationDirectorySyncResult =
+  | 'synced'
+  | 'superseded'
+  | {
+      configuredOrganizationLogin?: string;
+      configuredOrganizationAmbiguous: boolean;
+    };
 
 export type EnterpriseOrganizationDirectoryFailureResult =
   | 'marked'
@@ -309,6 +315,7 @@ export class DatabaseHandlerV2 {
     generation: EnterpriseOrganizationDirectoryGeneration,
     organizations: string[],
     now: Date,
+    configuredOrganization?: string,
   ): Promise<EnterpriseOrganizationDirectorySyncResult> {
     const uniqueOrganizations = new Map<string, string>();
     for (const login of organizations) {
@@ -317,6 +324,10 @@ export class DatabaseHandlerV2 {
         uniqueOrganizations.set(trimmed.toLowerCase(), trimmed);
       }
     }
+
+    const configuredKey = configuredOrganization?.trim().toLowerCase();
+    let configuredOrganizationLogin: string | undefined;
+    let configuredOrganizationAmbiguous = false;
 
     return this.db.transaction(async transaction => {
       if (
@@ -341,14 +352,49 @@ export class DatabaseHandlerV2 {
         currentRows.map(row => [row.organization_key, row.organization_login]),
       );
 
+      const historicalLogins = new Set<string>();
+      if (configuredKey) {
+        for (const table of [
+          'copilot_daily_totals',
+          'copilot_user_metrics',
+          'copilot_user_teams',
+        ]) {
+          const rows = await transaction(table)
+            .where({ metrics_type: 'organization' })
+            .whereRaw('LOWER(entity_id) = ?', [configuredKey])
+            .select('entity_id');
+          for (const row of rows) {
+            if (typeof row.entity_id === 'string') {
+              historicalLogins.add(row.entity_id);
+            }
+          }
+        }
+      }
+
       await transaction('copilot_enterprise_organizations')
         .where({ enterprise_id: enterpriseId })
         .update({ is_current: false, updated_at: now });
 
       for (const [organizationKey, organizationLogin] of uniqueOrganizations) {
         const wasCurrent = previouslyCurrent.has(organizationKey);
-        const canonicalLogin =
-          knownLogins.get(organizationKey) ?? organizationLogin;
+        const ambiguousHistory =
+          organizationKey === configuredKey && historicalLogins.size > 1;
+        const canonicalLogin = ambiguousHistory
+          ? knownLogins.get(organizationKey) ?? organizationLogin
+          : (organizationKey === configuredKey
+              ? historicalLogins.values().next().value
+              : undefined) ??
+            knownLogins.get(organizationKey) ??
+            organizationLogin;
+
+        if (organizationKey === configuredKey) {
+          configuredOrganizationAmbiguous = ambiguousHistory;
+          if (!ambiguousHistory) {
+            configuredOrganizationLogin = canonicalLogin;
+          }
+        }
+
+        const resetOrganizationState = ambiguousHistory || !wasCurrent;
         await transaction('copilot_enterprise_organizations')
           .insert({
             enterprise_id: enterpriseId,
@@ -364,16 +410,16 @@ export class DatabaseHandlerV2 {
             organization_login: canonicalLogin,
             is_current: true,
             updated_at: now,
-            ...(wasCurrent
-              ? {}
-              : {
+            ...(resetOrganizationState
+              ? {
                   access_state: 'pending',
                   reports_ready: false,
                   last_attempted_at: null,
                   next_attempt_at: null,
                   lease_owner: null,
                   lease_expires_at: null,
-                }),
+                }
+              : {}),
           });
       }
 
@@ -384,7 +430,12 @@ export class DatabaseHandlerV2 {
           last_synced_at: now,
           updated_at: now,
         });
-      return 'synced';
+      return configuredKey
+        ? {
+            configuredOrganizationLogin,
+            configuredOrganizationAmbiguous,
+          }
+        : 'synced';
     });
   }
 
@@ -461,14 +512,13 @@ export class DatabaseHandlerV2 {
       const existingReport = await transaction('copilot_daily_totals')
         .where({
           metrics_type: 'organization',
-          entity_id: organization,
           team_slug: '',
           cost_center_id: '',
           without_cost_center: false,
         })
+        .whereRaw('LOWER(entity_id) = ?', [key])
         .first('day');
       await query.update({
-        organization_login: organization,
         access_state: 'accessible',
         reports_ready: Boolean(existingReport),
         last_attempted_at: now,

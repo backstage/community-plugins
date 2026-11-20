@@ -948,6 +948,82 @@ describe('router v2 endpoints', () => {
     expect(response.status).not.toBe(200);
   });
 
+  it.each([true, false])(
+    'keeps configured organization reads and backfill available without an enterprise when multi-org ingestion is %s',
+    async ingestOrganizationTeamReports => {
+      const app = await createTestApp({
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              organization: 'org-1',
+              ingestOrganizationTeamReports,
+            },
+          },
+        }),
+      });
+
+      const dashboard = await request(app).get(
+        '/v2/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+      );
+      expect(dashboard.status).toBe(200);
+      expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-20',
+        undefined,
+        undefined,
+      );
+
+      const daily = await request(app).get(
+        '/v2/metrics/daily?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+      );
+      expect(daily.status).toBe(200);
+      expect(mockDbV2.getDailyTotals).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-20',
+        undefined,
+        undefined,
+      );
+
+      const backfill = await request(app).post('/v2/backfill').send({
+        type: 'organization',
+        entityId: 'org-1',
+        fromDate: '2025-10-10',
+        toDate: '2025-10-10',
+      });
+      expect(backfill.status).toBe(202);
+      expect(mockTaskV2.runBackfill).toHaveBeenCalledWith(
+        '2025-10-10',
+        '2025-10-10',
+        'organization',
+        'org-1',
+      );
+      expect(mockTaskV2.runOrganizationBackfill).not.toHaveBeenCalled();
+    },
+  );
+
+  it('keeps the legacy organization metrics route available with the multi-org flag and no enterprise', async () => {
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            organization: 'org-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+    const response = await request(app).get(
+      '/legacy/metrics?type=organization&startDate=2026-05-01&endDate=2026-05-20',
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
+  });
+
   it('GET /v2/dashboard returns aggregated dashboard data', async () => {
     mockDbV2.getDashboardData.mockResolvedValue({
       daily: [
@@ -1519,6 +1595,33 @@ describe('router v2 endpoints', () => {
         customizationMetrics: [],
         customizationSummaries: [],
       });
+      expect(mockDbV2.getUserDashboardData).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        'mock',
+        '2026-05-01',
+        '2026-05-20',
+      );
+    });
+
+    it('serves configured-organization personal metrics without an enterprise when multi-org ingestion is enabled', async () => {
+      const app = await createMeTestApp(undefined, {
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              organization: 'org-1',
+              ingestOrganizationTeamReports: true,
+            },
+          },
+        }),
+      });
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(200);
       expect(mockDbV2.getUserDashboardData).toHaveBeenCalledWith(
         'organization',
         'org-1',

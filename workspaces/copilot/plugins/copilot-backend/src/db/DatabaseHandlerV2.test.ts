@@ -856,6 +856,101 @@ describe('DatabaseHandlerV2', () => {
       }
     });
 
+    it('adopts the historical organization ID before configured ingestion and preserves scoped data', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      const day = '2026-05-01';
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day, entity_id: 'Org-A' }),
+        buildDailyTotal({ day, entity_id: 'Org-A', team_slug: 'platform' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({ day, entity_id: 'Org-A' }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({ day, entity_id: 'Org-A', team_slug: 'platform' }),
+      ]);
+
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['ORG-A'],
+          now,
+          'org-a',
+        ),
+      ).resolves.toEqual({
+        configuredOrganizationLogin: 'Org-A',
+        configuredOrganizationAmbiguous: false,
+      });
+
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'org-a',
+        now,
+        new Date(now.getTime() + 60_000),
+      );
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      await expect(
+        handler.getDailyTotals('organization', 'Org-A', day, day),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getDailyTotals('organization', 'org-a', day, day),
+      ).resolves.toHaveLength(0);
+      await expect(
+        handler.getUserMetricsForDay('organization', 'Org-A', day),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getUserMetricsForDay('organization', 'org-a', day),
+      ).resolves.toHaveLength(0);
+      await expect(
+        handler.getTeams('organization', 'Org-A', day, day, 1),
+      ).resolves.toEqual(['platform']);
+      await expect(
+        handler.getTeams('organization', 'org-a', day, day, 1),
+      ).resolves.toEqual([]);
+    });
+
+    it('pauses configured ingestion when historical organization IDs differ only by case', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-01', entity_id: 'Org-A' }),
+        buildDailyTotal({ day: '2026-05-02', entity_id: 'org-a' }),
+      ]);
+
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['ORG-A'],
+          now,
+          'org-a',
+        ),
+      ).resolves.toEqual({
+        configuredOrganizationLogin: undefined,
+        configuredOrganizationAmbiguous: true,
+      });
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: true,
+        organizations: [],
+      });
+    });
+
     it('fences expired leases across directory revocation and reactivation', async () => {
       const now = new Date();
       const firstExpiresAt = new Date(now.getTime() + 60_000);

@@ -347,7 +347,9 @@ async function createRouter(
     'copilot.organization',
   );
   const organizationTeamIngestionEnabled =
-    config.getOptionalBoolean('copilot.ingestOrganizationTeamReports') ?? false;
+    Boolean(configuredEnterprise) &&
+    (config.getOptionalBoolean('copilot.ingestOrganizationTeamReports') ??
+      false);
   const configuredOrganizationTeamFilteringEnabled =
     Boolean(configuredEnterprise && configuredOrganization) &&
     (config.getOptionalBoolean('copilot.ingestTeams') ?? false);

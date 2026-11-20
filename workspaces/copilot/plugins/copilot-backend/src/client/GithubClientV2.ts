@@ -193,7 +193,7 @@ class MissingCostCenterOrganizationInstallationError extends Error {
 }
 
 export class InaccessibleEnterpriseOrganizationError extends Error {
-  constructor() {
+  constructor(readonly status = 403) {
     super('Organization access is unavailable.');
     this.name = 'InaccessibleEnterpriseOrganizationError';
   }
@@ -256,6 +256,35 @@ function isRateLimitError(error: unknown): boolean {
     (retryAfter !== undefined && Number(retryAfter) > 0) ||
     remaining === '0' ||
     /secondary rate limit|api rate limit exceeded/i.test(message)
+  );
+}
+
+export function isOrganizationReportNotFoundError(error: unknown): boolean {
+  return (
+    !(error instanceof InaccessibleEnterpriseOrganizationError) &&
+    getHttpStatus(error) === 404 &&
+    !isRateLimitError(error) &&
+    !isOrganizationReportPermissionError(error)
+  );
+}
+
+export function isOrganizationReportPermissionError(error: unknown): boolean {
+  if (error instanceof InaccessibleEnterpriseOrganizationError) {
+    return true;
+  }
+
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success || isRateLimitError(error)) {
+    return false;
+  }
+
+  const status = parsedError.data.status ?? parsedError.data.response?.status;
+  return (
+    status === 403 ||
+    (status === 404 &&
+      /resource not accessible by integration|permission denied|not authorized/i.test(
+        parsedError.data.message ?? '',
+      ))
   );
 }
 
@@ -525,7 +554,7 @@ export class GithubClientV2 {
       } catch (error) {
         const status = getHttpStatus(error);
         if ((status === 403 || status === 404) && !isRateLimitError(error)) {
-          throw new InaccessibleEnterpriseOrganizationError();
+          throw new InaccessibleEnterpriseOrganizationError(status);
         }
         throw error;
       }
@@ -642,7 +671,7 @@ export class GithubClientV2 {
         } catch (error) {
           const status = getHttpStatus(error);
           if ((status === 403 || status === 404) && !isRateLimitError(error)) {
-            throw new InaccessibleEnterpriseOrganizationError();
+            throw new InaccessibleEnterpriseOrganizationError(status);
           }
           throw error;
         }
@@ -1363,16 +1392,22 @@ export class GithubClientV2 {
             const retryStatus = getHttpStatus(retryError);
             if (retryStatus === 403 && !isRateLimitError(retryError)) {
               await invalidateClient(refreshedOctokit);
-              throw new InaccessibleEnterpriseOrganizationError();
+              throw new InaccessibleEnterpriseOrganizationError(retryStatus);
             }
             if (retryStatus === 404 && !isRateLimitError(retryError)) {
               await invalidateClient(refreshedOctokit);
+              if (isOrganizationReportPermissionError(retryError)) {
+                throw new InaccessibleEnterpriseOrganizationError(retryStatus);
+              }
             }
             throw retryError;
           }
         }
         if (status === 403) {
-          throw new InaccessibleEnterpriseOrganizationError();
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+        if (status === 404 && isOrganizationReportPermissionError(error)) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
         }
       }
       throw error;
@@ -1393,8 +1428,16 @@ export class GithubClientV2 {
   async verifyEnterpriseOrganizationAccess(
     organization: string,
     day: string,
-  ): Promise<void> {
-    await this.fetchEnterpriseOrganizationReportLinks(organization, day);
+  ): Promise<boolean> {
+    try {
+      await this.fetchEnterpriseOrganizationReportLinks(organization, day);
+      return true;
+    } catch (error) {
+      if (isOrganizationReportNotFoundError(error)) {
+        return false;
+      }
+      throw error;
+    }
   }
 
   async fetchEnterpriseOrganizationUserReportLinks(

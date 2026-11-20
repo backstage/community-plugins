@@ -17,6 +17,8 @@
 import {
   GithubClientV2,
   InaccessibleEnterpriseOrganizationError,
+  isOrganizationReportNotFoundError,
+  isOrganizationReportPermissionError,
 } from './GithubClientV2';
 import { Octokit } from '@octokit/rest';
 
@@ -228,6 +230,41 @@ const githubErrorBoundaryCases: GithubErrorBoundaryCase[] = [
 ];
 
 describe('GithubClientV2', () => {
+  it.each([
+    ['generic report 404', httpError(404), true, false],
+    [
+      'permission-indicating report 404',
+      Object.assign(new Error('Resource not accessible by integration'), {
+        status: 404,
+      }),
+      false,
+      true,
+    ],
+    ['explicit 403', httpError(403), false, true],
+    [
+      'rate-limited 403',
+      Object.assign(new Error('API rate limit exceeded'), {
+        status: 403,
+        response: { headers: { 'x-ratelimit-remaining': '0' } },
+      }),
+      false,
+      false,
+    ],
+    ['transient 500', httpError(500), false, false],
+    [
+      'already-classified access denial',
+      new InaccessibleEnterpriseOrganizationError(403),
+      false,
+      true,
+    ],
+  ])(
+    'classifies organization report errors: %s',
+    (_description, error, isReportGap, isAccessDenial) => {
+      expect(isOrganizationReportNotFoundError(error)).toBe(isReportGap);
+      expect(isOrganizationReportPermissionError(error)).toBe(isAccessDenial);
+    },
+  );
+
   let mockConfig: any;
   let mockLogger: any;
   let originalFetch: any;
@@ -1160,7 +1197,10 @@ describe('GithubClientV2', () => {
       const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
       await expect(
         client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
-      ).rejects.toBeInstanceOf(InaccessibleEnterpriseOrganizationError);
+      ).rejects.toMatchObject({
+        name: InaccessibleEnterpriseOrganizationError.name,
+        status,
+      });
 
       expect(mockGetOrgInstallation).toHaveBeenCalledTimes(1);
       expect(mockRequest).not.toHaveBeenCalled();
@@ -1182,6 +1222,67 @@ describe('GithubClientV2', () => {
     expect(MockedOctokit.mock.calls.map(([options]) => options.auth)).toEqual([
       'organization-pat',
     ]);
+  });
+
+  it('treats an unavailable report day as unverified without swallowing access or rate-limit errors', async () => {
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    mockRequest.mockRejectedValueOnce(httpError(404));
+
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).resolves.toBe(false);
+
+    mockRequest.mockRejectedValueOnce(
+      Object.assign(new Error('Resource not accessible by integration'), {
+        status: 404,
+      }),
+    );
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).rejects.toMatchObject({
+      name: InaccessibleEnterpriseOrganizationError.name,
+      status: 404,
+    });
+
+    mockRequest.mockRejectedValueOnce(httpError(403));
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).rejects.toBeInstanceOf(InaccessibleEnterpriseOrganizationError);
+
+    const rateLimitError = githubError({
+      status: 404,
+      response: { headers: { 'x-ratelimit-remaining': '0' } },
+    });
+    mockRequest.mockRejectedValueOnce(rateLimitError);
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).rejects.toBe(rateLimitError);
+
+    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).resolves.toBe(true);
+  });
+
+  it('uses the configured GitHub Enterprise API when a report day is unavailable', async () => {
+    const { getCopilotConfig } = jest.requireMock('../utils/GithubUtils');
+    getCopilotConfig.mockReturnValueOnce({
+      host: 'octocorp.ghe.com',
+      enterprise: 'octocorp',
+      organization: 'my-org',
+      apiBaseUrl: 'https://api.octocorp.ghe.com',
+    });
+    mockRequest.mockRejectedValueOnce(httpError(404));
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).resolves.toBe(false);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.at(-1)?.[0].baseUrl).toBe(
+      'https://api.octocorp.ghe.com',
+    );
   });
 
   it.each([403, 404])(
