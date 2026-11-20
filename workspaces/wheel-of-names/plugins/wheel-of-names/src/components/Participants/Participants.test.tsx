@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import {
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/test-utils';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { Participants } from './Participants';
@@ -81,10 +81,19 @@ describe('Participants', () => {
   });
 
   it('shows a hint when the search matches no users or groups', async () => {
-    await renderParticipants([]);
+    const catalogApi = await renderParticipants([]);
 
     await userEvent.type(screen.getByLabelText(SEARCH_LABEL), 'nobody');
 
+    // The hint also shows for a moment before the search starts; wait for the
+    // search so the assertion is about its empty result.
+    await waitFor(() =>
+      expect(catalogApi.queryEntities).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullTextFilter: expect.objectContaining({ term: 'nobody' }),
+        }),
+      ),
+    );
     expect(
       await screen.findByText(
         'No users or groups found. Try a different search term.',
