@@ -139,7 +139,11 @@ const MaturityCheckTableRow = ({
                       {errorInfo.map((fact, index) => (
                         <Fragment key={fact.id}>
                           {index > 0 && <br />}
-                          {`${fact.description}: ${fact.value}`}
+                          {`${fact.description}: ${
+                            typeof fact.value === 'object'
+                              ? JSON.stringify(fact.value)
+                              : fact.value
+                          }`}
                         </Fragment>
                       ))}
                     </Typography>
