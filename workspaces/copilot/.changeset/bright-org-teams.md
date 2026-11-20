@@ -17,3 +17,6 @@ refresh.
 Monthly active-user metrics remain unavailable when GitHub does not report
 them, and selected organizations can still be cleared when team options fail
 or become empty. Team weekly active-user charts leave unreported values blank.
+Older organization discovery results can no longer overwrite a newer refresh,
+and configured-organization dashboards can filter teams when
+`copilot.ingestOrganizationTeamReports` is enabled without `copilot.ingestTeams`.

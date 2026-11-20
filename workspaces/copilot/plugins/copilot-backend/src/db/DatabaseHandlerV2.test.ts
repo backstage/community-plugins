@@ -15,7 +15,10 @@
  */
 
 import { TestDatabaseId, TestDatabases } from '@backstage/backend-test-utils';
-import { Knex } from 'knex';
+import { randomUUID } from 'node:crypto';
+import { rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import knexFactory, { Knex } from 'knex';
 import { DateTime } from 'luxon';
 import {
   V2DailyTotal,
@@ -223,11 +226,29 @@ describe('DatabaseHandlerV2', () => {
       await knex?.destroy();
     });
 
+    async function syncOrganizations(
+      enterpriseId: string,
+      organizations: string[],
+      now: Date,
+    ): Promise<void> {
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        enterpriseId,
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          enterpriseId,
+          generation,
+          organizations,
+          now,
+        ),
+      ).resolves.toBe('synced');
+    }
+
     it.each(['commit', 'rollback', 'invalid replacement'])(
       'keeps bound inserts and nested replacements in the lease transaction: %s',
       async outcome => {
         const now = new Date();
-        await handler.syncEnterpriseOrganizations('ent-1', ['org-1'], now);
+        await syncOrganizations('ent-1', ['org-1'], now);
         const lease = await handler.claimEnterpriseOrganizationLease(
           'ent-1',
           'org-1',
@@ -321,11 +342,7 @@ describe('DatabaseHandlerV2', () => {
     it('fences organization work, hides inaccessible orgs, and retains history', async () => {
       const now = new Date();
       const nextAttemptAt = new Date(now.getTime() + 60_000);
-      await handler.syncEnterpriseOrganizations(
-        'ent-1',
-        ['Org-A', 'org-a', 'Org-B'],
-        now,
-      );
+      await syncOrganizations('ent-1', ['Org-A', 'org-a', 'Org-B'], now);
 
       const organizationsToIngest =
         await handler.getEnterpriseOrganizationsToIngest(
@@ -446,7 +463,7 @@ describe('DatabaseHandlerV2', () => {
         hasPendingOrganizations: false,
         organizations: ['Org-A'],
       });
-      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], new Date());
+      await syncOrganizations('ent-1', ['Org-A'], new Date());
       await expect(
         knex('copilot_daily_totals').where({
           metrics_type: 'organization',
@@ -455,10 +472,393 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toHaveLength(1);
     });
 
+    it('fences out-of-order directory refreshes across independent connections', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      let primaryClient: Knex | undefined;
+      let secondaryClient: Knex | undefined;
+      let sqliteFile: string | undefined;
+      let primaryHandler = handler;
+
+      try {
+        if (databaseId === 'SQLITE_3') {
+          sqliteFile = join(
+            process.cwd(),
+            `.copilot-directory-${randomUUID()}.sqlite3`,
+          );
+          const sqliteConfig = {
+            client: knex.client.config.client,
+            connection: sqliteFile,
+            useNullAsDefault: true,
+            pool: { min: 0, max: 1 },
+          };
+          primaryClient = knexFactory(sqliteConfig);
+          secondaryClient = knexFactory(sqliteConfig);
+          await primaryClient.migrate.latest({ directory: migrationsDir });
+          primaryHandler = await DatabaseHandlerV2.create({
+            database: {
+              getClient: async () => primaryClient!,
+              migrations: { skip: true },
+            } as any,
+          });
+        } else {
+          secondaryClient = knexFactory({
+            client: knex.client.config.client,
+            connection: knex.client.config.connection,
+            pool: { min: 0, max: 1 },
+          });
+        }
+
+        const secondaryHandler = await DatabaseHandlerV2.create({
+          database: {
+            getClient: async () => secondaryClient!,
+            migrations: { skip: true },
+          } as any,
+        });
+        const [firstGeneration, secondGeneration] =
+          databaseId === 'SQLITE_3'
+            ? [
+                await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+                await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+              ]
+            : await Promise.all([
+                primaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+                secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+              ]);
+        const firstIsOlder = BigInt(firstGeneration) < BigInt(secondGeneration);
+        const olderRun = {
+          handler: firstIsOlder ? primaryHandler : secondaryHandler,
+          generation: firstIsOlder ? firstGeneration : secondGeneration,
+        };
+        const newerRun = {
+          handler: firstIsOlder ? secondaryHandler : primaryHandler,
+          generation: firstIsOlder ? secondGeneration : firstGeneration,
+        };
+
+        await expect(
+          newerRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            newerRun.generation,
+            ['Newer-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await expect(
+          olderRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            olderRun.generation,
+            ['Older-Org'],
+            now,
+          ),
+        ).resolves.toBe('superseded');
+        await expect(
+          olderRun.handler.markEnterpriseOrganizationDirectoryFailed(
+            'ent-1',
+            olderRun.generation,
+            now,
+          ),
+        ).resolves.toBe('superseded');
+
+        const stateClient = primaryClient ?? knex;
+        const directory = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(directory?.is_complete)).toBe(true);
+        expect(String(directory?.sync_generation)).toBe(newerRun.generation);
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Newer-Org']);
+
+        const acceptedGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          primaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            acceptedGeneration,
+            ['Accepted-Org', 'Claim-Only-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        const acceptedLeaseExpiresAt = new Date(now.getTime() + 60_000);
+        const acceptedLease =
+          await primaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Accepted-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            acceptedGeneration,
+          );
+        expect(acceptedLease).toBeDefined();
+        await primaryHandler.updateEnterpriseOrganizationState(acceptedLease!, {
+          accessState: 'accessible',
+          reportsReady: true,
+          lastAttemptedAt: now,
+        });
+
+        const supersedingGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        expect(BigInt(supersedingGeneration)).toBeGreaterThan(
+          BigInt(acceptedGeneration),
+        );
+        await expect(
+          primaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Claim-Only-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            acceptedGeneration,
+          ),
+        ).resolves.toBeUndefined();
+        await expect(
+          primaryHandler.updateEnterpriseOrganizationState(acceptedLease!, {
+            accessState: 'inaccessible',
+            reportsReady: false,
+            lastAttemptedAt: now,
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+        let staleWriteRan = false;
+        await expect(
+          primaryHandler.withOrganizationIngestionLease(
+            acceptedLease!,
+            async database => {
+              staleWriteRan = true;
+              await database.insertDailyTotals([
+                buildDailyTotal({
+                  day: '2026-11-20',
+                  entity_id: 'Accepted-Org',
+                }),
+              ]);
+            },
+          ),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+        expect(staleWriteRan).toBe(false);
+        const acceptedOrganization = await stateClient(
+          'copilot_enterprise_organizations',
+        )
+          .where({
+            enterprise_id: 'ent-1',
+            organization_key: 'accepted-org',
+          })
+          .first('access_state', 'reports_ready');
+        expect(acceptedOrganization?.access_state).toBe('accessible');
+        expect(Boolean(acceptedOrganization?.reports_ready)).toBe(true);
+        await expect(
+          stateClient('copilot_daily_totals').where({
+            day: '2026-11-20',
+            metrics_type: 'organization',
+            entity_id: 'Accepted-Org',
+          }),
+        ).resolves.toHaveLength(0);
+        const supersedingDirectory = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(supersedingDirectory?.is_complete)).toBe(true);
+        expect(String(supersedingDirectory?.sync_generation)).toBe(
+          supersedingGeneration,
+        );
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .orderBy('organization_login', 'asc')
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Accepted-Org', 'Claim-Only-Org']);
+
+        await expect(
+          secondaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            supersedingGeneration,
+            ['Current-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        const currentLease =
+          await secondaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Current-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            supersedingGeneration,
+          );
+        expect(currentLease).toBeDefined();
+        await secondaryHandler.updateEnterpriseOrganizationState(
+          currentLease!,
+          {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: now,
+          },
+        );
+        await secondaryHandler.releaseEnterpriseOrganizationLease(
+          currentLease!,
+        );
+        await primaryHandler.releaseEnterpriseOrganizationLease(acceptedLease!);
+
+        const emptyGeneration =
+          await newerRun.handler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          olderRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            emptyGeneration,
+            [],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual([]);
+
+        const lastGoodGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await primaryHandler.syncEnterpriseOrganizations(
+          'ent-1',
+          lastGoodGeneration,
+          ['Last-Good-Org'],
+          now,
+        );
+        const delayedGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        const failedNewerGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          secondaryHandler.markEnterpriseOrganizationDirectoryFailed(
+            'ent-1',
+            failedNewerGeneration,
+            now,
+          ),
+        ).resolves.toBe('marked');
+        await expect(
+          primaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            delayedGeneration,
+            ['Stale-Org'],
+            now,
+          ),
+        ).resolves.toBe('superseded');
+        const afterStaleSuccess = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(afterStaleSuccess?.is_complete)).toBe(false);
+        expect(String(afterStaleSuccess?.sync_generation)).toBe(
+          failedNewerGeneration,
+        );
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Last-Good-Org']);
+
+        const baselineGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await primaryHandler.syncEnterpriseOrganizations(
+          'ent-1',
+          baselineGeneration,
+          ['Before-Failed-Refresh'],
+          now,
+        );
+        const failedGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        if (stateClient.client.config.client === 'better-sqlite3') {
+          await stateClient.raw(`
+            CREATE TRIGGER fail_directory_test_insert
+            BEFORE INSERT ON copilot_enterprise_organizations
+            WHEN NEW.organization_key = 'trigger-failure'
+            BEGIN
+              SELECT RAISE(ABORT, 'forced directory insert failure');
+            END
+          `);
+        } else {
+          await stateClient.raw(`
+            CREATE OR REPLACE FUNCTION fail_directory_test_insert()
+            RETURNS trigger AS $$
+            BEGIN
+              IF NEW.organization_key = 'trigger-failure' THEN
+                RAISE EXCEPTION 'forced directory insert failure';
+              END IF;
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql
+          `);
+          await stateClient.raw(`
+            CREATE TRIGGER fail_directory_test_insert
+            BEFORE INSERT ON copilot_enterprise_organizations
+            FOR EACH ROW EXECUTE FUNCTION fail_directory_test_insert()
+          `);
+        }
+
+        await expect(
+          secondaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            failedGeneration,
+            ['trigger-failure'],
+            now,
+          ),
+        ).rejects.toThrow('forced directory insert failure');
+        const afterFailure = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(afterFailure?.is_complete)).toBe(true);
+        expect(String(afterFailure?.sync_generation)).toBe(failedGeneration);
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Before-Failed-Refresh']);
+      } finally {
+        await secondaryClient?.destroy();
+        await primaryClient?.destroy();
+        if (sqliteFile) {
+          await Promise.all([
+            rm(sqliteFile, { force: true }),
+            rm(`${sqliteFile}-wal`, { force: true }),
+            rm(`${sqliteFile}-shm`, { force: true }),
+          ]);
+        }
+      }
+    });
+
     it('fences expired leases across directory revocation and reactivation', async () => {
       const now = new Date();
       const firstExpiresAt = new Date(now.getTime() + 60_000);
-      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
+      await syncOrganizations('ent-1', ['Org-A'], now);
 
       const firstLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
@@ -515,7 +915,7 @@ describe('DatabaseHandlerV2', () => {
       ).resolves.toBe(true);
 
       const revokedAt = new Date(takeoverAt.getTime() + 1);
-      await handler.syncEnterpriseOrganizations('ent-1', [], revokedAt);
+      await syncOrganizations('ent-1', [], revokedAt);
       await expect(
         handler.updateEnterpriseOrganizationState(secondLease!, {
           accessState: 'inaccessible',
@@ -525,11 +925,7 @@ describe('DatabaseHandlerV2', () => {
       ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
 
       const reactivatedAt = new Date(revokedAt.getTime() + 1);
-      await handler.syncEnterpriseOrganizations(
-        'ent-1',
-        ['Org-A'],
-        reactivatedAt,
-      );
+      await syncOrganizations('ent-1', ['Org-A'], reactivatedAt);
       const thirdExpiresAt = new Date(reactivatedAt.getTime() + 60_000);
       const thirdLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
@@ -571,12 +967,8 @@ describe('DatabaseHandlerV2', () => {
           .where({ enterprise_id: enterpriseId, organization_key: key })
           .first('access_state', 'lease_owner', 'lease_expires_at');
 
-      await handler.syncEnterpriseOrganizations(
-        'ent-1',
-        ['Org-A', 'Org-B'],
-        now,
-      );
-      await handler.syncEnterpriseOrganizations('ent-2', ['Org-A'], now);
+      await syncOrganizations('ent-1', ['Org-A', 'Org-B'], now);
+      await syncOrganizations('ent-2', ['Org-A'], now);
 
       await handler.markEnterpriseOrganizationInaccessible(
         'ent-1',
@@ -713,7 +1105,7 @@ describe('DatabaseHandlerV2', () => {
     it('keeps configured-organization ownership behind the shared lease', async () => {
       const now = new Date('2026-11-17T00:00:00.000Z');
       const leaseExpiresAt = new Date(now.getTime() + 10 * 60_000);
-      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
+      await syncOrganizations('ent-1', ['Org-A'], now);
 
       const scheduledLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
@@ -782,11 +1174,7 @@ describe('DatabaseHandlerV2', () => {
         refreshedAt.getTime() + 10 * 60_000,
       );
       const nextAttemptAt = new Date(refreshedAt.getTime() + 23 * 60 * 60_000);
-      await handler.syncEnterpriseOrganizations(
-        'ent-1',
-        ['Org-A'],
-        refreshedAt,
-      );
+      await syncOrganizations('ent-1', ['Org-A'], refreshedAt);
 
       const refreshLease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
@@ -849,7 +1237,7 @@ describe('DatabaseHandlerV2', () => {
 
     it('resolves an accessible organization key to its canonical login', async () => {
       const now = new Date();
-      await handler.syncEnterpriseOrganizations('ent-1', ['Org-A'], now);
+      await syncOrganizations('ent-1', ['Org-A'], now);
       const lease = await handler.claimEnterpriseOrganizationLease(
         'ent-1',
         'Org-A',

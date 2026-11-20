@@ -290,14 +290,24 @@ export const V2DashboardPage = () => {
       enterprise &&
         (ingestOrganizationTeamReports || (organization && ingestTeams)),
     );
+  const configuredOrganizationTeamScopeEnabled =
+    type === 'organization' &&
+    Boolean(enterprise && organization && ingestOrganizationTeamReports);
   const defaultTeamTarget: FilterTarget =
     type === 'enterprise' ? 'enterpriseTeam' : 'team';
   const teamTargets = useMemo<FilterTarget[]>(
     () => [
-      ...(ingestTeams ? [defaultTeamTarget] : []),
+      ...(ingestTeams || configuredOrganizationTeamScopeEnabled
+        ? [defaultTeamTarget]
+        : []),
       ...(organizationTeamScopeEnabled ? ['organizationTeam' as const] : []),
     ],
-    [defaultTeamTarget, ingestTeams, organizationTeamScopeEnabled],
+    [
+      defaultTeamTarget,
+      ingestTeams,
+      organizationTeamScopeEnabled,
+      configuredOrganizationTeamScopeEnabled,
+    ],
   );
   const filterTargets = useMemo<FilterTarget[]>(
     () => [

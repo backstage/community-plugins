@@ -82,6 +82,7 @@ describe('TaskManagementV2', () => {
         new Date('2026-11-18T12:11:00Z'),
         new Date('2026-11-18T12:21:00Z'),
         true,
+        '1',
       );
       expect(api.fetchOrganizationReportLinks).toHaveBeenCalledWith(
         '2026-11-17',
@@ -137,6 +138,7 @@ describe('TaskManagementV2', () => {
 
     expect(db.syncEnterpriseOrganizations).toHaveBeenCalledWith(
       'ent-1',
+      '1',
       ['org-1', 'org-2'],
       expect.any(Date),
     );
@@ -149,6 +151,8 @@ describe('TaskManagementV2', () => {
       'org-1',
       expect.any(Date),
       expect.any(Date),
+      undefined,
+      '1',
     );
     expect(db.getEnterpriseOrganizationsToIngest).toHaveBeenCalledWith(
       'ent-1',
@@ -156,6 +160,7 @@ describe('TaskManagementV2', () => {
       6,
       1,
       'org-1',
+      '1',
     );
     expect(db.getMissingDays).toHaveBeenCalledWith(
       'organization',
@@ -170,6 +175,7 @@ describe('TaskManagementV2', () => {
       expect.any(Date),
       expect.any(Date),
       true,
+      '1',
     );
   });
 
@@ -195,6 +201,7 @@ describe('TaskManagementV2', () => {
     expect(db.syncEnterpriseOrganizations).not.toHaveBeenCalled();
     expect(db.markEnterpriseOrganizationDirectoryFailed).toHaveBeenCalledWith(
       'ent-1',
+      '1',
       expect.any(Date),
     );
     expect(db.getEnterpriseOrganizationsToIngest).not.toHaveBeenCalled();
@@ -204,6 +211,73 @@ describe('TaskManagementV2', () => {
       ),
       discoveryError,
     );
+  });
+
+  it('stops using a directory snapshot superseded during discovery', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    db.getMissingDays.mockResolvedValue([]);
+    db.syncEnterpriseOrganizations.mockResolvedValue('superseded');
+    api.fetchEnterpriseOrganizations.mockImplementation(async () => {
+      expect(db.beginEnterpriseOrganizationDirectorySync).toHaveBeenCalledWith(
+        'ent-1',
+      );
+      return ['stale-org'];
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger: createLoggerMock(),
+    });
+
+    await task.runAsync();
+
+    expect(db.getEnterpriseOrganizationsToIngest).not.toHaveBeenCalled();
+    expect(db.claimEnterpriseOrganizationLease).not.toHaveBeenCalled();
+    expect(db.markLegacyConfiguredOrganization).not.toHaveBeenCalled();
+  });
+
+  it('does not report a stale discovery failure over a newer success', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const discoveryError = new Error('Older discovery failed');
+    db.getMissingDays.mockResolvedValue([]);
+    db.markEnterpriseOrganizationDirectoryFailed.mockResolvedValue(
+      'superseded',
+    );
+    api.fetchEnterpriseOrganizations.mockRejectedValue(discoveryError);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.markEnterpriseOrganizationDirectoryFailed).toHaveBeenCalledWith(
+      'ent-1',
+      '1',
+      expect.any(Date),
+    );
+    expect(logger.error).not.toHaveBeenCalledWith(
+      expect.stringContaining('Failed to refresh the enterprise organization'),
+      discoveryError,
+    );
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Ignored an enterprise organization directory failure',
+      ),
+    );
+    expect(db.getEnterpriseOrganizationsToIngest).not.toHaveBeenCalled();
   });
 
   it('ingests configured-organization teams through the existing path when multi-org is enabled', async () => {
@@ -901,7 +975,7 @@ describe('TaskManagementV2', () => {
       'org-a',
       yesterday,
     );
-    expect(db.renewEnterpriseOrganizationLease).toHaveBeenCalledTimes(6);
+    expect(db.renewEnterpriseOrganizationLease).toHaveBeenCalledTimes(8);
     expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledTimes(1);
   });
 
@@ -1535,9 +1609,10 @@ describe('TaskManagementV2', () => {
       }),
       logger,
     });
-    jest
-      .spyOn(task as any, 'runOrganizationTeamIngestion')
-      .mockResolvedValue(true);
+    jest.spyOn(task as any, 'runOrganizationTeamIngestion').mockResolvedValue({
+      generation: '1',
+      configuredOrganizationAvailable: true,
+    });
     jest
       .spyOn(task as any, 'loadCostCenterSnapshot')
       .mockResolvedValue(makeCostCenterSnapshot(new Map()));
@@ -4082,11 +4157,15 @@ function createDbMock() {
     getUserBreakdownsForDay: jest.fn().mockResolvedValue([]),
     getUserTeamsForDay: jest.fn().mockResolvedValue([]),
     replaceTeamAggregates: jest.fn().mockResolvedValue(undefined),
-    syncEnterpriseOrganizations: jest.fn().mockResolvedValue(undefined),
+    syncEnterpriseOrganizations: jest.fn().mockResolvedValue('synced'),
+    beginEnterpriseOrganizationDirectorySync: jest.fn().mockResolvedValue('1'),
+    isEnterpriseOrganizationDirectoryGenerationCurrent: jest
+      .fn()
+      .mockResolvedValue(true),
     markEnterpriseOrganizationDirectoryFailed: jest
       .fn()
-      .mockResolvedValue(undefined),
-    markLegacyConfiguredOrganization: jest.fn().mockResolvedValue(undefined),
+      .mockResolvedValue('marked'),
+    markLegacyConfiguredOrganization: jest.fn().mockResolvedValue('updated'),
     markEnterpriseOrganizationInaccessible: jest
       .fn()
       .mockResolvedValue(undefined),

@@ -96,6 +96,21 @@ function isDatabaseBoolean(value: unknown): boolean {
   return value === true || value === 1 || value === '1' || value === 'true';
 }
 
+function formatDirectoryGeneration(value: unknown): string {
+  let generation: string | undefined;
+  if (typeof value === 'string') {
+    generation = value;
+  } else if (typeof value === 'number' && Number.isSafeInteger(value)) {
+    generation = String(value);
+  } else if (typeof value === 'bigint') {
+    generation = value.toString();
+  }
+  if (!generation || !/^(0|[1-9]\d*)$/.test(generation)) {
+    throw new Error('Enterprise organization directory generation is invalid.');
+  }
+  return generation;
+}
+
 type CostCenterScopedRow = {
   cost_center_id?: string;
   without_cost_center?: boolean;
@@ -121,10 +136,24 @@ export type EnterpriseOrganizationAccessState =
   | 'accessible'
   | 'inaccessible';
 
+export type EnterpriseOrganizationDirectoryGeneration = string;
+
+export type EnterpriseOrganizationDirectorySyncResult = 'synced' | 'superseded';
+
+export type EnterpriseOrganizationDirectoryFailureResult =
+  | 'marked'
+  | 'superseded';
+
+export type EnterpriseOrganizationDirectoryMutationResult =
+  | 'updated'
+  | 'not-current'
+  | 'superseded';
+
 export type OrganizationIngestionLease = {
   enterpriseId: string;
   organization: string;
   owner: string;
+  directoryGeneration?: EnterpriseOrganizationDirectoryGeneration;
 };
 
 export type EnterpriseOrganizationDirectory = {
@@ -210,11 +239,77 @@ export class DatabaseHandlerV2 {
 
   private constructor(private readonly db: Knex) {}
 
+  private async lockDirectoryGeneration(
+    transaction: Knex.Transaction,
+    enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<boolean> {
+    await transaction('copilot_enterprise_organization_directory')
+      .where({ enterprise_id: enterpriseId, sync_generation: generation })
+      .update({
+        sync_generation: transaction.raw('??', ['sync_generation']),
+      });
+
+    const row = await transaction('copilot_enterprise_organization_directory')
+      .where({ enterprise_id: enterpriseId })
+      .first('sync_generation');
+    return (
+      row !== undefined &&
+      formatDirectoryGeneration(row.sync_generation) === generation
+    );
+  }
+
+  async beginEnterpriseOrganizationDirectorySync(
+    enterpriseId: string,
+  ): Promise<EnterpriseOrganizationDirectoryGeneration> {
+    return this.db.transaction(async transaction => {
+      await transaction('copilot_enterprise_organization_directory')
+        .insert({
+          enterprise_id: enterpriseId,
+          is_complete: false,
+          sync_generation: 1,
+          updated_at: transaction.fn.now(),
+        })
+        .onConflict('enterprise_id')
+        .merge({
+          sync_generation: transaction.raw('??.?? + 1', [
+            'copilot_enterprise_organization_directory',
+            'sync_generation',
+          ]),
+          updated_at: transaction.fn.now(),
+        });
+
+      const row = await transaction('copilot_enterprise_organization_directory')
+        .where({ enterprise_id: enterpriseId })
+        .first('sync_generation');
+      if (!row) {
+        throw new Error(
+          'Enterprise organization directory generation was not reserved.',
+        );
+      }
+      return formatDirectoryGeneration(row.sync_generation);
+    });
+  }
+
+  async isEnterpriseOrganizationDirectoryGenerationCurrent(
+    enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<boolean> {
+    const row = await this.db('copilot_enterprise_organization_directory')
+      .where({ enterprise_id: enterpriseId })
+      .first('sync_generation');
+    return (
+      row !== undefined &&
+      formatDirectoryGeneration(row.sync_generation) === generation
+    );
+  }
+
   async syncEnterpriseOrganizations(
     enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
     organizations: string[],
     now: Date,
-  ): Promise<void> {
+  ): Promise<EnterpriseOrganizationDirectorySyncResult> {
     const uniqueOrganizations = new Map<string, string>();
     for (const login of organizations) {
       const trimmed = login.trim();
@@ -223,7 +318,17 @@ export class DatabaseHandlerV2 {
       }
     }
 
-    await this.db.transaction(async transaction => {
+    return this.db.transaction(async transaction => {
+      if (
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return 'superseded';
+      }
+
       const currentRows = await transaction('copilot_enterprise_organizations')
         .where({ enterprise_id: enterpriseId })
         .select('organization_key', 'organization_login', 'is_current');
@@ -273,33 +378,36 @@ export class DatabaseHandlerV2 {
       }
 
       await transaction('copilot_enterprise_organization_directory')
-        .insert({
-          enterprise_id: enterpriseId,
-          is_complete: true,
-          last_synced_at: now,
-          updated_at: now,
-        })
-        .onConflict('enterprise_id')
-        .merge({
+        .where({ enterprise_id: enterpriseId, sync_generation: generation })
+        .update({
           is_complete: true,
           last_synced_at: now,
           updated_at: now,
         });
+      return 'synced';
     });
   }
 
   async markEnterpriseOrganizationDirectoryFailed(
     enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
     now: Date,
-  ): Promise<void> {
-    await this.db('copilot_enterprise_organization_directory')
-      .insert({
-        enterprise_id: enterpriseId,
-        is_complete: false,
-        updated_at: now,
-      })
-      .onConflict('enterprise_id')
-      .merge({ is_complete: false, updated_at: now });
+  ): Promise<EnterpriseOrganizationDirectoryFailureResult> {
+    return this.db.transaction(async transaction => {
+      if (
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return 'superseded';
+      }
+      await transaction('copilot_enterprise_organization_directory')
+        .where({ enterprise_id: enterpriseId, sync_generation: generation })
+        .update({ is_complete: false, updated_at: now });
+      return 'marked';
+    });
   }
 
   async markLegacyConfiguredOrganization(
@@ -308,44 +416,67 @@ export class DatabaseHandlerV2 {
     now: Date,
     nextAttemptAt: Date,
     lease?: OrganizationIngestionLease,
-  ): Promise<void> {
+    generation?: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<EnterpriseOrganizationDirectoryMutationResult> {
     const key = organization.trim().toLowerCase();
-    const existingReport = await this.db('copilot_daily_totals')
-      .where({
-        metrics_type: 'organization',
-        entity_id: organization,
-        team_slug: '',
-        cost_center_id: '',
-        without_cost_center: false,
-      })
-      .first('day');
+    const directoryGeneration = generation ?? lease?.directoryGeneration;
+    return this.db.transaction(async transaction => {
+      if (
+        directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          directoryGeneration,
+        ))
+      ) {
+        return 'superseded';
+      }
 
-    const query = this.db('copilot_enterprise_organizations').where({
-      enterprise_id: enterpriseId,
-      organization_key: key,
-      is_current: true,
-    });
-    if (lease) {
-      query
-        .where({ lease_owner: lease.owner })
-        .andWhere('lease_expires_at', '>', now);
-    } else {
-      query.andWhere(function leaseIsUnavailable() {
-        this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
+      const query = transaction('copilot_enterprise_organizations').where({
+        enterprise_id: enterpriseId,
+        organization_key: key,
+        is_current: true,
       });
-    }
+      if (lease) {
+        query
+          .where({ lease_owner: lease.owner })
+          .andWhere('lease_expires_at', '>', now);
+      } else {
+        query.andWhere(function leaseIsUnavailable() {
+          this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
+        });
+      }
 
-    const changed = await query.update({
-      organization_login: organization,
-      access_state: 'accessible',
-      reports_ready: Boolean(existingReport),
-      last_attempted_at: now,
-      next_attempt_at: nextAttemptAt,
-      updated_at: now,
+      const currentOrganization = await query
+        .clone()
+        .forUpdate()
+        .first('organization_key');
+      if (!currentOrganization) {
+        if (lease) {
+          throw new OrganizationIngestionLeaseLostError();
+        }
+        return 'not-current';
+      }
+
+      const existingReport = await transaction('copilot_daily_totals')
+        .where({
+          metrics_type: 'organization',
+          entity_id: organization,
+          team_slug: '',
+          cost_center_id: '',
+          without_cost_center: false,
+        })
+        .first('day');
+      await query.update({
+        organization_login: organization,
+        access_state: 'accessible',
+        reports_ready: Boolean(existingReport),
+        last_attempted_at: now,
+        next_attempt_at: nextAttemptAt,
+        updated_at: now,
+      });
+      return 'updated';
     });
-    if (lease && changed !== 1) {
-      throw new OrganizationIngestionLeaseLostError();
-    }
   }
 
   async markEnterpriseOrganizationInaccessible(
@@ -353,23 +484,45 @@ export class DatabaseHandlerV2 {
     organization: string,
     now: Date,
     nextAttemptAt: Date,
-  ): Promise<void> {
-    await this.db('copilot_enterprise_organizations')
-      .where({
-        enterprise_id: enterpriseId,
-        organization_key: organization.trim().toLowerCase(),
-        is_current: true,
-      })
-      .andWhere(function leaseIsUnavailable() {
-        this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
-      })
-      .update({
+    generation?: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<EnterpriseOrganizationDirectoryMutationResult> {
+    return this.db.transaction(async transaction => {
+      if (
+        generation &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return 'superseded';
+      }
+
+      const query = transaction('copilot_enterprise_organizations')
+        .where({
+          enterprise_id: enterpriseId,
+          organization_key: organization.trim().toLowerCase(),
+          is_current: true,
+        })
+        .andWhere(function leaseIsUnavailable() {
+          this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
+        });
+      const currentOrganization = await query
+        .clone()
+        .forUpdate()
+        .first('organization_key');
+      if (!currentOrganization) {
+        return 'not-current';
+      }
+      await query.update({
         access_state: 'inaccessible',
         reports_ready: false,
         last_attempted_at: now,
         next_attempt_at: nextAttemptAt,
         updated_at: now,
       });
+      return 'updated';
+    });
   }
 
   async getEnterpriseOrganizationDirectory(
@@ -441,7 +594,18 @@ export class DatabaseHandlerV2 {
     limit: number,
     inaccessibleLimit: number,
     excludedOrganization?: string,
+    generation?: EnterpriseOrganizationDirectoryGeneration,
   ): Promise<string[]> {
+    if (
+      generation &&
+      !(await this.isEnterpriseOrganizationDirectoryGenerationCurrent(
+        enterpriseId,
+        generation,
+      ))
+    ) {
+      return [];
+    }
+
     const dueRows = () => {
       let query = this.db('copilot_enterprise_organizations').where({
         enterprise_id: enterpriseId,
@@ -499,54 +663,61 @@ export class DatabaseHandlerV2 {
     now: Date,
     leaseExpiresAt: Date,
     ignoreNextAttempt = false,
+    generation?: EnterpriseOrganizationDirectoryGeneration,
   ): Promise<OrganizationIngestionLease | undefined> {
     const key = organization.trim().toLowerCase();
     const owner = randomUUID();
-    const query = this.db('copilot_enterprise_organizations').where({
-      enterprise_id: enterpriseId,
-      organization_key: key,
-      is_current: true,
-    });
-    if (!ignoreNextAttempt) {
-      query.andWhere(function dueForAttempt() {
-        this.whereNull('next_attempt_at').orWhere('next_attempt_at', '<=', now);
-      });
-    }
-    const changed = await query
-      .andWhere(function leaseIsAvailable() {
-        this.whereNull('lease_expires_at').orWhere(
-          'lease_expires_at',
-          '<=',
-          now,
-        );
-      })
-      .update({
-        lease_owner: owner,
-        lease_expires_at: leaseExpiresAt,
-        last_attempted_at: now,
-        updated_at: now,
-      });
-    if (changed !== 1) {
-      return undefined;
-    }
+    return this.db.transaction(async transaction => {
+      if (
+        generation &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return undefined;
+      }
 
-    const row = await this.db('copilot_enterprise_organizations')
-      .where({
+      const query = transaction('copilot_enterprise_organizations').where({
         enterprise_id: enterpriseId,
         organization_key: key,
         is_current: true,
-        lease_owner: owner,
-      })
-      .first('lease_owner');
-    if (!row) {
-      throw new Error('Organization-team ingestion lease is invalid.');
-    }
+      });
+      if (!ignoreNextAttempt) {
+        query.andWhere(function dueForAttempt() {
+          this.whereNull('next_attempt_at').orWhere(
+            'next_attempt_at',
+            '<=',
+            now,
+          );
+        });
+      }
+      const changed = await query
+        .andWhere(function leaseIsAvailable() {
+          this.whereNull('lease_expires_at').orWhere(
+            'lease_expires_at',
+            '<=',
+            now,
+          );
+        })
+        .update({
+          lease_owner: owner,
+          lease_expires_at: leaseExpiresAt,
+          last_attempted_at: now,
+          updated_at: now,
+        });
+      if (changed !== 1) {
+        return undefined;
+      }
 
-    return {
-      enterpriseId,
-      organization: key,
-      owner,
-    };
+      return {
+        enterpriseId,
+        organization: key,
+        owner,
+        ...(generation ? { directoryGeneration: generation } : {}),
+      };
+    });
   }
 
   async renewEnterpriseOrganizationLease(
@@ -554,16 +725,28 @@ export class DatabaseHandlerV2 {
     now: Date,
     leaseExpiresAt: Date,
   ): Promise<boolean> {
-    const changed = await this.db('copilot_enterprise_organizations')
-      .where({
-        enterprise_id: lease.enterpriseId,
-        organization_key: lease.organization,
-        is_current: true,
-        lease_owner: lease.owner,
-      })
-      .andWhere('lease_expires_at', '>', now)
-      .update({ lease_expires_at: leaseExpiresAt, updated_at: now });
-    return changed === 1;
+    return this.db.transaction(async transaction => {
+      if (
+        lease.directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          lease.enterpriseId,
+          lease.directoryGeneration,
+        ))
+      ) {
+        return false;
+      }
+      const changed = await transaction('copilot_enterprise_organizations')
+        .where({
+          enterprise_id: lease.enterpriseId,
+          organization_key: lease.organization,
+          is_current: true,
+          lease_owner: lease.owner,
+        })
+        .andWhere('lease_expires_at', '>', now)
+        .update({ lease_expires_at: leaseExpiresAt, updated_at: now });
+      return changed === 1;
+    });
   }
 
   async releaseEnterpriseOrganizationLease(
@@ -583,6 +766,16 @@ export class DatabaseHandlerV2 {
     operation: (database: DatabaseHandlerV2) => Promise<T>,
   ): Promise<T> {
     return this.db.transaction(async transaction => {
+      if (
+        lease.directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          lease.enterpriseId,
+          lease.directoryGeneration,
+        ))
+      ) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
       const now = new Date();
       const row = await transaction('copilot_enterprise_organizations')
         .where({
@@ -624,18 +817,31 @@ export class DatabaseHandlerV2 {
       update.next_attempt_at = state.nextAttemptAt;
     }
 
-    const changed = await this.db('copilot_enterprise_organizations')
-      .where({
-        enterprise_id: lease.enterpriseId,
-        organization_key: lease.organization,
-        is_current: true,
-        lease_owner: lease.owner,
-      })
-      .andWhere('lease_expires_at', '>', state.lastAttemptedAt)
-      .update(update);
-    if (changed !== 1) {
-      throw new OrganizationIngestionLeaseLostError();
-    }
+    await this.db.transaction(async transaction => {
+      if (
+        lease.directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          lease.enterpriseId,
+          lease.directoryGeneration,
+        ))
+      ) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
+      const query = transaction('copilot_enterprise_organizations')
+        .where({
+          enterprise_id: lease.enterpriseId,
+          organization_key: lease.organization,
+          is_current: true,
+          lease_owner: lease.owner,
+        })
+        .andWhere('lease_expires_at', '>', state.lastAttemptedAt);
+      const row = await query.clone().forUpdate().first('lease_owner');
+      if (!row) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
+      await query.update(update);
+    });
   }
 
   private addCostCenterFilter(

@@ -27,7 +27,10 @@ import {
   OrganizationIngestionLeaseLostError,
   parseComponentsLoaded,
 } from '../db/DatabaseHandlerV2';
-import type { OrganizationIngestionLease } from '../db/DatabaseHandlerV2';
+import type {
+  EnterpriseOrganizationDirectoryGeneration,
+  OrganizationIngestionLease,
+} from '../db/DatabaseHandlerV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
 import {
   InaccessibleEnterpriseOrganizationError,
@@ -65,6 +68,11 @@ type IngestPlan = {
   ingestUsers: boolean;
   ingestTeams: boolean;
   ingestCostCenters: boolean;
+};
+
+type OrganizationTeamDirectoryRun = {
+  generation: EnterpriseOrganizationDirectoryGeneration;
+  configuredOrganizationAvailable: boolean;
 };
 
 export type TaskManagementV2Options = {
@@ -358,6 +366,7 @@ export class TaskManagementV2 {
       }
     }
 
+    let organizationDirectoryGeneration: string | undefined;
     let configuredOrganizationAvailable = false;
     if (ingestOrganizationTeamReports) {
       if (!enterprise) {
@@ -365,8 +374,15 @@ export class TaskManagementV2 {
           '[TaskManagementV2] copilot.ingestOrganizationTeamReports is enabled, but copilot.enterprise is not configured; skipping multi-organization team ingestion.',
         );
       } else {
-        configuredOrganizationAvailable =
-          await this.runOrganizationTeamIngestion(enterprise, organization);
+        const directoryRun = await this.runOrganizationTeamIngestion(
+          enterprise,
+          organization,
+        );
+        if (directoryRun) {
+          organizationDirectoryGeneration = directoryRun.generation;
+          configuredOrganizationAvailable =
+            directoryRun.configuredOrganizationAvailable;
+        }
       }
     }
 
@@ -389,11 +405,24 @@ export class TaskManagementV2 {
             .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
             .toJSDate(),
           true,
+          organizationDirectoryGeneration,
         );
         if (!organizationLease) {
-          logger.warn(
-            `[TaskManagementV2] Skipping legacy ingestion for organization:${plan.entity.entityId}; another worker owns its organization-team lease.`,
-          );
+          if (
+            organizationDirectoryGeneration &&
+            !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+              enterprise,
+              organizationDirectoryGeneration,
+            ))
+          ) {
+            logger.debug(
+              '[TaskManagementV2] Skipped configured-organization ingestion after its directory refresh was superseded.',
+            );
+          } else {
+            logger.warn(
+              `[TaskManagementV2] Skipping legacy ingestion for organization:${plan.entity.entityId}; another worker owns its organization-team lease.`,
+            );
+          }
           continue;
         }
       }
@@ -487,6 +516,22 @@ export class TaskManagementV2 {
             organizationLease,
           );
         }
+      } catch (error) {
+        if (
+          error instanceof OrganizationIngestionLeaseLostError &&
+          enterprise &&
+          organizationDirectoryGeneration &&
+          !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+            enterprise,
+            organizationDirectoryGeneration,
+          ))
+        ) {
+          logger.debug(
+            `[TaskManagementV2] Stopped organization ingestion for ${plan.entity.metricsType}:${plan.entity.entityId} after its lease or directory generation changed.`,
+          );
+          continue;
+        }
+        throw error;
       } finally {
         if (organizationLease) {
           await db.releaseEnterpriseOrganizationLease(organizationLease);
@@ -1358,6 +1403,9 @@ export class TaskManagementV2 {
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      if (error instanceof OrganizationIngestionLeaseLostError) {
+        throw error;
+      }
       logger.error(
         `[TaskManagementV2] Failed ingest for ${metricsType}:${entityId} on ${day}.`,
         error,
@@ -1451,27 +1499,74 @@ export class TaskManagementV2 {
   private async runOrganizationTeamIngestion(
     enterprise: string,
     configuredOrganization?: string,
-  ): Promise<boolean> {
+  ): Promise<OrganizationTeamDirectoryRun | undefined> {
     const { api, db, logger } = this.options;
-    const now = DateTime.utc();
+    let generation: string;
+    try {
+      generation = await db.beginEnterpriseOrganizationDirectorySync(
+        enterprise,
+      );
+    } catch (error) {
+      logger.error(
+        '[TaskManagementV2] Failed to reserve a refresh of the enterprise organization directory; no discovery was started.',
+        error,
+      );
+      return undefined;
+    }
+
     let organizations: string[];
     try {
       organizations = await api.fetchEnterpriseOrganizations();
-      await db.syncEnterpriseOrganizations(
+      const syncResult = await db.syncEnterpriseOrganizations(
         enterprise,
+        generation,
         organizations,
-        now.toJSDate(),
+        DateTime.utc().toJSDate(),
       );
+      if (syncResult === 'superseded') {
+        logger.debug(
+          '[TaskManagementV2] Discarded an enterprise organization directory snapshot superseded by a newer refresh.',
+        );
+        return undefined;
+      }
     } catch (error) {
-      await db.markEnterpriseOrganizationDirectoryFailed(
+      let failureResult;
+      try {
+        failureResult = await db.markEnterpriseOrganizationDirectoryFailed(
+          enterprise,
+          generation,
+          DateTime.utc().toJSDate(),
+        );
+      } catch (failureError) {
+        logger.error(
+          '[TaskManagementV2] Failed to record the enterprise organization directory refresh failure.',
+          failureError,
+        );
+        return undefined;
+      }
+      if (failureResult === 'superseded') {
+        logger.debug(
+          '[TaskManagementV2] Ignored an enterprise organization directory failure superseded by a newer refresh.',
+        );
+      } else {
+        logger.error(
+          '[TaskManagementV2] Failed to refresh the enterprise organization directory; organization-team views are unavailable until discovery succeeds.',
+          error,
+        );
+      }
+      return undefined;
+    }
+
+    if (
+      !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
         enterprise,
-        now.toJSDate(),
+        generation,
+      ))
+    ) {
+      logger.debug(
+        '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
       );
-      logger.error(
-        '[TaskManagementV2] Failed to refresh the enterprise organization directory; organization-team views are unavailable until discovery succeeds.',
-        error,
-      );
-      return false;
+      return undefined;
     }
 
     let configuredOrganizationAvailable = false;
@@ -1481,6 +1576,17 @@ export class TaskManagementV2 {
         item => item.toLowerCase() === configuredOrganization.toLowerCase(),
       )
     ) {
+      if (
+        !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+          enterprise,
+          generation,
+        ))
+      ) {
+        logger.debug(
+          '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+        );
+        return undefined;
+      }
       try {
         const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
         if (!yesterday) {
@@ -1491,26 +1597,54 @@ export class TaskManagementV2 {
           yesterday,
         );
         const checkedAt = DateTime.utc();
-        await db.markLegacyConfiguredOrganization(
+        const result = await db.markLegacyConfiguredOrganization(
           enterprise,
           configuredOrganization,
           checkedAt.toJSDate(),
           checkedAt.plus({ hours: ORGANIZATION_TEAM_RETRY_HOURS }).toJSDate(),
+          undefined,
+          generation,
         );
-        configuredOrganizationAvailable = true;
+        if (result === 'superseded') {
+          logger.debug(
+            '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+          );
+          return undefined;
+        }
+        configuredOrganizationAvailable = result === 'updated';
       } catch (error) {
         if (error instanceof InaccessibleEnterpriseOrganizationError) {
           const failedAt = DateTime.utc();
-          await db.markEnterpriseOrganizationInaccessible(
+          const result = await db.markEnterpriseOrganizationInaccessible(
             enterprise,
             configuredOrganization,
             failedAt.toJSDate(),
             failedAt.plus({ hours: 24 }).toJSDate(),
+            generation,
           );
-          logger.warn(
-            '[TaskManagementV2] The configured organization is no longer accessible; hiding its organization-team filters while retaining imported history.',
-          );
+          if (result === 'superseded') {
+            logger.debug(
+              '[TaskManagementV2] Ignored a configured-organization access result superseded by a newer directory refresh.',
+            );
+            return undefined;
+          }
+          if (result === 'updated') {
+            logger.warn(
+              '[TaskManagementV2] The configured organization is no longer accessible; hiding its organization-team filters while retaining imported history.',
+            );
+          }
         } else {
+          if (
+            !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+              enterprise,
+              generation,
+            ))
+          ) {
+            logger.debug(
+              '[TaskManagementV2] Ignored a configured-organization verification failure superseded by a newer directory refresh.',
+            );
+            return undefined;
+          }
           logger.error(
             '[TaskManagementV2] Failed to verify access to the configured organization; retaining its previous directory state.',
             error,
@@ -1519,14 +1653,37 @@ export class TaskManagementV2 {
       }
     }
 
+    if (
+      !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+        enterprise,
+        generation,
+      ))
+    ) {
+      logger.debug(
+        '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+      );
+      return undefined;
+    }
     const organizationsToIngest = await db.getEnterpriseOrganizationsToIngest(
       enterprise,
       DateTime.utc().toJSDate(),
       ORGANIZATION_TEAM_MAX_ORGANIZATIONS_PER_RUN,
       1,
       configuredOrganization,
+      generation,
     );
     for (const organization of organizationsToIngest) {
+      if (
+        !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+          enterprise,
+          generation,
+        ))
+      ) {
+        logger.debug(
+          '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+        );
+        return undefined;
+      }
       const leaseStartedAt = DateTime.utc();
       const lease = await db.claimEnterpriseOrganizationLease(
         enterprise,
@@ -1535,6 +1692,8 @@ export class TaskManagementV2 {
         leaseStartedAt
           .plus({ minutes: ORGANIZATION_TEAM_LEASE_MINUTES })
           .toJSDate(),
+        false,
+        generation,
       );
       if (!lease) {
         continue;
@@ -1543,6 +1702,18 @@ export class TaskManagementV2 {
       try {
         await this.ingestEnterpriseOrganizationWorkItem(lease, organization);
       } catch (error) {
+        if (
+          error instanceof OrganizationIngestionLeaseLostError ||
+          !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+            enterprise,
+            generation,
+          ))
+        ) {
+          logger.debug(
+            `[TaskManagementV2] Stopped organization-team ingestion for organization:${organization} after its lease or directory generation changed.`,
+          );
+          continue;
+        }
         const failedAt = DateTime.utc();
         if (error instanceof InaccessibleEnterpriseOrganizationError) {
           try {
@@ -1553,6 +1724,12 @@ export class TaskManagementV2 {
               nextAttemptAt: failedAt.plus({ hours: 24 }).toJSDate(),
             });
           } catch (stateError) {
+            if (stateError instanceof OrganizationIngestionLeaseLostError) {
+              logger.debug(
+                `[TaskManagementV2] Ignored a stale inaccessible-organization result for organization:${organization}.`,
+              );
+              continue;
+            }
             logger.warn(
               `[TaskManagementV2] Could not update access state for organization:${organization}; the ingestion lease may have expired.`,
               stateError,
@@ -1568,6 +1745,12 @@ export class TaskManagementV2 {
               nextAttemptAt: failedAt.plus({ hours: 1 }).toJSDate(),
             });
           } catch (stateError) {
+            if (stateError instanceof OrganizationIngestionLeaseLostError) {
+              logger.debug(
+                `[TaskManagementV2] Ignored a stale organization-team failure for organization:${organization}.`,
+              );
+              continue;
+            }
             logger.warn(
               `[TaskManagementV2] Could not schedule a retry for organization:${organization}; the ingestion lease may have expired.`,
               stateError,
@@ -1582,7 +1765,18 @@ export class TaskManagementV2 {
         await db.releaseEnterpriseOrganizationLease(lease);
       }
     }
-    return configuredOrganizationAvailable;
+    if (
+      !(await db.isEnterpriseOrganizationDirectoryGenerationCurrent(
+        enterprise,
+        generation,
+      ))
+    ) {
+      logger.debug(
+        '[TaskManagementV2] Stopped organization-team ingestion after its directory refresh was superseded.',
+      );
+      return undefined;
+    }
+    return { generation, configuredOrganizationAvailable };
   }
 
   private async ingestEnterpriseOrganizationWorkItem(
@@ -1607,6 +1801,7 @@ export class TaskManagementV2 {
       throw new Error('Unable to compute the organization-team start date.');
     }
 
+    await this.renewOrganizationIngestionLease(lease);
     const reportWindowStartDate = getReportWindowStartDate();
     const missingFromDate =
       effectiveStart < reportWindowStartDate
@@ -1641,6 +1836,7 @@ export class TaskManagementV2 {
       return;
     }
 
+    await this.renewOrganizationIngestionLease(lease);
     await api.verifyEnterpriseOrganizationAccess(organization, yesterday);
 
     const backfillDelayMs =
