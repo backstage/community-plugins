@@ -617,7 +617,11 @@ export const V2DashboardPage = () => {
   ]);
 
   useEffect(() => {
-    if (!filterTargetToggleAvailable) {
+    if (
+      !filterTargetToggleAvailable ||
+      (filterTarget === 'organizationTeam' &&
+        selectedOrganizationTeamOrganization !== undefined)
+    ) {
       return;
     }
 
@@ -640,6 +644,7 @@ export const V2DashboardPage = () => {
     costCenterScopeEnabled,
     filterTarget,
     filterTargetToggleAvailable,
+    selectedOrganizationTeamOrganization,
     selectedTargetKnownEmpty,
     targetWithOptions,
     selectFilterTarget,
@@ -663,7 +668,8 @@ export const V2DashboardPage = () => {
   const filterTargetHasOptions =
     filterTarget === 'organizationTeam'
       ? organizationTeamOptions.organizations.length > 0 ||
-        organizationTeamOptions.loading
+        organizationTeamOptions.loading ||
+        selectedOrganizationTeamOrganization !== undefined
       : filterTarget !== undefined &&
         targetAvailability[filterTarget].hasOptions;
   const showFilter =

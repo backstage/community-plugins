@@ -58,7 +58,7 @@ describe('IDEActiveUsersChart', () => {
     );
   });
 
-  it('keeps unavailable team rolling values at zero', () => {
+  it('keeps unavailable team rolling values unknown, including filled dates', () => {
     render(
       <IDEActiveUsersChart
         data={[
@@ -71,7 +71,9 @@ describe('IDEActiveUsersChart', () => {
       />,
     );
 
-    expect(screen.getByTestId('chart-series')).toHaveTextContent('[0,0,0]');
+    expect(screen.getByTestId('chart-series')).toHaveTextContent(
+      '[null,null,null]',
+    );
   });
 
   it('keeps unavailable team rolling values unknown when coverage may be partial', () => {
@@ -89,5 +91,94 @@ describe('IDEActiveUsersChart', () => {
     );
 
     expect(screen.getByTestId('chart-series')).toHaveTextContent('[null,null]');
+  });
+
+  it('keeps team rolling values unknown when duplicate rows have partial coverage', () => {
+    render(
+      <IDEActiveUsersChart
+        data={[
+          {
+            ...BASE_ROW,
+            team_slug: 'platform',
+            day: '2026-08-07',
+            weekly_active_users: 10,
+          },
+          {
+            ...BASE_ROW,
+            team_slug: 'product',
+            day: '2026-08-07',
+            weekly_active_users: undefined,
+          },
+          {
+            ...BASE_ROW,
+            team_slug: 'platform',
+            day: '2026-08-09',
+            weekly_active_users: 12,
+          },
+        ]}
+        variant="weekly"
+        from="2026-08-07"
+        to="2026-08-09"
+      />,
+    );
+
+    expect(screen.getByTestId('chart-series')).toHaveTextContent(
+      '[null,null,12]',
+    );
+  });
+
+  it('preserves measured team zeroes and legacy unscoped gap filling', () => {
+    const { unmount } = render(
+      <IDEActiveUsersChart
+        data={[
+          {
+            ...BASE_ROW,
+            team_slug: 'platform',
+            day: '2026-08-07',
+            weekly_active_users: 0,
+          },
+          {
+            ...BASE_ROW,
+            team_slug: 'platform',
+            day: '2026-08-09',
+            weekly_active_users: 12,
+          },
+        ]}
+        variant="weekly"
+        from="2026-08-07"
+        to="2026-08-09"
+      />,
+    );
+
+    expect(screen.getByTestId('chart-series')).toHaveTextContent('[0,null,12]');
+    unmount();
+
+    render(
+      <IDEActiveUsersChart
+        data={[
+          { ...BASE_ROW, team_slug: '', day: '2026-08-07' },
+          { ...BASE_ROW, team_slug: '', day: '2026-08-09' },
+        ]}
+        variant="weekly"
+        from="2026-08-07"
+        to="2026-08-09"
+      />,
+    );
+
+    expect(screen.getByTestId('chart-series')).toHaveTextContent('[0,0,0]');
+  });
+
+  it('does not create chart rows for empty input', () => {
+    render(
+      <IDEActiveUsersChart
+        data={[]}
+        variant="weekly"
+        from="2026-08-07"
+        to="2026-08-09"
+      />,
+    );
+
+    expect(screen.getByText('No data available')).toBeVisible();
+    expect(screen.queryByTestId('chart-series')).not.toBeInTheDocument();
   });
 });

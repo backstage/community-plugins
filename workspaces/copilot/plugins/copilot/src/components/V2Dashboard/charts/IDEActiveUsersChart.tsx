@@ -49,6 +49,7 @@ export function IDEActiveUsersChart({
     fillMissingDays,
   );
   const days = aggregated.map(d => d.day);
+  const isTeamScoped = data.some(row => row.team_slug !== '');
   const supportsRollingActiveUsers =
     variant === 'weekly' &&
     data.some(row => row.weekly_active_users !== undefined);
@@ -56,7 +57,7 @@ export function IDEActiveUsersChart({
     if (
       variant === 'weekly' &&
       d.weekly_active_users === undefined &&
-      (supportsRollingActiveUsers || !fillMissingDays)
+      (isTeamScoped || supportsRollingActiveUsers || !fillMissingDays)
     ) {
       return null;
     }

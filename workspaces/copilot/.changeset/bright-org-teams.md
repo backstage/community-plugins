@@ -14,3 +14,6 @@ keeping same-slug teams distinct.
 Failed team-option and dashboard requests can be retried.
 Successful manual backfills no longer postpone the next scheduled organization
 refresh.
+Monthly active-user metrics remain unavailable when GitHub does not report
+them, and selected organizations can still be cleared when team options fail
+or become empty. Team weekly active-user charts leave unreported values blank.

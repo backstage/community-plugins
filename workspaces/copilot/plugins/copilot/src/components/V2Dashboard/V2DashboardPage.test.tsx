@@ -238,6 +238,15 @@ const getFilterToggleButton = (
   return button;
 };
 
+const getOrganizationSelectTrigger = () => {
+  const label = screen.getByText('Organization', { exact: true });
+  const trigger = label.closest('.bui-Select')?.querySelector('button');
+  if (!trigger) {
+    throw new Error('Could not find the organization selector');
+  }
+  return trigger;
+};
+
 describe('V2DashboardPage filter targets', () => {
   it('shows the Cost center | Team toggle button group, defaulting to Team', async () => {
     const api = createApi({
@@ -568,6 +577,103 @@ describe('V2DashboardPage filter targets', () => {
       expect(
         screen.queryByText('Unable to load organization team options.'),
       ).not.toBeInTheDocument(),
+    );
+  });
+
+  it('keeps a selected organization clearable after its options fail', async () => {
+    const api = createApi({ organizations: ['my-org'] });
+    api.getOrganizationTeamOptions.mockImplementation(
+      async ({ organization }) => {
+        if (organization) {
+          throw new Error('Organization options are unavailable');
+        }
+        return {
+          organizations: ['my-org'],
+          teams: [{ organization: 'my-org', team: 'platform' }],
+          hasPendingOrganizations: false,
+        };
+      },
+    );
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: false,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await screen.findByText('Organization', { exact: true });
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(await screen.findByRole('option', { name: 'my-org' }));
+    expect(
+      await screen.findByText('Unable to load organization team options.'),
+    ).toBeVisible();
+    expect(getOrganizationSelectTrigger()).toBeVisible();
+
+    const callsBeforeClear = api.getOrganizationTeamOptions.mock.calls.length;
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(
+      await screen.findByRole('option', { name: 'All organizations' }),
+    );
+
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions.mock.calls.length).toBe(
+        callsBeforeClear + 1,
+      ),
+    );
+    expect(api.getOrganizationTeamOptions).toHaveBeenLastCalledWith(
+      expect.objectContaining({ organization: undefined }),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Unable to load organization team options.'),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
+  it('keeps a selected organization clearable when its options become empty', async () => {
+    const api = createApi({ organizations: ['my-org'] });
+    api.getOrganizationTeamOptions.mockImplementation(
+      async ({ organization }) => ({
+        organizations: organization ? [] : ['my-org'],
+        teams: organization
+          ? []
+          : [{ organization: 'my-org', team: 'platform' }],
+        hasPendingOrganizations: false,
+      }),
+    );
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+    await screen.findByText('Organization', { exact: true });
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(await screen.findByRole('option', { name: 'my-org' }));
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions).toHaveBeenLastCalledWith(
+        expect.objectContaining({ organization: 'my-org' }),
+      ),
+    );
+    await waitFor(() => expect(getOrganizationSelectTrigger()).toBeVisible());
+
+    const callsBeforeClear = api.getOrganizationTeamOptions.mock.calls.length;
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(
+      await screen.findByRole('option', { name: 'All organizations' }),
+    );
+
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions.mock.calls.length).toBe(
+        callsBeforeClear + 1,
+      ),
+    );
+    expect(api.getOrganizationTeamOptions).toHaveBeenLastCalledWith(
+      expect.objectContaining({ organization: undefined }),
     );
   });
 

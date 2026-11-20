@@ -562,6 +562,154 @@ describe('DatabaseHandlerV2', () => {
       await handler.releaseEnterpriseOrganizationLease(thirdLease!);
     });
 
+    it('updates organization status only without a live lease and for the matching organization', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      const nextAttemptAt = new Date(now.getTime() + 60_000);
+      const target = { enterprise_id: 'ent-1', organization_key: 'org-a' };
+      const getOrganization = (enterpriseId: string, key: string) =>
+        knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: enterpriseId, organization_key: key })
+          .first('access_state', 'lease_owner', 'lease_expires_at');
+
+      await handler.syncEnterpriseOrganizations(
+        'ent-1',
+        ['Org-A', 'Org-B'],
+        now,
+      );
+      await handler.syncEnterpriseOrganizations('ent-2', ['Org-A'], now);
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-b' })
+        .update({
+          access_state: 'accessible',
+          lease_owner: 'expired-other-org',
+          lease_expires_at: now,
+        });
+      await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-2', organization_key: 'org-a' })
+        .update({
+          access_state: 'accessible',
+          lease_owner: 'expired-other-enterprise',
+          lease_expires_at: now,
+        });
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ access_state: 'accessible', next_attempt_at: null });
+      const expiredLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        now,
+      );
+      expect(expiredLease).toBeDefined();
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+        lease_owner: expiredLease!.owner,
+      });
+      await expect(getOrganization('ent-1', 'org-b')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: 'expired-other-org',
+      });
+      await expect(getOrganization('ent-2', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: 'expired-other-enterprise',
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .whereIn('enterprise_id', ['ent-1', 'ent-2'])
+        .update({ access_state: 'inaccessible' });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+      await expect(getOrganization('ent-1', 'org-b')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+      await expect(getOrganization('ent-2', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+
+      const newLeaseStartedAt = new Date(now.getTime() + 1);
+      const newLeaseExpiresAt = new Date(now.getTime() + 60_001);
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ next_attempt_at: null });
+      const newLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        newLeaseExpiresAt,
+      );
+      expect(newLease).toBeDefined();
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: newLease!.owner,
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ access_state: 'inaccessible' });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+        lease_owner: newLease!.owner,
+      });
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          newLeaseStartedAt,
+          nextAttemptAt,
+          expiredLease!,
+        ),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      await handler.releaseEnterpriseOrganizationLease(newLease!);
+    });
+
     it('keeps configured-organization ownership behind the shared lease', async () => {
       const now = new Date('2026-11-17T00:00:00.000Z');
       const leaseExpiresAt = new Date(now.getTime() + 10 * 60_000);

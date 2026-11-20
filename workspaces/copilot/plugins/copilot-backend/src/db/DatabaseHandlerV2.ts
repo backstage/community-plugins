@@ -330,7 +330,9 @@ export class DatabaseHandlerV2 {
         .where({ lease_owner: lease.owner })
         .andWhere('lease_expires_at', '>', now);
     } else {
-      query.whereNull('lease_owner');
+      query.andWhere(function leaseIsUnavailable() {
+        this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
+      });
     }
 
     const changed = await query.update({
@@ -358,7 +360,9 @@ export class DatabaseHandlerV2 {
         organization_key: organization.trim().toLowerCase(),
         is_current: true,
       })
-      .whereNull('lease_owner')
+      .andWhere(function leaseIsUnavailable() {
+        this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
+      })
       .update({
         access_state: 'inaccessible',
         reports_ready: false,
