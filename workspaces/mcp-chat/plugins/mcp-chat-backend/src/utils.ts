@@ -35,6 +35,13 @@ import { RootConfigService } from '@backstage/backend-plugin-api';
 export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
 
 /**
+ * Default maximum number of tool-call iterations the agentic loop will run
+ * before giving up on producing a final answer.
+ * @public
+ */
+export const DEFAULT_MCP_MAX_TOOL_ITERATIONS = 8;
+
+/**
  * Loads MCP server configurations from Backstage config.
  * Reads from the `mcpChat.mcpServers` configuration section.
  *
