@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo-backend
 
+## 0.27.1
+
+### Patch Changes
+
+- 3f7c5f3: Remove unused `@backstage/catalog-client` and `yn` deps
+
 ## 0.27.0
 
 ### Minor Changes
