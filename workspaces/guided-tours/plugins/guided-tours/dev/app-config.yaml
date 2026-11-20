@@ -1,0 +1,48 @@
+# Config for the standalone dev app (`yarn start` in this package). It is
+# loaded instead of the repository's app-config.yaml so the dev app does not
+# inherit app-specific overrides such as the catalog being mounted at /.
+app:
+  title: Guided tour dev app
+  baseUrl: http://localhost:3000
+  extensions:
+    # the languages the plugin ships translations for, selectable in the
+    # user settings
+    - api:app/app-language:
+        config:
+          availableLanguages: ['en', 'de', 'es', 'fr', 'it', 'ja']
+          defaultLanguage: 'en'
+    # fetches an external API that is blocked by CORS in local development
+    - home-page-widget:home/random-joke: false
+    # a default home page layout, otherwise the home page starts empty
+    - home-page-widget:home/toolkit:
+        config:
+          tools:
+            - url: /guided-tours
+              label: Guided tours
+              icon: docs
+            - url: https://backstage.io/docs/frontend-system/
+              label: Frontend system docs
+              icon: docs
+    - page:home:
+        config:
+          # the home page is the landing page of the dev app
+          path: /
+          defaultConfig:
+            - component: GuidedTourWelcome
+              column: 0
+              row: 0
+              width: 6
+              height: 5
+            - component: HomePageStarredEntities
+              column: 6
+              row: 0
+              width: 6
+              height: 4
+            - component: HomePageToolkit
+              column: 6
+              row: 4
+              width: 6
+              height: 4
+
+backend:
+  baseUrl: http://localhost:7007
