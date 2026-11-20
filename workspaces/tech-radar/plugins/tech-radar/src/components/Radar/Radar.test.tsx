@@ -58,4 +58,12 @@ describe('Radar', () => {
     expect(svg!.getAttribute('width')).toEqual('500');
     expect(svg!.getAttribute('height')).toEqual('200');
   });
+
+  it('should render when fewer than four quadrants are configured', async () => {
+    const rendered = await renderInTestApp(
+      <Radar {...minProps} quadrants={minProps.quadrants.slice(0, 3)} />,
+    );
+
+    expect(rendered.getAllByTestId('radar-quadrant')).toHaveLength(3);
+  });
 });

@@ -69,12 +69,17 @@ When defining the radar entries you can see the available properties on the file
 
 ## Tech radar data model
 
-| Name        | Type                    | Description                                                          | Required? |
-| ----------- | ----------------------- | -------------------------------------------------------------------- | --------- |
-| `title`     | string                  | The title of the radar                                               | Yes       |
-| `quadrants` | [quadrant[]](#quadrant) | The 4 quadrants of the radar, clockwise starting at the bottom right | Yes       |
-| `rings`     | [ring[]](#ring)         | The radar rings, starting from the inside                            | Yes       |
-| `entries`   | [entry[]](#entry)       | The radar entries                                                    | Yes       |
+| Name        | Type                    | Description                                                            | Required? |
+| ----------- | ----------------------- | ---------------------------------------------------------------------- | --------- |
+| `title`     | string                  | The title of the radar                                                 | Yes       |
+| `quadrants` | [quadrant[]](#quadrant) | Up to 4 quadrants of the radar, clockwise starting at the bottom right | Yes       |
+| `rings`     | [ring[]](#ring)         | The radar rings, starting from the inside                              | Yes       |
+| `entries`   | [entry[]](#entry)       | The radar entries                                                      | Yes       |
+
+Fewer than four quadrants can be configured. Quadrants occupy fixed 90-degree
+sections in array order: bottom right, bottom left, top left, then top right.
+Unused sections remain empty and have no legend. Each entry must reference the ID
+of a configured quadrant.
 
 ### quadrant
 
