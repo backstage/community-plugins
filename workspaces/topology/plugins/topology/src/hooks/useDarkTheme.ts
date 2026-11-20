@@ -13,12 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
-import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
+import { AppTheme, appThemeApiRef, useApi } from '@backstage/core-plugin-api';
 
-const THEME_DARK = 'dark';
 const THEME_DARK_CLASS = 'pf-v6-theme-dark';
+const PREFERS_DARK_QUERY = '(prefers-color-scheme: dark)';
+
+/**
+ * Whether the app renders a dark theme. Picks the theme the same way the
+ * Backstage AppThemeProvider does: the selected theme, else (no selection,
+ * i.e. "auto") an installed theme matching the system color scheme.
+ */
+const isDarkTheme = (
+  themeId: string | undefined,
+  prefersDark: boolean,
+  themes: AppTheme[],
+) => {
+  const theme =
+    themes.find(t => t.id === themeId) ??
+    (prefersDark ? themes.find(t => t.variant === 'dark') : undefined) ??
+    themes.find(t => t.variant === 'light') ??
+    themes[0];
+  return theme?.variant === 'dark';
+};
+
+const usePrefersDarkColorScheme = () => {
+  const mediaQuery = useMemo(
+    () =>
+      typeof window.matchMedia === 'function'
+        ? window.matchMedia(PREFERS_DARK_QUERY)
+        : undefined,
+    [],
+  );
+  const [prefersDark, setPrefersDark] = useState(mediaQuery?.matches ?? false);
+
+  useEffect(() => {
+    if (!mediaQuery) return undefined;
+    const listener = (event: MediaQueryListEvent) =>
+      setPrefersDark(event.matches);
+    mediaQuery.addEventListener('change', listener);
+    return () => mediaQuery.removeEventListener('change', listener);
+  }, [mediaQuery]);
+
+  return prefersDark;
+};
 
 /**
  * Syncs PatternFly dark theme class on the document root with the Backstage theme.
@@ -28,6 +67,7 @@ export const useDarkTheme = () => {
   const [activeThemeId, setActiveThemeId] = useState(
     appThemeApi.getActiveThemeId(),
   );
+  const prefersDark = usePrefersDarkColorScheme();
 
   useEffect(() => {
     const subscription = appThemeApi.activeThemeId$().subscribe({
@@ -38,7 +78,11 @@ export const useDarkTheme = () => {
     return () => subscription.unsubscribe();
   }, [appThemeApi]);
 
-  const isDark = activeThemeId === THEME_DARK;
+  const isDark = isDarkTheme(
+    activeThemeId,
+    prefersDark,
+    appThemeApi.getInstalledThemes(),
+  );
 
   useLayoutEffect(() => {
     const htmlTagElement = document.documentElement;
