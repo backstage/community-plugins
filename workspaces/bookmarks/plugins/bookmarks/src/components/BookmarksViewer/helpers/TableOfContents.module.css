@@ -1,0 +1,42 @@
+@layer components {
+  .tree,
+  .group {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tree {
+    flex-grow: 1;
+    color: var(--bui-fg-primary);
+  }
+
+  .group {
+    padding-left: var(--bui-space-4);
+  }
+
+  /* doubled selector so these win over BUI's own Button rules */
+  .item.item {
+    width: 100%;
+    height: auto;
+    min-height: 2rem;
+    align-items: center;
+    text-align: left;
+  }
+
+  /* BUI centers the label inside an inner span, so align that span instead */
+  .item.item > span {
+    justify-content: flex-start;
+    height: auto;
+    padding-block: var(--bui-space-1);
+  }
+
+  .leaf.leaf {
+    padding-left: var(--bui-space-6);
+  }
+
+  .selected.selected {
+    background-color: var(--bui-bg-neutral-2);
+    font-weight: var(--bui-font-weight-bold);
+  }
+}

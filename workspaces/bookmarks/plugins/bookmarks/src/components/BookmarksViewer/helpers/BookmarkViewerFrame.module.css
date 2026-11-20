@@ -1,0 +1,38 @@
+@layer components {
+  .loading {
+    margin-top: var(--bui-space-10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .spinner {
+    display: flex;
+    color: var(--bui-fg-secondary);
+    animation: bookmark-spin 1s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation-duration: 4s;
+    }
+  }
+
+  .devWarning {
+    margin-top: var(--bui-space-4);
+  }
+
+  .frame {
+    flex-grow: 1;
+    border: none;
+    background: white;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@keyframes bookmark-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
