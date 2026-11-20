@@ -537,26 +537,44 @@ export class DatabaseHandlerV2 {
     generation?: EnterpriseOrganizationDirectoryGeneration,
   ): Promise<EnterpriseOrganizationDirectoryMutationResult> {
     return this.db.transaction(async transaction => {
+      let generationToLock = generation;
+      if (!generationToLock) {
+        const directory = await transaction(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: enterpriseId })
+          .first('sync_generation');
+        if (!directory) {
+          return 'not-current';
+        }
+        generationToLock = formatDirectoryGeneration(directory.sync_generation);
+      }
       if (
-        generation &&
         !(await this.lockDirectoryGeneration(
           transaction,
           enterpriseId,
-          generation,
+          generationToLock,
         ))
       ) {
         return 'superseded';
       }
 
-      const query = transaction('copilot_enterprise_organizations')
-        .where({
-          enterprise_id: enterpriseId,
-          organization_key: organization.trim().toLowerCase(),
-          is_current: true,
-        })
-        .andWhere(function leaseIsUnavailable() {
-          this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
-        });
+      const query = transaction('copilot_enterprise_organizations').where({
+        enterprise_id: enterpriseId,
+        organization_key: organization.trim().toLowerCase(),
+        is_current: true,
+      });
+      if (generation === undefined) {
+        query
+          .whereNot('access_state', 'accessible')
+          .andWhere(function leaseIsUnavailable() {
+            this.whereNull('lease_owner').orWhere(
+              'lease_expires_at',
+              '<=',
+              now,
+            );
+          });
+      }
       const currentOrganization = await query
         .clone()
         .forUpdate()
@@ -569,6 +587,8 @@ export class DatabaseHandlerV2 {
         reports_ready: false,
         last_attempted_at: now,
         next_attempt_at: nextAttemptAt,
+        lease_owner: null,
+        lease_expires_at: null,
         updated_at: now,
       });
       return 'updated';
