@@ -23,6 +23,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
@@ -41,11 +42,11 @@ describe('StarredRatingButtons', () => {
   const sampleRatings = [
     {
       userRef: 'user:default/me',
-      rating: StarredFeedbackRatings.two,
+      rating: StarredFeedbackRatings.two.toString(),
     },
     {
       userRef: 'user:default/someone',
-      rating: StarredFeedbackRatings.five,
+      rating: StarredFeedbackRatings.five.toString(),
     },
   ];
 
@@ -55,9 +56,10 @@ describe('StarredRatingButtons', () => {
   } as Entity;
 
   const errorApi: Partial<ErrorApi> = { post: jest.fn() };
+  const getRatings = jest.fn(async () => sampleRatings);
 
   const feedbackApi: Partial<EntityFeedbackApi> = {
-    getRatings: jest.fn().mockImplementation(async () => sampleRatings),
+    getRatings,
     recordRating: jest.fn().mockImplementation(() => Promise.resolve()),
   };
 
@@ -88,40 +90,63 @@ describe('StarredRatingButtons', () => {
     jest.clearAllMocks();
   });
 
-  it('loads the previous rating if it exists', async () => {
+  it('names all five rating buttons and marks only the saved rating as pressed', async () => {
     await render();
-    expect(feedbackApi.getRatings).toHaveBeenCalledWith(
-      'component:default/test',
-    );
+    const selectedButton = await screen.findByRole('button', {
+      name: 'Rate 2 stars',
+      pressed: true,
+    });
+
+    expect(getRatings).toHaveBeenCalledWith('component:default/test');
+    expect(screen.getAllByRole('button', { pressed: true })).toEqual([
+      selectedButton,
+    ]);
+    expect(screen.getAllByRole('button', { pressed: false })).toEqual([
+      screen.getByRole('button', { name: 'Rate 1 star' }),
+      screen.getByRole('button', { name: 'Rate 3 stars' }),
+      screen.getByRole('button', { name: 'Rate 4 stars' }),
+      screen.getByRole('button', { name: 'Rate 5 stars' }),
+    ]);
   });
 
-  it('applies a rating correctly', async () => {
-    const rendered = await render();
+  it('leaves all five buttons unpressed when the user has no saved rating', async () => {
+    getRatings.mockResolvedValueOnce([sampleRatings[1]]);
+    await render();
+
+    expect(
+      await screen.findAllByRole('button', { pressed: false }),
+    ).toHaveLength(5);
+    expect(screen.queryByRole('button', { pressed: true })).toBeNull();
+  });
+
+  it('records a new rating and moves the pressed state to that button', async () => {
+    await render();
 
     await userEvent.click(
-      rendered.getByTestId('entity-feedback-star-button-3'),
+      await screen.findByRole('button', { name: 'Rate 3 stars' }),
     );
     expect(feedbackApi.recordRating).toHaveBeenCalledWith(
       'component:default/test',
       StarredFeedbackRatings.three.toString(),
     );
+    expect(
+      await screen.findByRole('button', {
+        name: 'Rate 3 stars',
+        pressed: true,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Rate 2 stars', pressed: false }),
+    ).toBeInTheDocument();
 
-    jest.clearAllMocks();
-
-    await userEvent.click(
-      rendered.getByTestId('entity-feedback-star-button-5'),
-    );
-    expect(feedbackApi.recordRating).toHaveBeenCalledWith(
-      'component:default/test',
-      StarredFeedbackRatings.five.toString(),
-    );
+    expect(feedbackApi.recordRating).toHaveBeenCalledTimes(1);
   });
 
-  it('ignores an existing rating correctly', async () => {
-    const rendered = await render();
+  it('does not record the already selected rating again', async () => {
+    await render();
 
     await userEvent.click(
-      rendered.getByTestId('entity-feedback-star-button-2'),
+      await screen.findByRole('button', { name: 'Rate 2 stars' }),
     );
     expect(feedbackApi.recordRating).not.toHaveBeenCalled();
   });
