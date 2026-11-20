@@ -15,7 +15,7 @@
  */
 import { MarkdownContent } from '@backstage/core-components';
 import MDEditor from '@uiw/react-md-editor';
-import { makeStyles, useTheme } from '@material-ui/core';
+import styles from './MarkdownRenderer.module.css';
 
 /**
  * @public
@@ -32,77 +32,13 @@ export interface MarkdownRendererProps {
   rendererType?: MarkdownRendererTypeProps;
 }
 
-// Custom styles for the MDEditor to match Backstage MUI theme
-const useStyles = makeStyles(theme => ({
-  mdEditor: {
-    color: theme.palette.text.primary,
-    '& a': {
-      color: theme.palette.primary.main,
-    },
-    '& code': {
-      backgroundColor: theme.palette.background.default,
-      color: theme.palette.text.primary,
-      borderRadius: theme.shape.borderRadius,
-    },
-    '& pre': {
-      backgroundColor: theme.palette.background.default,
-      padding: theme.spacing(1),
-      borderRadius: theme.shape.borderRadius,
-    },
-    '& blockquote': {
-      paddingLeft: theme.spacing(1),
-      color: theme.palette.text.secondary,
-    },
-    '& table': {
-      '& thead th': {
-        color: theme.palette.text.primary,
-        backgroundColor:
-          theme.palette.type === 'dark'
-            ? theme.palette.background.default
-            : theme.palette.background.paper,
-      },
-      '& th, & td': {
-        border: 0,
-      },
-      '& tbody tr:nth-of-type(odd)': {
-        backgroundColor:
-          theme.palette.type === 'dark'
-            ? theme.palette.action.selected
-            : theme.palette.action.hover,
-      },
-      '& tbody tr:nth-of-type(even)': {
-        backgroundColor:
-          theme.palette.type === 'dark'
-            ? theme.palette.background.paper
-            : theme.palette.background.paper,
-      },
-      '& tbody td': {
-        borderTop: `1px solid ${theme.palette.divider}`,
-      },
-    },
-  },
-}));
-
 export const MarkdownRenderer = ({
   content,
   rendererType = 'backstage',
 }: MarkdownRendererProps) => {
-  const theme = useTheme();
-  const classes = useStyles();
-
   switch (rendererType) {
     case 'md-editor':
-      return (
-        <MDEditor.Markdown
-          source={content}
-          className={classes.mdEditor}
-          style={{
-            backgroundColor: 'transparent',
-            color: theme.palette.text.primary,
-            fontFamily: theme.typography.fontFamily,
-          }}
-        />
-      );
+      return <MDEditor.Markdown source={content} className={styles.mdEditor} />;
     case 'backstage':
     default:
       return <MarkdownContent content={content} />;

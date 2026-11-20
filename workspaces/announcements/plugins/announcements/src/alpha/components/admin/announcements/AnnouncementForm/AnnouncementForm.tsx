@@ -17,6 +17,7 @@ import { useState, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
+import { parseDate } from '@internationalized/date';
 import {
   toastApiRef,
   identityApiRef,
@@ -28,6 +29,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  DatePicker,
   Flex,
   Grid,
   Text,
@@ -54,8 +56,6 @@ import { CategorySelectInput, TagsSelectInput } from '../../../shared';
 import { CreateCategoryDialog } from '../../categories';
 import { CreateTagDialog } from '../../tags';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
-
-import MuiTextField from '@mui/material/TextField';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -320,45 +320,36 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <MuiTextField
-                  variant="outlined"
+                <DatePicker
                   label={t('announcementForm.startAt')}
                   id="start-at-date"
-                  type="date"
-                  value={form.start_at}
-                  InputLabelProps={{ shrink: true }}
-                  required
-                  fullWidth
-                  onChange={e =>
+                  value={form.start_at ? parseDate(form.start_at) : null}
+                  isRequired
+                  onChange={date =>
                     setForm({
                       ...form,
-                      start_at: e.target.value,
+                      start_at: date?.toString() ?? '',
                     })
                   }
                 />
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <MuiTextField
-                  variant="outlined"
+                <DatePicker
                   label={t('announcementForm.untilDate')}
                   id="until-date"
-                  type="date"
-                  value={form.until_date}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                  onChange={e =>
+                  value={form.until_date ? parseDate(form.until_date) : null}
+                  minValue={
+                    form.start_at
+                      ? parseDate(form.start_at).add({ days: 1 })
+                      : undefined
+                  }
+                  onChange={date =>
                     setForm({
                       ...form,
-                      until_date: e.target.value,
+                      until_date: date?.toString() ?? '',
                     })
                   }
-                  inputProps={{
-                    min: DateTime.fromISO(form.start_at)
-                      .endOf('day')
-                      .plus({ days: 1 })
-                      .toISODate(),
-                  }}
                 />
               </Grid.Item>
 

@@ -18,11 +18,14 @@ import {
   createFrontendModule,
 } from '@backstage/frontend-plugin-api';
 import { compatWrapper } from '@backstage/core-compat-api';
+import { RiHomeLine } from '@remixicon/react';
 import { HomePage } from './HomePage';
 
 export const homePage = PageBlueprint.make({
   params: {
     path: '/',
+    title: 'Home',
+    icon: <RiHomeLine />,
     loader: async () => compatWrapper(<HomePage />),
   },
 });

@@ -15,86 +15,67 @@
  */
 // HomePage for app-next replicating legacy Home announcements showcase
 import { AnnouncementsCard } from '@backstage-community/plugin-announcements';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import MuiLink from '@mui/material/Link';
-import { Content, Header, SupportButton } from '@backstage/core-components';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Container,
+  Flex,
+  Header,
+  Link,
+  Text,
+} from '@backstage/ui';
+import styles from './HomePage.module.css';
 
 export const HomePage = () => {
   return (
     <>
-      <Header title="Announcements Plugin Showcase" subtitle="Dev App">
-        <SupportButton title="About the Announcements plugin">
-          This page demonstrates the primary UI surfaces of the announcements
-          plugin and provides quick navigation to administration areas. Use it
-          as a reference when embedding Announcements into your Backstage
-          instance.
-        </SupportButton>
-      </Header>
-      <Content>
-        <Grid container spacing={3} direction="column">
+      <Header
+        title="Announcements Plugin Showcase"
+        description="Demonstrates the primary UI surfaces of the announcements plugin and provides quick navigation to administration areas. Use it as a reference when embedding Announcements into your Backstage instance."
+      />
+      <Container>
+        <Flex direction="column" gap="6">
           {/* Intro / Quick Links */}
-          <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  Quick Links
-                </Typography>
-                <Grid container spacing={2}>
-                  <Grid item>
-                    <MuiLink component={RouterLink} to="/announcements">
-                      All Announcements
-                    </MuiLink>
-                  </Grid>
-                  <Grid item>
-                    <MuiLink component={RouterLink} to="/announcements/admin">
-                      Admin Portal
-                    </MuiLink>
-                  </Grid>
-                  <Grid item>
-                    <MuiLink
-                      component={RouterLink}
-                      to="/announcements/admin/categories"
-                    >
-                      Categories
-                    </MuiLink>
-                  </Grid>
-                  <Grid item>
-                    <MuiLink
-                      component={RouterLink}
-                      to="/announcements/admin/tags"
-                    >
-                      Tags
-                    </MuiLink>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
+          <Card>
+            <CardHeader>
+              <Text as="h2" variant="title-small">
+                Quick Links
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Flex gap="4">
+                <Link href="/announcements">All Announcements</Link>
+                <Link href="/announcements/admin">Admin Portal</Link>
+                <Link href="/announcements/admin/categories">Categories</Link>
+                <Link href="/announcements/admin/tags">Tags</Link>
+              </Flex>
+            </CardBody>
+          </Card>
 
           {/* Live Components Showcase */}
-          <Grid item>
-            <Typography variant="h5" gutterBottom>
-              Live Components
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Announcements Banner</Typography>
-                <Typography variant="body2" paragraph>
+          <Text as="h2" variant="title-small">
+            Live Components
+          </Text>
+          <Card>
+            <CardHeader>
+              <Text as="h3" variant="title-x-small">
+                Announcements Banner
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Flex direction="column" gap="2">
+                <Text as="p" variant="body-medium">
                   The banner now renders globally via the new frontend system.
-                  Adjust its behavior through the <code>app.extensions</code>{' '}
-                  config using the
-                  <code>announcements/banner</code> key.
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
+                  Adjust its behavior through the{' '}
+                  <Text className={styles.code}>app.extensions</Text> config
+                  using the{' '}
+                  <Text className={styles.code}>announcements/banner</Text> key.
+                </Text>
+                <Text variant="body-medium" color="secondary">
                   Example:
-                </Typography>
-                <Typography component="pre" variant="body2">
+                </Text>
+                <Text as="div" variant="body-medium" className={styles.pre}>
                   {`app:
   extensions:
     - announcements/banner:
@@ -102,24 +83,28 @@ export const HomePage = () => {
           variant: floating
           max: 2
           tags: ['kubernetes']`}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Announcements Card</Typography>
-                <Typography variant="body2" paragraph>
+                </Text>
+              </Flex>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Text as="h3" variant="title-x-small">
+                Announcements Card
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Flex direction="column" gap="2">
+                <Text as="p" variant="body-medium">
                   A compact overview suitable for dashboards or entity pages.
                   You can tweak size and filtering in the future roadmap.
-                </Typography>
+                </Text>
                 <AnnouncementsCard max={2} />
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Content>
+              </Flex>
+            </CardBody>
+          </Card>
+        </Flex>
+      </Container>
     </>
   );
 };
