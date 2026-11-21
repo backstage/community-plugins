@@ -1,0 +1,156 @@
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--bui-space-6);
+}
+
+.sidebar {
+  flex: 0 1 240px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-4);
+}
+
+/* Section headings in the sidebar (Roles, Plugin, Policy). */
+.sidebar :global(.bui-FieldLabel) {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--bui-font-size-1);
+  font-weight: var(--bui-font-weight-bold);
+  color: var(--bui-fg-secondary);
+}
+
+.content {
+  flex: 1 1 360px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-4);
+}
+
+/* Long role lists scroll instead of pushing the filters away. */
+.roleList {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.roleList :global(.bui-CheckboxGroupContent) {
+  gap: var(--bui-space-2);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bui-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bui-space-1);
+}
+
+/* The matrix scrolls both ways; the role column and the header rows stick. */
+.scroll {
+  overflow: auto;
+  max-height: 70vh;
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  font-size: var(--bui-font-size-2);
+  /* The plugin row needs a fixed height for the permission row to stick
+     directly below it. */
+  --matrix-plugin-row-height: 2.5rem;
+}
+
+.table th,
+.table td {
+  padding: var(--bui-space-2) var(--bui-space-3);
+  border-bottom: 1px solid var(--bui-border-1);
+  white-space: nowrap;
+  background: var(--bui-bg-app);
+}
+
+.table thead th {
+  font-weight: var(--bui-font-weight-bold);
+  text-align: center;
+  vertical-align: bottom;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table thead tr:first-child th {
+  height: var(--matrix-plugin-row-height);
+}
+
+.table thead tr:nth-child(2) th {
+  top: var(--matrix-plugin-row-height);
+}
+
+.pluginHeader {
+  border-left: 1px solid var(--bui-border-1);
+}
+
+.permissionAction {
+  display: block;
+}
+
+.roleCell {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  border-right: 1px solid var(--bui-border-1);
+}
+
+.table thead .roleCell {
+  z-index: 3;
+  text-align: left;
+}
+
+.decisionCell {
+  text-align: center;
+}
+
+.decision {
+  vertical-align: middle;
+}
+
+.allow {
+  color: var(--bui-fg-success);
+}
+
+.deny {
+  color: var(--bui-fg-danger);
+}
+
+.conditional {
+  color: var(--bui-fg-warning);
+}
+
+.tooltipTarget {
+  display: inline-flex;
+  cursor: help;
+}
+
+.none {
+  color: var(--bui-fg-secondary);
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  padding: var(--bui-space-4);
+}

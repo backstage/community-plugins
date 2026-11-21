@@ -435,6 +435,16 @@ describe('getConditionalPermissionsData', () => {
     ]);
   });
 
+  it('skips conditions whose plugin has no permission metadata', () => {
+    const result = getConditionalPermissionsData(
+      [mockConditions[0]],
+      { plugins: [], pluginsPermissions: {} },
+      [],
+    );
+
+    expect(result).toEqual([]);
+  });
+
   it('should return empty array if no conditional permissions provided', () => {
     const conditionalPermissions: RoleConditionalPolicyDecision[] = [];
     const permissionPolicies = {

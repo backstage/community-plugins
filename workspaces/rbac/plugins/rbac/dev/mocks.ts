@@ -198,6 +198,12 @@ class MockRBACApi implements RBACAPI {
     return mockConditions.filter(mc => mc.roleEntityRef === roleRef);
   }
 
+  async getAllRoleConditions(): Promise<
+    RoleConditionalPolicyDecision[] | Response
+  > {
+    return mockConditions;
+  }
+
   async updateConditionalPolicies(
     _conditionId: number,
     _data: RoleBasedConditions,
