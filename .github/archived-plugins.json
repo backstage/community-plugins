@@ -44,6 +44,24 @@
       "gitTag": "@backstage-community/plugin-matomo-backend@1.14.0",
       "reason": "No longer maintained",
       "archivedDate": "2025-12-02"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-catalog-backend-module-amplication",
+      "version": "0.4.0",
+      "workspace": "amplication",
+      "plugin": "catalog-backend-module-amplication",
+      "gitTag": "@backstage-community/plugin-catalog-backend-module-amplication@0.4.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2026-11-19"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-scaffolder-backend-module-amplication",
+      "version": "0.4.1",
+      "workspace": "amplication",
+      "plugin": "scaffolder-backend-module-amplication",
+      "gitTag": "@backstage-community/plugin-scaffolder-backend-module-amplication@0.4.1",
+      "reason": "No longer maintained",
+      "archivedDate": "2026-11-19"
     }
   ]
 }

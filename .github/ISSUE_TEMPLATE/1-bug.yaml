@@ -21,7 +21,6 @@ body:
         - airbrake
         - akeyless
         - allure
-        - amplication
         - analytics
         - announcements
         - apache-airflow
