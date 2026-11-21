@@ -1,0 +1,24 @@
+# MDX Card
+
+This workspace contains a plugin that renders entity page and home page cards from MDX templates, using data from Backstage backend APIs.
+
+![MDX card on an entity page](./plugins/mdx-card/docs/entity-card.png)
+
+## Plugins
+
+- [mdx-card](./plugins/mdx-card/README.md): Frontend plugin that provides the entity card, home page card and template editor page.
+- [mdx-card-backend](./plugins/mdx-card-backend/README.md): Backend plugin that stores templates.
+- [mdx-card-common](./plugins/mdx-card-common/README.md): Types and permissions shared by the frontend and backend.
+
+## Getting Started
+
+To start the plugin's development app using the new frontend system, run:
+
+```sh
+yarn install
+yarn --cwd plugins/mdx-card start
+```
+
+The app runs without a backend. When signing in as a guest, accept the prompt to use the legacy guest token. The MDX card is on the example-service entity page and on the home page, and the editor page is at `/mdx-cards`. The dev app stores templates in memory, so it needs no backend.
+
+To start the development app using the legacy frontend system, run `yarn --cwd plugins/mdx-card start:legacy`.
