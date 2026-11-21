@@ -1,5 +1,11 @@
 # @backstage-community/plugin-opencost
 
+## 0.25.1
+
+### Patch Changes
+
+- 7b73101: Add support for the new frontend system with an OpenCost page and navigation item.
+
 ## 0.25.0
 
 ### Minor Changes
