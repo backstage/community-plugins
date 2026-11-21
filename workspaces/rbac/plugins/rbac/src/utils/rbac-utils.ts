@@ -445,10 +445,10 @@ export const isSamePermissionPolicy = (
   a.policy === b.policy &&
   a.effect === b.effect;
 
-export const onlyInLeft = (
-  left: RoleBasedPolicy[],
-  right: RoleBasedPolicy[],
-  compareFunction: (a: RoleBasedPolicy, b: RoleBasedPolicy) => boolean,
+export const onlyInLeft = <T>(
+  left: T[],
+  right: T[],
+  compareFunction: (a: T, b: T) => boolean,
 ) =>
   left.filter(
     leftValue =>

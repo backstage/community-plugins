@@ -114,6 +114,19 @@ export const rbacMessages = {
       reviewAndSave: 'Review and save',
       nameDescriptionOwner: 'Name, description, and owner of role',
       permissionPoliciesWithCount: 'Permission policies ({{count}})',
+      changes: {
+        title: 'Changes to this role',
+        noChanges: 'No changes have been made to this role.',
+        added: 'Added',
+        removed: 'Removed',
+        changed: 'Changed',
+        // `as const` keeps the literal type so `t()` can type the
+        // {{placeholder}} params without a cast at the call site.
+        valueChanged:
+          '{{field}}: from "{{previous}}" to "{{current}}"' as const,
+        permissionPolicies: 'Permission policies',
+        conditionalPolicies: 'Conditional access policies',
+      },
     },
     steps: {
       next: 'Next',

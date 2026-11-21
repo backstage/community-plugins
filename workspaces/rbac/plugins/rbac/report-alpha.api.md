@@ -79,6 +79,14 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'roleForm.review.reviewAndSave': string;
     readonly 'roleForm.review.nameDescriptionOwner': string;
     readonly 'roleForm.review.permissionPoliciesWithCount': string;
+    readonly 'roleForm.review.changes.title': string;
+    readonly 'roleForm.review.changes.permissionPolicies': string;
+    readonly 'roleForm.review.changes.noChanges': string;
+    readonly 'roleForm.review.changes.added': string;
+    readonly 'roleForm.review.changes.removed': string;
+    readonly 'roleForm.review.changes.changed': string;
+    readonly 'roleForm.review.changes.valueChanged': '{{field}}: from "{{previous}}" to "{{current}}"';
+    readonly 'roleForm.review.changes.conditionalPolicies': string;
     readonly 'roleForm.steps.create': string;
     readonly 'roleForm.steps.next': string;
     readonly 'roleForm.steps.back': string;

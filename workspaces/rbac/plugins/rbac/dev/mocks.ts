@@ -20,6 +20,7 @@ import {
   RoleBasedPolicy,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockApis } from '@backstage/test-utils';
 
 import { mockConditionRules } from '../src/__fixtures__/mockConditionRules';
@@ -33,6 +34,25 @@ import type {
   RoleBasedConditions,
   RoleError,
 } from '../src/types';
+
+// Dev-only conditional policy so the edit role flow can show conditional
+// access changes for a role that is editable in the UI.
+const devConditions: RoleConditionalPolicyDecision[] = [
+  ...mockConditions,
+  {
+    id: 100,
+    result: AuthorizeResult.CONDITIONAL,
+    pluginId: 'catalog',
+    resourceType: 'catalog-entity',
+    conditions: {
+      rule: 'IS_ENTITY_OWNER',
+      resourceType: 'catalog-entity',
+      params: { claims: ['group:default/janus-authors'] },
+    },
+    roleEntityRef: 'role:default/guests',
+    permissionMapping: ['delete'],
+  },
+];
 
 class MockRBACApi implements RBACAPI {
   readonly resources;
@@ -195,7 +215,7 @@ class MockRBACApi implements RBACAPI {
   async getRoleConditions(
     roleRef: string,
   ): Promise<RoleConditionalPolicyDecision[] | Response> {
-    return mockConditions.filter(mc => mc.roleEntityRef === roleRef);
+    return devConditions.filter(mc => mc.roleEntityRef === roleRef);
   }
 
   async updateConditionalPolicies(

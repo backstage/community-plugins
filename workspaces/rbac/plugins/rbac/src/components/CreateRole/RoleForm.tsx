@@ -35,14 +35,11 @@ import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity, PermissionsData, RoleError } from '../../types';
 import {
   getConditionalPermissionPoliciesData,
-  getNewConditionalPolicies,
   getPermissionPoliciesData,
-  getRemovedConditionalPoliciesIds,
   getRoleData,
-  getUpdatedConditionalPolicies,
   getValidationSchema,
 } from '../../utils/create-role-utils';
-import { isSamePermissionPolicy, onlyInLeft } from '../../utils/rbac-utils';
+import { getRoleChanges } from '../../utils/role-changes-utils';
 import {
   createConditions,
   createPermissions,
@@ -92,44 +89,35 @@ export const RoleForm = ({
     formikHelpers: FormikHelpers<RoleFormValues>,
   ) => {
     try {
-      const newData = getRoleData(values);
-      const newName = newData.name;
-      const newPermissionsData = getPermissionPoliciesData(values);
-      const newConditions = getNewConditionalPolicies(values);
-      const deleteConditions = getRemovedConditionalPoliciesIds(
-        values,
-        initialValues,
-      );
-      const updateConditions = getUpdatedConditionalPolicies(
-        values,
-        initialValues,
-      );
+      const changes = getRoleChanges(initialValues, values);
+      const newName = changes.currentRole.name;
 
-      const oldData = getRoleData(initialValues);
-      const res = await rbacApi.updateRole(oldData, newData);
+      const res = await rbacApi.updateRole(
+        changes.previousRole,
+        changes.currentRole,
+      );
       if ((res as RoleError).error) {
         throw new Error(
           `${t('errors.editRole')} ${(res as RoleError).error.message}`,
         );
       } else {
-        const oldPermissionsData = getPermissionPoliciesData(initialValues);
-        const newPermissions = onlyInLeft(
-          newPermissionsData,
-          oldPermissionsData,
-          isSamePermissionPolicy,
+        await removePermissions(
+          newName,
+          changes.removedPermissions,
+          rbacApi,
+          t,
         );
-        const deletePermissions = onlyInLeft(
-          oldPermissionsData,
-          newPermissionsData,
-          isSamePermissionPolicy,
+        await createPermissions(changes.addedPermissions, rbacApi, t);
+
+        await removeConditions(
+          changes.removedConditions.map(({ id }) => id),
+          rbacApi,
+          t,
         );
-
-        await removePermissions(newName, deletePermissions, rbacApi, t);
-        await createPermissions(newPermissions, rbacApi, t);
-
-        await removeConditions(deleteConditions, rbacApi, t);
-        await modifyConditions(updateConditions, rbacApi, t);
-        await createConditions(newConditions, rbacApi, t);
+        // Only the conditional policies whose content changed are re-sent;
+        // on a rename the backend moves the untouched ones to the new ref.
+        await modifyConditions(changes.changedConditions, rbacApi, t);
+        await createConditions(changes.addedConditions, rbacApi, t);
 
         navigateTo(navigate, t, roleName, newName, 'updated', step);
       }
@@ -333,7 +321,11 @@ export const RoleForm = ({
           </SimpleStepperStep>
           <SimpleStepperStep title="" end>
             <Paper square elevation={0}>
-              <ReviewStep values={formik.values} isEditing={!!roleName} />
+              <ReviewStep
+                values={formik.values}
+                initialValues={initialValues}
+                isEditing={!!roleName}
+              />
               <br />
               <Button onClick={handleBack}>{t('roleForm.steps.back')}</Button>
               <Button onClick={e => handleReset(e)}>
