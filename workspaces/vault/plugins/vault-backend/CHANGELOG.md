@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.28.1
+
+### Patch Changes
+
+- 7d2a855: Remove unused dependencies
+
 ## 0.28.0
 
 ### Minor Changes
