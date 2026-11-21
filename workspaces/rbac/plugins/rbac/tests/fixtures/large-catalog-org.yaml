@@ -1,0 +1,1333 @@
+# Large catalog fixture for RHIDP-19025 members modal e2e (>100 entities).
+# Triggers AddMembersModal (MEMBERS_MODAL_THRESHOLD = 100).
+# Shape mirrors https://github.com/karthikjeeyar/DevRepo/blob/master/load-testing/5k-org-entities.yaml
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0001
+  description: Test Group 0001
+spec:
+  type: team
+  profile:
+    email: group0001@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0002
+  description: Test Group 0002
+spec:
+  type: team
+  profile:
+    email: group0002@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0003
+  description: Test Group 0003
+spec:
+  type: team
+  profile:
+    email: group0003@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0004
+  description: Test Group 0004
+spec:
+  type: team
+  profile:
+    email: group0004@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0005
+  description: Test Group 0005
+spec:
+  type: team
+  profile:
+    email: group0005@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0006
+  description: Test Group 0006
+spec:
+  type: team
+  profile:
+    email: group0006@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0007
+  description: Test Group 0007
+spec:
+  type: team
+  profile:
+    email: group0007@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0008
+  description: Test Group 0008
+spec:
+  type: team
+  profile:
+    email: group0008@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0009
+  description: Test Group 0009
+spec:
+  type: team
+  profile:
+    email: group0009@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: group-0010
+  description: Test Group 0010
+spec:
+  type: team
+  profile:
+    email: group0010@example.com
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00001
+spec:
+  profile:
+    displayName: Test User 00001
+    email: user00001@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00002
+spec:
+  profile:
+    displayName: Test User 00002
+    email: user00002@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00003
+spec:
+  profile:
+    displayName: Test User 00003
+    email: user00003@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00004
+spec:
+  profile:
+    displayName: Test User 00004
+    email: user00004@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00005
+spec:
+  profile:
+    displayName: Test User 00005
+    email: user00005@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00006
+spec:
+  profile:
+    displayName: Test User 00006
+    email: user00006@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00007
+spec:
+  profile:
+    displayName: Test User 00007
+    email: user00007@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00008
+spec:
+  profile:
+    displayName: Test User 00008
+    email: user00008@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00009
+spec:
+  profile:
+    displayName: Test User 00009
+    email: user00009@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00010
+spec:
+  profile:
+    displayName: Test User 00010
+    email: user00010@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00011
+spec:
+  profile:
+    displayName: Test User 00011
+    email: user00011@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00012
+spec:
+  profile:
+    displayName: Test User 00012
+    email: user00012@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00013
+spec:
+  profile:
+    displayName: Test User 00013
+    email: user00013@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00014
+spec:
+  profile:
+    displayName: Test User 00014
+    email: user00014@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00015
+spec:
+  profile:
+    displayName: Test User 00015
+    email: user00015@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00016
+spec:
+  profile:
+    displayName: Test User 00016
+    email: user00016@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00017
+spec:
+  profile:
+    displayName: Test User 00017
+    email: user00017@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00018
+spec:
+  profile:
+    displayName: Test User 00018
+    email: user00018@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00019
+spec:
+  profile:
+    displayName: Test User 00019
+    email: user00019@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00020
+spec:
+  profile:
+    displayName: Test User 00020
+    email: user00020@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00021
+spec:
+  profile:
+    displayName: Test User 00021
+    email: user00021@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00022
+spec:
+  profile:
+    displayName: Test User 00022
+    email: user00022@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00023
+spec:
+  profile:
+    displayName: Test User 00023
+    email: user00023@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00024
+spec:
+  profile:
+    displayName: Test User 00024
+    email: user00024@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00025
+spec:
+  profile:
+    displayName: Test User 00025
+    email: user00025@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00026
+spec:
+  profile:
+    displayName: Test User 00026
+    email: user00026@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00027
+spec:
+  profile:
+    displayName: Test User 00027
+    email: user00027@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00028
+spec:
+  profile:
+    displayName: Test User 00028
+    email: user00028@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00029
+spec:
+  profile:
+    displayName: Test User 00029
+    email: user00029@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00030
+spec:
+  profile:
+    displayName: Test User 00030
+    email: user00030@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00031
+spec:
+  profile:
+    displayName: Test User 00031
+    email: user00031@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00032
+spec:
+  profile:
+    displayName: Test User 00032
+    email: user00032@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00033
+spec:
+  profile:
+    displayName: Test User 00033
+    email: user00033@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00034
+spec:
+  profile:
+    displayName: Test User 00034
+    email: user00034@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00035
+spec:
+  profile:
+    displayName: Test User 00035
+    email: user00035@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00036
+spec:
+  profile:
+    displayName: Test User 00036
+    email: user00036@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00037
+spec:
+  profile:
+    displayName: Test User 00037
+    email: user00037@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00038
+spec:
+  profile:
+    displayName: Test User 00038
+    email: user00038@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00039
+spec:
+  profile:
+    displayName: Test User 00039
+    email: user00039@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00040
+spec:
+  profile:
+    displayName: Test User 00040
+    email: user00040@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00041
+spec:
+  profile:
+    displayName: Test User 00041
+    email: user00041@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00042
+spec:
+  profile:
+    displayName: Test User 00042
+    email: user00042@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00043
+spec:
+  profile:
+    displayName: Test User 00043
+    email: user00043@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00044
+spec:
+  profile:
+    displayName: Test User 00044
+    email: user00044@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00045
+spec:
+  profile:
+    displayName: Test User 00045
+    email: user00045@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00046
+spec:
+  profile:
+    displayName: Test User 00046
+    email: user00046@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00047
+spec:
+  profile:
+    displayName: Test User 00047
+    email: user00047@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00048
+spec:
+  profile:
+    displayName: Test User 00048
+    email: user00048@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00049
+spec:
+  profile:
+    displayName: Test User 00049
+    email: user00049@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00050
+spec:
+  profile:
+    displayName: Test User 00050
+    email: user00050@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00051
+spec:
+  profile:
+    displayName: Test User 00051
+    email: user00051@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00052
+spec:
+  profile:
+    displayName: Test User 00052
+    email: user00052@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00053
+spec:
+  profile:
+    displayName: Test User 00053
+    email: user00053@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00054
+spec:
+  profile:
+    displayName: Test User 00054
+    email: user00054@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00055
+spec:
+  profile:
+    displayName: Test User 00055
+    email: user00055@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00056
+spec:
+  profile:
+    displayName: Test User 00056
+    email: user00056@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00057
+spec:
+  profile:
+    displayName: Test User 00057
+    email: user00057@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00058
+spec:
+  profile:
+    displayName: Test User 00058
+    email: user00058@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00059
+spec:
+  profile:
+    displayName: Test User 00059
+    email: user00059@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00060
+spec:
+  profile:
+    displayName: Test User 00060
+    email: user00060@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00061
+spec:
+  profile:
+    displayName: Test User 00061
+    email: user00061@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00062
+spec:
+  profile:
+    displayName: Test User 00062
+    email: user00062@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00063
+spec:
+  profile:
+    displayName: Test User 00063
+    email: user00063@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00064
+spec:
+  profile:
+    displayName: Test User 00064
+    email: user00064@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00065
+spec:
+  profile:
+    displayName: Test User 00065
+    email: user00065@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00066
+spec:
+  profile:
+    displayName: Test User 00066
+    email: user00066@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00067
+spec:
+  profile:
+    displayName: Test User 00067
+    email: user00067@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00068
+spec:
+  profile:
+    displayName: Test User 00068
+    email: user00068@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00069
+spec:
+  profile:
+    displayName: Test User 00069
+    email: user00069@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00070
+spec:
+  profile:
+    displayName: Test User 00070
+    email: user00070@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00071
+spec:
+  profile:
+    displayName: Test User 00071
+    email: user00071@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00072
+spec:
+  profile:
+    displayName: Test User 00072
+    email: user00072@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00073
+spec:
+  profile:
+    displayName: Test User 00073
+    email: user00073@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00074
+spec:
+  profile:
+    displayName: Test User 00074
+    email: user00074@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00075
+spec:
+  profile:
+    displayName: Test User 00075
+    email: user00075@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00076
+spec:
+  profile:
+    displayName: Test User 00076
+    email: user00076@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00077
+spec:
+  profile:
+    displayName: Test User 00077
+    email: user00077@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00078
+spec:
+  profile:
+    displayName: Test User 00078
+    email: user00078@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00079
+spec:
+  profile:
+    displayName: Test User 00079
+    email: user00079@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00080
+spec:
+  profile:
+    displayName: Test User 00080
+    email: user00080@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00081
+spec:
+  profile:
+    displayName: Test User 00081
+    email: user00081@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00082
+spec:
+  profile:
+    displayName: Test User 00082
+    email: user00082@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00083
+spec:
+  profile:
+    displayName: Test User 00083
+    email: user00083@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00084
+spec:
+  profile:
+    displayName: Test User 00084
+    email: user00084@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00085
+spec:
+  profile:
+    displayName: Test User 00085
+    email: user00085@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00086
+spec:
+  profile:
+    displayName: Test User 00086
+    email: user00086@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00087
+spec:
+  profile:
+    displayName: Test User 00087
+    email: user00087@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00088
+spec:
+  profile:
+    displayName: Test User 00088
+    email: user00088@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00089
+spec:
+  profile:
+    displayName: Test User 00089
+    email: user00089@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00090
+spec:
+  profile:
+    displayName: Test User 00090
+    email: user00090@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00091
+spec:
+  profile:
+    displayName: Test User 00091
+    email: user00091@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00092
+spec:
+  profile:
+    displayName: Test User 00092
+    email: user00092@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00093
+spec:
+  profile:
+    displayName: Test User 00093
+    email: user00093@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00094
+spec:
+  profile:
+    displayName: Test User 00094
+    email: user00094@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00095
+spec:
+  profile:
+    displayName: Test User 00095
+    email: user00095@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00096
+spec:
+  profile:
+    displayName: Test User 00096
+    email: user00096@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00097
+spec:
+  profile:
+    displayName: Test User 00097
+    email: user00097@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00098
+spec:
+  profile:
+    displayName: Test User 00098
+    email: user00098@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00099
+spec:
+  profile:
+    displayName: Test User 00099
+    email: user00099@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00100
+spec:
+  profile:
+    displayName: Test User 00100
+    email: user00100@example.com
+  memberOf: [group-0010]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00101
+spec:
+  profile:
+    displayName: Test User 00101
+    email: user00101@example.com
+  memberOf: [group-0001]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00102
+spec:
+  profile:
+    displayName: Test User 00102
+    email: user00102@example.com
+  memberOf: [group-0002]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00103
+spec:
+  profile:
+    displayName: Test User 00103
+    email: user00103@example.com
+  memberOf: [group-0003]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00104
+spec:
+  profile:
+    displayName: Test User 00104
+    email: user00104@example.com
+  memberOf: [group-0004]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00105
+spec:
+  profile:
+    displayName: Test User 00105
+    email: user00105@example.com
+  memberOf: [group-0005]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00106
+spec:
+  profile:
+    displayName: Test User 00106
+    email: user00106@example.com
+  memberOf: [group-0006]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00107
+spec:
+  profile:
+    displayName: Test User 00107
+    email: user00107@example.com
+  memberOf: [group-0007]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00108
+spec:
+  profile:
+    displayName: Test User 00108
+    email: user00108@example.com
+  memberOf: [group-0008]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00109
+spec:
+  profile:
+    displayName: Test User 00109
+    email: user00109@example.com
+  memberOf: [group-0009]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-00110
+spec:
+  profile:
+    displayName: Test User 00110
+    email: user00110@example.com
+  memberOf: [group-0010]

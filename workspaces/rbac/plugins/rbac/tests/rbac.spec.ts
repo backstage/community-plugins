@@ -18,10 +18,26 @@
  * Full-stack e2e — frontend + rbac-backend (no in-browser mockRBACApi).
  * Roles are seeded via REST in beforeAll (editable source), scoped with
  * `-${locale}` so locale projects can share one in-memory backend.
- * Catalog members come from tests/fixtures/catalog-org.yaml + examples/org.yaml.
+ * Catalog members come from catalog-org.yaml + examples/org.yaml (small
+ * catalog → Autocomplete dropdown). RHIDP-19025 temporarily runs last:
+ * inject large-catalog-org.yaml via Catalog API, assert modal, then tear down
+ * so the next locale project still sees the dropdown path.
  */
 import { expect, Page, test } from '@playwright/test';
 import { runAccessibilityTests } from './utils/accessibility';
+import {
+  disableLargeCatalogForPage,
+  enableLargeCatalogForPage,
+} from './utils/largeCatalogHelper';
+import {
+  addSelectedMembers,
+  cancelMembersModal,
+  chooseMembersModalSelectOption,
+  openAddMembersModal,
+  searchInMembersModal,
+  selectMemberRowsByName,
+  selectedCountText,
+} from './utils/membersModalHelper';
 import {
   Common,
   searchForRole,
@@ -45,7 +61,7 @@ function escapeRegExp(value: string): string {
 }
 
 test.describe('RBAC plugin', () => {
-  test.describe.configure({ mode: 'serial', timeout: 120_000 });
+  test.describe.configure({ mode: 'serial', timeout: 180_000 });
 
   let page: Page;
   let common: Common;
@@ -88,7 +104,7 @@ test.describe('RBAC plugin', () => {
   };
 
   test.beforeAll(async ({ browser }, testInfo) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     locale = testInfo.project.name;
     e2eRoles = getE2eRoles(locale);
     translations = getTranslations(locale);
@@ -494,5 +510,146 @@ test.describe('RBAC plugin', () => {
         action: 'updated',
       }),
     );
+  });
+});
+
+/**
+ * Separate describe so serial failures above do not skip this case.
+ * Still last in the file: inject → modal AC → teardown for the next locale.
+ */
+test.describe('RBAC large catalog members modal', () => {
+  test.describe.configure({ mode: 'serial', timeout: 360_000 });
+
+  let page: Page;
+  let common: Common;
+  let translations: RbacMessages;
+  let locale: string;
+  let e2eRoles: E2eRoles;
+
+  test.beforeAll(async ({ browser }, testInfo) => {
+    test.setTimeout(300_000);
+    locale = testInfo.project.name;
+    e2eRoles = getE2eRoles(locale);
+    translations = getTranslations(locale);
+
+    const context = await browser.newContext();
+    page = await context.newPage();
+    common = new Common(page);
+    await common.loginAsGuest();
+    await common.switchToLocale(locale);
+    await seedE2eRolesViaRest(page, locale);
+  });
+
+  test.afterAll(async () => {
+    await page?.context().close();
+  });
+
+  test('Large catalog members modal (RHIDP-19025)', async () => {
+    test.setTimeout(360_000);
+    let locationId: string | undefined;
+    try {
+      locationId = await enableLargeCatalogForPage(page);
+
+      await searchForRole(page, e2eRoles.guests);
+      await page.getByTestId('create-role').click();
+      await common.verifyHeading(translations.roleForm.titles.createRole);
+      await page.fill('input[name="name"]', `modal-e2e-${locale}`);
+      await page.fill('textarea[name="description"]', 'RHIDP-19025 modal e2e');
+      await common.clickButton(translations.roleForm.steps.next);
+
+      await expect(page.getByTestId('add-members-button')).toBeVisible();
+      await common.verifyHeading(translations.common.noUsersAndGroupsSelected);
+
+      const dialog = await openAddMembersModal(page, translations);
+
+      for (const col of [
+        translations.common.name,
+        translations.common.type,
+        translations.common.namespace,
+        translations.common.members,
+      ]) {
+        await expect(
+          dialog.getByRole('columnheader', { name: col, exact: true }),
+        ).toBeVisible();
+      }
+
+      await searchInMembersModal(dialog, 'Test User 00001', translations);
+      await expect(
+        dialog.getByRole('row', { name: /Test User 00001/ }).first(),
+      ).toBeVisible({ timeout: 15_000 });
+
+      await chooseMembersModalSelectOption(
+        dialog,
+        translations.common.kind,
+        translations.common.user,
+      );
+      await expect(
+        dialog.getByRole('checkbox', { name: /Select row Test User 00001/ }),
+      ).toBeVisible({ timeout: 15_000 });
+
+      await chooseMembersModalSelectOption(
+        dialog,
+        translations.common.namespace,
+        'default',
+      );
+      await expect(
+        dialog.getByRole('checkbox', { name: /Select row Test User 00001/ }),
+      ).toBeVisible({ timeout: 15_000 });
+
+      await selectMemberRowsByName(dialog, ['Test User 00001']);
+      await expect(
+        dialog.getByText(selectedCountText(translations, 1)),
+      ).toBeVisible();
+
+      await cancelMembersModal(dialog, translations);
+      await common.verifyHeading(translations.common.noUsersAndGroupsSelected);
+
+      const dialog2 = await openAddMembersModal(page, translations);
+      await searchInMembersModal(dialog2, 'Test User 00002', translations);
+      await selectMemberRowsByName(dialog2, ['Test User 00002']);
+      await searchInMembersModal(dialog2, 'group-0001', translations);
+      await selectMemberRowsByName(dialog2, ['group-0001']);
+      await addSelectedMembers(dialog2, translations);
+      await common.verifyHeading(
+        `1 ${translations.common.group}, 1 ${translations.common.user}`,
+      );
+
+      const dialog3 = await openAddMembersModal(page, translations);
+      await searchInMembersModal(dialog3, 'Test User 00002', translations);
+      await expect(
+        dialog3
+          .getByRole('row', { name: /Test User 00002/ })
+          .getByRole('checkbox'),
+      ).toBeChecked({ timeout: 15_000 });
+
+      await searchInMembersModal(dialog3, '', translations);
+      await expect(dialog3.getByText(/\(\d+\)/)).toBeVisible({
+        timeout: 15_000,
+      });
+      const nextPage = dialog3
+        .getByRole('button', { name: /next/i })
+        .or(dialog3.getByLabel(/next/i));
+      if (
+        await nextPage
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await nextPage.first().click();
+        await expect(dialog3.getByRole('row').nth(1)).toBeVisible({
+          timeout: 10_000,
+        });
+      }
+
+      await cancelMembersModal(dialog3, translations);
+
+      await common.clickButton(translations.roleForm.steps.cancel);
+      await expect(
+        page.getByText(translations.dialog.exitRoleCreation),
+      ).toBeVisible();
+      await common.clickButton(translations.dialog.discard);
+    } finally {
+      await disableLargeCatalogForPage(page, locationId);
+    }
   });
 });
