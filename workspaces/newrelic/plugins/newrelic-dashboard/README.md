@@ -76,6 +76,15 @@ spec:
   type: service
 ```
 
+To show more than one dashboard, list the GUIDs separated by commas. Each dashboard gets its own section, in the order listed. Spaces around the GUIDs are ignored.
+
+```
+// catalog-info.yaml
+metadata:
+  annotations:
+    newrelic.com/dashboard-guid: '<dashboard_guid_1>, <dashboard_guid_2>'
+```
+
 All set , you will be able to see the plugin in action!
 
 ## New Frontend System
