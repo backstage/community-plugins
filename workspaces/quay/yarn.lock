@@ -1482,7 +1482,6 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.12"
   peerDependencies:
     "@backstage/plugin-permission-common": ^0.9.12
-    react: ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
 
@@ -1502,16 +1501,17 @@ __metadata:
     "@backstage/frontend-test-utils": "npm:^0.6.5"
     "@backstage/plugin-catalog": "npm:^2.0.10"
     "@backstage/plugin-catalog-react": "npm:^3.3.0"
+    "@backstage/plugin-permission-common": "npm:^0.9.12"
     "@backstage/plugin-permission-react": "npm:^0.5.6"
     "@backstage/plugin-user-settings": "npm:^0.9.8"
     "@backstage/test-utils": "npm:^1.7.23"
-    "@backstage/theme": "npm:^0.7.3"
     "@backstage/ui": "npm:^0.19.0"
     "@playwright/test": "npm:1.65.1"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
+    "@types/luxon": "npm:^3.0.0"
     "@types/react": "npm:^18.2.58"
     "@types/react-dom": "npm:^18.2.19"
     cross-fetch: "npm:4.1.0"
@@ -1524,9 +1524,13 @@ __metadata:
     react-use: "npm:^17.4.0"
     start-server-and-test: "npm:3.0.13"
   peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
     react-router-dom: ^6.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
   languageName: unknown
   linkType: soft
 
