@@ -346,10 +346,6 @@ workspace/rbac:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/rbac/**']
 
-workspace/report-portal:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/report-portal/**']
-
 workspace/rollbar:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/rollbar/**']
