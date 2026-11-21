@@ -1857,6 +1857,7 @@ __metadata:
     "@backstage/core-compat-api": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
+    "@backstage/filter-predicates": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
@@ -1874,15 +1875,20 @@ __metadata:
     humanize-duration: "npm:^3.27.0"
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
+    prop-types: "npm:^15.6.2"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
     react-use: "npm:^17.3.1"
     recharts: "npm:^2.5.0"
   peerDependencies:
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -2919,7 +2925,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/filter-predicates@npm:^0.2.0, @backstage/filter-predicates@npm:^0.2.1":
+"@backstage/filter-predicates@backstage:^::backstage=1.57.1&npm=0.2.1, @backstage/filter-predicates@npm:^0.2.0, @backstage/filter-predicates@npm:^0.2.1":
   version: 0.2.1
   resolution: "@backstage/filter-predicates@npm:0.2.1"
   dependencies:
