@@ -53,7 +53,6 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
-    "@backstage/theme": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
@@ -69,7 +68,6 @@
     "simple-date-range-calendar": "^2.0.6"
   },
   "peerDependencies": {
-    "@material-ui/core": "^4.12.2",
     "@types/react": "^17.0.0 || ^18.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^18.0.2",
@@ -86,6 +84,7 @@
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
+    "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@react-types/shared": "^3.37.0",
     "@testing-library/jest-dom": "^6.0.0",
