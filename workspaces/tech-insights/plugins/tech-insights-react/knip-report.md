@@ -11,6 +11,6 @@
 
 | Name                   | Location          | Severity |
 | :--------------------- | :---------------- | :------- |
-| @testing-library/react | package.json:74:6 | error    |
-| @backstage/test-utils  | package.json:72:6 | error    |
+| @testing-library/react | package.json:82:6 | error    |
+| @backstage/test-utils  | package.json:80:6 | error    |
 
