@@ -73,7 +73,6 @@
     "@backstage/plugin-permission-common": "backstage:^",
     "@backstage/plugin-permission-react": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
-    "@backstage/theme": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@kubernetes/client-node": "1.4.0",
     "@patternfly/patternfly": "^6.1.0",
@@ -87,6 +86,7 @@
     "git-url-parse": "^13.1.0",
     "js-yaml": "^5.4.2",
     "lodash": "^4.17.21",
+    "mobx": "^6.9.0",
     "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
     "victory": "^37.3.6"
