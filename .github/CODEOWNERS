@@ -16,7 +16,6 @@ yarn.lock                                                               @backsta
 /workspaces/agent-forge                                                 @backstage/community-plugins-maintainers  @sbraicu @sriaradhyula @subbaksh @suwhang-cisco
 /workspaces/airbrake                                                    @backstage/community-plugins-maintainers
 /workspaces/allure                                                      @backstage/community-plugins-maintainers
-/workspaces/amplication                                                 @backstage/community-plugins-maintainers  @itainathaniel
 /workspaces/analytics/plugins/analytics-module-matomo                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen
 /workspaces/analytics/plugins/analytics-module-newrelic-browser         @backstage/community-plugins-maintainers  @jmezach
 /workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov @christoph-jerolimov @karthikjeeyar @rohitkrai03

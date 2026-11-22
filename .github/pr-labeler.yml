@@ -30,10 +30,6 @@ workspace/allure:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/allure/**']
 
-workspace/amplication:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/amplication/**']
-
 workspace/analytics:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/analytics/**']

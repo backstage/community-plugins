@@ -22,9 +22,6 @@ workspace/akeyless:
 workspace/allure:
   - "Workspace\\s*allure"
 
-workspace/amplication:
-  - "Workspace\\s*amplication"
-
 workspace/analytics:
   - "Workspace\\s*analytics"
 
