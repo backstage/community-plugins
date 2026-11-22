@@ -2116,7 +2116,7 @@ __metadata:
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
-    "@testing-library/user-event": "npm:14.6.12"
+    "@testing-library/user-event": "npm:14.6.13"
     "@types/react": "npm:^18.2.58"
     "@types/react-dom": "npm:^18.2.19"
     cross-fetch: "npm:4.1.0"
@@ -11621,12 +11621,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.6.12, @testing-library/user-event@npm:^14.0.0":
-  version: 14.6.12
-  resolution: "@testing-library/user-event@npm:14.6.12"
+"@testing-library/user-event@npm:14.6.13, @testing-library/user-event@npm:^14.0.0":
+  version: 14.6.13
+  resolution: "@testing-library/user-event@npm:14.6.13"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: 10/154f83dc80b7c2d4a808b8ee0a6ef1d2995660638f2b777edaeaf5c19f7a7b7e6f4faa2f4158cef678b57117ca3b1c65257436cd1fbd1b4036edc20cfbe50074
+  checksum: 10/d3904066cf622586356b0d85cd6b6840e1f89f68697db27d9c3d800e8868dd2446b59c3a28e2d109ea7d6c0ba4e2713ae2e3d9f980073924886caac878d25b8a
   languageName: node
   linkType: hard
 
