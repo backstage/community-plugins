@@ -34,6 +34,7 @@ describe('createRouter', () => {
       {
         componentKey: string;
         instanceName: string;
+        branchName?: string;
       },
     ]
   > = jest.fn();
@@ -89,15 +90,49 @@ describe('createRouter', () => {
     const DUMMY_INSTANCE_URL = 'http://sonarqube-internal.example.com';
     const DUMMY_INSTANCE_EXTERNAL_URL = 'http://sonarqube.example.com';
 
-    const makeEntity = (annotation: string): Entity => ({
+    const makeEntity = (annotation: string, branch?: string): Entity => ({
       apiVersion: 'backstage.io/v1alpha1',
       kind: DUMMY_KIND,
       metadata: {
         name: DUMMY_NAME,
         namespace: DUMMY_NAMESPACE,
-        annotations: { 'sonarqube.org/project-key': annotation },
+        annotations: {
+          'sonarqube.org/project-key': annotation,
+          ...(branch && { 'sonarqube.org/branch': branch }),
+        },
       },
       spec: {},
+    });
+
+    it('passes the sonarqube.org/branch annotation as branchName', async () => {
+      catalogMock.getEntityByRef.mockResolvedValue(
+        makeEntity('my:component', 'feature/x'),
+      );
+      getFindingsMock.mockResolvedValue(undefined);
+      getBaseUrlMock.mockReturnValue({ baseUrl: DUMMY_INSTANCE_URL });
+
+      await request(app)
+        .get(`/entities/${DUMMY_KIND}/${DUMMY_NAMESPACE}/${DUMMY_NAME}/summary`)
+        .send();
+
+      expect(getFindingsMock).toHaveBeenCalledWith({
+        componentKey: 'my:component',
+        instanceName: undefined,
+        branchName: 'feature/x',
+      });
+    });
+
+    it('does not pass branchName when the branch annotation is absent', async () => {
+      catalogMock.getEntityByRef.mockResolvedValue(makeEntity('my:component'));
+      getFindingsMock.mockResolvedValue(undefined);
+      getBaseUrlMock.mockReturnValue({ baseUrl: DUMMY_INSTANCE_URL });
+
+      await request(app)
+        .get(`/entities/${DUMMY_KIND}/${DUMMY_NAMESPACE}/${DUMMY_NAME}/summary`)
+        .send();
+
+      expect(getFindingsMock).toHaveBeenCalledTimes(1);
+      expect(getFindingsMock.mock.calls[0][0]).not.toHaveProperty('branchName');
     });
 
     it('returns findings and instanceUrl using annotation without instance', async () => {

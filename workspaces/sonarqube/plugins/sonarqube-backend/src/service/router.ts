@@ -83,11 +83,20 @@ export async function createRouter(
 
       const annotation =
         entity.metadata.annotations?.['sonarqube.org/project-key'];
+
       if (!annotation) {
         throw new InputError(
           `Entity ${kind}:${namespace}/${name} is missing the sonarqube.org/project-key annotation`,
         );
       }
+
+      const branchName = entity.metadata.annotations?.['sonarqube.org/branch'];
+
+      logger.info(
+        branchName
+          ? `'sonarqube.org/branch' is being passed: using branch name ${branchName} for retrieving summary.`
+          : `'sonarqube.org/branch' is not being passed: using default branch name for retrieving summary.`,
+      );
 
       // The annotation format is either "projectKey" or "instanceName/projectKey".
       // The first "/" is the instance separator. Bare project keys must not contain "/".
@@ -108,7 +117,11 @@ export async function createRouter(
       );
 
       const [findings, { baseUrl, externalBaseUrl }] = await Promise.all([
-        sonarqubeInfoProvider.getFindings({ componentKey, instanceName }),
+        sonarqubeInfoProvider.getFindings({
+          componentKey,
+          instanceName,
+          ...(branchName !== undefined && { branchName: branchName }),
+        }),
         sonarqubeInfoProvider.getBaseUrl({ instanceName }),
       ]);
 

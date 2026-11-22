@@ -43,6 +43,7 @@ metadata:
   name: backstage
   annotations:
     sonarqube.org/project-key: YOUR_PROJECT_KEY # this is the project key in Sonarqube, not the project name. It can be found in the URL of the project in Sonarqube, or in the project settings.
+    sonarqube.org/branch: feature/my-branch # the branch name as it appears in Sonarqube. Optional: when omitted, the default branch is used.
 ```
 
 #### Example - Multiple global instance
@@ -77,6 +78,22 @@ metadata:
 ```
 
 If the `specialProject/` part is omitted (or replaced with `default/`), the Sonarqube instance of name `default` will be used.
+
+#### Example - Specific branch
+
+By default, findings are retrieved for the default branch of the project. To retrieve findings for another branch, add the optional `sonarqube.org/branch` annotation to the catalog entity. It works with the single and multiple instance configurations above.
+
+##### Catalog
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage
+  annotations:
+    sonarqube.org/project-key: YOUR_PROJECT_KEY
+    sonarqube.org/branch: feature/my-branch # the branch name as it appears in Sonarqube. Optional: when omitted, the default branch is used.
+```
 
 #### Example - Different frontend and backend URLs
 

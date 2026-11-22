@@ -700,5 +700,41 @@ describe('DefaultSonarqubeInfoProvider', () => {
         measures: [],
       });
     });
+
+    it('Sends the branch to the component and measures APIs when provided', async () => {
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
+          checkAuthToken(req);
+          expect(req.url.searchParams.toString()).toBe(
+            `component=${DUMMY_COMPONENT_KEY}&branch=feature%2Fx`,
+          );
+          return res(
+            ctx.json({ component: { analysisDate: DUMMY_ANALYSIS_DATE } }),
+          );
+        }),
+      );
+      setupMetricsHandler();
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
+          checkAuthToken(req);
+          expect(req.url.searchParams.toString()).toBe(
+            `component=${DUMMY_COMPONENT_KEY}&metricKeys=vulnerabilities%2Ccode_smells%2Ccoverage&branch=feature%2Fx`,
+          );
+          return res(ctx.json({ component: { measures: [] } }));
+        }),
+      );
+
+      const provider = configureProvider(DUMMY_SIMPLE_CONFIG_FOR_PROVIDER);
+      expect(
+        await provider.getFindings({
+          componentKey: DUMMY_COMPONENT_KEY,
+          instanceName: 'default',
+          branchName: 'feature/x',
+        }),
+      ).toEqual({
+        analysisDate: DUMMY_ANALYSIS_DATE,
+        measures: [],
+      });
+    });
   });
 });
