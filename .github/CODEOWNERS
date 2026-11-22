@@ -79,7 +79,7 @@ yarn.lock                                                               @backsta
 /workspaces/jaeger                                                      @backstage/community-plugins-maintainers
 /workspaces/jenkins                                                     @backstage/community-plugins-maintainers
 /workspaces/jfrog-artifactory                                           @backstage/community-plugins-maintainers  @BethGriggs @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar 
-/workspaces/kafka                                                       @backstage/community-plugins-maintainers  @andrewthauer
+/workspaces/kafka                                                       @backstage/community-plugins-maintainers
 /workspaces/keycloak                                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/keycloak/plugins/auth-backend-module-keycloak-provider               @backstage/community-plugins-maintainers  @kz-masa
 /workspaces/kiali                                                       @backstage/community-plugins-maintainers  @aljesusg @josunect @jshaughn
@@ -110,7 +110,7 @@ yarn.lock                                                               @backsta
 /workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @debsmita1 @divyanshiGupta @its-mitesh-kumar  @PatAKnight @dzemanov @jrichter1 @HusneShabbir @karthikjeeyar @rohitkrai03 @djanickova
 /workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
-/workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
+/workspaces/rollbar                                                     @backstage/community-plugins-maintainers
 /workspaces/scaffolder-backend-module-annotator                         @backstage/community-plugins-maintainers  @debsmita1 @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/scaffolder-backend-module-kubernetes                        @backstage/community-plugins-maintainers  @debsmita1 @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
