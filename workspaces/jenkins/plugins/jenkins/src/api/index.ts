@@ -16,4 +16,9 @@
 
 export { JenkinsClient, jenkinsApiRef } from './JenkinsApi';
 
-export type { JenkinsApi, Project } from './JenkinsApi';
+export type {
+  JenkinsApi,
+  JenkinsInstanceError,
+  JenkinsProjectsResult,
+  Project,
+} from './JenkinsApi';
