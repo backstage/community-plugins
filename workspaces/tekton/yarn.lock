@@ -1164,9 +1164,14 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@kubernetes/client-node": "npm:2.0.2"
     "@testing-library/jest-dom": "npm:^6.0.0"
+    "@types/react": "npm:^18"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
   peerDependencies:
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
   languageName: unknown
   linkType: soft
 
