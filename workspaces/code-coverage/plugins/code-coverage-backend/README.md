@@ -107,6 +107,12 @@ Example:
       "missed": 0,
       "percentage": 0
     },
+    "function": {
+      "available": 2,
+      "covered": 2,
+      "missed": 0,
+      "percentage": 100
+    },
     "line": {
       "available": 5,
       "covered": 4,
@@ -123,6 +129,7 @@ Example:
     {
       "branchHits": {},
       "filename": "main.go",
+      "functionHits": [8, 6],
       "lineHits": {
         "117": 12,
         "142": 8,
@@ -134,6 +141,8 @@ Example:
   ]
 }
 ```
+
+Function coverage is read from LCOV reports. Reports in other formats have no `functionHits` and report zero available functions.
 
 ### Coverage history
 
@@ -157,6 +166,12 @@ Example
         "missed": 0,
         "percentage": 0
       },
+      "function": {
+        "available": 40,
+        "covered": 25,
+        "missed": 15,
+        "percentage": 62.5
+      },
       "line": {
         "available": 299,
         "covered": 116,
@@ -171,6 +186,12 @@ Example
         "covered": 0,
         "missed": 0,
         "percentage": 0
+      },
+      "function": {
+        "available": 40,
+        "covered": 24,
+        "missed": 16,
+        "percentage": 60
       },
       "line": {
         "available": 299,

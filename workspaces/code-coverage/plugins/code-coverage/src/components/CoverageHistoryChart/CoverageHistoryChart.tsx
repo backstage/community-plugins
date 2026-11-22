@@ -45,7 +45,7 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { DateTime } from 'luxon';
 
-type Coverage = 'line' | 'branch';
+type Coverage = 'line' | 'branch' | 'function';
 
 const useStyles = makeStyles(theme => ({
   trendDown: {
@@ -71,7 +71,29 @@ const getTrendIcon = (trend: number, classes: ClassNameMap) => {
 export const getTrendForCoverage = (
   history: AggregateCoverage[],
   type: Coverage,
-) => history[0][type].percentage - history[history.length - 1][type].percentage;
+) =>
+  (history[0][type]?.percentage ?? 0) -
+  (history[history.length - 1][type]?.percentage ?? 0);
+
+const hasFunctionData = (h: AggregateCoverage) => !!h.function?.available;
+
+/**
+ * Function coverage of the builds that report it. `current` is undefined when
+ * the latest build has no function data.
+ */
+export const getFunctionCoverage = (history: AggregateCoverage[]) => {
+  const functionHistory = history.filter(hasFunctionData);
+  return {
+    history: functionHistory,
+    current:
+      history.length && hasFunctionData(history[0])
+        ? history[0].function?.percentage
+        : undefined,
+    trend: functionHistory.length
+      ? getTrendForCoverage(functionHistory, 'function')
+      : 0,
+  };
+};
 
 export const formatTrend = (trend: number) =>
   `${trend > 0 ? '+' : ''}${trend.toFixed(2)}%`;
@@ -121,6 +143,8 @@ export const CoverageHistoryChart = () => {
   const latestCoverage = valueHistory.history[0];
   const lineTrend = getTrendForCoverage(valueHistory.history, 'line');
   const branchTrend = getTrendForCoverage(valueHistory.history, 'branch');
+  const functionCoverage = getFunctionCoverage(valueHistory.history);
+  const hasFunctionHistory = functionCoverage.history.length > 0;
 
   return (
     <Card>
@@ -135,7 +159,7 @@ export const CoverageHistoryChart = () => {
               builds)
             </Typography>
           </Box>
-          <Box display="flex">
+          <Box display="flex" mr={4}>
             {getTrendIcon(branchTrend, classes)}
             <Typography>
               Current branch: {latestCoverage.branch.percentage}%<br />(
@@ -143,6 +167,29 @@ export const CoverageHistoryChart = () => {
               builds)
             </Typography>
           </Box>
+          {hasFunctionHistory && (
+            <Box display="flex">
+              {functionCoverage.current === undefined ? (
+                <>
+                  <TrendingFlatIcon />
+                  <Typography>
+                    Current function: n/a
+                    <br />
+                    (no function data in the latest build)
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  {getTrendIcon(functionCoverage.trend, classes)}
+                  <Typography>
+                    Current function: {functionCoverage.current}%<br />(
+                    {formatTrend(functionCoverage.trend)} over{' '}
+                    {functionCoverage.history.length} builds)
+                  </Typography>
+                </>
+              )}
+            </Box>
+          )}
         </Box>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart
@@ -173,6 +220,16 @@ export const CoverageHistoryChart = () => {
               name="Line"
               stroke="#82ca9d"
             />
+            {hasFunctionHistory && (
+              <Line
+                type="monotone"
+                dataKey={(h: AggregateCoverage) =>
+                  h.function?.available ? h.function.percentage : null
+                }
+                name="Function"
+                stroke="#7cb5ec"
+              />
+            )}
           </LineChart>
         </ResponsiveContainer>
       </CardContent>

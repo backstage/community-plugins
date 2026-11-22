@@ -58,6 +58,12 @@ describe('aggregateCoverage', () => {
           missed: 57,
           percentage: 64.81,
         },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
+        },
         timestamp: 1234567890,
       },
     },
@@ -75,6 +81,12 @@ describe('aggregateCoverage', () => {
           covered: 145,
           missed: 1,
           percentage: 99.32,
+        },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
         },
         timestamp: 1234567890,
       },
@@ -94,6 +106,12 @@ describe('aggregateCoverage', () => {
           missed: 553,
           percentage: 78.99,
         },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
+        },
         timestamp: 1234567890,
       },
     },
@@ -112,6 +130,12 @@ describe('aggregateCoverage', () => {
           missed: 19,
           percentage: 82.73,
         },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
+        },
         timestamp: 1234567890,
       },
     },
@@ -128,6 +152,12 @@ describe('aggregateCoverage', () => {
           available: 325,
           covered: 0,
           missed: 325,
+          percentage: 0,
+        },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
           percentage: 0,
         },
         timestamp: 1234567890,
@@ -148,6 +178,12 @@ describe('aggregateCoverage', () => {
           missed: 51,
           percentage: 70.86,
         },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
+        },
         timestamp: 1234567890,
       },
     },
@@ -165,6 +201,60 @@ describe('aggregateCoverage', () => {
           covered: 0,
           missed: 0,
           percentage: 0,
+        },
+        function: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
+        },
+        timestamp: 1234567890,
+      },
+    },
+    {
+      file: 'lcov-jsoncoverage-files-1.json',
+      expected: {
+        branch: {
+          available: 13,
+          covered: 11,
+          missed: 2,
+          percentage: 84.62,
+        },
+        line: {
+          available: 32,
+          covered: 28,
+          missed: 4,
+          percentage: 87.5,
+        },
+        function: {
+          available: 4,
+          covered: 3,
+          missed: 1,
+          percentage: 75,
+        },
+        timestamp: 1234567890,
+      },
+    },
+    {
+      file: 'lcov-jsoncoverage-files-2.json',
+      expected: {
+        branch: {
+          available: 10,
+          covered: 8,
+          missed: 2,
+          percentage: 80,
+        },
+        line: {
+          available: 16,
+          covered: 13,
+          missed: 3,
+          percentage: 81.25,
+        },
+        function: {
+          available: 4,
+          covered: 3,
+          missed: 1,
+          percentage: 75,
         },
         timestamp: 1234567890,
       },
@@ -191,6 +281,31 @@ describe('aggregateCoverage', () => {
       });
 
       expect(aggregate).toEqual(td.expected);
+    });
+  });
+
+  it('counts no functions for files without function data', () => {
+    const aggregate = aggregateCoverage({
+      metadata: {
+        generationTime: 1234567890,
+        vcs: {
+          location: 'foo',
+          type: 'foo',
+        },
+      },
+      entity: {
+        kind: 'foo',
+        name: 'foo',
+        namespace: 'default',
+      },
+      files: [{ filename: 'src/index.js', lineHits: { 1: 1 }, branchHits: {} }],
+    });
+
+    expect(aggregate.function).toEqual({
+      available: 0,
+      covered: 0,
+      missed: 0,
+      percentage: 0,
     });
   });
 });
