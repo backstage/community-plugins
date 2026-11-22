@@ -1927,12 +1927,19 @@ __metadata:
     "@mui/material": "npm:^5.15.16"
     "@mui/styles": "npm:^5"
     "@types/react": "npm:^18.3.27"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-router-dom: "npm:^6.30.5"
     react-use: "npm:^17.5.0"
     zod: "npm:^4.0.0"
   peerDependencies:
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.30.5 ^6.30.5
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -1953,6 +1960,7 @@ __metadata:
     "@backstage-community/plugin-manage-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
+    "@backstage/config": "backstage:^"
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
@@ -1962,6 +1970,7 @@ __metadata:
     "@dnd-kit/core": "npm:^6.3.1"
     "@dnd-kit/modifiers": "npm:^9.0.0"
     "@dnd-kit/sortable": "npm:^10.0.0"
+    "@dnd-kit/utilities": "npm:^3.2.2"
     "@material-ui/core": "npm:^4.12.4"
     "@mui/icons-material": "npm:^5.16.7"
     "@mui/material": "npm:^5.15.16"
@@ -1969,13 +1978,19 @@ __metadata:
     "@types/pluralize": "npm:^0.0.33"
     "@types/react": "npm:^18.3.27"
     pluralize: "npm:^8.0.0"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-router-dom: "npm:^6.30.5"
     react-use: "npm:^17.5.0"
     zod: "npm:^4.0.0"
   peerDependencies:
-    "@dnd-kit/utilities": "*"
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.30.5 ^6.30.5
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -2003,11 +2018,18 @@ __metadata:
     "@types/lodash": "npm:^4.17.23"
     "@types/react": "npm:^18.3.27"
     lodash: "npm:^4.17.21"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-router-dom: "npm:^6.30.5"
     react-use: "npm:^17.5.0"
   peerDependencies:
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.30.5 ^6.30.5
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -27697,7 +27719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.0.2":
+"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react-dom@npm:^18.0.2":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -27989,7 +28011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.3.0, react-router-dom@npm:^6.30.5":
   version: 6.30.6
   resolution: "react-router-dom@npm:6.30.6"
   dependencies:
@@ -28171,7 +28193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.0.2":
+"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.0.2":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:

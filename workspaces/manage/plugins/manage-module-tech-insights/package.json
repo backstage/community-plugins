@@ -67,13 +67,22 @@
     "zod": "^4.0.0"
   },
   "peerDependencies": {
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.30.5 ^6.30.5"
   },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@types/react": "^18.3.27"
+    "@types/react": "^18.3.27",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.5"
   },
   "files": [
     "dist"
