@@ -1901,7 +1901,6 @@ __metadata:
     react-use: "npm:^17.3.1"
     simple-date-range-calendar: "npm:^2.0.6"
   peerDependencies:
-    "@material-ui/core": ^4.12.2
     "@types/react": ^17.0.0 || ^18.0.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^18.0.2
