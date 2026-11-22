@@ -52,7 +52,8 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "backstage:^",
-    "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
