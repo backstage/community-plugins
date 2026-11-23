@@ -27,6 +27,8 @@ backend.add(import('@backstage/plugin-catalog-backend'));
 backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
+// Allow runtime file locations for RHIDP-19025 large-catalog e2e injection.
+backend.add(import('./catalogAllowFileLocations'));
 
 backend.add(import('@backstage/plugin-permission-backend'));
 backend.add(import('../src'));
