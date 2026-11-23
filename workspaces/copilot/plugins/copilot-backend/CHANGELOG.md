@@ -1,5 +1,40 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.7.0
+
+### Minor Changes
+
+- 964f3c3: Add opt-in multi-organization Copilot reporting through
+  `copilot.ingestOrganizationTeamReports`. In enterprise dashboards, organization
+  teams can be filtered by organization and team; options use the selected date
+  range and remain available with partial report coverage. Organization-team
+  metrics preserve the five-user privacy threshold and leave unreported days
+  blank. Enterprise totals continue to fill missing days when all organizations
+  are selected. Selecting a team scopes results to its owning organization,
+  keeping same-slug teams distinct.
+  Failed team-option and dashboard requests can be retried.
+  Successful manual backfills no longer postpone the next scheduled organization
+  refresh.
+  Monthly active-user metrics remain unavailable when GitHub does not report
+  them, and selected organizations can still be cleared when team options fail
+  or become empty. Team weekly active-user charts leave unreported values blank.
+  Older organization discovery results can no longer overwrite a newer refresh,
+  and configured-organization dashboards can filter teams when
+  `copilot.ingestOrganizationTeamReports` is enabled without `copilot.ingestTeams`.
+
+### Patch Changes
+
+- 964f3c3: Validate GitHub API responses more consistently when fetching Copilot data.
+- 964f3c3: Treat unavailable organization report days as gaps rather than access failures,
+  hide organizations when GitHub explicitly denies report access, preserve
+  existing metrics when organization login casing differs, and keep
+  configured-organization reports available without enterprise multi-org
+  ingestion.
+- 964f3c3: Use configured organization credentials for organization-scoped report ingestion.
+  Team rolling totals remain unavailable when user or team report coverage is
+  incomplete. Expired organization-ingestion leases no longer prevent status
+  updates for inaccessible or legacy-configured organizations.
+
 ## 1.6.0
 
 ### Minor Changes
