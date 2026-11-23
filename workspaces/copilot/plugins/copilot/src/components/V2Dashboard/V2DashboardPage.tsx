@@ -31,6 +31,7 @@ import {
   Select,
   Tabs,
   TabList,
+  ButtonLink,
   Tab,
   TabPanel,
   Text,
@@ -57,6 +58,7 @@ import {
 } from './hooks';
 import { CopilotUsageSummary } from './CopilotUsageSummary';
 import { CodeGenerationSummary } from './CodeGenerationSummary';
+import { RiExternalLinkLine } from '@remixicon/react';
 import {
   IDEActiveUsersChart,
   AvgChatRequestsChart,
@@ -81,6 +83,9 @@ import {
 import { ConsumptionSummary } from './ConsumptionSummary';
 import { CustomizationMetrics } from './CustomizationMetrics';
 import { MetricsScope } from '@backstage-community/plugin-copilot-common';
+
+const DOCS_URL =
+  'https://docs.github.com/en/copilot/reference/copilot-usage-metrics/interpret-copilot-metrics';
 
 function ChartCard({
   title,
@@ -854,6 +859,16 @@ export const V2DashboardPage = () => {
                 )}
               </Flex>
             )}
+            <ButtonLink
+              variant="tertiary"
+              href={DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              iconEnd={<RiExternalLinkLine />}
+              style={{ alignSelf: 'flex-end', marginLeft: 'auto' }}
+            >
+              How do I interpret these metrics?
+            </ButtonLink>
           </Flex>
           {filterTarget === 'organizationTeam' &&
             (organizationTeamOptions.error || dashboard.error) && (
