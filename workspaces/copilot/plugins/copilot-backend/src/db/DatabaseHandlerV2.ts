@@ -362,6 +362,7 @@ export class DatabaseHandlerV2 {
           const rows = await transaction(table)
             .where({ metrics_type: 'organization' })
             .whereRaw('LOWER(entity_id) = ?', [configuredKey])
+            .distinct('entity_id')
             .select('entity_id');
           for (const row of rows) {
             if (typeof row.entity_id === 'string') {

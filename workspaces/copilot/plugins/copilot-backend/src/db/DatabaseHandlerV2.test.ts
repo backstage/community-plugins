@@ -874,18 +874,33 @@ describe('DatabaseHandlerV2', () => {
       const generation = await handler.beginEnterpriseOrganizationDirectorySync(
         'ent-1',
       );
-      await expect(
-        handler.syncEnterpriseOrganizations(
-          'ent-1',
-          generation,
-          ['ORG-A'],
-          now,
-          'org-a',
-        ),
-      ).resolves.toEqual({
-        configuredOrganizationLogin: 'Org-A',
-        configuredOrganizationAmbiguous: false,
-      });
+      const historyLookupQueries: string[] = [];
+      const captureHistoryLookup = (query: { sql: string }) => {
+        if (query.sql.includes('LOWER(entity_id)')) {
+          historyLookupQueries.push(query.sql);
+        }
+      };
+      knex.on('query', captureHistoryLookup);
+      try {
+        await expect(
+          handler.syncEnterpriseOrganizations(
+            'ent-1',
+            generation,
+            ['ORG-A'],
+            now,
+            'org-a',
+          ),
+        ).resolves.toEqual({
+          configuredOrganizationLogin: 'Org-A',
+          configuredOrganizationAmbiguous: false,
+        });
+      } finally {
+        knex.off('query', captureHistoryLookup);
+      }
+      expect(historyLookupQueries).toHaveLength(3);
+      expect(
+        historyLookupQueries.every(query => /select\s+distinct/i.test(query)),
+      ).toBe(true);
 
       await handler.markLegacyConfiguredOrganization(
         'ent-1',
@@ -925,7 +940,13 @@ describe('DatabaseHandlerV2', () => {
       const now = new Date('2026-11-20T00:00:00.000Z');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-01', entity_id: 'Org-A' }),
-        buildDailyTotal({ day: '2026-05-02', entity_id: 'org-a' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({ day: '2026-05-01', entity_id: 'org-a' }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({ day: '2026-05-01', entity_id: 'Org-A' }),
+        buildUserTeam({ day: '2026-05-02', entity_id: 'org-a' }),
       ]);
 
       const generation = await handler.beginEnterpriseOrganizationDirectorySync(
