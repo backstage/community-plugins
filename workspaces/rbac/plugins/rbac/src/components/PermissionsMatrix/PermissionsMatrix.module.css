@@ -36,10 +36,6 @@
   overflow: auto;
 }
 
-.roleList :global(.bui-CheckboxGroupContent) {
-  gap: var(--bui-space-2);
-}
-
 .legend {
   display: flex;
   flex-wrap: wrap;
