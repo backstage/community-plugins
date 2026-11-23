@@ -30,7 +30,7 @@ import {
 } from './create-role-utils';
 import { isSamePermissionPolicy, onlyInLeft } from './rbac-utils';
 
-export type RoleDetailField = 'name' | 'description';
+export type RoleDetailField = 'name' | 'description' | 'owner';
 
 export type RoleDetailChange = {
   field: RoleDetailField;
@@ -66,9 +66,7 @@ const getDetailChanges = (
   initialValues: RoleFormValues,
   values: RoleFormValues,
 ): RoleDetailChange[] => {
-  // The owner field is not diffed: the backend excludes owner from its own
-  // comparison and answers 204 without saving an owner-only edit.
-  const fields: RoleDetailField[] = ['name', 'description'];
+  const fields: RoleDetailField[] = ['name', 'description', 'owner'];
   return fields
     .map(field => ({
       field,

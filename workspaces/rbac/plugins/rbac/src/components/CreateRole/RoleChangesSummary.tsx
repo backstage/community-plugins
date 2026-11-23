@@ -66,6 +66,7 @@ const getFieldLabel = (field: RoleDetailField, t: Translate): string => {
   const labels: Record<RoleDetailField, string> = {
     name: t('roleForm.fields.name.label'),
     description: t('roleForm.fields.description.label'),
+    owner: t('roleForm.fields.owner.label'),
   };
   return labels[field];
 };

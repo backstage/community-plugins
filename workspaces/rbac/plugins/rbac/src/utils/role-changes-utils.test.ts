@@ -77,22 +77,28 @@ describe('getRoleChanges', () => {
     expect(changes.previousRole).toEqual(changes.currentRole);
   });
 
-  it('treats a missing and an empty description as the same value', () => {
+  it('treats a missing and an empty description or owner as the same value', () => {
     const changes = getRoleChanges(
-      { ...initialValues, description: undefined },
-      { ...initialValues, description: '' },
+      { ...initialValues, description: undefined, owner: undefined },
+      { ...initialValues, description: '', owner: '' },
     );
 
     expect(changes.detailChanges).toEqual([]);
   });
 
-  it('does not report owner changes, which the backend drops on save', () => {
+  it('reports an owner-only change', () => {
     const changes = getRoleChanges(initialValues, {
       ...initialValues,
       owner: 'user:default/someone-else',
     });
 
-    expect(changes.detailChanges).toEqual([]);
+    expect(changes.detailChanges).toEqual([
+      {
+        field: 'owner',
+        previous: 'user:default/owner',
+        current: 'user:default/someone-else',
+      },
+    ]);
   });
 
   it('reports every kind of change together', () => {
@@ -116,6 +122,7 @@ describe('getRoleChanges', () => {
         previous: 'Admin role',
         current: 'Updated description',
       },
+      { field: 'owner', previous: 'user:default/owner', current: '' },
     ]);
     expect(changes.addedMembers).toEqual([newMember]);
     expect(changes.removedMembers).toEqual([userMember]);
