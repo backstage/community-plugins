@@ -1,5 +1,12 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.28.1
+
+### Patch Changes
+
+- 0e866c4: Updated dependency `@testing-library/user-event` to `14.6.12`.
+- 08d3e1c: Updated dependency `@testing-library/user-event` to `14.6.13`.
+
 ## 1.28.0
 
 ### Minor Changes
