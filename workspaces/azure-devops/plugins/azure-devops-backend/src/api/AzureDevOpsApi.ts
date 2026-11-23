@@ -162,16 +162,34 @@ export class AzureDevOpsApi {
     top: number,
     host?: string,
     org?: string,
+    definitionNames?: string[],
   ): Promise<Build[]> {
     this.logger?.debug(
       `Calling Azure DevOps REST API, getting up to ${top} Builds for Repository Id ${repoId} for Project ${projectName}`,
     );
 
+    let definitions: number[] | undefined;
+    if (definitionNames && definitionNames.length > 0) {
+      const buildDefinitions = (
+        await Promise.all(
+          definitionNames.map(name =>
+            this.getBuildDefinitions(projectName, name, host, org),
+          ),
+        )
+      ).flat();
+      definitions = buildDefinitions
+        .map(bd => bd.id)
+        .filter((id): id is number => Boolean(id));
+      if (definitions.length === 0) {
+        return [];
+      }
+    }
+
     const webApi = await this.getWebApi(host, org);
     const client = await webApi.getBuildApi();
     return client.getBuilds(
       projectName,
-      undefined,
+      definitions,
       undefined,
       undefined,
       undefined,

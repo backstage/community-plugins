@@ -127,6 +127,28 @@ describe('createRouter', () => {
           {
             apiVersion: 'backstage.io/v1alpha1',
             kind: 'Component',
+            metadata: {
+              name: 'repoonly',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'crossproject',
+              annotations: {
+                'dev.azure.com/project-repo': 'repoProject/myRepo',
+                'dev.azure.com/project': 'pipelineProject',
+                'dev.azure.com/build-definition': 'myDefinition',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
             metadata: { name: 'unannotated' },
           },
         ],
@@ -160,6 +182,14 @@ describe('createRouter', () => {
         request(app)
           .get('/builds/myProject')
           .query({ entityRef, repoName: 'otherRepo' }),
+        request(app).get('/builds/myProject').query({ entityRef }),
+        request(app).get('/builds/myProject').query({
+          entityRef: 'component:default/repoonly',
+          definitionName: 'anyDefinition',
+        }),
+        request(app)
+          .get('/pull-requests/pipelineProject/myRepo')
+          .query({ entityRef: 'component:default/crossproject' }),
         request(app).get('/readme/myProject/otherRepo').query({ entityRef }),
         request(app)
           .get('/builds/otherProject/build/8/log')
@@ -200,6 +230,37 @@ describe('createRouter', () => {
       expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
       expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
       expect(azureDevOpsApi.getBuildList).not.toHaveBeenCalled();
+    });
+
+    it('checks repository and pipeline routes against their own project when they differ', async () => {
+      const entityRef = 'component:default/crossproject';
+      azureDevOpsApi.getPullRequests.mockResolvedValueOnce([]);
+      azureDevOpsApi.getBuildRuns.mockResolvedValueOnce([]);
+
+      const pullRequests = await request(app)
+        .get('/pull-requests/repoProject/myRepo')
+        .query({ entityRef });
+      const builds = await request(app)
+        .get('/builds/pipelineProject')
+        .query({ entityRef, definitionName: 'myDefinition' });
+
+      expect(pullRequests.status).toEqual(200);
+      expect(builds.status).toEqual(200);
+      expect(azureDevOpsApi.getPullRequests).toHaveBeenCalledWith(
+        'repoProject',
+        'myRepo',
+        expect.anything(),
+        undefined,
+        undefined,
+      );
+      expect(azureDevOpsApi.getBuildRuns).toHaveBeenCalledWith(
+        'pipelineProject',
+        10,
+        undefined,
+        'myDefinition',
+        undefined,
+        undefined,
+      );
     });
   });
 
@@ -380,6 +441,7 @@ describe('createRouter', () => {
         40,
         undefined,
         undefined,
+        ['myDefinition'],
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual(builds);
@@ -615,7 +677,7 @@ describe('createRouter', () => {
 
         const response = await request(app)
           .get('/builds/myProject')
-          .query({ entityRef: 'component:default/mycomponent' })
+          .query({ entityRef: 'component:default/repoonly' })
           .query({ top: '50', repoName: 'myRepo' });
 
         expect(azureDevOpsApi.getBuildRuns).toHaveBeenCalledWith(
@@ -683,7 +745,7 @@ describe('createRouter', () => {
         expect(azureDevOpsApi.getBuildRuns).toHaveBeenCalledWith(
           'myProject',
           50,
-          undefined,
+          'myRepo',
           'myDefinition',
           undefined,
           undefined,
@@ -946,6 +1008,7 @@ describe('createRouter', () => {
 
       azureDevOpsApi.getBuild.mockResolvedValueOnce({
         definition: { name: 'myDefinition' },
+        repository: { name: 'myRepo' },
       });
       azureDevOpsApi.getBuildRunLog.mockResolvedValueOnce(buildLog);
 
@@ -983,18 +1046,60 @@ describe('createRouter', () => {
       expect(response.body).toEqual({ log: [] });
     });
 
-    it('rejects builds from pipelines not annotated on the entity', async () => {
-      azureDevOpsApi.getBuild.mockResolvedValueOnce({
-        definition: { name: 'otherDefinition' },
-        repository: { name: 'myRepo' },
-      });
+    it('rejects builds from pipelines or repositories not annotated on the entity', async () => {
+      const entityRef = 'component:default/mycomponent';
+      azureDevOpsApi.getBuild
+        .mockResolvedValueOnce({
+          definition: { name: 'otherDefinition' },
+          repository: { name: 'myRepo' },
+        })
+        .mockResolvedValueOnce({
+          definition: { name: 'myDefinition' },
+          repository: { name: 'otherRepo' },
+        })
+        .mockResolvedValueOnce({
+          definition: { name: 'anyDefinition' },
+          repository: { name: 'otherRepo' },
+        });
 
-      const response = await request(app)
+      const otherDefinition = await request(app)
         .get('/builds/myProject/build/9/log')
-        .query({ entityRef: 'component:default/mycomponent' });
+        .query({ entityRef });
+      const otherRepo = await request(app)
+        .get('/builds/myProject/build/10/log')
+        .query({ entityRef });
+      const repoOnlyOtherRepo = await request(app)
+        .get('/builds/myProject/build/11/log')
+        .query({ entityRef: 'component:default/repoonly' });
 
-      expect(response.status).toEqual(403);
+      expect(otherDefinition.status).toEqual(403);
+      expect(otherRepo.status).toEqual(403);
+      expect(repoOnlyOtherRepo.status).toEqual(403);
       expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
+    });
+
+    it('fetches logs for repository-only and cross-project entities', async () => {
+      azureDevOpsApi.getBuild
+        .mockResolvedValueOnce({
+          definition: { name: 'anyDefinition' },
+          repository: { name: 'myRepo' },
+        })
+        .mockResolvedValueOnce({
+          definition: { name: 'myDefinition' },
+          repository: { name: 'repoInPipelineProject' },
+        });
+      azureDevOpsApi.getBuildRunLog.mockResolvedValue(['log']);
+
+      const repoOnly = await request(app)
+        .get('/builds/myProject/build/12/log')
+        .query({ entityRef: 'component:default/repoonly' });
+      const crossProject = await request(app)
+        .get('/builds/pipelineProject/build/13/log')
+        .query({ entityRef: 'component:default/crossproject' });
+
+      expect(repoOnly.status).toEqual(200);
+      expect(crossProject.status).toEqual(200);
+      expect(azureDevOpsApi.getBuildRunLog).toHaveBeenCalledTimes(2);
     });
 
     it('throws InputError when invalid buildId passed', async () => {

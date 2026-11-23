@@ -23,6 +23,7 @@ import {
   PullRequestOptions,
   PullRequestStatus,
   getAnnotationValuesFromEntity,
+  AZURE_DEVOPS_REPO_ANNOTATION,
 } from '@backstage-community/plugin-azure-devops-common';
 
 import { AzureDevOpsApi } from '../api';
@@ -102,6 +103,10 @@ export async function createRouter(
   const authorizeEntityRequest = async (
     req: express.Request,
     permission: ResourcePermission<'catalog-entity'>,
+    // 'repo' routes are checked against the source repository annotation,
+    // 'pipeline' routes against the project the build definitions live in.
+    // The two can differ when the pipeline is in another project.
+    scope: 'repo' | 'pipeline',
   ): Promise<EntityAzureDevOpsTarget> => {
     const entityRef = req.query.entityRef;
     if (typeof entityRef !== 'string') {
@@ -133,10 +138,25 @@ export async function createRouter(
       );
     }
 
+    let project = annotations.project;
+    let repo = annotations.repo;
+    if (scope === 'repo') {
+      const [repoProject, repoName, ...rest] = (
+        entity.metadata.annotations?.[AZURE_DEVOPS_REPO_ANNOTATION] ?? ''
+      ).split('/');
+      if (!repoProject || !repoName || rest.length > 0) {
+        throw new NotAllowedError(
+          'Entity is not annotated with an Azure DevOps repository',
+        );
+      }
+      project = repoProject;
+      repo = repoName;
+    }
+
     const host = req.query.host?.toString();
     const org = req.query.org?.toString();
     if (
-      req.params.projectName !== annotations.project ||
+      req.params.projectName !== project ||
       host !== annotations.host ||
       org !== annotations.org
     ) {
@@ -146,8 +166,8 @@ export async function createRouter(
     }
 
     return {
-      project: annotations.project,
-      repo: annotations.repo,
+      project,
+      repo,
       definitions:
         annotations.definition
           ?.split(',')
@@ -220,6 +240,7 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsPullRequestReadPermission,
+      'repo',
     );
     assertRepoMatches(target, req.params.repoName);
 
@@ -239,6 +260,7 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsPipelineReadPermission,
+      'pipeline',
     );
     if (!target.repo) {
       throw new NotAllowedError(
@@ -263,6 +285,7 @@ export async function createRouter(
       top,
       target.host,
       target.org,
+      target.definitions,
     );
     res.status(200).json(buildList);
   });
@@ -275,6 +298,7 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsGitTagReadPermission,
+      'repo',
     );
     assertRepoMatches(target, repoName);
 
@@ -309,6 +333,7 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsPullRequestReadPermission,
+      'repo',
     );
     assertRepoMatches(target, repoName);
 
@@ -445,12 +470,18 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsPipelineReadPermission,
+      'pipeline',
     );
     assertRepoMatches(target, repoName);
-    if (
-      definitionName !== undefined &&
-      !target.definitions.includes(definitionName.trim())
-    ) {
+    // Annotated build definitions always apply: a request without a
+    // definition name would otherwise list every build in the project
+    // or repository.
+    const definitionAllowed =
+      target.definitions.length === 0
+        ? definitionName === undefined
+        : definitionName !== undefined &&
+          target.definitions.includes(definitionName.trim());
+    if (!definitionAllowed) {
       throw new NotAllowedError(
         'Requested Azure DevOps resource does not match the entity annotations',
       );
@@ -459,7 +490,7 @@ export async function createRouter(
     const builds = await azureDevOpsApi.getBuildRuns(
       projectName,
       top,
-      repoName,
+      target.repo,
       definitionName,
       host,
       org,
@@ -538,6 +569,7 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsPullRequestReadPermission,
+      'repo',
     );
     assertRepoMatches(target, repoName);
 
@@ -566,10 +598,11 @@ export async function createRouter(
     const target = await authorizeEntityRequest(
       req,
       azureDevOpsPipelineReadPermission,
+      'pipeline',
     );
 
-    // The build must belong to one of the entity's annotated build
-    // definitions or, when none are annotated, to its annotated repository
+    // The build must belong to the entity's annotated repository and to one
+    // of its annotated build definitions, whichever of the two are set
     const build = await azureDevOpsApi.getBuild(
       projectName,
       buildId,
@@ -580,11 +613,16 @@ export async function createRouter(
       res.status(200).json({ log: [] });
       return;
     }
+    const matchesRepo =
+      target.repo === undefined ||
+      build.repository?.name?.toLowerCase() === target.repo.toLowerCase();
+    const matchesDefinition =
+      target.definitions.length === 0 ||
+      target.definitions.includes(build.definition?.name ?? '');
     const belongsToEntity =
-      target.definitions.length > 0
-        ? target.definitions.includes(build.definition?.name ?? '')
-        : target.repo !== undefined &&
-          build.repository?.name?.toLowerCase() === target.repo.toLowerCase();
+      (target.repo !== undefined || target.definitions.length > 0) &&
+      matchesRepo &&
+      matchesDefinition;
     if (!belongsToEntity) {
       throw new NotAllowedError(
         'Requested Azure DevOps resource does not match the entity annotations',
