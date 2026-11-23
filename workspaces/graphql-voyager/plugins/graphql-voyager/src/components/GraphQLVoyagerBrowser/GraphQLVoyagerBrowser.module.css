@@ -1,0 +1,56 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .root {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    position: relative;
+  }
+
+  .tabs {
+    flex-shrink: 0;
+    background-color: var(--bui-bg-surface-1);
+    border-bottom: 1px solid var(--bui-border);
+  }
+
+  /*
+   * shouldForceMount keeps inactive panels mounted. Prefer visibility over
+   * display:none so Voyager's ResizeObserver does not thrash on tab switches
+   * (avoids the benign webpack overlay "ResizeObserver loop..." error).
+   */
+  .tabPanel[data-inert] {
+    visibility: hidden;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /*
+   * Voyager chrome (doc panel + query/options bar) is light (#fff) and does not
+   * set its own text color. In Backstage dark mode those labels inherit the
+   * light foreground and become unreadable — pin a dark color on the embed.
+   */
+  .root :global(.graphql-voyager) {
+    color: #333;
+  }
+
+  .root :global(.graphql-voyager > .menu-content label),
+  .root :global(.graphql-voyager > .menu-content select) {
+    color: #333;
+  }
+}
