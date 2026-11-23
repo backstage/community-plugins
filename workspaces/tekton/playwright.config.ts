@@ -65,7 +65,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
     screenshot: 'only-on-failure',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },
   outputDir: 'node_modules/.cache/e2e-test-results',

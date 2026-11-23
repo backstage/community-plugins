@@ -17,39 +17,20 @@
 import type { ObjectsByEntityResponse } from '@backstage/plugin-kubernetes-common';
 import type { KubernetesObjectsProvider } from '@backstage/plugin-kubernetes-node';
 
-import { FIXTURE_CLUSTER_NAME, mockKubernetesPlrResponse } from './fixtureData';
-
-function buildFixtureResources() {
-  return Object.entries(mockKubernetesPlrResponse).flatMap(
-    ([type, resources]) => {
-      const firstKind = (resources[0] as { kind?: string } | undefined)?.kind;
-      if (type === 'pipelineruns' && firstKind === 'PipelineRun') {
-        return {
-          type: 'customresources' as const,
-          resources,
-        };
-      }
-      if (type === 'taskruns' && firstKind === 'TaskRun') {
-        return {
-          type: 'customresources' as const,
-          resources,
-        };
-      }
-      return {
-        type: type.toLocaleLowerCase('en-US'),
-        resources,
-      };
-    },
-  );
-}
+import {
+  buildTektonFixtureResources,
+  FIXTURE_CLUSTER_NAME,
+  mockKubernetesPlrResponse,
+} from './fixtureData';
 
 function buildFixtureResponse(): ObjectsByEntityResponse {
   return {
     items: [
       {
         cluster: { name: FIXTURE_CLUSTER_NAME },
-        resources:
-          buildFixtureResources() as ObjectsByEntityResponse['items'][number]['resources'],
+        resources: buildTektonFixtureResources(
+          mockKubernetesPlrResponse,
+        ) as ObjectsByEntityResponse['items'][number]['resources'],
         podMetrics: [],
         errors: [],
       },

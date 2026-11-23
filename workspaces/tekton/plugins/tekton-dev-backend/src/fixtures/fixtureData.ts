@@ -15,8 +15,12 @@
  */
 
 /**
- * Re-exports Tekton UI fixtures for the e2e/dev kubernetes backend.
+ * Re-exports Tekton UI fixtures + shared helpers for the e2e/dev kubernetes backend.
  * CI has no live cluster; these payloads are the justified remaining mock.
+ *
+ * Single source of truth:
+ * - JSON payloads: `plugins/tekton/src/__fixtures__/*`
+ * - cluster name / resource+log mapping: `tektonDevShared.ts` (also used by FE mocks)
  *
  * Relative monorepo import: fixtures are not part of the published
  * `@backstage-community/plugin-tekton` export map.
@@ -29,6 +33,9 @@ export {
   acsImageScanResult,
 } from '../../../tekton/src/__fixtures__/advancedClusterSecurityData';
 export { enterpriseContractResult } from '../../../tekton/src/__fixtures__/enterpriseContractData';
+export {
+  buildTektonFixtureResources,
+  FIXTURE_CLUSTER_NAME,
+  getTektonFixturePodLogText,
+} from '../../../tekton/src/__fixtures__/tektonDevShared';
 /* eslint-enable @backstage/no-relative-monorepo-imports */
-
-export const FIXTURE_CLUSTER_NAME = 'mock-cluster';

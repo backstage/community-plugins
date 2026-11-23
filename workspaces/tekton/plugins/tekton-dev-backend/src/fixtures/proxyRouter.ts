@@ -16,12 +16,7 @@
 
 import { Router } from 'express';
 
-import {
-  acsDeploymentCheck,
-  acsImageCheckResults,
-  acsImageScanResult,
-  enterpriseContractResult,
-} from './fixtureData';
+import { getTektonFixturePodLogText } from './fixtureData';
 
 /**
  * Intercepts kubernetes-backend `/proxy` pod log requests and returns the same
@@ -34,29 +29,10 @@ export function createFixtureProxyRouter(): Router {
     // Paths look like: /api/v1/namespaces/{ns}/pods/{pod}/log?container=...
     const podMatch = req.path.match(/\/pods\/([^/]+)\/log/);
     const podName = podMatch?.[1] ?? '';
-
-    if (podName.includes('ec-task')) {
-      res.type('text/plain').send(JSON.stringify(enterpriseContractResult));
-      return;
-    }
-    if (podName.includes('image-scan-task')) {
-      res.type('text/plain').send(JSON.stringify(acsImageScanResult));
-      return;
-    }
-    if (podName.includes('image-check-task')) {
-      res.type('text/plain').send(JSON.stringify(acsImageCheckResults));
-      return;
-    }
-    if (podName.includes('deployment-check-task')) {
-      res.type('text/plain').send(JSON.stringify(acsDeploymentCheck));
-      return;
-    }
-
     const container =
       typeof req.query.container === 'string' ? req.query.container : 'step';
-    res
-      .type('text/plain')
-      .send(`\nstreaming logs from container: ${container} \n...`);
+
+    res.type('text/plain').send(getTektonFixturePodLogText(podName, container));
   });
 
   return router;
