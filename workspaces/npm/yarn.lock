@@ -1977,7 +1977,8 @@ __metadata:
     "@backstage/plugin-permission-react": "backstage:^"
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/theme": "backstage:^"
-    "@material-ui/core": "npm:^4.9.13"
+    "@backstage/ui": "backstage:^"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/react": "npm:^16.3.2"
     "@types/react-dom": "npm:^18"
@@ -3792,7 +3793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.20.0":
+"@backstage/ui@backstage:^::backstage=1.57.1&npm=0.20.0, @backstage/ui@npm:^0.20.0":
   version: 0.20.0
   resolution: "@backstage/ui@npm:0.20.0"
   dependencies:

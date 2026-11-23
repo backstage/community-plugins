@@ -15,7 +15,7 @@
  */
 import useAsync from 'react-use/esm/useAsync';
 
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { coreApis, useApi } from '@backstage/frontend-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { NotFoundError } from '@backstage/errors';
@@ -28,7 +28,7 @@ import {
 import { NpmBackendApiRef } from '../api';
 
 export const usePackageInfo = () => {
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
   const backendApi = useApi(NpmBackendApiRef);
   const { entity } = useEntity();
   const entityRef = stringifyEntityRef(entity);
