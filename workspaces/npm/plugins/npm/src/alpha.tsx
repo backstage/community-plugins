@@ -117,6 +117,7 @@ export const entityNpmReleaseTableCard = EntityContentBlueprint.make({
  */
 export default createFrontendPlugin({
   pluginId: 'npm',
+  info: { packageJson: () => import('../package.json') },
   extensions: [
     npmBackendApi,
     entityNpmReleaseTableCard,
