@@ -21,12 +21,1747 @@ import {
   V2UserMetricRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
-import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
-import { GithubClientV2 } from '../client/GithubClientV2';
+import {
+  DatabaseHandlerV2,
+  OrganizationIngestionLeaseLostError,
+} from '../db/DatabaseHandlerV2';
+import {
+  GithubClientV2,
+  InaccessibleEnterpriseOrganizationError,
+} from '../client/GithubClientV2';
 import { UserBreakdownData } from '../utils/reportParser';
 import { TaskManagementV2, runBackfill } from './TaskManagementV2';
 
 describe('TaskManagementV2', () => {
+  it('claims the configured organization lease after slow enterprise ingestion', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-11-18T12:00:00Z'));
+    try {
+      const db = createDbMock();
+      const api = createApiMock();
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'org-1',
+        owner: 'worker',
+      };
+      db.getMissingDays.mockResolvedValue(['2026-11-17']);
+      api.fetchEnterpriseOrganizations.mockResolvedValue(['org-1']);
+      api.fetchEnterpriseReportLinks.mockImplementation(async () => {
+        expect(db.claimEnterpriseOrganizationLease).not.toHaveBeenCalled();
+        jest.setSystemTime(new Date('2026-11-18T12:11:00Z'));
+        return { download_links: [] };
+      });
+      api.fetchOrganizationReportLinks.mockResolvedValue({
+        download_links: [],
+      });
+      api.fetchOrganizationUserReportLinks.mockResolvedValue({
+        download_links: [],
+      });
+      api.fetchOrganizationUserTeamsLinks.mockResolvedValue({
+        download_links: [],
+      });
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.organization': 'org-1',
+          'copilot.ingestOrganizationTeamReports': true,
+          'copilot.backfillFromDate': '2026-11-17',
+          'copilot.backfillDelayMs': 0,
+        }),
+        logger: createLoggerMock(),
+      });
+
+      await task.runAsync();
+
+      expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
+        'ent-1',
+        'org-1',
+        new Date('2026-11-18T12:11:00Z'),
+        new Date('2026-11-18T12:21:00Z'),
+        true,
+        '1',
+      );
+      expect(api.fetchOrganizationReportLinks).toHaveBeenCalledWith(
+        '2026-11-17',
+      );
+      expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('does not discover enterprise organizations unless multi-org ingestion is enabled', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    db.getMissingDays.mockResolvedValue([]);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': false,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(api.fetchEnterpriseOrganizations).not.toHaveBeenCalled();
+    expect(db.syncEnterpriseOrganizations).not.toHaveBeenCalled();
+  });
+
+  it('syncs the enterprise directory and leaves the configured organization to legacy ingestion', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    db.getMissingDays.mockResolvedValue([]);
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue([]);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-1', 'org-2']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-1',
+        'copilot.ingestTeams': false,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.syncEnterpriseOrganizations).toHaveBeenCalledWith(
+      'ent-1',
+      '1',
+      ['org-1', 'org-2'],
+      expect.any(Date),
+      'org-1',
+    );
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'org-1',
+      expect.any(String),
+    );
+    expect(db.markLegacyConfiguredOrganization).toHaveBeenCalledWith(
+      'ent-1',
+      'org-1',
+      expect.any(Date),
+      expect.any(Date),
+      undefined,
+      '1',
+    );
+    expect(db.getEnterpriseOrganizationsToIngest).toHaveBeenCalledWith(
+      'ent-1',
+      expect.any(Date),
+      6,
+      1,
+      'org-1',
+      '1',
+    );
+    expect(db.getMissingDays).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      expect.any(String),
+      expect.any(String),
+      ['totals', 'users', 'teams'],
+    );
+    expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
+      'ent-1',
+      'org-1',
+      expect.any(Date),
+      expect.any(Date),
+      true,
+      '1',
+    );
+  });
+
+  it('does not replace the directory when enterprise discovery fails', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const discoveryError = new Error('GraphQL page request failed');
+    db.getMissingDays.mockResolvedValue([]);
+    api.fetchEnterpriseOrganizations.mockRejectedValue(discoveryError);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.syncEnterpriseOrganizations).not.toHaveBeenCalled();
+    expect(db.markEnterpriseOrganizationDirectoryFailed).toHaveBeenCalledWith(
+      'ent-1',
+      '1',
+      expect.any(Date),
+    );
+    expect(db.getEnterpriseOrganizationsToIngest).not.toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Failed to refresh the enterprise organization directory',
+      ),
+      discoveryError,
+    );
+  });
+
+  it('stops using a directory snapshot superseded during discovery', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    db.getMissingDays.mockResolvedValue([]);
+    db.syncEnterpriseOrganizations.mockResolvedValue('superseded');
+    api.fetchEnterpriseOrganizations.mockImplementation(async () => {
+      expect(db.beginEnterpriseOrganizationDirectorySync).toHaveBeenCalledWith(
+        'ent-1',
+      );
+      return ['stale-org'];
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger: createLoggerMock(),
+    });
+
+    await task.runAsync();
+
+    expect(db.getEnterpriseOrganizationsToIngest).not.toHaveBeenCalled();
+    expect(db.claimEnterpriseOrganizationLease).not.toHaveBeenCalled();
+    expect(db.markLegacyConfiguredOrganization).not.toHaveBeenCalled();
+  });
+
+  it('does not report a stale discovery failure over a newer success', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const discoveryError = new Error('Older discovery failed');
+    db.getMissingDays.mockResolvedValue([]);
+    db.markEnterpriseOrganizationDirectoryFailed.mockResolvedValue(
+      'superseded',
+    );
+    api.fetchEnterpriseOrganizations.mockRejectedValue(discoveryError);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.markEnterpriseOrganizationDirectoryFailed).toHaveBeenCalledWith(
+      'ent-1',
+      '1',
+      expect.any(Date),
+    );
+    expect(logger.error).not.toHaveBeenCalledWith(
+      expect.stringContaining('Failed to refresh the enterprise organization'),
+      discoveryError,
+    );
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Ignored an enterprise organization directory failure',
+      ),
+    );
+    expect(db.getEnterpriseOrganizationsToIngest).not.toHaveBeenCalled();
+  });
+
+  it('ingests configured-organization teams through the existing path when multi-org is enabled', async () => {
+    const db = createDbMock();
+    const transactionDb = createDbMock();
+    db.withOrganizationIngestionLease.mockImplementation(
+      async (_lease, operation) =>
+        operation(transactionDb as unknown as DatabaseHandlerV2),
+    );
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-1',
+      owner: 'worker',
+    };
+    const day = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    db.getMissingDays.mockImplementation(
+      async (metricsType: string, entityId: string) =>
+        metricsType === 'organization' && entityId === 'org-1' ? [day] : [],
+    );
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue([]);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-1']);
+    api.fetchOrganizationReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/org-report.json'],
+    });
+    api.fetchOrganizationUserReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/users.json'],
+    });
+    api.fetchOrganizationUserTeamsLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/user-teams.json'],
+    });
+    api.downloadDocument.mockResolvedValue([
+      { day, daily_active_users: 1, weekly_active_users: 1 },
+    ]);
+    api.downloadNdjsonDocument.mockImplementation(async (url: string) =>
+      url.endsWith('/users.json')
+        ? makeUserMetricsDocument(day)
+        : makeUserTeamsDocument(day),
+    );
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-1',
+        'copilot.backfillFromDate': day,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestTeams': false,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(api.fetchOrganizationUserReportLinks).toHaveBeenCalledWith(day);
+    expect(api.fetchOrganizationUserTeamsLinks).toHaveBeenCalledWith(day);
+    for (const method of [
+      'insertDailyTotals',
+      'insertUserMetrics',
+      'insertUserMetricsByFeature',
+      'replaceTeamAggregates',
+      'upsertIngestionLog',
+    ] as const) {
+      expect(transactionDb[method]).toHaveBeenCalled();
+      expect(db[method]).not.toHaveBeenCalled();
+    }
+    expect(transactionDb.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        day,
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        status: 'success',
+        components_loaded: '["totals","users","teams"]',
+      }),
+    );
+  });
+
+  it('canonicalizes configured organizations before legacy backfill writes', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ years: 1, days: 2 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-1',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-1',
+    );
+    db.getMissingDays.mockImplementation(
+      async (_type, _entityId, _from, _to, requiredComponents) =>
+        requiredComponents.length === 1 ? [day] : [],
+    );
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'oRG-1',
+        'copilot.ingestOrganizationTeamReports': true,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestCostCenters': true,
+      }),
+      logger,
+    });
+    const ingestDay = jest.spyOn(task as any, 'ingestDay').mockResolvedValue({
+      loaded: false,
+      refreshed: false,
+      complete: false,
+      totalsLoaded: false,
+      accessVerified: true,
+    });
+
+    await task.runBackfill(day, day, 'organization', 'oRg-1');
+
+    expect(db.getMissingDays).toHaveBeenCalledWith(
+      'organization',
+      'Org-1',
+      day,
+      day,
+      ['totals'],
+    );
+    expect(db.getDaysMissingCostCenterAggregation).toHaveBeenCalledWith(
+      'organization',
+      'Org-1',
+      expect.any(String),
+      day,
+    );
+    expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-1',
+      expect.any(Date),
+      expect.any(Date),
+      true,
+    );
+    expect(ingestDay).toHaveBeenCalledWith(
+      day,
+      'organization',
+      'Org-1',
+      expect.objectContaining({ organizationLease: lease }),
+    );
+    expect(db.markLegacyConfiguredOrganization).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-1',
+      expect.any(Date),
+      expect.any(Date),
+      lease,
+    );
+  });
+
+  it('backfills only missing organization days using the configured delay', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const lastDay = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const middleDay = DateTime.fromISO(lastDay).minus({ days: 1 }).toISODate()!;
+    const firstDay = DateTime.fromISO(middleDay)
+      .minus({ days: 1 })
+      .toISODate()!;
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-1',
+    );
+    db.getMissingDays.mockResolvedValue([firstDay, lastDay]);
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-1',
+      owner: 'worker',
+    };
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 5,
+        'copilot.ingestOrganizationTeamReports': true,
+        'copilot.ingestCostCenters': true,
+        'copilot.organization': 'configured-org',
+      }),
+      logger,
+    });
+    const ingestDay = jest.spyOn(task as any, 'ingestDay').mockResolvedValue({
+      loaded: true,
+      refreshed: false,
+      complete: true,
+      totalsLoaded: true,
+    });
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+    try {
+      await task.runOrganizationBackfill('oRg-1', firstDay, lastDay);
+      expect(ingestDay).toHaveBeenCalledTimes(2);
+      expect(
+        db.getCurrentAccessibleEnterpriseOrganizationLogin,
+      ).toHaveBeenCalledWith('ent-1', 'oRg-1');
+      expect(db.getMissingDays).toHaveBeenCalledWith(
+        'organization',
+        'Org-1',
+        firstDay,
+        lastDay,
+        ['totals', 'users', 'teams'],
+      );
+      expect(ingestDay).toHaveBeenNthCalledWith(
+        1,
+        firstDay,
+        'organization',
+        'Org-1',
+        expect.objectContaining({
+          source: 'backfill',
+          organizationLease: lease,
+          organizationReportTarget: 'Org-1',
+        }),
+      );
+      expect(ingestDay).toHaveBeenNthCalledWith(
+        2,
+        lastDay,
+        'organization',
+        'Org-1',
+        expect.objectContaining({ organizationLease: lease }),
+      );
+      expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 5);
+      expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
+        'ent-1',
+        'Org-1',
+        expect.any(Date),
+        expect.any(Date),
+        true,
+      );
+      expect(api.fetchCostCenterMemberships).not.toHaveBeenCalled();
+      expect(db.getDaysMissingCostCenterAggregation).not.toHaveBeenCalled();
+      expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+        'Org-1',
+        expect.any(String),
+      );
+    } finally {
+      setTimeoutSpy.mockRestore();
+    }
+  });
+
+  it('keeps organization totals outside the user-report window without querying old user reports', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2027-02-01T00:00:00Z'));
+    try {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+        'Org-1',
+      );
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'Org-1',
+        owner: 'worker',
+      };
+      const reportWindowStart = DateTime.utc()
+        .startOf('day')
+        .minus({ years: 1 })
+        .toISODate()!;
+      const outsideWindowDay = DateTime.fromISO(reportWindowStart, {
+        zone: 'utc',
+      })
+        .minus({ days: 1 })
+        .toISODate()!;
+      db.getMissingDays.mockImplementation(
+        async (
+          _metricsType: string,
+          _entityId: string,
+          _from: string,
+          _to: string,
+          requiredComponents: string[],
+        ) =>
+          requiredComponents.length === 1
+            ? [outsideWindowDay]
+            : [reportWindowStart],
+      );
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+      api.fetchEnterpriseOrganizationReportLinks.mockImplementation(
+        async (_organization: string, day: string) => ({
+          download_links: [`https://downloads.github.com/totals-${day}.json`],
+        }),
+      );
+      api.downloadDocument.mockImplementation(async (url: string) => {
+        const day = url.match(/totals-(\d{4}-\d{2}-\d{2})/)![1];
+        return [
+          {
+            day,
+            daily_active_users: 1,
+            weekly_active_users: 1,
+            monthly_active_users: 1,
+          },
+        ];
+      });
+      api.fetchEnterpriseOrganizationUserReportLinks.mockImplementation(
+        async () => ({
+          download_links: ['https://downloads.github.com/users.json'],
+        }),
+      );
+      api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+        download_links: ['https://downloads.github.com/user-teams.json'],
+      });
+      api.downloadNdjsonDocument.mockImplementation(async (url: string) =>
+        url.endsWith('/users.json')
+          ? makeUserMetricsDocument(reportWindowStart)
+          : makeUserTeamsDocument(reportWindowStart),
+      );
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.backfillDelayMs': 0,
+          'copilot.ingestOrganizationTeamReports': true,
+        }),
+        logger,
+      });
+
+      await task.runOrganizationBackfill(
+        'oRg-1',
+        outsideWindowDay,
+        reportWindowStart,
+      );
+
+      expect(
+        db.getCurrentAccessibleEnterpriseOrganizationLogin,
+      ).toHaveBeenCalledWith('ent-1', 'oRg-1');
+      expect(api.fetchEnterpriseOrganizationReportLinks).toHaveBeenCalledWith(
+        'Org-1',
+        outsideWindowDay,
+      );
+      expect(api.fetchEnterpriseOrganizationReportLinks).toHaveBeenCalledWith(
+        'Org-1',
+        reportWindowStart,
+      );
+      expect(
+        api.fetchEnterpriseOrganizationUserReportLinks,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        api.fetchEnterpriseOrganizationUserReportLinks,
+      ).toHaveBeenCalledWith('Org-1', reportWindowStart);
+      expect(
+        api.fetchEnterpriseOrganizationUserTeamsLinks,
+      ).toHaveBeenCalledWith('Org-1', reportWindowStart);
+      expect(api.fetchOrganizationReportLinks).not.toHaveBeenCalled();
+      expect(api.fetchOrganizationUserReportLinks).not.toHaveBeenCalled();
+      expect(api.fetchOrganizationUserTeamsLinks).not.toHaveBeenCalled();
+      expect(db.insertDailyTotals.mock.calls.flatMap(([rows]) => rows)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            day: outsideWindowDay,
+            metrics_type: 'organization',
+            entity_id: 'Org-1',
+          }),
+          expect.objectContaining({
+            day: reportWindowStart,
+            metrics_type: 'organization',
+            entity_id: 'Org-1',
+          }),
+        ]),
+      );
+      expect(db.insertUserMetrics.mock.calls.flatMap(([rows]) => rows)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            day: reportWindowStart,
+            metrics_type: 'organization',
+            entity_id: 'Org-1',
+          }),
+        ]),
+      );
+      expect(db.replaceTeamAggregates).toHaveBeenCalledTimes(1);
+      expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          day: outsideWindowDay,
+          metrics_type: 'organization',
+          entity_id: 'Org-1',
+          status: 'success',
+          components_loaded: '["totals"]',
+          source: 'backfill',
+        }),
+      );
+      expect(
+        db.updateEnterpriseOrganizationState.mock.calls.some(
+          ([, state]) => state.accessState === 'inaccessible',
+        ),
+      ).toBe(false);
+      expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+        lease,
+        expect.objectContaining({
+          accessState: 'accessible',
+          reportsReady: true,
+        }),
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('records partial components for discovered organizations without replacing loaded totals', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 2 }).toISODate()!;
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([day]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/totals.json'],
+    });
+    api.downloadDocument.mockResolvedValue({
+      day,
+      daily_active_users: 3,
+      weekly_active_users: 3,
+    });
+    api.fetchEnterpriseOrganizationUserReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+      download_links: [],
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runOrganizationBackfill('org-a', day, yesterday);
+
+    expect(db.insertDailyTotals).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({
+          day,
+          metrics_type: 'organization',
+          entity_id: 'Org-A',
+        }),
+      ]),
+    );
+    expect(db.replaceTeamAggregates).not.toHaveBeenCalled();
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        day,
+        metrics_type: 'organization',
+        entity_id: 'Org-A',
+        status: 'partial',
+        components_loaded: '["totals"]',
+        error_message: 'Missing components: users, teams',
+        source: 'backfill',
+      }),
+    );
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'accessible',
+        reportsReady: true,
+        nextAttemptAt: expect.any(Date),
+      }),
+    );
+    const partialState = db.updateEnterpriseOrganizationState.mock.calls[0][1];
+    expect(partialState.nextAttemptAt.getTime()).toBe(
+      partialState.lastAttemptedAt.getTime() + 60 * 60 * 1000,
+    );
+  });
+
+  it('preserves the scheduled retry time after a complete latest-day backfill', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-11-18T12:00:00.000Z'));
+    try {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'Org-A',
+        owner: 'worker',
+      };
+      db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+        'Org-A',
+      );
+      db.getMissingDays.mockResolvedValue([yesterday]);
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.backfillDelayMs': 0,
+          'copilot.ingestOrganizationTeamReports': true,
+        }),
+        logger,
+      });
+      jest.spyOn(task as any, 'ingestDay').mockResolvedValue({
+        loaded: true,
+        refreshed: false,
+        complete: true,
+        totalsLoaded: true,
+      });
+
+      await task.runOrganizationBackfill('org-a', yesterday, yesterday);
+
+      const state = db.updateEnterpriseOrganizationState.mock.calls[0][1];
+      expect(state).toEqual(
+        expect.objectContaining({
+          accessState: 'accessible',
+          reportsReady: true,
+          lastAttemptedAt: expect.any(Date),
+        }),
+      );
+      expect(state).not.toHaveProperty('nextAttemptAt');
+      expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('preserves the scheduled retry time after a complete historical backfill', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 2 }).toISODate()!;
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([day]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+    jest.spyOn(task as any, 'ingestDay').mockResolvedValue({
+      loaded: true,
+      refreshed: false,
+      complete: true,
+      totalsLoaded: true,
+    });
+
+    await task.runOrganizationBackfill('org-a', day, yesterday);
+
+    expect(db.claimEnterpriseOrganizationLease).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-A',
+      expect.any(Date),
+      expect.any(Date),
+      true,
+    );
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: expect.any(Date),
+      }),
+    );
+    expect(
+      db.updateEnterpriseOrganizationState.mock.calls[0][1],
+    ).not.toHaveProperty('nextAttemptAt');
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+  });
+
+  it('marks a discovered organization inaccessible when a manual backfill fails access verification', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([day]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.verifyEnterpriseOrganizationAccess.mockRejectedValue(
+      new InaccessibleEnterpriseOrganizationError(),
+    );
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await expect(
+      task.runOrganizationBackfill('org-a', day, day),
+    ).rejects.toThrow('Organization is no longer available.');
+
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'inaccessible',
+        reportsReady: false,
+        nextAttemptAt: expect.any(Date),
+      }),
+    );
+    const inaccessibleState =
+      db.updateEnterpriseOrganizationState.mock.calls[0][1];
+    expect(inaccessibleState.nextAttemptAt.getTime()).toBe(
+      inaccessibleState.lastAttemptedAt.getTime() + 24 * 60 * 60 * 1000,
+    );
+    expect(api.fetchEnterpriseOrganizationReportLinks).not.toHaveBeenCalled();
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+  });
+
+  it('limits each organization run to three backlog days plus the recent refresh window', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const bootstrapStart = DateTime.utc()
+      .startOf('day')
+      .minus({ days: 30 })
+      .toISODate()!;
+    const missingDays: string[] = [];
+    for (
+      let day = DateTime.fromISO(bootstrapStart, { zone: 'utc' });
+      day <= DateTime.fromISO(yesterday, { zone: 'utc' });
+      day = day.plus({ days: 1 })
+    ) {
+      missingDays.push(day.toISODate()!);
+    }
+    db.getMissingDays.mockImplementation(
+      async (_type: string, entityId: string) =>
+        entityId === 'org-a' ? missingDays : [],
+    );
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a']);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue({
+      enterpriseId: 'ent-1',
+      organization: 'org-a',
+      owner: 'worker',
+    });
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a']);
+    api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    const trailingDays = missingDays.slice(-3);
+    expect(
+      api.fetchEnterpriseOrganizationReportLinks.mock.calls.map(
+        ([, day]) => day,
+      ),
+    ).toEqual([...missingDays.slice(0, 3), ...trailingDays]);
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'org-a',
+      yesterday,
+    );
+    expect(db.renewEnterpriseOrganizationLease).toHaveBeenCalledTimes(8);
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledTimes(1);
+  });
+
+  it('continues configured scheduled ingestion after yesterday is unavailable and uses the adopted login', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const historicalDay = DateTime.fromISO(yesterday)
+      .minus({ days: 1 })
+      .toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    const reportNotFound = Object.assign(new Error('HTTP 404'), {
+      status: 404,
+    });
+    db.syncEnterpriseOrganizations.mockResolvedValue({
+      configuredOrganizationLogin: 'Org-A',
+      configuredOrganizationAmbiguous: false,
+    });
+    db.getMissingDays.mockImplementation(
+      async (metricsType: string, entityId: string) =>
+        metricsType === 'organization' && entityId === 'Org-A'
+          ? [historicalDay, yesterday]
+          : [],
+    );
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue([]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['Org-A']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(false);
+    api.fetchOrganizationReportLinks.mockImplementation(async day => {
+      if (day === historicalDay) {
+        throw reportNotFound;
+      }
+      return { download_links: [] };
+    });
+    api.fetchOrganizationUserReportLinks.mockImplementation(async day => {
+      if (day === historicalDay) {
+        throw reportNotFound;
+      }
+      return { download_links: [] };
+    });
+    api.fetchOrganizationUserTeamsLinks.mockImplementation(async day => {
+      if (day === historicalDay) {
+        throw reportNotFound;
+      }
+      return { download_links: [] };
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-a',
+        'copilot.backfillFromDate': historicalDay,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'Org-A',
+      yesterday,
+    );
+    expect(db.getMissingDays).toHaveBeenCalledWith(
+      'organization',
+      'Org-A',
+      historicalDay,
+      yesterday,
+      ['totals', 'users', 'teams'],
+    );
+    expect(api.fetchOrganizationReportLinks.mock.calls).toEqual([
+      [historicalDay],
+      [yesterday],
+    ]);
+    expect(db.markLegacyConfiguredOrganization).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-A',
+      expect.any(Date),
+      expect.any(Date),
+      lease,
+    );
+  });
+
+  it('records organization access when report links succeed before a download fails', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 2 }).toISODate()!;
+    api.fetchOrganizationReportLinks.mockResolvedValue({
+      download_links: ['https://example.test/report'],
+    });
+    api.downloadDocument.mockRejectedValue(new Error('Download failed'));
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({}),
+      logger,
+    });
+
+    const result = await (task as any).ingestDay(day, 'organization', 'Org-A', {
+      ingestTeams: false,
+      ingestUsers: false,
+      ingestCostCenters: false,
+      source: 'backfill',
+    });
+
+    expect(result).toMatchObject({ accessVerified: true, complete: false });
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'error' }),
+    );
+  });
+
+  it('proves discovered organization access from an available historical day after yesterday returns 404', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const historicalDay = DateTime.fromISO(yesterday)
+      .minus({ days: 2 })
+      .toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-a',
+      owner: 'worker',
+    };
+    const reportNotFound = Object.assign(new Error('HTTP 404'), {
+      status: 404,
+    });
+    db.getMissingDays.mockResolvedValue([]);
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a']);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(false);
+    api.fetchEnterpriseOrganizationReportLinks.mockImplementation(
+      async (_organization: string, day: string) => {
+        if (day === historicalDay) {
+          return { download_links: [] };
+        }
+        throw reportNotFound;
+      },
+    );
+    api.fetchEnterpriseOrganizationUserReportLinks.mockRejectedValue(
+      reportNotFound,
+    );
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockRejectedValue(
+      reportNotFound,
+    );
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'org-a',
+      yesterday,
+    );
+    expect(
+      api.fetchEnterpriseOrganizationReportLinks.mock.calls.map(
+        ([, day]) => day,
+      ),
+    ).toEqual([
+      historicalDay,
+      DateTime.fromISO(yesterday).minus({ days: 1 }).toISODate(),
+      yesterday,
+    ]);
+    const updatedState = db.updateEnterpriseOrganizationState.mock.calls[0][1];
+    expect(updatedState.accessState).toBe('accessible');
+    expect(updatedState.reportsReady).toBeUndefined();
+  });
+
+  it('keeps a new organization unverified when every report day returns 404', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-new',
+      owner: 'worker',
+    };
+    const reportNotFound = Object.assign(new Error('HTTP 404'), {
+      status: 404,
+    });
+    db.getMissingDays.mockResolvedValue([]);
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-new']);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-new']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(false);
+    api.fetchEnterpriseOrganizationReportLinks.mockRejectedValue(
+      reportNotFound,
+    );
+    api.fetchEnterpriseOrganizationUserReportLinks.mockRejectedValue(
+      reportNotFound,
+    );
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockRejectedValue(
+      reportNotFound,
+    );
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    const updatedState = db.updateEnterpriseOrganizationState.mock.calls[0][1];
+    expect(updatedState.accessState).toBeUndefined();
+    expect(updatedState.reportsReady).toBeUndefined();
+    expect(updatedState.lastAttemptedAt).toEqual(expect.any(Date));
+  });
+
+  it.each([
+    ['per-user', 403],
+    ['user-teams', 403],
+    ['per-user', 404],
+    ['user-teams', 404],
+  ] as const)(
+    'revokes a discovered organization after a %s report permission denial (HTTP %i) despite earlier success',
+    async (report, status) => {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'org-a',
+        owner: 'worker',
+        directoryGeneration: '1',
+      };
+      const permissionError = Object.assign(
+        new Error(
+          status === 404
+            ? 'Resource not accessible by integration'
+            : 'Forbidden',
+        ),
+        { status },
+      );
+      db.getMissingDays.mockResolvedValue([]);
+      db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a']);
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a']);
+      api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+      api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
+        download_links: [],
+      });
+      if (report === 'per-user') {
+        api.fetchEnterpriseOrganizationUserReportLinks.mockRejectedValue(
+          permissionError,
+        );
+      } else {
+        api.fetchEnterpriseOrganizationUserReportLinks.mockResolvedValue({
+          download_links: [],
+        });
+        api.fetchEnterpriseOrganizationUserTeamsLinks.mockRejectedValue(
+          permissionError,
+        );
+      }
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.backfillDelayMs': 0,
+          'copilot.ingestOrganizationTeamReports': true,
+        }),
+        logger,
+      });
+
+      await task.runAsync();
+
+      expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+        'org-a',
+        expect.any(String),
+      );
+      expect(api.fetchEnterpriseOrganizationReportLinks).toHaveBeenCalled();
+      expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+        lease,
+        expect.objectContaining({
+          accessState: 'inaccessible',
+          reportsReady: false,
+        }),
+      );
+      expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+    },
+  );
+
+  it('revokes a configured organization when totals are forbidden after a successful access check', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-a',
+      owner: 'worker',
+      directoryGeneration: '1',
+    };
+    const deniedTotals = Object.assign(new Error('Forbidden'), { status: 403 });
+    db.syncEnterpriseOrganizations.mockResolvedValue({
+      configuredOrganizationLogin: 'Org-A',
+      configuredOrganizationAmbiguous: false,
+    });
+    db.getMissingDays.mockImplementation(
+      async (metricsType: string, entityId: string) =>
+        metricsType === 'organization' && entityId === 'Org-A'
+          ? [yesterday]
+          : [],
+    );
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue([]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['Org-A']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    api.fetchOrganizationReportLinks.mockRejectedValue(deniedTotals);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-a',
+        'copilot.backfillFromDate': yesterday,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'Org-A',
+      expect.any(String),
+    );
+    expect(
+      api.verifyEnterpriseOrganizationAccess.mock.invocationCallOrder[0],
+    ).toBeLessThan(
+      api.fetchOrganizationReportLinks.mock.invocationCallOrder[0],
+    );
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'inaccessible',
+        reportsReady: false,
+      }),
+    );
+    expect(db.markLegacyConfiguredOrganization).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-A',
+      expect.any(Date),
+      expect.any(Date),
+      undefined,
+      '1',
+    );
+    expect(db.markLegacyConfiguredOrganization).not.toHaveBeenCalledWith(
+      'ent-1',
+      'Org-A',
+      expect.any(Date),
+      expect.any(Date),
+      lease,
+    );
+  });
+
+  it('does not apply a configured-organization denial after its directory generation is superseded', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-a',
+      owner: 'worker',
+      directoryGeneration: '1',
+    };
+    db.syncEnterpriseOrganizations.mockResolvedValue({
+      configuredOrganizationLogin: 'Org-A',
+      configuredOrganizationAmbiguous: false,
+    });
+    db.getMissingDays.mockImplementation(
+      async (metricsType: string, entityId: string) =>
+        metricsType === 'organization' && entityId === 'Org-A'
+          ? [yesterday]
+          : [],
+    );
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue([]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    db.updateEnterpriseOrganizationState.mockRejectedValueOnce(
+      new OrganizationIngestionLeaseLostError(),
+    );
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['Org-A']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    api.fetchOrganizationReportLinks.mockRejectedValue(
+      Object.assign(new Error('Forbidden'), { status: 403 }),
+    );
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-a',
+        'copilot.backfillFromDate': yesterday,
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await expect(task.runAsync()).resolves.toBeUndefined();
+
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({
+        accessState: 'inaccessible',
+        reportsReady: false,
+      }),
+    );
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.stringContaining('stale configured-organization denial'),
+    );
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+  });
+
+  it.each([
+    [
+      'rate-limited 403',
+      Object.assign(new Error('API rate limit exceeded'), {
+        status: 403,
+        response: { headers: { 'x-ratelimit-remaining': '0' } },
+      }),
+    ],
+    [
+      'transient 500',
+      Object.assign(new Error('Internal Server Error'), { status: 500 }),
+    ],
+  ])(
+    'does not revoke a discovered organization for a %s',
+    async (_description, reportError) => {
+      const db = createDbMock();
+      const api = createApiMock();
+      const logger = createLoggerMock();
+      const lease = {
+        enterpriseId: 'ent-1',
+        organization: 'org-a',
+        owner: 'worker',
+        directoryGeneration: '1',
+      };
+      db.getMissingDays.mockResolvedValue([]);
+      db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a']);
+      db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+      api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a']);
+      api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+      api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
+        download_links: [],
+      });
+      api.fetchEnterpriseOrganizationUserReportLinks
+        .mockRejectedValueOnce(reportError)
+        .mockResolvedValue({ download_links: [] });
+      api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+        download_links: [],
+      });
+      const task = TaskManagementV2.create({
+        db: db as unknown as DatabaseHandlerV2,
+        api: api as unknown as GithubClientV2,
+        config: createConfigMock({
+          'copilot.enterprise': 'ent-1',
+          'copilot.backfillDelayMs': 0,
+          'copilot.ingestOrganizationTeamReports': true,
+        }),
+        logger,
+      });
+
+      await task.runAsync();
+
+      expect(
+        db.updateEnterpriseOrganizationState.mock.calls.some(
+          ([, state]) => state.accessState === 'inaccessible',
+        ),
+      ).toBe(false);
+      expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+        lease,
+        expect.objectContaining({ accessState: 'accessible' }),
+      );
+    },
+  );
+
+  it('backfills a discovered organization from a historical day after yesterday returns 404', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const historicalDay = DateTime.fromISO(yesterday)
+      .minus({ days: 2 })
+      .toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([historicalDay]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(false);
+    api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+      download_links: [],
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runOrganizationBackfill('org-a', historicalDay, historicalDay);
+
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'Org-A',
+      yesterday,
+    );
+    expect(api.fetchEnterpriseOrganizationReportLinks).toHaveBeenCalledWith(
+      'Org-A',
+      historicalDay,
+    );
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      lease,
+      expect.objectContaining({ accessState: 'accessible' }),
+    );
+    expect(
+      db.updateEnterpriseOrganizationState.mock.calls[0][1].reportsReady,
+    ).toBeUndefined();
+  });
+
+  it('does not add a yesterday access gate to configured organization backfills', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 2 }).toISODate()!;
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'Org-A',
+      owner: 'worker',
+    };
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([day]);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.fetchOrganizationReportLinks.mockResolvedValue({ download_links: [] });
+    api.fetchOrganizationUserReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchOrganizationUserTeamsLinks.mockResolvedValue({
+      download_links: [],
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-a',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runBackfill(day, day, 'organization', 'org-a');
+
+    expect(api.verifyEnterpriseOrganizationAccess).not.toHaveBeenCalled();
+    expect(db.getMissingDays).toHaveBeenCalledWith(
+      'organization',
+      'Org-A',
+      day,
+      day,
+      ['totals', 'users', 'teams'],
+    );
+    expect(db.markLegacyConfiguredOrganization).toHaveBeenCalledWith(
+      'ent-1',
+      'Org-A',
+      expect.any(Date),
+      expect.any(Date),
+      lease,
+    );
+  });
+
+  it('refreshes recent team data without refetching complete totals and user reports', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    const days = [2, 1, 0].map(
+      offset =>
+        DateTime.fromISO(yesterday).minus({ days: offset }).toISODate()!,
+    );
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-a',
+      owner: 'worker',
+    };
+    db.getMissingDays.mockResolvedValue([]);
+    db.getIngestionLog.mockResolvedValue([
+      { components_loaded: '["totals","users","teams"]' },
+    ]);
+    db.getUserMetricsForDay.mockImplementation(
+      async (_metricsType: string, _entityId: string, day: string) => [
+        makeStoredUserMetric(day, {
+          metrics_type: 'organization',
+          entity_id: 'org-a',
+        }),
+      ],
+    );
+    db.getUserBreakdownsForDay.mockResolvedValue([
+      makeStoredUserBreakdown(1, 'octocat'),
+    ]);
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a']);
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a']);
+    api.verifyEnterpriseOrganizationAccess.mockResolvedValue(true);
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockImplementation(
+      async (_organization: string, day: string) => ({
+        download_links: [`https://downloads.github.com/user-teams-${day}.json`],
+      }),
+    );
+    api.downloadNdjsonDocument.mockImplementation(async (url: string) => {
+      const day = url.match(/user-teams-(\d{4}-\d{2}-\d{2})/)![1];
+      return makeUserTeamsDocument(day);
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(api.verifyEnterpriseOrganizationAccess).toHaveBeenCalledWith(
+      'org-a',
+      yesterday,
+    );
+    expect(api.fetchEnterpriseOrganizationReportLinks).not.toHaveBeenCalled();
+    expect(
+      api.fetchEnterpriseOrganizationUserReportLinks,
+    ).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseOrganizationUserTeamsLinks.mock.calls).toEqual(
+      days.map(day => ['org-a', day]),
+    );
+    expect(db.replaceTeamAggregates).toHaveBeenCalledTimes(3);
+    expect(db.insertDailyTotals).not.toHaveBeenCalled();
+    expect(db.insertUserMetrics).not.toHaveBeenCalled();
+  });
+
+  it('skips discovered organization backfills when every requested day is complete', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const day = DateTime.utc().minus({ days: 1 }).toISODate()!;
+    db.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'Org-A',
+    );
+    db.getMissingDays.mockResolvedValue([]);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runOrganizationBackfill('org-a', day, day);
+
+    expect(db.claimEnterpriseOrganizationLease).not.toHaveBeenCalled();
+    expect(api.verifyEnterpriseOrganizationAccess).not.toHaveBeenCalled();
+    expect(api.fetchEnterpriseOrganizationReportLinks).not.toHaveBeenCalled();
+    expect(db.updateEnterpriseOrganizationState).not.toHaveBeenCalled();
+  });
+
+  it('hides an inaccessible organization and continues with the next organization', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-a',
+      owner: 'worker',
+    };
+    db.getMissingDays.mockResolvedValue([]);
+    db.getEnterpriseOrganizationsToIngest.mockResolvedValue(['org-a', 'org-b']);
+    db.claimEnterpriseOrganizationLease.mockImplementation(
+      async (_enterprise: string, organization: string) => ({
+        ...lease,
+        organization,
+        owner: `worker-${organization}`,
+      }),
+    );
+    api.fetchEnterpriseOrganizations.mockResolvedValue(['org-a', 'org-b']);
+    api.verifyEnterpriseOrganizationAccess.mockImplementation(
+      async (organization: string) => {
+        if (organization === 'org-a') {
+          throw new InaccessibleEnterpriseOrganizationError();
+        }
+      },
+    );
+    api.fetchEnterpriseOrganizationReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseOrganizationUserTeamsLinks.mockResolvedValue({
+      download_links: [],
+    });
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.backfillDelayMs': 0,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      expect.objectContaining({ organization: 'org-a' }),
+      expect.objectContaining({
+        accessState: 'inaccessible',
+        reportsReady: false,
+        nextAttemptAt: expect.any(Date),
+      }),
+    );
+    expect(db.updateEnterpriseOrganizationState).toHaveBeenCalledWith(
+      expect.objectContaining({ organization: 'org-b' }),
+      expect.objectContaining({ accessState: 'accessible' }),
+    );
+    expect(api.verifyEnterpriseOrganizationAccess.mock.calls).toEqual([
+      ['org-a', expect.any(String)],
+      ['org-b', expect.any(String)],
+    ]);
+    expect(db.insertDailyTotals).not.toHaveBeenCalled();
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledTimes(2);
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('imported history will be retained'),
+    );
+  });
+
   it('does not retry newly required user and team reports outside their retention window', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -459,6 +2194,63 @@ describe('TaskManagementV2', () => {
     expect(logger.warn).not.toHaveBeenCalled();
   });
 
+  it('stops scheduled cost-center aggregation when organization lease renewal fails', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const logger = createLoggerMock();
+    const lease = {
+      enterpriseId: 'ent-1',
+      organization: 'org-1',
+      owner: 'worker',
+    };
+    const days = ['2026-05-10', '2026-05-11'];
+    db.getMissingDays.mockResolvedValue([]);
+    db.getDaysMissingCostCenterAggregation.mockImplementation(
+      async metricsType => (metricsType === 'organization' ? days : []),
+    );
+    db.claimEnterpriseOrganizationLease.mockResolvedValue(lease);
+    db.renewEnterpriseOrganizationLease
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config: createConfigMock({
+        'copilot.enterprise': 'ent-1',
+        'copilot.organization': 'org-1',
+        'copilot.ingestCostCenters': true,
+        'copilot.ingestOrganizationTeamReports': true,
+      }),
+      logger,
+    });
+    jest.spyOn(task as any, 'runOrganizationTeamIngestion').mockResolvedValue({
+      generation: '1',
+      configuredOrganizationAvailable: true,
+    });
+    jest
+      .spyOn(task as any, 'loadCostCenterSnapshot')
+      .mockResolvedValue(makeCostCenterSnapshot(new Map()));
+    const ingestCostCenterAggregates = jest
+      .spyOn(task as any, 'ingestCostCenterAggregates')
+      .mockResolvedValue(undefined);
+
+    await expect(task.runAsync()).rejects.toBeInstanceOf(
+      OrganizationIngestionLeaseLostError,
+    );
+
+    expect(db.renewEnterpriseOrganizationLease).toHaveBeenCalledTimes(2);
+    expect(ingestCostCenterAggregates).toHaveBeenCalledTimes(1);
+    expect(ingestCostCenterAggregates).toHaveBeenCalledWith(
+      days[0],
+      'organization',
+      'org-1',
+      expect.any(Object),
+      true,
+      lease,
+    );
+    expect(db.releaseEnterpriseOrganizationLease).toHaveBeenCalledWith(lease);
+  });
+
   it('shares one enterprise membership snapshot across enabled cost-center scopes', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -813,6 +2605,7 @@ describe('TaskManagementV2', () => {
           dailyTotals: [expect.objectContaining({ cost_center_id: 'cc-new' })],
         }),
         true,
+        undefined,
       ];
       expect(db.replaceCostCenterAggregates.mock.calls).toEqual(
         costCenters === 'complete' ? [] : [expectedReplacement],
@@ -2951,7 +4744,7 @@ function makeStoredUserBreakdown(
 }
 
 function createDbMock() {
-  return {
+  const db = {
     getMissingDays: jest.fn(),
     getDaysMissingCostCenterAggregation: jest.fn().mockResolvedValue([]),
     getDaysWithIncompleteCostCenterAggregation: jest.fn().mockResolvedValue([]),
@@ -2978,6 +4771,35 @@ function createDbMock() {
     getUserBreakdownsForDay: jest.fn().mockResolvedValue([]),
     getUserTeamsForDay: jest.fn().mockResolvedValue([]),
     replaceTeamAggregates: jest.fn().mockResolvedValue(undefined),
+    syncEnterpriseOrganizations: jest.fn().mockResolvedValue({
+      configuredOrganizationLogin: undefined,
+      configuredOrganizationAmbiguous: false,
+    }),
+    beginEnterpriseOrganizationDirectorySync: jest.fn().mockResolvedValue('1'),
+    isEnterpriseOrganizationDirectoryGenerationCurrent: jest
+      .fn()
+      .mockResolvedValue(true),
+    markEnterpriseOrganizationDirectoryFailed: jest
+      .fn()
+      .mockResolvedValue('marked'),
+    markLegacyConfiguredOrganization: jest.fn().mockResolvedValue('updated'),
+    markEnterpriseOrganizationInaccessible: jest
+      .fn()
+      .mockResolvedValue(undefined),
+    getCurrentAccessibleEnterpriseOrganizationLogin: jest
+      .fn()
+      .mockResolvedValue(undefined),
+    getEnterpriseOrganizationsToIngest: jest.fn().mockResolvedValue([]),
+    claimEnterpriseOrganizationLease: jest.fn().mockResolvedValue(undefined),
+    renewEnterpriseOrganizationLease: jest.fn().mockResolvedValue(true),
+    releaseEnterpriseOrganizationLease: jest.fn().mockResolvedValue(undefined),
+    withOrganizationIngestionLease: jest.fn(
+      async (
+        _lease: unknown,
+        operation: (database: DatabaseHandlerV2) => Promise<void>,
+      ): Promise<void> => operation(db as unknown as DatabaseHandlerV2),
+    ),
+    updateEnterpriseOrganizationState: jest.fn().mockResolvedValue(undefined),
     upsertCostCenters: jest.fn().mockResolvedValue(undefined),
     upsertUserCostCenters: jest.fn().mockResolvedValue(undefined),
     markCostCenterAggregationDone: jest.fn().mockResolvedValue(undefined),
@@ -2985,12 +4807,18 @@ function createDbMock() {
     replaceCostCenterAggregates: jest.fn().mockResolvedValue(undefined),
     upsertIngestionLog: jest.fn().mockResolvedValue(undefined),
   };
+  return db;
 }
 
 function createApiMock() {
   return {
     fetchEnterpriseReportLinks: jest.fn(),
     fetchOrganizationReportLinks: jest.fn(),
+    fetchEnterpriseOrganizations: jest.fn(),
+    verifyEnterpriseOrganizationAccess: jest.fn().mockResolvedValue(true),
+    fetchEnterpriseOrganizationReportLinks: jest.fn(),
+    fetchEnterpriseOrganizationUserReportLinks: jest.fn(),
+    fetchEnterpriseOrganizationUserTeamsLinks: jest.fn(),
     fetchEnterpriseUserReportLinks: jest.fn(),
     fetchOrganizationUserReportLinks: jest.fn(),
     fetchEnterpriseUserTeamsLinks: jest.fn(),

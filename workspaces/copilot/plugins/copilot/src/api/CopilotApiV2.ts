@@ -50,6 +50,12 @@ export type V2DashboardParams = Pick<
   'type' | 'entityId' | 'from' | 'to'
 >;
 
+export type V2OrganizationTeamOptions = {
+  organizations: string[];
+  teams: Array<{ organization: string; team: string }>;
+  hasPendingOrganizations: boolean;
+};
+
 export interface CopilotApiV2 {
   getDailyMetrics(params: V2MetricsParams): Promise<V2DailyTotal[]>;
   getPrMetrics(params: V2MetricsParams): Promise<V2PrMetricsRow[]>;
@@ -86,6 +92,11 @@ export interface CopilotApiV2 {
     params: V2MetricsParams,
   ): Promise<V2MetricsByLanguageModelRow[]>;
   getDashboardData(params: V2MetricsParams): Promise<V2DashboardData>;
+  getOrganizationTeamOptions(
+    params: Pick<V2MetricsParams, 'from' | 'to'> & {
+      organization?: string;
+    },
+  ): Promise<V2OrganizationTeamOptions>;
   getNoCostCenterDashboardData(
     params: V2DashboardParams,
   ): Promise<V2DashboardData>;

@@ -19,7 +19,9 @@ import { configApiRef } from '@backstage/core-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { DateTime } from 'luxon';
 import {
+  V2DailyTotal,
   V2DashboardData,
   V2CostCenterListResponse,
   V2CostCenterOption,
@@ -29,8 +31,24 @@ import { V2DashboardPage } from './V2DashboardPage';
 
 jest.mock('./charts', () => {
   const Noop = () => null;
+  const IDEActiveUsersChart = ({
+    data,
+    variant,
+    fillMissingDays,
+  }: {
+    data: V2DailyTotal[];
+    variant: string;
+    fillMissingDays?: boolean;
+  }) => (
+    <output
+      data-testid={`ide-active-users-${variant}`}
+      data-fill-missing-days={String(fillMissingDays)}
+    >
+      {JSON.stringify(data)}
+    </output>
+  );
   return {
-    IDEActiveUsersChart: Noop,
+    IDEActiveUsersChart,
     AvgChatRequestsChart: Noop,
     RequestsByChatModeChart: Noop,
     CodeCompletionsChart: Noop,
@@ -75,6 +93,24 @@ const EMPTY_DASHBOARD: V2DashboardData = {
   customizationSummaries: [],
 };
 
+const createDailyTotal = (
+  day: string,
+  dailyActiveUsers: number,
+): V2DailyTotal => ({
+  day,
+  metrics_type: 'organization',
+  entity_id: 'my-org',
+  team_slug: 'platform',
+  daily_active_users: dailyActiveUsers,
+  code_acceptance_activity_count: 0,
+  code_generation_activity_count: 0,
+  loc_added_sum: 0,
+  loc_deleted_sum: 0,
+  loc_suggested_to_add_sum: 0,
+  loc_suggested_to_delete_sum: 0,
+  user_initiated_interaction_count: 0,
+});
+
 const createDeferred = <T,>() => {
   let resolve!: (value: T) => void;
   let reject!: (error: Error) => void;
@@ -89,28 +125,48 @@ const createApi = ({
   costCenters = [],
   hasUsersWithoutCostCenter = false,
   teams = ['platform', 'product'],
+  organizations = ['my-org', 'other-org'],
+  organizationTeams,
 }: {
   costCenters?: V2CostCenterOption[];
   hasUsersWithoutCostCenter?: boolean;
   teams?: string[];
-} = {}): jest.Mocked<CopilotApiV2> => ({
-  getDailyMetrics: jest.fn().mockResolvedValue([]),
-  getPrMetrics: jest.fn().mockResolvedValue([]),
-  getByFeature: jest.fn().mockResolvedValue([]),
-  getByIde: jest.fn().mockResolvedValue([]),
-  getLanguageByFeature: jest.fn().mockResolvedValue([]),
-  fetchCostCenters: jest.fn().mockResolvedValue({
-    costCenters,
-    hasUsersWithoutCostCenter,
-  }),
-  getTeams: jest.fn().mockResolvedValue(teams),
-  getPeriodRange: jest.fn().mockResolvedValue(null),
-  getBackfillStatus: jest.fn().mockResolvedValue([]),
-  getByModelFeature: jest.fn().mockResolvedValue([]),
-  getByLanguageModel: jest.fn().mockResolvedValue([]),
-  getDashboardData: jest.fn().mockResolvedValue(EMPTY_DASHBOARD),
-  getNoCostCenterDashboardData: jest.fn().mockResolvedValue(EMPTY_DASHBOARD),
-});
+  organizations?: string[];
+  organizationTeams?: Array<{ organization: string; team: string }>;
+} = {}): jest.Mocked<CopilotApiV2> => {
+  const teamsByOrganization =
+    organizationTeams ??
+    teams.map(team => ({ organization: organizations[0] ?? '', team }));
+  return {
+    getDailyMetrics: jest.fn().mockResolvedValue([]),
+    getPrMetrics: jest.fn().mockResolvedValue([]),
+    getByFeature: jest.fn().mockResolvedValue([]),
+    getByIde: jest.fn().mockResolvedValue([]),
+    getLanguageByFeature: jest.fn().mockResolvedValue([]),
+    fetchCostCenters: jest.fn().mockResolvedValue({
+      costCenters,
+      hasUsersWithoutCostCenter,
+    }),
+    getTeams: jest.fn().mockResolvedValue(teams),
+    getPeriodRange: jest.fn().mockResolvedValue(null),
+    getBackfillStatus: jest.fn().mockResolvedValue([]),
+    getByModelFeature: jest.fn().mockResolvedValue([]),
+    getByLanguageModel: jest.fn().mockResolvedValue([]),
+    getDashboardData: jest.fn().mockResolvedValue(EMPTY_DASHBOARD),
+    getOrganizationTeamOptions: jest
+      .fn()
+      .mockImplementation(async ({ organization }) => ({
+        organizations,
+        teams: organization
+          ? teamsByOrganization.filter(
+              option => option.organization === organization,
+            )
+          : teamsByOrganization,
+        hasPendingOrganizations: false,
+      })),
+    getNoCostCenterDashboardData: jest.fn().mockResolvedValue(EMPTY_DASHBOARD),
+  };
+};
 
 type DashboardConfig = {
   enterprise?: string;
@@ -118,6 +174,7 @@ type DashboardConfig = {
   defaultView?: 'enterprise' | 'organization';
   ingestCostCenters?: boolean;
   ingestTeams?: boolean;
+  ingestOrganizationTeamReports?: boolean;
 };
 
 const createDashboard = (
@@ -127,11 +184,13 @@ const createDashboard = (
   const config = {
     ingestCostCenters: true,
     ingestTeams: true,
+    ingestOrganizationTeamReports: false,
     ...scope,
   };
   const copilotConfig: Record<string, string | boolean> = {
     ingestCostCenters: config.ingestCostCenters,
     ingestTeams: config.ingestTeams,
+    ingestOrganizationTeamReports: config.ingestOrganizationTeamReports,
   };
   if (config.enterprise) {
     copilotConfig.enterprise = config.enterprise;
@@ -179,6 +238,15 @@ const getFilterToggleButton = (
   return button;
 };
 
+const getOrganizationSelectTrigger = () => {
+  const label = screen.getByText('Organization', { exact: true });
+  const trigger = label.closest('.bui-Select')?.querySelector('button');
+  if (!trigger) {
+    throw new Error('Could not find the organization selector');
+  }
+  return trigger;
+};
+
 describe('V2DashboardPage filter targets', () => {
   it('shows the Cost center | Team toggle button group, defaulting to Team', async () => {
     const api = createApi({
@@ -204,14 +272,21 @@ describe('V2DashboardPage filter targets', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('uses organization-team metrics in the enterprise view across dashboard tabs', async () => {
-    const api = createApi({ teams: ['octo-team'] });
+  it('uses each organization team only within its owning organization', async () => {
+    const api = createApi({
+      organizations: ['org-1', 'org-2'],
+      organizationTeams: [
+        { organization: 'org-1', team: 'platform' },
+        { organization: 'org-2', team: 'platform' },
+      ],
+    });
     const user = userEvent.setup();
     await renderDashboard(api, {
       enterprise: 'my-enterprise',
       organization: 'my-org',
       ingestCostCenters: false,
       ingestTeams: true,
+      ingestOrganizationTeamReports: true,
     });
 
     expect(getFilterToggleButtons()).toHaveLength(2);
@@ -225,7 +300,7 @@ describe('V2DashboardPage filter targets', () => {
     expect(
       getFilterToggleButton('Organization team'),
     ).toHaveAccessibleDescription(
-      "Teams defined within the my-org organization. Metrics come from that organization's Copilot reports.",
+      'Teams defined in an organization. Each team is listed with its owning organization.',
     );
 
     await user.hover(getFilterToggleButton('Enterprise team'));
@@ -235,52 +310,89 @@ describe('V2DashboardPage filter targets', () => {
     await user.unhover(getFilterToggleButton('Enterprise team'));
     await user.hover(getFilterToggleButton('Organization team'));
     expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      'Teams defined within the my-org organization.',
+      'Teams defined in an organization.',
     );
 
     await waitFor(() =>
-      expect(api.getTeams).toHaveBeenCalledWith(
+      expect(api.getOrganizationTeamOptions).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'organization',
-          entityId: 'my-org',
+          organization: undefined,
+          from: expect.any(String),
+          to: expect.any(String),
+        }),
+      ),
+    );
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'enterprise',
+          entityId: 'my-enterprise',
+          team: undefined,
         }),
       ),
     );
     await user.click(getFilterToggleButton('Organization team'));
+    expect(screen.getByTestId('ide-active-users-daily')).toHaveAttribute(
+      'data-fill-missing-days',
+      'true',
+    );
     await user.click(screen.getByRole('button', { name: /All teams/ }));
-    expect(api.getDashboardData).not.toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'organization',
-        entityId: 'my-org',
-        team: undefined,
-      }),
+    expect(
+      await screen.findByRole('option', { name: 'org-1 / platform' }),
+    ).toBeVisible();
+    expect(
+      await screen.findByRole('option', { name: 'org-2 / platform' }),
+    ).toBeVisible();
+    await user.click(
+      await screen.findByRole('option', { name: 'org-2 / platform' }),
     );
-    expect(api.getDashboardData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        type: 'enterprise',
-        entityId: 'my-enterprise',
-        team: undefined,
-      }),
+    expect(screen.getByTestId('ide-active-users-daily')).toHaveAttribute(
+      'data-fill-missing-days',
+      'false',
     );
-    await user.click(await screen.findByRole('option', { name: 'octo-team' }));
 
     await waitFor(() =>
       expect(api.getDashboardData).toHaveBeenLastCalledWith(
         expect.objectContaining({
           type: 'organization',
-          entityId: 'my-org',
-          team: 'octo-team',
+          entityId: 'org-2',
+          team: 'platform',
         }),
       ),
     );
+
+    await user.click(screen.getByRole('button', { name: /org-2/ }));
+    await user.click(await screen.findByRole('option', { name: 'org-1' }));
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'org-1',
+          team: undefined,
+        }),
+      ),
+    );
+    expect(screen.getByRole('button', { name: /All teams/ })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: /All teams/ }));
+    await user.click(await screen.findByRole('option', { name: 'platform' }));
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'org-1',
+          team: 'platform',
+        }),
+      ),
+    );
+
     expect(screen.getByRole('tab', { name: 'Consumption' })).toBeVisible();
     await user.click(screen.getByRole('tab', { name: 'Consumption' }));
     await user.click(screen.getByRole('tab', { name: 'Agent Harness' }));
     expect(api.getDashboardData).toHaveBeenLastCalledWith(
       expect.objectContaining({
         type: 'organization',
-        entityId: 'my-org',
-        team: 'octo-team',
+        entityId: 'org-1',
+        team: 'platform',
       }),
     );
 
@@ -296,23 +408,28 @@ describe('V2DashboardPage filter targets', () => {
     );
   });
 
-  it('requires enterprise, organization, and team ingestion to offer organization teams in enterprise view', async () => {
+  it('requires enterprise and multi-organization ingestion to offer organization teams', async () => {
+    const user = userEvent.setup();
     const unavailableScopes: DashboardConfig[] = [
       {
         organization: 'my-org',
         ingestCostCenters: false,
         ingestTeams: true,
+        ingestOrganizationTeamReports: true,
       },
       {
         enterprise: 'my-enterprise',
         ingestCostCenters: false,
         ingestTeams: true,
+        ingestOrganizationTeamReports: false,
       },
       {
         enterprise: 'my-enterprise',
         organization: 'my-org',
         ingestCostCenters: false,
         ingestTeams: false,
+        defaultView: 'organization',
+        ingestOrganizationTeamReports: false,
       },
     ];
     for (const scope of unavailableScopes) {
@@ -323,26 +440,352 @@ describe('V2DashboardPage filter targets', () => {
       rendered.unmount();
     }
 
-    const organizationApi = createApi();
-    const user = userEvent.setup();
-    const rendered = await renderDashboard(organizationApi, {
-      enterprise: 'my-enterprise',
-      organization: 'my-org',
-      defaultView: 'organization',
-      ingestCostCenters: true,
-      ingestTeams: true,
-    });
-    expect(await screen.findByRole('button', { name: /Team/ })).toBeVisible();
-    await user.hover(getFilterToggleButton('Team'));
-    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    const organizationOnlyApi = createApi({ teams: ['octo-team'] });
+    const organizationOnlyDashboard = await renderDashboard(
+      organizationOnlyApi,
+      {
+        organization: 'my-org',
+        ingestCostCenters: false,
+        ingestTeams: false,
+        defaultView: 'organization',
+        ingestOrganizationTeamReports: true,
+      },
+    );
+    expect(
+      screen.queryByRole('button', { name: /All teams/i }),
+    ).not.toBeInTheDocument();
+    organizationOnlyDashboard.unmount();
+
+    const configuredOrgOnlyApi = createApi({ teams: ['octo-team'] });
+    const configuredOrgOnlyDashboard = await renderDashboard(
+      configuredOrgOnlyApi,
+      {
+        enterprise: 'my-enterprise',
+        organization: 'my-org',
+        ingestCostCenters: false,
+        ingestTeams: false,
+        defaultView: 'organization',
+        ingestOrganizationTeamReports: true,
+      },
+    );
+    expect(
+      await screen.findByRole('button', { name: /All teams/i }),
+    ).toBeVisible();
+    expect(configuredOrgOnlyApi.getTeams).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'organization',
+        entityId: 'my-org',
+      }),
+    );
     expect(
       screen.queryByRole('button', { name: 'Enterprise team' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Organization team' }),
+      configuredOrgOnlyApi.getOrganizationTeamOptions,
+    ).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: /All teams/i }));
+    await user.click(await screen.findByRole('option', { name: 'octo-team' }));
+    await waitFor(() =>
+      expect(configuredOrgOnlyApi.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'my-org',
+          team: 'octo-team',
+        }),
+      ),
+    );
+    configuredOrgOnlyDashboard.unmount();
+
+    const configuredOrganizationApi = createApi({
+      organizations: ['my-org'],
+      teams: ['octo-team'],
+    });
+    const configuredOrganizationDashboard = await renderDashboard(
+      configuredOrganizationApi,
+      {
+        enterprise: 'my-enterprise',
+        organization: 'my-org',
+        ingestCostCenters: false,
+        ingestTeams: true,
+        ingestOrganizationTeamReports: false,
+      },
+    );
+    expect(getFilterToggleButton('Organization team')).toBeInTheDocument();
+    await user.click(getFilterToggleButton('Organization team'));
+    expect(
+      await screen.findByRole('button', { name: /All organizations/ }),
+    ).toBeVisible();
+    await user.click(screen.getByRole('button', { name: /All organizations/ }));
+    await user.click(await screen.findByRole('option', { name: 'my-org' }));
+    await waitFor(() =>
+      expect(
+        configuredOrganizationApi.getDashboardData,
+      ).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'my-org',
+          team: undefined,
+        }),
+      ),
+    );
+    configuredOrganizationDashboard.unmount();
+
+    const organizationApi = createApi();
+    const rendered = await renderDashboard(organizationApi, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: true,
+      ingestTeams: false,
+      ingestOrganizationTeamReports: true,
+    });
+    expect(getFilterToggleButton('Organization team')).toBeVisible();
+    expect(
+      screen.queryByText('Enterprise team', { exact: true }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
     rendered.unmount();
+  });
+
+  it('keeps eligible team options available while organization reports are pending', async () => {
+    const api = createApi();
+    api.getOrganizationTeamOptions.mockResolvedValue({
+      organizations: ['accessible-org'],
+      teams: [{ organization: 'accessible-org', team: 'eligible-team' }],
+      hasPendingOrganizations: true,
+    });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+
+    expect(
+      screen.queryByText('Organization team data is still being prepared.'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Unable to load organization team options.'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /all teams/i }),
+    ).not.toBeDisabled();
+    await user.click(screen.getByRole('button', { name: /all teams/i }));
+    expect(
+      await screen.findByRole('option', {
+        name: 'accessible-org / eligible-team',
+      }),
+    ).toBeVisible();
+    await user.keyboard('{Escape}');
+
+    await user.click(
+      screen.getByRole('button', { name: /all organizations/i }),
+    );
+    expect(
+      await screen.findByRole('option', { name: 'accessible-org' }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('option', { name: 'inaccessible-org' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('reports organization-options failures and lets users retry without exposing backend errors', async () => {
+    const api = createApi();
+    const backendErrorMessage = 'Private GraphQL failure details';
+    let failOptionsRequest = true;
+    api.getOrganizationTeamOptions.mockImplementation(async () => {
+      if (failOptionsRequest) {
+        throw new Error(backendErrorMessage);
+      }
+      return {
+        organizations: ['my-org'],
+        teams: [{ organization: 'my-org', team: 'platform' }],
+        hasPendingOrganizations: false,
+      };
+    });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+
+    expect(
+      await screen.findByText('Unable to load organization team options.'),
+    ).toBeVisible();
+    expect(screen.getByText(/Try again/)).toBeVisible();
+    expect(screen.queryByText(backendErrorMessage)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Organization team data is still being prepared.'),
+    ).not.toBeInTheDocument();
+
+    const callsBeforeRetry = api.getOrganizationTeamOptions.mock.calls.length;
+    failOptionsRequest = false;
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions.mock.calls.length).toBeGreaterThan(
+        callsBeforeRetry,
+      ),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Unable to load organization team options.'),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
+  it('keeps a selected organization clearable after its options fail', async () => {
+    const api = createApi({ organizations: ['my-org'] });
+    api.getOrganizationTeamOptions.mockImplementation(
+      async ({ organization }) => {
+        if (organization) {
+          throw new Error('Organization options are unavailable');
+        }
+        return {
+          organizations: ['my-org'],
+          teams: [{ organization: 'my-org', team: 'platform' }],
+          hasPendingOrganizations: false,
+        };
+      },
+    );
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: false,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await screen.findByText('Organization', { exact: true });
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(await screen.findByRole('option', { name: 'my-org' }));
+    expect(
+      await screen.findByText('Unable to load organization team options.'),
+    ).toBeVisible();
+    expect(getOrganizationSelectTrigger()).toBeVisible();
+
+    const callsBeforeClear = api.getOrganizationTeamOptions.mock.calls.length;
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(
+      await screen.findByRole('option', { name: 'All organizations' }),
+    );
+
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions.mock.calls.length).toBe(
+        callsBeforeClear + 1,
+      ),
+    );
+    expect(api.getOrganizationTeamOptions).toHaveBeenLastCalledWith(
+      expect.objectContaining({ organization: undefined }),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Unable to load organization team options.'),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
+  it('keeps a selected organization clearable when its options become empty', async () => {
+    const api = createApi({ organizations: ['my-org'] });
+    api.getOrganizationTeamOptions.mockImplementation(
+      async ({ organization }) => ({
+        organizations: organization ? [] : ['my-org'],
+        teams: organization
+          ? []
+          : [{ organization: 'my-org', team: 'platform' }],
+        hasPendingOrganizations: false,
+      }),
+    );
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+    await screen.findByText('Organization', { exact: true });
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(await screen.findByRole('option', { name: 'my-org' }));
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions).toHaveBeenLastCalledWith(
+        expect.objectContaining({ organization: 'my-org' }),
+      ),
+    );
+    await waitFor(() => expect(getOrganizationSelectTrigger()).toBeVisible());
+
+    const callsBeforeClear = api.getOrganizationTeamOptions.mock.calls.length;
+    await user.click(getOrganizationSelectTrigger());
+    await user.click(
+      await screen.findByRole('option', { name: 'All organizations' }),
+    );
+
+    await waitFor(() =>
+      expect(api.getOrganizationTeamOptions.mock.calls.length).toBe(
+        callsBeforeClear + 1,
+      ),
+    );
+    expect(api.getOrganizationTeamOptions).toHaveBeenLastCalledWith(
+      expect.objectContaining({ organization: undefined }),
+    );
+  });
+
+  it('reports organization-dashboard failures and lets users retry without exposing backend errors', async () => {
+    const api = createApi({
+      organizations: ['my-org'],
+      organizationTeams: [{ organization: 'my-org', team: 'platform' }],
+    });
+    const backendErrorMessage = 'Private organization dashboard details';
+    let failDashboardRequest = true;
+    api.getDashboardData.mockImplementation(async params => {
+      if (
+        failDashboardRequest &&
+        params.type === 'organization' &&
+        params.team
+      ) {
+        throw new Error(backendErrorMessage);
+      }
+      return EMPTY_DASHBOARD;
+    });
+    const user = userEvent.setup();
+    await renderDashboard(api, {
+      enterprise: 'my-enterprise',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+
+    await user.click(getFilterToggleButton('Organization team'));
+    await user.click(screen.getByRole('button', { name: /All teams/ }));
+    await user.click(
+      await screen.findByRole('option', { name: 'my-org / platform' }),
+    );
+
+    expect(
+      await screen.findByText('Unable to load organization team dashboard.'),
+    ).toBeVisible();
+    expect(screen.getByText(/dashboard request failed/i)).toBeVisible();
+    expect(screen.queryByText(backendErrorMessage)).not.toBeInTheDocument();
+
+    const callsBeforeRetry = api.getDashboardData.mock.calls.length;
+    failDashboardRequest = false;
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+
+    await waitFor(() =>
+      expect(api.getDashboardData.mock.calls.length).toBeGreaterThan(
+        callsBeforeRetry,
+      ),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Unable to load organization team dashboard.'),
+      ).not.toBeInTheDocument(),
+    );
   });
 
   it('renders only the unchanged team dropdown when only team filtering is configured', async () => {
@@ -377,6 +820,55 @@ describe('V2DashboardPage filter targets', () => {
     expect(
       api.getTeams.mock.calls.every(([params]) => !('costCenter' in params)),
     ).toBe(true);
+  });
+
+  it('omits unreported days in the organization-view team filter while keeping reported zero days', async () => {
+    const today = DateTime.now();
+    const positiveDay = today.minus({ days: 4 }).toFormat('yyyy-MM-dd');
+    const missingDay = today.minus({ days: 3 }).toFormat('yyyy-MM-dd');
+    const reportedZeroDay = today.minus({ days: 2 }).toFormat('yyyy-MM-dd');
+    const daily = [
+      createDailyTotal(positiveDay, 2),
+      createDailyTotal(reportedZeroDay, 0),
+    ];
+    const api = createApi();
+    api.getDashboardData.mockResolvedValue({
+      ...EMPTY_DASHBOARD,
+      daily,
+    });
+    const user = userEvent.setup();
+
+    await renderDashboard(api, {
+      enterprise: 'enterprise-1',
+      organization: 'my-org',
+      defaultView: 'organization',
+      ingestCostCenters: false,
+      ingestTeams: true,
+    });
+
+    await user.click(await screen.findByRole('button', { name: /team/i }));
+    await user.click(await screen.findByRole('option', { name: 'platform' }));
+
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'my-org',
+          team: 'platform',
+        }),
+      ),
+    );
+
+    const dailyChart = screen.getByTestId('ide-active-users-daily');
+    expect(dailyChart).toHaveAttribute('data-fill-missing-days', 'false');
+    expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(daily);
+    expect(daily.map(row => row.day)).not.toContain(missingDay);
+    expect(daily).toContainEqual(
+      expect.objectContaining({
+        day: reportedZeroDay,
+        daily_active_users: 0,
+      }),
+    );
   });
 
   it('renders only the cost-center dropdown when only cost-center filtering is configured', async () => {
@@ -727,6 +1219,105 @@ describe('V2DashboardPage filter targets', () => {
     expect(
       screen.queryByRole('option', { name: 'old-team' }),
     ).not.toBeInTheDocument();
+  });
+
+  it('clears organization-team selection and late metrics when the scope changes', async () => {
+    const oldDashboard = {
+      ...EMPTY_DASHBOARD,
+      daily: [createDailyTotal('2026-05-01', 8)],
+    };
+    const newDashboard = {
+      ...EMPTY_DASHBOARD,
+      daily: [createDailyTotal('2026-05-02', 3)],
+    };
+    const lateOrganizationDashboard = createDeferred<V2DashboardData>();
+    const pendingCurrentDashboard = createDeferred<V2DashboardData>();
+    const api = createApi({
+      organizations: ['org-old', 'org-new'],
+      organizationTeams: [
+        { organization: 'org-old', team: 'platform' },
+        { organization: 'org-new', team: 'platform' },
+      ],
+    });
+    api.getDashboardData.mockImplementation(async params => {
+      if (params.entityId === 'org-old') {
+        return lateOrganizationDashboard.promise;
+      }
+      if (params.entityId === 'enterprise-2') {
+        return pendingCurrentDashboard.promise;
+      }
+      return oldDashboard;
+    });
+    const user = userEvent.setup();
+    const rendered = await renderDashboard(api, {
+      enterprise: 'enterprise-1',
+      organization: 'parent-1',
+      ingestCostCenters: false,
+      ingestTeams: true,
+      ingestOrganizationTeamReports: true,
+    });
+    const dailyChart = screen.getByTestId('ide-active-users-daily');
+    await waitFor(() =>
+      expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(
+        oldDashboard.daily,
+      ),
+    );
+
+    await user.click(getFilterToggleButton('Organization team'));
+    await user.click(screen.getByRole('button', { name: /All teams/ }));
+    await user.click(
+      await screen.findByRole('option', { name: 'org-old / platform' }),
+    );
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'organization',
+          entityId: 'org-old',
+          team: 'platform',
+        }),
+      ),
+    );
+
+    rendered.rerender(
+      createDashboard(api, {
+        enterprise: 'enterprise-2',
+        organization: 'parent-2',
+        ingestCostCenters: false,
+        ingestTeams: true,
+        ingestOrganizationTeamReports: true,
+      }),
+    );
+    await waitFor(() =>
+      expect(api.getDashboardData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'enterprise',
+          entityId: 'enterprise-2',
+          team: undefined,
+        }),
+      ),
+    );
+    expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual([]);
+
+    await user.click(getFilterToggleButton('Organization team'));
+    expect(
+      await screen.findByRole('button', { name: /All organizations/ }),
+    ).toBeVisible();
+
+    await act(async () => {
+      pendingCurrentDashboard.resolve(newDashboard);
+    });
+    await waitFor(() =>
+      expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(
+        newDashboard.daily,
+      ),
+    );
+
+    await act(async () => {
+      lateOrganizationDashboard.resolve(oldDashboard);
+    });
+    expect(JSON.parse(dailyChart.textContent ?? '[]')).toEqual(
+      newDashboard.daily,
+    );
   });
 
   it('supports organization cost centers when enterprise and organization are configured', async () => {
