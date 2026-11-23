@@ -11,12 +11,6 @@ metrics preserve the five-user privacy threshold and leave unreported days
 blank. Enterprise totals continue to fill missing days when all organizations
 are selected. Selecting a team scopes results to its owning organization,
 keeping same-slug teams distinct.
-Failed team-option and dashboard requests can be retried.
-Successful manual backfills no longer postpone the next scheduled organization
-refresh.
-Monthly active-user metrics remain unavailable when GitHub does not report
-them, and selected organizations can still be cleared when team options fail
-or become empty. Team weekly active-user charts leave unreported values blank.
-Older organization discovery results can no longer overwrite a newer refresh,
-and configured-organization dashboards can filter teams when
-`copilot.ingestOrganizationTeamReports` is enabled without `copilot.ingestTeams`.
+Failed organization-team option and dashboard requests can be retried.
+Monthly active-user metrics display as unavailable when GitHub does not report
+them. Team weekly active-user charts leave unreported values blank.
