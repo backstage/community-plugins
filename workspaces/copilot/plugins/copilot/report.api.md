@@ -55,7 +55,7 @@ export interface MyMetricsApi {
 }
 
 // @public (undocumented)
-export const myMetricsApiRef: ApiRef<MyMetricsApi> & {
+export const myMetricsApiRef: ApiRef<MyMetricsApi, string> & {
   readonly $$type: '@backstage/ApiRef';
 };
 
