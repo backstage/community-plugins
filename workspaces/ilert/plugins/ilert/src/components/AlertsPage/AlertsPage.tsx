@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Content,
-  ContentHeader,
-  ResponseErrorPanel,
-  SupportButton,
-} from '@backstage/core-components';
+import { ResponseErrorPanel, SupportButton } from '@backstage/core-components';
+import { Container, Flex, Text } from '@backstage/ui';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
@@ -49,40 +45,45 @@ export const AlertsPage = () => {
   if (error) {
     if (error.name === 'AuthenticationError') {
       return (
-        <Content>
+        <Container>
           <MissingAuthorizationHeaderError />
-        </Content>
+        </Container>
       );
     }
 
     return (
-      <Content>
+      <Container>
         <ResponseErrorPanel error={error} />
-      </Content>
+      </Container>
     );
   }
 
   return (
-    <Content>
-      <ContentHeader title="Alerts">
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          startIcon={<AddIcon />}
-          onClick={handleCreateNewAlertClick}
-        >
-          Create Alert
-        </Button>
-        <AlertNewModal
-          isModalOpened={isModalOpened}
-          setIsModalOpened={setIsModalOpened}
-          refetchAlerts={refetchAlerts}
-        />
-        <SupportButton>
-          This helps you to bring ilert into your developer portal.
-        </SupportButton>
-      </ContentHeader>
+    <Container>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          Alerts
+        </Text>
+        <Flex align="center" gap="2">
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<AddIcon />}
+            onClick={handleCreateNewAlertClick}
+          >
+            Create Alert
+          </Button>
+          <AlertNewModal
+            isModalOpened={isModalOpened}
+            setIsModalOpened={setIsModalOpened}
+            refetchAlerts={refetchAlerts}
+          />
+          <SupportButton>
+            This helps you to bring ilert into your developer portal.
+          </SupportButton>
+        </Flex>
+      </Flex>
       <AlertsTable
         alerts={alerts}
         alertsCount={alertsCount}
@@ -95,6 +96,6 @@ export const AlertsPage = () => {
         isLoading={isLoading}
         setIsLoading={setIsLoading}
       />
-    </Content>
+    </Container>
   );
 };
