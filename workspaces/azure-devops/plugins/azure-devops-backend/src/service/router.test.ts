@@ -71,6 +71,7 @@ describe('createRouter', () => {
       getReadme: jest.fn(),
       getBuildRunLog: jest.fn(),
       getBuild: jest.fn(),
+      getBuildDefinitionIds: jest.fn(),
       getProjects: jest.fn(),
       getDashboardPullRequests: jest.fn(),
     } as any;
@@ -149,6 +150,17 @@ describe('createRouter', () => {
           {
             apiVersion: 'backstage.io/v1alpha1',
             kind: 'Component',
+            metadata: {
+              name: 'malformed',
+              annotations: {
+                'dev.azure.com/project': 'myProject',
+                'dev.azure.com/build-definition': ' , ',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
             metadata: { name: 'unannotated' },
           },
         ],
@@ -190,6 +202,9 @@ describe('createRouter', () => {
         request(app)
           .get('/pull-requests/pipelineProject/myRepo')
           .query({ entityRef: 'component:default/crossproject' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef: 'component:default/malformed' }),
         request(app).get('/readme/myProject/otherRepo').query({ entityRef }),
         request(app)
           .get('/builds/otherProject/build/8/log')
@@ -997,6 +1012,20 @@ describe('createRouter', () => {
   });
 
   describe('GET /builds/:projectName/build/:buildId/log', () => {
+    const MY_REPO_ID = 'af4ae3af-e747-4129-9bbc-d1329f6b0998';
+    const MY_DEFINITION_ID = 42;
+    const build = (definitionId: number, repoId: string) => ({
+      definition: { id: definitionId },
+      repository: { id: repoId, type: 'TfsGit' },
+    });
+
+    beforeEach(() => {
+      azureDevOpsApi.getGitRepository.mockResolvedValue({ id: MY_REPO_ID });
+      azureDevOpsApi.getBuildDefinitionIds.mockResolvedValue([
+        MY_DEFINITION_ID,
+      ]);
+    });
+
     it('fetches the logs for a build run', async () => {
       const buildLog: string[] = [
         'Starting pipeline',
@@ -1006,10 +1035,9 @@ describe('createRouter', () => {
         'Section 4 - Step 4',
       ];
 
-      azureDevOpsApi.getBuild.mockResolvedValueOnce({
-        definition: { name: 'myDefinition' },
-        repository: { name: 'myRepo' },
-      });
+      azureDevOpsApi.getBuild.mockResolvedValueOnce(
+        build(MY_DEFINITION_ID, MY_REPO_ID),
+      );
       azureDevOpsApi.getBuildRunLog.mockResolvedValueOnce(buildLog);
 
       mockedAuthorize.mockImplementationOnce(async () => [
@@ -1049,57 +1077,62 @@ describe('createRouter', () => {
     it('rejects builds from pipelines or repositories not annotated on the entity', async () => {
       const entityRef = 'component:default/mycomponent';
       azureDevOpsApi.getBuild
+        .mockResolvedValueOnce(build(99, MY_REPO_ID))
+        .mockResolvedValueOnce(build(MY_DEFINITION_ID, 'other-repo-id'))
+        // Same name and ID shape, but not an Azure Repos repository
         .mockResolvedValueOnce({
-          definition: { name: 'otherDefinition' },
-          repository: { name: 'myRepo' },
+          ...build(MY_DEFINITION_ID, MY_REPO_ID),
+          repository: { id: MY_REPO_ID, name: 'myRepo', type: 'GitHub' },
         })
-        .mockResolvedValueOnce({
-          definition: { name: 'myDefinition' },
-          repository: { name: 'otherRepo' },
-        })
-        .mockResolvedValueOnce({
-          definition: { name: 'anyDefinition' },
-          repository: { name: 'otherRepo' },
-        });
+        .mockResolvedValueOnce(build(1, 'other-repo-id'));
 
-      const otherDefinition = await request(app)
-        .get('/builds/myProject/build/9/log')
-        .query({ entityRef });
-      const otherRepo = await request(app)
-        .get('/builds/myProject/build/10/log')
-        .query({ entityRef });
-      const repoOnlyOtherRepo = await request(app)
-        .get('/builds/myProject/build/11/log')
-        .query({ entityRef: 'component:default/repoonly' });
+      const responses = [
+        await request(app)
+          .get('/builds/myProject/build/9/log')
+          .query({ entityRef }),
+        await request(app)
+          .get('/builds/myProject/build/10/log')
+          .query({ entityRef }),
+        await request(app)
+          .get('/builds/myProject/build/11/log')
+          .query({ entityRef }),
+        await request(app)
+          .get('/builds/myProject/build/12/log')
+          .query({ entityRef: 'component:default/repoonly' }),
+      ];
 
-      expect(otherDefinition.status).toEqual(403);
-      expect(otherRepo.status).toEqual(403);
-      expect(repoOnlyOtherRepo.status).toEqual(403);
+      for (const response of responses) {
+        expect(response.status).toEqual(403);
+      }
       expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
     });
 
-    it('fetches logs for repository-only and cross-project entities', async () => {
+    it('fetches logs for repository-only, cross-project and pattern-matched entities', async () => {
       azureDevOpsApi.getBuild
-        .mockResolvedValueOnce({
-          definition: { name: 'anyDefinition' },
-          repository: { name: 'myRepo' },
-        })
-        .mockResolvedValueOnce({
-          definition: { name: 'myDefinition' },
-          repository: { name: 'repoInPipelineProject' },
-        });
+        .mockResolvedValueOnce(build(1, MY_REPO_ID))
+        .mockResolvedValueOnce(
+          build(MY_DEFINITION_ID, 'repo-in-pipeline-project'),
+        );
       azureDevOpsApi.getBuildRunLog.mockResolvedValue(['log']);
 
       const repoOnly = await request(app)
-        .get('/builds/myProject/build/12/log')
+        .get('/builds/myProject/build/13/log')
         .query({ entityRef: 'component:default/repoonly' });
       const crossProject = await request(app)
-        .get('/builds/pipelineProject/build/13/log')
+        .get('/builds/pipelineProject/build/14/log')
         .query({ entityRef: 'component:default/crossproject' });
 
       expect(repoOnly.status).toEqual(200);
       expect(crossProject.status).toEqual(200);
       expect(azureDevOpsApi.getBuildRunLog).toHaveBeenCalledTimes(2);
+      // Annotated names are resolved to IDs, so patterns such as `service-*`
+      // match builds of any definition the pattern resolves to
+      expect(azureDevOpsApi.getBuildDefinitionIds).toHaveBeenCalledWith(
+        'pipelineProject',
+        ['myDefinition'],
+        undefined,
+        undefined,
+      );
     });
 
     it('throws InputError when invalid buildId passed', async () => {

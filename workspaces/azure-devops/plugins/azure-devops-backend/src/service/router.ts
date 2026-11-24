@@ -153,6 +153,19 @@ export async function createRouter(
       repo = repoName;
     }
 
+    const definitions =
+      annotations.definition
+        ?.split(',')
+        .map(d => d.trim())
+        .filter(Boolean) ?? [];
+    // Fail closed when a malformed annotation leaves nothing to filter on,
+    // otherwise pipeline routes would return every build in the project
+    if (scope === 'pipeline' && !repo && definitions.length === 0) {
+      throw new NotAllowedError(
+        'Entity is not annotated with an Azure DevOps repository or build definition',
+      );
+    }
+
     const host = req.query.host?.toString();
     const org = req.query.org?.toString();
     if (
@@ -168,11 +181,7 @@ export async function createRouter(
     return {
       project,
       repo,
-      definitions:
-        annotations.definition
-          ?.split(',')
-          .map(d => d.trim())
-          .filter(Boolean) ?? [],
+      definitions,
       host: annotations.host,
       org: annotations.org,
     };
@@ -613,16 +622,34 @@ export async function createRouter(
       res.status(200).json({ log: [] });
       return;
     }
-    const matchesRepo =
-      target.repo === undefined ||
-      build.repository?.name?.toLowerCase() === target.repo.toLowerCase();
-    const matchesDefinition =
-      target.definitions.length === 0 ||
-      target.definitions.includes(build.definition?.name ?? '');
-    const belongsToEntity =
-      (target.repo !== undefined || target.definitions.length > 0) &&
-      matchesRepo &&
-      matchesDefinition;
+    // Compare by ID: repository names are only unique within a project and
+    // repository type, and definition annotations can be name patterns
+    let matchesRepo = true;
+    if (target.repo !== undefined) {
+      const repository = await azureDevOpsApi.getGitRepository(
+        target.project,
+        target.repo,
+        target.host,
+        target.org,
+      );
+      matchesRepo =
+        repository?.id !== undefined &&
+        build.repository?.type === 'TfsGit' &&
+        build.repository?.id?.toLowerCase() === repository.id.toLowerCase();
+    }
+    let matchesDefinition = true;
+    if (target.definitions.length > 0) {
+      const definitionIds = await azureDevOpsApi.getBuildDefinitionIds(
+        target.project,
+        target.definitions,
+        target.host,
+        target.org,
+      );
+      matchesDefinition =
+        build.definition?.id !== undefined &&
+        definitionIds.includes(build.definition.id);
+    }
+    const belongsToEntity = matchesRepo && matchesDefinition;
     if (!belongsToEntity) {
       throw new NotAllowedError(
         'Requested Azure DevOps resource does not match the entity annotations',

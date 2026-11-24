@@ -156,6 +156,28 @@ export class AzureDevOpsApi {
     return client.getRepository(repoName, projectName);
   }
 
+  /**
+   * Resolves build definition names, which Azure DevOps treats as patterns
+   * (e.g. `service-*`), to the IDs of the matching definitions.
+   */
+  public async getBuildDefinitionIds(
+    projectName: string,
+    definitionNames: string[],
+    host?: string,
+    org?: string,
+  ): Promise<number[]> {
+    const buildDefinitions = (
+      await Promise.all(
+        definitionNames.map(name =>
+          this.getBuildDefinitions(projectName, name, host, org),
+        ),
+      )
+    ).flat();
+    return buildDefinitions
+      .map(bd => bd.id)
+      .filter((id): id is number => Boolean(id));
+  }
+
   public async getBuildList(
     projectName: string,
     repoId: string,
@@ -170,16 +192,12 @@ export class AzureDevOpsApi {
 
     let definitions: number[] | undefined;
     if (definitionNames && definitionNames.length > 0) {
-      const buildDefinitions = (
-        await Promise.all(
-          definitionNames.map(name =>
-            this.getBuildDefinitions(projectName, name, host, org),
-          ),
-        )
-      ).flat();
-      definitions = buildDefinitions
-        .map(bd => bd.id)
-        .filter((id): id is number => Boolean(id));
+      definitions = await this.getBuildDefinitionIds(
+        projectName,
+        definitionNames,
+        host,
+        org,
+      );
       if (definitions.length === 0) {
         return [];
       }
