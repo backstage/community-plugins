@@ -18,6 +18,7 @@ import { useCallback, useEffect, useState } from 'react';
 import * as React from 'react';
 import DataTable from 'react-data-table-component';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import { Link } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
@@ -50,9 +51,15 @@ export const SecurityFindingsComponent = ({
       wrap: true,
       width: '140px',
       cell: (row: any) => (
-        <a href={row.rowData.link} target="_blank" rel="noopener noreferrer">
+        <Link
+          color="inherit"
+          underline="always"
+          href={row.rowData.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {row.rowData.cve}
-        </a>
+        </Link>
       ),
     },
     {
