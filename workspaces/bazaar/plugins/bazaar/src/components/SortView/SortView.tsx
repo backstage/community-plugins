@@ -15,7 +15,8 @@
  */
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Content, SupportButton } from '@backstage/core-components';
+import { SupportButton } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import { AddProjectDialog } from '../AddProjectDialog';
 import { ProjectPreview } from '../ProjectPreview/ProjectPreview';
 import Button from '@material-ui/core/Button';
@@ -177,7 +178,7 @@ export const SortView = (props: SortViewProps) => {
     return <Alert severity="error">{bazaarProjects.error.message}</Alert>;
 
   return (
-    <Content noPadding>
+    <Box>
       <div className={classes.header}>
         <SortMethodSelector
           sortMethodNbr={sortMethodNbr}
@@ -222,7 +223,7 @@ export const SortView = (props: SortViewProps) => {
         gridSize={fullWidth ? 2 : 4}
         height={fullHeight ? 'large' : 'small'}
       />
-      <Content noPadding className={classes.container} />
-    </Content>
+      <div className={classes.container} />
+    </Box>
   );
 };
