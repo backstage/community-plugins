@@ -35,6 +35,9 @@ export const npmTranslationRef = createTranslationRef({
       issueTracker: 'Issue tracker',
       homepage: 'Homepage',
     },
+    releaseTab: {
+      title: 'Npm Releases',
+    },
     releaseOverviewCard: {
       title: 'Current Tags',
       toolbar: {

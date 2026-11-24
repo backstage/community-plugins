@@ -17,7 +17,7 @@ import {
   ApiBlueprint,
   createFrontendModule,
   createFrontendPlugin,
-  fetchApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import {
   EntityCardBlueprint,
@@ -28,7 +28,7 @@ import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApiRef, NpmBackendClient } from './api';
-import { npmTranslations } from './translations';
+import { npmTranslationRef, npmTranslations } from './translations';
 
 export { npmTranslationRef, npmTranslations } from './translations';
 
@@ -45,7 +45,7 @@ export const npmBackendApi = ApiBlueprint.make({
     defineParams({
       api: NpmBackendApiRef,
       deps: {
-        fetchApi: fetchApiRef,
+        fetchApi: coreApis.fetch,
       },
       factory: ({ fetchApi }) =>
         new NpmBackendClient({
@@ -100,7 +100,7 @@ export const entityNpmReleaseTableCard = EntityContentBlueprint.make({
   name: 'EntityNpmReleaseTableCard',
   params: {
     path: '/npm-releases',
-    title: 'Npm Releases',
+    title: npmTranslationRef('releaseTab.title'),
     group: 'development',
     filter: isNpmAvailable,
     loader: () =>
