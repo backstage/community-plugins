@@ -278,7 +278,8 @@ export const filterPermissionsMatrix = (
     roleNames,
     decision,
   }: {
-    roleSearch: string;
+    /** Omit when the caller already searched the rows it passes in. */
+    roleSearch?: string;
     pluginId?: string;
     roleNames?: string[];
     decision?: MatrixDecision;
@@ -290,7 +291,7 @@ export const filterPermissionsMatrix = (
   let plugins = pluginId
     ? matrix.plugins.filter(plugin => plugin.pluginId === pluginId)
     : matrix.plugins;
-  let rows = searchMatrixRows(matrix.rows, roleSearch, locale).filter(
+  let rows = searchMatrixRows(matrix.rows, roleSearch ?? '', locale).filter(
     row => !selectedRoles || selectedRoles.has(row.roleName),
   );
 

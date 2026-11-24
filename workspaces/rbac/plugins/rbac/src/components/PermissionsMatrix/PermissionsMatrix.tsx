@@ -203,24 +203,18 @@ export const PermissionsMatrix = () => {
   const filtered = useMemo(
     () =>
       matrix &&
+      // sidebarRows already carries the role search, so the search runs once
+      // and both the sidebar and the table share its result.
       filterPermissionsMatrix(
-        matrix,
+        { ...matrix, rows: sidebarRows },
         {
-          roleSearch: deferredRoleSearch,
           roleNames: selectedRoles,
           pluginId: pluginFilter === ALL_PLUGINS ? undefined : pluginFilter,
           decision: DECISION_FILTERS.find(d => d === decisionFilter),
         },
         locale,
       ),
-    [
-      matrix,
-      deferredRoleSearch,
-      selectedRoles,
-      pluginFilter,
-      decisionFilter,
-      locale,
-    ],
+    [matrix, sidebarRows, selectedRoles, pluginFilter, decisionFilter, locale],
   );
 
   const toSingleValue = (value: Key | Key[] | null) => {
@@ -245,13 +239,19 @@ export const PermissionsMatrix = () => {
     return <Progress />;
   }
 
+  // The roles the search and the checkboxes leave visible, before the policy
+  // filter: when these are empty, every column loses its decisions too, and
+  // the missing roles are the message, not the filters.
+  const visibleRoles = sidebarRows.filter(
+    row => !selectedRoles.length || selectedRoles.includes(row.roleName),
+  );
   let emptyMessage: string | undefined;
   if (!matrix.plugins.length) {
     emptyMessage = t('permissionsMatrix.emptyPermissions');
-  } else if (!filtered.plugins.length) {
-    emptyMessage = t('permissionsMatrix.noMatches');
-  } else if (!filtered.rows.length) {
+  } else if (!visibleRoles.length) {
     emptyMessage = t('permissionsMatrix.emptyRoles');
+  } else if (!filtered.plugins.length || !filtered.rows.length) {
+    emptyMessage = t('permissionsMatrix.noMatches');
   }
 
   return (

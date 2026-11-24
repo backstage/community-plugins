@@ -61,8 +61,14 @@ import { getMembersCount } from './create-role-utils';
 
 /** Path of a role's overview page, relative to the RBAC root page. */
 export const getRoleOverviewPath = (roleRef: string): string => {
-  const { kind, namespace, name } = parseEntityRef(roleRef);
-  return `roles/${kind}/${namespace}/${name}`;
+  try {
+    const { kind, namespace, name } = parseEntityRef(roleRef);
+    return `roles/${kind}/${namespace}/${name}`;
+  } catch {
+    // Like getShortRoleName, degrade instead of crashing the render: an
+    // empty path keeps the link on the RBAC page itself.
+    return '';
+  }
 };
 
 export const getPermissionsArray = (

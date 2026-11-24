@@ -163,6 +163,12 @@ describe('PermissionsMatrix', () => {
       '-missing',
     );
     expect(await screen.findByText('No roles found')).toBeInTheDocument();
+
+    // with a policy filter active the message still talks about roles, not
+    // about the filters emptying the columns
+    await userEvent.click(screen.getByRole('button', { name: /policy/i }));
+    await userEvent.click(await screen.findByRole('option', { name: 'Deny' }));
+    expect(await screen.findByText('No roles found')).toBeInTheDocument();
   });
 
   it('filters the columns by plugin', async () => {

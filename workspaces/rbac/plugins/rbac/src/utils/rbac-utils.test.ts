@@ -38,6 +38,7 @@ import {
   getPermissionsData,
   getPluginInfo,
   getPoliciesData,
+  getRoleOverviewPath,
 } from './rbac-utils';
 
 // Mock translation function for tests
@@ -262,6 +263,17 @@ describe('rbac utils', () => {
       resourceType: 'policy-entity',
       usingResourceType: false,
     });
+  });
+});
+
+describe('getRoleOverviewPath', () => {
+  it('builds the role path and degrades to the RBAC page for a malformed reference', () => {
+    expect(getRoleOverviewPath('role:default/dev')).toBe(
+      'roles/role/default/dev',
+    );
+    // getShortRoleName degrades on a malformed ref instead of throwing; the
+    // overview path must not crash the same render either
+    expect(getRoleOverviewPath('not a ref')).toBe('');
   });
 });
 
