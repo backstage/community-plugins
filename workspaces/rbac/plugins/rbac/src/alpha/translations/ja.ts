@@ -105,6 +105,16 @@ const rbacTranslationJa = createTranslationMessages({
     'roleForm.review.reviewAndSave': '確認および保存',
     'roleForm.review.nameDescriptionOwner': 'ロールの名前、説明、および所有者',
     'roleForm.review.permissionPoliciesWithCount': '権限ポリシー ({{count}})',
+    'roleForm.review.changes.title': 'このロールへの変更',
+    'roleForm.review.changes.noChanges':
+      'このロールには変更が加えられていません。',
+    'roleForm.review.changes.added': '追加',
+    'roleForm.review.changes.removed': '削除',
+    'roleForm.review.changes.changed': '変更',
+    'roleForm.review.changes.valueChanged':
+      '{{field}}: 「{{previous}}」から「{{current}}」に変更',
+    'roleForm.review.changes.permissionPolicies': '権限ポリシー',
+    'roleForm.review.changes.conditionalPolicies': '条件付きアクセスポリシー',
     'roleForm.steps.next': '次へ',
     'roleForm.steps.back': '戻る',
     'roleForm.steps.cancel': 'キャンセル',

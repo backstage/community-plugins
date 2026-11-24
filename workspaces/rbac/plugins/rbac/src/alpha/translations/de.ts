@@ -110,6 +110,17 @@ const rbacTranslationDe = createTranslationMessages({
       'Name, Beschreibung und Eigentümer der Rolle',
     'roleForm.review.permissionPoliciesWithCount':
       'Berechtigungsrichtlinien ({{count}})',
+    'roleForm.review.changes.title': 'Änderungen an dieser Rolle',
+    'roleForm.review.changes.noChanges':
+      'An dieser Rolle wurden keine Änderungen vorgenommen.',
+    'roleForm.review.changes.added': 'Hinzugefügt',
+    'roleForm.review.changes.removed': 'Entfernt',
+    'roleForm.review.changes.changed': 'Geändert',
+    'roleForm.review.changes.valueChanged':
+      '{{field}}: von „{{previous}}“ zu „{{current}}“',
+    'roleForm.review.changes.permissionPolicies': 'Berechtigungsrichtlinien',
+    'roleForm.review.changes.conditionalPolicies':
+      'Richtlinien für bedingten Zugriff',
     'roleForm.steps.next': 'Weiter',
     'roleForm.steps.back': 'Zurück',
     'roleForm.steps.cancel': 'Abbrechen',
