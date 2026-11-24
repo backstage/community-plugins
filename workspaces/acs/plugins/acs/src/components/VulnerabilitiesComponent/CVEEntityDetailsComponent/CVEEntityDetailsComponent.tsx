@@ -16,7 +16,7 @@
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useTheme } from '@material-ui/core/styles';
-import { Box, Chip, Grid, Typography } from '@material-ui/core';
+import { Box, Chip, Typography } from '@material-ui/core';
 
 export const CVEEntityDetailsComponent = ({
   data,
@@ -162,9 +162,9 @@ export const CVEEntityDetailsComponent = ({
   }, []);
 
   return (
-    <Grid container direction="column" justifyContent="space-between">
+    <div>
       <CVEDetails />
       <EntityDetails />
-    </Grid>
+    </div>
   );
 };
