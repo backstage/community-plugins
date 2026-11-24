@@ -32,11 +32,11 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.9.12",
+    "@backstage/plugin-permission-common": "^0.9.13",
     "@kubernetes/client-node": "^1.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.7"
+    "@backstage/cli": "^0.36.8"
   },
   "files": [
     "dist"
