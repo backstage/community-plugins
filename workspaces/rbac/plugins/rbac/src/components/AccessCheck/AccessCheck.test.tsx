@@ -29,6 +29,8 @@ const accessCheckResponse: AccessCheckResponse = {
   roles: [
     { roleEntityRef: 'role:default/dev', via: ['user:default/tom'] },
     { roleEntityRef: 'role:default/qa', via: ['group:default/team-a'] },
+    // a configured default role applies without any membership
+    { roleEntityRef: 'role:default/everyone', via: [] },
   ],
   decisions: [
     {
@@ -75,6 +77,16 @@ const accessCheckResponse: AccessCheckResponse = {
       result: AuthorizeResult.DENY,
       allowedBy: ['role:default/dev'],
       deniedBy: ['role:default/qa'],
+      conditionalBy: [],
+    },
+    {
+      // denied by default: nothing grants or denies it explicitly
+      pluginId: 'catalog',
+      permission: 'catalog.location.read',
+      action: 'read',
+      result: AuthorizeResult.DENY,
+      allowedBy: [],
+      deniedBy: [],
       conditionalBy: [],
     },
   ],
@@ -132,11 +144,16 @@ describe('AccessCheck', () => {
     expect(
       within(roles).getByText('via group:default/team-a'),
     ).toBeInTheDocument();
+    expect(
+      within(roles).getByText('applies to every user'),
+    ).toBeInTheDocument();
 
     const table = screen.getByRole('table');
     const rows = within(table).getAllByRole('row');
-    // header + three decisions
-    expect(rows).toHaveLength(4);
+    // header + four decisions
+    expect(rows).toHaveLength(5);
+    // a permission nothing grants or denies says so instead of listing roles
+    expect(within(rows[4]).getByText('No matching policy')).toBeInTheDocument();
 
     const readRow = rows[1];
     expect(
@@ -229,6 +246,20 @@ describe('AccessCheck', () => {
     expect(screen.getByText('The user has no roles.')).toBeInTheDocument();
     // a super user's access does not come from a policy, and the table says so
     expect(screen.getByText('Super user')).toBeInTheDocument();
+  });
+
+  it('offers no user options when the catalog search fails', async () => {
+    await renderAccessCheck(
+      createRbacApi({
+        searchMembers: jest
+          .fn()
+          .mockResolvedValue({ status: 403, statusText: 'Forbidden' }),
+      }),
+    );
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'User' }));
+    expect(await screen.findByText('No options')).toBeInTheDocument();
+    expect(screen.queryByText('Tom')).not.toBeInTheDocument();
   });
 
   it('shows an error panel with the backend message when the check fails', async () => {
