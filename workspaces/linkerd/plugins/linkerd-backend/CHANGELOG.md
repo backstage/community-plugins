@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.25.1
+
+### Patch Changes
+
+- d241500: Remove unused dependencies from the Linkerd backend and unused test dependencies from the frontend.
+
 ## 0.25.0
 
 ### Minor Changes
