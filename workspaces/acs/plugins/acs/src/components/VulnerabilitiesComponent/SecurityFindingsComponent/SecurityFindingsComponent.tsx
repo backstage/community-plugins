@@ -19,8 +19,6 @@ import * as React from 'react';
 import DataTable from 'react-data-table-component';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import { useTheme } from '@material-ui/core/styles';
-import '@patternfly/react-core/dist/styles/base.css';
-import '@patternfly/react-styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
