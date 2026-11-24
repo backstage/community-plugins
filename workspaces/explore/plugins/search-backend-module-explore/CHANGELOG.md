@@ -1,5 +1,16 @@
 # @backstage-community/plugin-search-backend-module-explore
 
+## 0.13.0
+
+### Minor Changes
+
+- 1489ee2: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- Updated dependencies [1489ee2]
+  - @backstage-community/plugin-explore-common@0.16.0
+
 ## 0.12.0
 
 ### Minor Changes
