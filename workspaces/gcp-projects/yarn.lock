@@ -361,6 +361,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@react-hookz/web": "npm:^25.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
@@ -1583,7 +1584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.20.0":
+"@backstage/ui@backstage:^::backstage=1.57.1&npm=0.20.0, @backstage/ui@npm:^0.20.0":
   version: 0.20.0
   resolution: "@backstage/ui@npm:0.20.0"
   dependencies:

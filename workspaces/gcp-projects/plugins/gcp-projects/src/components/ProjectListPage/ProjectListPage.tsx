@@ -23,21 +23,12 @@ import Typography from '@material-ui/core/Typography';
 import { useAsync, useMountEffect } from '@react-hookz/web';
 import { gcpApiRef, Project } from '../../api';
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
-  Link,
-  Page,
-  Table,
-  SupportButton,
-  WarningPanel,
-} from '@backstage/core-components';
+import { Table, SupportButton, WarningPanel } from '@backstage/core-components';
+import { Container, Header, Link } from '@backstage/ui';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
 
 const LongText = ({ text, max }: { text: string; max: number }) => {
   if (text.length < max) {
@@ -56,12 +47,10 @@ const LongText = ({ text, max }: { text: string; max: number }) => {
   );
 };
 
-const labels = (
-  <>
-    <HeaderLabel label="Owner" value="Spotify" />
-    <HeaderLabel label="Lifecycle" value="Production" />
-  </>
-);
+const metadata = [
+  { label: 'Owner', value: 'Spotify' },
+  { label: 'Lifecycle', value: 'Production' },
+];
 
 const PageContents = () => {
   const api = useApi(gcpApiRef);
@@ -70,6 +59,7 @@ const PageContents = () => {
     api.listProjects(),
   );
   useMountEffect(execute);
+  const projectPath = useResolvedPath('project').pathname;
 
   if (status === 'loading') {
     return <LinearProgress />;
@@ -83,7 +73,7 @@ const PageContents = () => {
 
   function renderLink(id: string) {
     return (
-      <Link to={`project?projectId=${encodeURIComponent(id)}`}>
+      <Link href={`${projectPath}?projectId=${encodeURIComponent(id)}`}>
         <Typography color="primary">
           <LongText text={id} max={60} />
         </Typography>
@@ -138,23 +128,27 @@ const PageContents = () => {
 };
 
 export const ProjectListPage = () => (
-  <Page themeId="service">
-    <Header title="GCP Projects" type="tool">
-      {labels}
-    </Header>
-    <Content>
-      <ContentHeader title="">
-        <Button
-          component={RouterLink}
-          variant="contained"
-          color="primary"
-          to="new"
-        >
-          New Project
-        </Button>
-        <SupportButton>All your software catalog entities</SupportButton>
-      </ContentHeader>
+  <>
+    <Header
+      title="GCP Projects"
+      tags={[{ label: 'tool' }]}
+      metadata={metadata}
+      customActions={
+        <>
+          <Button
+            component={RouterLink}
+            variant="contained"
+            color="primary"
+            to="new"
+          >
+            New Project
+          </Button>
+          <SupportButton>All your software catalog entities</SupportButton>
+        </>
+      }
+    />
+    <Container>
       <PageContents />
-    </Content>
-  </Page>
+    </Container>
+  </>
 );
