@@ -23,6 +23,16 @@ import { useTheme } from '@material-ui/core/styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
+const tableStyles = {
+  expanderRow: {
+    style: {
+      position: 'sticky',
+      left: 0,
+      maxWidth: '100cqw',
+    },
+  },
+} as const;
+
 interface SecurityFindingsProps {
   data: any;
   filters: {
@@ -293,10 +303,11 @@ export const SecurityFindingsComponent = ({
   }, [organizeData]);
 
   return (
-    <div>
+    <div style={{ containerType: 'inline-size' }}>
       <DataTable
         data={dataRows}
         columns={columns}
+        customStyles={tableStyles}
         expandableRows
         expandableRowsComponent={CVEEntityDetailsComponent}
         expandableRowsComponentProps={{
