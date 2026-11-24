@@ -990,4 +990,46 @@ describe('RBACBackendClient', () => {
       ).resolves.toEqual(expect.objectContaining({ status: 403 }));
     });
   });
+
+  describe('checkAccess', () => {
+    it('fetches the access check for a user and returns error responses as-is', async () => {
+      const accessCheck = {
+        userEntityRef: 'user:default/tom',
+        isSuperUser: false,
+        roles: [],
+        decisions: [],
+      };
+      server.use(
+        rest.get(
+          `${LOCAL_ADDR}/api/permission/access-check`,
+          (req, res, ctx) => {
+            lastRequest = {
+              url: req.url.toString(),
+              authorizationHeader: req.headers.get('authorization'),
+            };
+            return res(ctx.json(accessCheck));
+          },
+        ),
+      );
+
+      await expect(rbacApi.checkAccess('user:default/tom')).resolves.toEqual(
+        accessCheck,
+      );
+      // the entity reference is URL-encoded into the query
+      expect(lastRequest.url).toBe(
+        'https://localhost:7007/api/permission/access-check?userEntityRef=user%3Adefault%2Ftom',
+      );
+      expect(lastRequest.authorizationHeader).toBe('Bearer test-token');
+
+      server.use(
+        rest.get(
+          `${LOCAL_ADDR}/api/permission/access-check`,
+          (_req, res, ctx) => res(ctx.status(403)),
+        ),
+      );
+      await expect(rbacApi.checkAccess('user:default/tom')).resolves.toEqual(
+        expect.objectContaining({ status: 403 }),
+      );
+    });
+  });
 });

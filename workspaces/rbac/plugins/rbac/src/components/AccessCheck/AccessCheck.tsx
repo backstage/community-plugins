@@ -173,7 +173,7 @@ export const AccessCheck = () => {
   const rbacApi = useApi(rbacApiRef);
   const decisionLabels = useDecisionLabels();
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [resultFilter, setResultFilter] = useState<Key>(ALL_RESULTS);
+  const [resultFilter, setResultFilter] = useState<string>(ALL_RESULTS);
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
 
@@ -189,10 +189,22 @@ export const AccessCheck = () => {
     if ('userEntityRef' in result) {
       return result;
     }
-    throw new Error(
-      (result as Response).statusText || String((result as Response).status),
-    );
+    // Prefer the backend's own error message: statusText is empty over
+    // HTTP/2, and a bare status number tells the admin nothing.
+    let message = result.statusText;
+    try {
+      const body = await result.json();
+      message = body?.error?.message || message;
+    } catch {
+      // not a JSON body; keep the status text
+    }
+    throw new Error(message || String(result.status));
   }, [selectedUser, rbacApi]);
+
+  const handleResultChange = (value: Key | Key[] | null) => {
+    const next = Array.isArray(value) ? value[0] : value;
+    setResultFilter(next ? String(next) : ALL_RESULTS);
+  };
 
   const filteredDecisions = useMemo(() => {
     if (!check) {
@@ -233,8 +245,8 @@ export const AccessCheck = () => {
             />
             <Select
               label={t('accessCheck.access')}
-              selectedKey={resultFilter}
-              onSelectionChange={key => setResultFilter(key ?? ALL_RESULTS)}
+              value={resultFilter}
+              onChange={handleResultChange}
               options={[
                 { value: ALL_RESULTS, label: t('accessCheck.allResults') },
                 ...RESULT_FILTERS.map(decision => ({
@@ -288,7 +300,7 @@ export const AccessCheck = () => {
                           .map(ref =>
                             ref === check.userEntityRef
                               ? t('accessCheck.directAssignment')
-                              : `${t('accessCheck.via')} ${ref}`,
+                              : t('accessCheck.viaGroup' as any, { ref }),
                           )
                           .join(', ')}
                   </Text>

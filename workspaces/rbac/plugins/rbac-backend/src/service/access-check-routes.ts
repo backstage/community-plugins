@@ -65,9 +65,14 @@ export function registerAccessCheckRoutes(
       }
 
       const userEntityRefQuery = request.query.userEntityRef;
-      if (typeof userEntityRefQuery !== 'string') {
+      if (userEntityRefQuery === undefined) {
         throw new InputError(
           `Missing required query parameter 'userEntityRef'`,
+        );
+      }
+      if (typeof userEntityRefQuery !== 'string') {
+        throw new InputError(
+          `Query parameter 'userEntityRef' must be provided exactly once`,
         );
       }
       // Role members are stored lowercased, so normalize the same way.

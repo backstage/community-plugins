@@ -105,6 +105,15 @@ describe('REST access check API', () => {
       'user:default/tom',
       pluginPolicies,
     );
+    // the read is audited together with its query
+    expect(mockAuditorService.createEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventId: 'access-check-read',
+        meta: expect.objectContaining({
+          query: { userEntityRef: 'user:default/Tom' },
+        }),
+      }),
+    );
   });
 
   it('rejects a caller without read access', async () => {
@@ -133,10 +142,23 @@ describe('REST access check API', () => {
     expect(checkAccessMock).not.toHaveBeenCalled();
   });
 
-  it('rejects a missing or non-user entity reference', async () => {
+  it('rejects a missing, repeated, malformed or non-user entity reference', async () => {
     const missing = await request(app).get('/access-check').send();
     expect(missing.statusCode).toBe(400);
     expect(missing.body.error.message).toContain('userEntityRef');
+
+    const repeated = await request(app)
+      .get(
+        '/access-check?userEntityRef=user:default/tom&userEntityRef=user:default/jane',
+      )
+      .send();
+    expect(repeated.statusCode).toBe(400);
+    expect(repeated.body.error.message).toContain('exactly once');
+
+    const malformed = await request(app)
+      .get('/access-check?userEntityRef=tom')
+      .send();
+    expect(malformed.statusCode).toBe(400);
 
     const wrongKind = await request(app)
       .get('/access-check?userEntityRef=role:default/admin')

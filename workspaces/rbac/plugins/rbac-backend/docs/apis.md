@@ -926,7 +926,7 @@ GET </api/permission/access-check?userEntityRef=user:default/tom>
 
 Explains the decisions the permission policy makes for one user: the user's roles with how the user is connected to each (a direct assignment or a group membership), and per plugin permission whether the policy answers `ALLOW`, `DENY`, or `CONDITIONAL`, together with the roles the decision comes from.
 
-A `CONDITIONAL` result is not a final answer: the owning plugin evaluates the returned conditions against a concrete resource at request time. Because the check aggregates policies across every role, it requires unrestricted `policy.entity.read` access; callers whose read access is scoped by conditions receive a 403.
+A `CONDITIONAL` result is not a final answer: the owning plugin evaluates the returned conditions against a concrete resource at request time. Because the check aggregates policies across every role, it requires unrestricted `policy.entity.read` access; callers whose read access is scoped by conditions receive a 403. When `permission.rbac.useOwnershipEntityRefs` is enabled, roles granted to session ownership references that differ from the user's catalog group memberships are not resolved, since the check runs without the user's session.
 
 Query parameters:
 

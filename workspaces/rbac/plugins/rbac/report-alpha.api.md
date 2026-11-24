@@ -240,7 +240,6 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'permissionsMatrix.decisions.deny': string;
     readonly 'permissionsMatrix.decisions.none': string;
     readonly 'accessCheck.source': string;
-    readonly 'accessCheck.via': string;
     readonly 'accessCheck.errors.checkAccess': string;
     readonly 'accessCheck.description': string;
     readonly 'accessCheck.plugin': string;
@@ -253,6 +252,7 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'accessCheck.rolesTitle': string;
     readonly 'accessCheck.noRoles': string;
     readonly 'accessCheck.directAssignment': string;
+    readonly 'accessCheck.viaGroup': string;
     readonly 'accessCheck.appliesToEveryUser': string;
     readonly 'accessCheck.superUser': string;
     readonly 'accessCheck.permissionsTitle': string;

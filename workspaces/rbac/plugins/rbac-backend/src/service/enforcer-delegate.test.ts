@@ -418,6 +418,31 @@ describe('EnforcerDelegate', () => {
     });
   });
 
+  describe('isUserLinkedTo', () => {
+    it('links the user itself and its groups, but not other subjects', async () => {
+      const enfDelegate = await createEnfDelegate();
+
+      await expect(
+        enfDelegate.isUserLinkedTo('user:default/thor', 'user:default/thor'),
+      ).resolves.toBe(true);
+      await expect(
+        enfDelegate.isUserLinkedTo(
+          'user:default/thor',
+          'group:default/thor_group_0',
+        ),
+      ).resolves.toBe(true);
+      await expect(
+        enfDelegate.isUserLinkedTo(
+          'user:default/thor',
+          'group:default/wasp_group_0',
+        ),
+      ).resolves.toBe(false);
+      await expect(
+        enfDelegate.isUserLinkedTo('user:default/thor', 'user:default/hulk'),
+      ).resolves.toBe(false);
+    });
+  });
+
   describe('addPolicy', () => {
     it('should add policy', async () => {
       const enfDelegate = await createEnfDelegate();

@@ -300,7 +300,7 @@ const rbacTranslationJa = createTranslationMessages({
     'accessCheck.rolesTitle': 'ロール',
     'accessCheck.noRoles': 'このユーザーにはロールがありません。',
     'accessCheck.directAssignment': '直接割り当て',
-    'accessCheck.via': '経由:',
+    'accessCheck.viaGroup': '{{ref}} 経由',
     'accessCheck.appliesToEveryUser': 'すべてのユーザーに適用されます',
     'accessCheck.superUser':
       'このユーザーはスーパーユーザーとして設定されているため、すべての権限が許可されます。',

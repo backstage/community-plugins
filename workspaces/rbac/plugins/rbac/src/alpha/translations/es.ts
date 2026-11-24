@@ -315,7 +315,7 @@ const rbacTranslationEs = createTranslationMessages({
     'accessCheck.rolesTitle': 'Roles',
     'accessCheck.noRoles': 'El usuario no tiene roles.',
     'accessCheck.directAssignment': 'asignación directa',
-    'accessCheck.via': 'a través de',
+    'accessCheck.viaGroup': 'a través de {{ref}}',
     'accessCheck.appliesToEveryUser': 'se aplica a todos los usuarios',
     'accessCheck.superUser':
       'Este usuario está configurado como superusuario: todos los permisos están permitidos.',

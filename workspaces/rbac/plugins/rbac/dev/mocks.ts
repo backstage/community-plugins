@@ -241,6 +241,8 @@ class MockRBACApi implements RBACAPI {
     return { status: 204 } as Response;
   }
 
+  // Rough approximation for the dev app only: the backend is the reference
+  // implementation (precedence, group ancestry and collisions differ here).
   async checkAccess(userEntityRef: string): Promise<AccessCheckResponse> {
     const roles = this.resources.filter(role =>
       role.memberReferences.some(

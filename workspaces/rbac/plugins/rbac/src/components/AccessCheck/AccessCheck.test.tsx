@@ -231,7 +231,34 @@ describe('AccessCheck', () => {
     expect(screen.getByText('Super user')).toBeInTheDocument();
   });
 
-  it('shows an error panel when the check fails', async () => {
+  it('shows an error panel with the backend message when the check fails', async () => {
+    // statusText is empty over HTTP/2; the panel surfaces the error body
+    const { unmount } = await renderAccessCheck(
+      createRbacApi({
+        checkAccess: jest.fn().mockResolvedValue({
+          status: 403,
+          statusText: '',
+          json: async () => ({
+            error: {
+              name: 'NotAllowedError',
+              message: 'Unrestricted access required',
+            },
+          }),
+        }),
+      }),
+    );
+    await selectTom();
+
+    expect(
+      await screen.findByText(/Something went wrong while checking the access/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Unrestricted access required'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    unmount();
+
+    // without a JSON body the status text is still shown
     await renderAccessCheck(
       createRbacApi({
         checkAccess: jest
@@ -240,11 +267,6 @@ describe('AccessCheck', () => {
       }),
     );
     await selectTom();
-
-    expect(
-      await screen.findByText(/Something went wrong while checking the access/),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Forbidden')).toBeInTheDocument();
-    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    expect(await screen.findByText('Forbidden')).toBeInTheDocument();
   });
 });

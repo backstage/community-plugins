@@ -48,6 +48,11 @@ const pluginPolicies: PluginPermissionMetaData[] = [
     pluginId: 'scaffolder',
     policies: [{ name: 'scaffolder.action.execute', policy: 'use' }],
   },
+  {
+    // an invalid action string falls back to 'use', like the metadata mapper
+    pluginId: 'custom',
+    policies: [{ name: 'custom.thing.do', policy: 'not-an-action' }],
+  },
 ];
 
 const deleteCondition: RoleConditionalPolicyDecision = {
@@ -129,7 +134,9 @@ const serviceWith = (options: {
 describe('AccessCheckService', () => {
   it('resolves the memberships and explains allow, deny and conditional decisions', async () => {
     const enforcer = mockEnforcer({
-      roles: ['role:default/dev', 'role:default/qa'],
+      // the role manager appends the configured default role unconditionally,
+      // so a role can come back twice; the response must not repeat it
+      roles: ['role:default/dev', 'role:default/qa', 'role:default/dev'],
       rowsByRole: {
         'role:default/dev': [
           ['role:default/dev', 'catalog-entity', 'read', 'allow'],
@@ -147,7 +154,19 @@ describe('AccessCheckService', () => {
     });
     const { service, conditionalStorage } = serviceWith({
       enforcer,
-      conditions: [deleteCondition],
+      conditions: [
+        deleteCondition,
+        // neither of these may match catalog.entity.delete: wrong resource
+        // type, and a permission name that differs from the checked one
+        { ...deleteCondition, id: 2, resourceType: 'scaffolder-template' },
+        {
+          ...deleteCondition,
+          id: 3,
+          permissionMapping: [
+            { name: 'catalog.entity.other', action: 'delete' },
+          ],
+        },
+      ],
     });
 
     const result = await service.checkAccess(user, pluginPolicies);
@@ -163,6 +182,15 @@ describe('AccessCheckService', () => {
       'role:default/dev',
       'role:default/qa',
     ]);
+    // the policy and membership lookups filter by the right columns
+    expect(enforcer.getFilteredPolicy).toHaveBeenCalledWith(
+      0,
+      'role:default/dev',
+    );
+    expect(enforcer.getFilteredGroupingPolicy).toHaveBeenCalledWith(
+      1,
+      'role:default/qa',
+    );
 
     expect(result.decisions).toEqual([
       {
@@ -191,6 +219,15 @@ describe('AccessCheckService', () => {
         action: 'use',
         result: AuthorizeResult.ALLOW,
         allowedBy: ['role:default/dev'],
+        deniedBy: [],
+        conditionalBy: [],
+      },
+      {
+        pluginId: 'custom',
+        permission: 'custom.thing.do',
+        action: 'use',
+        result: AuthorizeResult.DENY,
+        allowedBy: [],
         deniedBy: [],
         conditionalBy: [],
       },
@@ -252,6 +289,19 @@ describe('AccessCheckService', () => {
       allowedBy: [],
       deniedBy: [],
     });
+
+    // with no role policy at all, the condition is still the answer
+    const bare = serviceWith({
+      enforcer: mockEnforcer({ roles: ['role:default/qa'] }),
+      conditions: [deleteCondition],
+      rbacConfig: { policyDecisionPrecedence: 'basic' },
+    });
+    const bareResult = await bare.service.checkAccess(user, pluginPolicies);
+    expect(bareResult.decisions[1]).toMatchObject({
+      permission: 'catalog.entity.delete',
+      result: AuthorizeResult.CONDITIONAL,
+      conditionalBy: [deleteCondition],
+    });
   });
 
   it('falls back to policies assigned directly to the user or their groups when there are no roles', async () => {
@@ -287,11 +337,98 @@ describe('AccessCheckService', () => {
         result: AuthorizeResult.DENY,
         allowedBy: [],
       },
+      {
+        permission: 'custom.thing.do',
+        action: 'use',
+        result: AuthorizeResult.DENY,
+      },
     ]);
   });
 
+  it('mirrors the legacy policy-entity workaround for policy.entity.create', async () => {
+    const permissionPlugin = [
+      {
+        pluginId: 'permission',
+        // declared basic, like the real permission metadata
+        policies: [{ name: 'policy.entity.create', policy: 'create' }],
+      },
+    ];
+
+    // a legacy row on the old resource type still allows the permission
+    const legacy = serviceWith({
+      enforcer: mockEnforcer({
+        roles: ['role:default/admin'],
+        rowsByRole: {
+          'role:default/admin': [
+            ['role:default/admin', 'policy-entity', 'create', 'allow'],
+          ],
+        },
+      }),
+    });
+    const legacyResult = await legacy.service.checkAccess(
+      user,
+      permissionPlugin,
+    );
+    expect(legacyResult.decisions[0]).toEqual({
+      pluginId: 'permission',
+      permission: 'policy.entity.create',
+      resourceType: 'policy-entity',
+      action: 'create',
+      result: AuthorizeResult.ALLOW,
+      allowedBy: ['role:default/admin'],
+      deniedBy: [],
+      conditionalBy: [],
+    });
+
+    // a policy on the permission name wins and stays a basic permission
+    const named = serviceWith({
+      enforcer: mockEnforcer({
+        roles: ['role:default/admin'],
+        rowsByRole: {
+          'role:default/admin': [
+            ['role:default/admin', 'policy.entity.create', 'create', 'allow'],
+          ],
+        },
+      }),
+    });
+    const namedResult = await named.service.checkAccess(user, permissionPlugin);
+    expect(namedResult.decisions[0]).toMatchObject({
+      permission: 'policy.entity.create',
+      result: AuthorizeResult.ALLOW,
+      allowedBy: ['role:default/admin'],
+    });
+    expect(namedResult.decisions[0].resourceType).toBeUndefined();
+  });
+
+  it('answers deny when one role holds colliding conditions, like the policy does', async () => {
+    const collidingCondition = {
+      ...deleteCondition,
+      id: 4,
+      conditions: {
+        rule: 'HAS_LABEL',
+        resourceType: 'catalog-entity',
+        params: { label: 'temp' },
+      },
+    };
+    const { service } = serviceWith({
+      enforcer: mockEnforcer({ roles: ['role:default/qa'] }),
+      conditions: [deleteCondition, collidingCondition],
+    });
+
+    const result = await service.checkAccess(user, pluginPolicies);
+
+    expect(result.decisions[1]).toMatchObject({
+      permission: 'catalog.entity.delete',
+      result: AuthorizeResult.DENY,
+      conditionalBy: [deleteCondition, collidingCondition],
+    });
+  });
+
   it('marks every permission allowed for a configured super user', async () => {
-    const enforcer = mockEnforcer({ roles: [] });
+    const enforcer = mockEnforcer({
+      roles: ['role:default/dev'],
+      membersByRole: { 'role:default/dev': [user] },
+    });
     const { service } = serviceWith({
       enforcer,
       rbacConfig: { admin: { superUsers: [{ name: user }] } },
@@ -300,7 +437,11 @@ describe('AccessCheckService', () => {
     const result = await service.checkAccess(user, pluginPolicies);
 
     expect(result.isSuperUser).toBe(true);
-    expect(result.decisions).toHaveLength(3);
+    // the memberships are still explained for a super user
+    expect(result.roles).toEqual([
+      { roleEntityRef: 'role:default/dev', via: [user] },
+    ]);
+    expect(result.decisions).toHaveLength(4);
     for (const decision of result.decisions) {
       expect(decision).toMatchObject({
         result: AuthorizeResult.ALLOW,

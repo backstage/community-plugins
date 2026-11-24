@@ -29,6 +29,9 @@ jest.mock('./RolesList/RolesList', () => ({
 jest.mock('./PermissionsMatrix/PermissionsMatrix', () => ({
   PermissionsMatrix: () => <div>permissions-matrix-content</div>,
 }));
+jest.mock('./AccessCheck/AccessCheck', () => ({
+  AccessCheck: () => <div>access-check-content</div>,
+}));
 
 const SearchParamsProbe = () => {
   const [searchParams] = useSearchParams();
@@ -59,6 +62,10 @@ describe('RbacPageContent', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('params:view=permissions')).toBeInTheDocument();
 
+    await userEvent.click(screen.getByRole('tab', { name: 'Access check' }));
+    expect(await screen.findByText('access-check-content')).toBeInTheDocument();
+    expect(screen.getByText('params:view=access-check')).toBeInTheDocument();
+
     await userEvent.click(screen.getByRole('tab', { name: 'Roles' }));
     expect(await screen.findByText('roles-list-content')).toBeInTheDocument();
     expect(screen.getByText('params:')).toBeInTheDocument();
@@ -71,5 +78,15 @@ describe('RbacPageContent', () => {
     expect(
       screen.getByRole('tab', { name: 'Permissions by plugin' }),
     ).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('opens on the access checker when the URL asks for it', () => {
+    renderContent('/rbac?view=access-check');
+
+    expect(screen.getByText('access-check-content')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Access check' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 });
