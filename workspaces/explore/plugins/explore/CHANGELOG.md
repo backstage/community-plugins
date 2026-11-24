@@ -1,5 +1,18 @@
 # @backstage-community/plugin-explore
 
+## 1.1.0
+
+### Minor Changes
+
+- 52ba30b: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- 606ec49: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+- Updated dependencies [52ba30b]
+  - @backstage-community/plugin-explore-common@0.15.0
+  - @backstage-community/plugin-explore-react@0.15.0
+
 ## 1.0.1
 
 ### Patch Changes
