@@ -15,7 +15,8 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/core-app-api';
-import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
+import { ConfigApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { GoCdBuildsComponent } from './GoCdBuildsComponent';
@@ -44,7 +45,7 @@ describe('GoCdArtifactsComponent', () => {
       <TestApiProvider
         apis={[
           [gocdApiRef, mockApiClient],
-          [configApiRef, configApi],
+          [coreApis.config, configApi],
         ]}
       >
         <EntityProvider entity={entityValue.entity}>
