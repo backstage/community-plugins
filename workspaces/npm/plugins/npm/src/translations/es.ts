@@ -35,6 +35,7 @@ const npmTranslationEs = createTranslationMessages({
     'infoCard.codeRepository': 'Repositorio de código',
     'infoCard.issueTracker': 'Seguimiento de problemas',
     'infoCard.homepage': 'Página de inicio',
+    'releaseTab.title': 'Lanzamientos de Npm',
     'releaseOverviewCard.title': 'Etiquetas actuales',
     'releaseOverviewCard.toolbar.searchPlaceholder': 'Buscar',
     'releaseOverviewCard.columns.tag': 'Etiqueta',

@@ -15,8 +15,8 @@
  */
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { Content, Header, Page } from '@backstage/core-components';
-import { Grid } from '@material-ui/core';
+import { PageLayout } from '@backstage/frontend-plugin-api';
+import { Grid, Container } from '@backstage/ui';
 
 import {
   npmPlugin,
@@ -38,24 +38,23 @@ const builder = createDevApp()
 allExamples.forEach(example => {
   builder.addPage({
     element: (
-      <Page themeId="tool">
-        <Header title={example.metadata.name} />
-        <Content>
-          <EntityProvider entity={example}>
-            <Grid container>
-              <Grid item xs={6}>
+      <EntityProvider entity={example}>
+        <PageLayout title={example.metadata.name}>
+          <Container pt="4">
+            <Grid.Root columns="3">
+              <Grid.Item colSpan="1">
                 <EntityNpmInfoCard />
-              </Grid>
-              <Grid item xs={6}>
+              </Grid.Item>
+              <Grid.Item colSpan="1">
                 <EntityNpmReleaseOverviewCard />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid.Item>
+              <Grid.Item colSpan="1">
                 <EntityNpmReleaseTableCard />
-              </Grid>
-            </Grid>
-          </EntityProvider>
-        </Content>
-      </Page>
+              </Grid.Item>
+            </Grid.Root>
+          </Container>
+        </PageLayout>
+      </EntityProvider>
     ),
     title: example.metadata.name,
     path: `/${example.metadata.name}`,
