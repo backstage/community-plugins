@@ -1,0 +1,299 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.editorWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.editorWrapper :global(.toastui-editor-defaultUI) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.editorWrapper :global(.toastui-editor-main) {
+  flex: 1;
+}
+
+/* ─── Dark mode overrides ───────────────────────────────────────────────────
+ * Backstage sets data-theme-mode="dark" on <body> when the user switches to
+ * dark theme. These rules use that attribute as an ancestor selector so they
+ * respond to the Backstage theme toggle without any JavaScript.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* Toolbar */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-toolbar) {
+  background-color: #2b2b2b;
+  border-bottom: 1px solid #444;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-toolbar-icons button),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-toolbar-divider) {
+  color: #d0d0d0;
+  border-color: #555;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-toolbar-icons button:hover) {
+  background-color: #3a3a3a;
+}
+
+/* Editor panel backgrounds */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-defaultUI),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-main),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-container),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-ww-container),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-main-container) {
+  background-color: #1e1e1e;
+}
+
+/* Main editing surface — ProseMirror (WYSIWYG) */
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror) {
+  background-color: #1e1e1e;
+  color: #e8e8e8;
+  caret-color: #e8e8e8;
+}
+
+/* Markdown source mode editor */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-container .toastui-editor) {
+  background-color: #1e1e1e;
+  color: #e8e8e8;
+}
+
+/* All visible text in the editor */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents p),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents li),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents td),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents th) {
+  color: #e8e8e8;
+}
+
+/* Headings */
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror h1),
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror h2),
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror h3),
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror h4),
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror h5),
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror h6),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents h1),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents h2),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents h3) {
+  color: #ffffff;
+  border-bottom-color: #444;
+}
+
+/* Inline code */
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror code),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents code) {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #e8c97a;
+}
+
+/* Code blocks */
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror pre),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents pre) {
+  background-color: #161616;
+  color: #e8e8e8;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.ProseMirror pre code),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents pre code) {
+  background-color: transparent;
+  color: #e8e8e8;
+}
+
+/* Blockquote */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.ProseMirror blockquote),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents blockquote) {
+  border-left: 4px solid #555;
+  color: #aaa;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Links */
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror a),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents a) {
+  color: #70b8ff;
+}
+
+/* Horizontal rule */
+:global(body[data-theme-mode='dark']) .editorWrapper :global(.ProseMirror hr),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents hr) {
+  border-color: #444;
+}
+
+/* Tables */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents table) {
+  border-color: #444;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents th) {
+  background-color: #2b2b2b;
+  border-color: #444;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-contents td) {
+  border-color: #444;
+}
+
+/* Editor/preview splitter */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-splitter) {
+  background-color: #444;
+}
+
+/* Markdown mode syntax highlighting */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-heading) {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-link),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-url) {
+  color: #70b8ff;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-code),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-code-block) {
+  color: #e8c97a;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-strong) {
+  color: #ffffff;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-italic) {
+  color: #d4d4d4;
+}
+
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-delimiter),
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-md-meta) {
+  color: #888;
+}
+
+/* Scrollbar in dark mode */
+:global(body[data-theme-mode='dark'])
+  .editorWrapper
+  :global(.toastui-editor-main) {
+  scrollbar-color: #555 #1e1e1e;
+}
+
+/* ─── Mermaid diagrams ───────────────────────────────────────────────────────
+ * ```mermaid fences are emitted as `.mermaid` containers and rendered to SVG
+ * by Mermaid after the preview paints. Center them and keep the SVG within the
+ * preview width. Until Mermaid processes a block it shows the raw source, so we
+ * present the unprocessed state as a neutral, monospaced placeholder.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.editorWrapper :global(.mermaid) {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.editorWrapper :global(.mermaid[data-processed='true']) {
+  white-space: normal;
+}
+
+.editorWrapper :global(.mermaid:not([data-processed='true'])) {
+  white-space: pre-wrap;
+  font-family: monospace;
+  opacity: 0.6;
+}
+
+.editorWrapper :global(.mermaid svg) {
+  max-width: 100%;
+  height: auto;
+}

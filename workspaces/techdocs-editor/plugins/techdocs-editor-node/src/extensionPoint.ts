@@ -1,0 +1,44 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { createExtensionPoint } from '@backstage/backend-plugin-api';
+import { VcsProviderExtensionPoint } from './types';
+
+/**
+ * Extension point for adding VcsProvider implementations to the techdocs-editor backend plugin.
+ * Register your provider in a backend module:
+ *
+ * ```ts
+ * createBackendModule({
+ *   pluginId: 'techdocs-editor',
+ *   moduleId: 'github',
+ *   register(env) {
+ *     env.registerInit({
+ *       deps: { vcs: techdocsEditorVcsProviderExtensionPoint },
+ *       async init({ vcs }) {
+ *         vcs.addProvider(new GitHubVcsProvider(...));
+ *       },
+ *     });
+ *   },
+ * });
+ * ```
+ *
+ * @public
+ */
+export const techdocsEditorVcsProviderExtensionPoint =
+  createExtensionPoint<VcsProviderExtensionPoint>({
+    id: 'techdocs-editor.vcs-provider',
+  });
