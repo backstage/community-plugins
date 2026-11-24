@@ -57,8 +57,8 @@
     "@backstage/theme": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@remixicon/react": ">=4.6.0 <4.9.0",
-    "luxon": "^3.5.0",
-    "react-use": "^17.2.4"
+    "luxon": "^3.7.2",
+    "react-use": "^17.6.1"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
@@ -68,12 +68,12 @@
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-permission-react": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/react-dom": "^18",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/react-dom": "^18.3.7",
     "react": "^18",
     "react-dom": "^18",
-    "react-router-dom": "^6.30.2"
+    "react-router-dom": "^6.30.6"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
