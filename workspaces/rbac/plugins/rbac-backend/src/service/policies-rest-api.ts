@@ -81,6 +81,8 @@ import {
   validateRole,
   validateSource,
 } from '../validation/policies-validation';
+import { AccessCheckService } from './access-check';
+import { registerAccessCheckRoutes } from './access-check-routes';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
@@ -1108,6 +1110,17 @@ export class PoliciesServer {
       this.pluginPermMetaData,
       this.pluginIdProvider,
       this.extraPluginsIdStorage,
+      this.options,
+    );
+
+    registerAccessCheckRoutes(
+      router,
+      new AccessCheckService(
+        this.enforcer,
+        this.conditionalStorage,
+        this.options.config,
+      ),
+      this.pluginPermMetaData,
       this.options,
     );
 

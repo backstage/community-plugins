@@ -21,6 +21,7 @@ import {
 } from '@backstage/core-plugin-api';
 
 import {
+  AccessCheckResponse,
   PluginPermissionMetaData,
   Role,
   RoleBasedPolicy,
@@ -131,6 +132,10 @@ export type RBACAPI = {
   deleteConditionalPolicies: (
     conditionId: number,
   ) => Promise<RoleError | Response>;
+  /** Explains the access decisions the permission policy makes for one user. */
+  checkAccess: (
+    userEntityRef: string,
+  ) => Promise<AccessCheckResponse | Response>;
 };
 
 export type Options = {
@@ -598,6 +603,26 @@ export class RBACBackendClient implements RBACAPI {
     const backendUrl = this.configApi.getString('backend.baseUrl');
     const jsonResponse = await fetch(
       `${backendUrl}/api/permission/roles/conditions${query}`,
+      {
+        headers: {
+          ...(idToken && { Authorization: `Bearer ${idToken}` }),
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (jsonResponse.status !== 200) {
+      return jsonResponse;
+    }
+    return jsonResponse.json();
+  }
+
+  async checkAccess(userEntityRef: string) {
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const backendUrl = this.configApi.getString('backend.baseUrl');
+    const jsonResponse = await fetch(
+      `${backendUrl}/api/permission/access-check?userEntityRef=${encodeURIComponent(
+        userEntityRef,
+      )}`,
       {
         headers: {
           ...(idToken && { Authorization: `Bearer ${idToken}` }),

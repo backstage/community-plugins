@@ -15,6 +15,7 @@
  */
 import { NotAllowedError } from '@backstage/errors';
 import {
+  AuthorizeResult,
   ConditionalPolicyDecision,
   PermissionAttributes,
 } from '@backstage/plugin-permission-common';
@@ -242,4 +243,54 @@ export class UnauthorizedError extends NotAllowedError {
  */
 export type PermissionDependentPluginList = {
   ids: string[];
+};
+
+/**
+ * @public
+ * One role of the checked user, together with the role members that connect
+ * the user to it: the user's own entity reference for a direct assignment,
+ * or group references the user belongs to directly or through parent groups.
+ * The list is empty for roles that apply without a membership, such as a
+ * configured default role.
+ */
+export type AccessCheckRoleMembership = {
+  roleEntityRef: string;
+  via: string[];
+};
+
+/**
+ * @public
+ * The decision the RBAC permission policy makes for one plugin permission,
+ * together with the policies it comes from. A CONDITIONAL result is not a
+ * final answer: the owning plugin evaluates the conditions against a concrete
+ * resource at request time.
+ */
+export type AccessCheckDecision = {
+  pluginId: string;
+  permission: string;
+  resourceType?: string;
+  action: PermissionAction;
+  result: AuthorizeResult;
+  /** Subjects (roles, or the user itself) whose allow policy matched. */
+  allowedBy: string[];
+  /** Subjects whose deny policy vetoes the decision. */
+  deniedBy: string[];
+  /** Stored conditional policies behind a CONDITIONAL result. */
+  conditionalBy: RoleConditionalPolicyDecision[];
+};
+
+/**
+ * @public
+ * Result of checking which permissions a user is granted and where each
+ * decision comes from.
+ */
+export type AccessCheckResponse = {
+  userEntityRef: string;
+  /**
+   * True when the user is listed under permission.rbac.admin.superUsers;
+   * every permission is then allowed regardless of the policies.
+   */
+  isSuperUser: boolean;
+  roles: AccessCheckRoleMembership[];
+  decisions: AccessCheckDecision[];
 };

@@ -64,6 +64,10 @@ export const ListPluginIDsEvents = {
   PLUGIN_IDS_WRITE: 'plugin-ids-write',
 };
 
+export const AccessCheckEvents = {
+  ACCESS_CHECK_READ: 'access-check-read',
+};
+
 export type EvaluationAuditInfo = {
   userEntityRef: string;
   permissionName: string;

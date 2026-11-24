@@ -195,6 +195,37 @@ test.describe('RBAC plugin', () => {
       .click();
   });
 
+  test('Access check explains the decisions for the guest user', async () => {
+    await page.getByRole('tab', { name: translations.accessCheck.tab }).click();
+    await expect(
+      page.getByText(translations.accessCheck.selectUserPrompt),
+    ).toBeVisible();
+
+    const userBox = page.getByRole('combobox', {
+      name: translations.accessCheck.selectUser,
+    });
+    await userBox.click();
+    await userBox.fill('guest');
+    await page
+      .getByRole('option', { name: /user:default\/guest/ })
+      .first()
+      .click();
+
+    // the guest user is a direct member of the seeded guests role
+    await expect(
+      page.getByRole('link', { name: e2eRoles.guestsName }).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText(translations.accessCheck.directAssignment).first(),
+    ).toBeVisible();
+    await expect(page.getByRole('table')).toBeVisible();
+    await runAccessibilityTests(page);
+
+    await page
+      .getByRole('tab', { name: translations.permissionsMatrix.tabs.roles })
+      .click();
+  });
+
   test('View details of role', async ({}, testInfo) => {
     // Skipping Japanese tests due to https://issues.redhat.com/browse/RHDHBUGS-2598
     test.fixme(testInfo.project.name === 'ja', 'Skip Japanese test');

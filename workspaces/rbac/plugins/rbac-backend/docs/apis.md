@@ -918,6 +918,81 @@ Returns a status code of 200 and json with actual object stored in the server:
 }
 ```
 
+## Access check
+
+### GET access check for a user
+
+GET </api/permission/access-check?userEntityRef=user:default/tom>
+
+Explains the decisions the permission policy makes for one user: the user's roles with how the user is connected to each (a direct assignment or a group membership), and per plugin permission whether the policy answers `ALLOW`, `DENY`, or `CONDITIONAL`, together with the roles the decision comes from.
+
+A `CONDITIONAL` result is not a final answer: the owning plugin evaluates the returned conditions against a concrete resource at request time. Because the check aggregates policies across every role, it requires unrestricted `policy.entity.read` access; callers whose read access is scoped by conditions receive a 403.
+
+Query parameters:
+
+| Name          | Description                                      |
+| ------------- | ------------------------------------------------ |
+| userEntityRef | Required. Full user entity reference to inspect. |
+
+Returns:
+
+```json
+{
+  "userEntityRef": "user:default/tom",
+  "isSuperUser": false,
+  "roles": [
+    {
+      "roleEntityRef": "role:default/dev",
+      "via": ["user:default/tom"]
+    },
+    {
+      "roleEntityRef": "role:default/qa",
+      "via": ["group:default/team-a"]
+    }
+  ],
+  "decisions": [
+    {
+      "pluginId": "catalog",
+      "permission": "catalog.entity.read",
+      "resourceType": "catalog-entity",
+      "action": "read",
+      "result": "ALLOW",
+      "allowedBy": ["role:default/dev"],
+      "deniedBy": [],
+      "conditionalBy": []
+    },
+    {
+      "pluginId": "catalog",
+      "permission": "catalog.entity.delete",
+      "resourceType": "catalog-entity",
+      "action": "delete",
+      "result": "CONDITIONAL",
+      "allowedBy": [],
+      "deniedBy": [],
+      "conditionalBy": [
+        {
+          "id": 1,
+          "result": "CONDITIONAL",
+          "pluginId": "catalog",
+          "resourceType": "catalog-entity",
+          "roleEntityRef": "role:default/qa",
+          "permissionMapping": [
+            { "name": "catalog.entity.delete", "action": "delete" }
+          ],
+          "conditions": {
+            "rule": "IS_ENTITY_OWNER",
+            "resourceType": "catalog-entity",
+            "params": {}
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
 ## HTTP status codes
 
 | Code | Descriptions                                    |

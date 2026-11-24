@@ -311,6 +311,35 @@ const rbacTranslationDe = createTranslationMessages({
     'permissionsMatrix.decisions.none': 'Nicht festgelegt',
     'permissionsMatrix.errors.fetchPermissions':
       'Beim Abrufen der Plugin-Berechtigungen ist ein Fehler aufgetreten',
+    'accessCheck.tab': 'Zugriffsprüfung',
+    'accessCheck.description':
+      'Prüfen Sie, welche Berechtigungen ein Benutzer erhält und aus welcher Rolle oder Gruppe jede Entscheidung stammt.',
+    'accessCheck.selectUser': 'Benutzer',
+    'accessCheck.selectUserPrompt':
+      'Wählen Sie einen Benutzer aus, um dessen Berechtigungen zu sehen.',
+    'accessCheck.rolesTitle': 'Rollen',
+    'accessCheck.noRoles': 'Der Benutzer hat keine Rollen.',
+    'accessCheck.directAssignment': 'direkte Zuweisung',
+    'accessCheck.via': 'über',
+    'accessCheck.appliesToEveryUser': 'gilt für alle Benutzer',
+    'accessCheck.superUser':
+      'Dieser Benutzer ist als Super-User konfiguriert: jede Berechtigung ist erlaubt.',
+    'accessCheck.permissionsTitle': 'Berechtigungen',
+    'accessCheck.conditionalNote':
+      'Bedingte Ergebnisse werden vom zuständigen Plugin zur Laufzeit gegen die Ressource ausgewertet; sie sind keine endgültige Antwort.',
+    'accessCheck.plugin': 'Plugin',
+    'accessCheck.permission': 'Berechtigung',
+    'accessCheck.action': 'Aktion',
+    'accessCheck.access': 'Zugriff',
+    'accessCheck.source': 'Erlaubt oder verweigert durch',
+    'accessCheck.noMatchingPolicy': 'Keine passende Richtlinie',
+    'accessCheck.superUserSource': 'Super-User',
+    'accessCheck.filterPermissions': 'Berechtigungen filtern',
+    'accessCheck.allResults': 'Alle Ergebnisse',
+    'accessCheck.noMatches':
+      'Keine Berechtigungen entsprechen den aktuellen Filtern',
+    'accessCheck.errors.checkAccess':
+      'Bei der Zugriffsprüfung ist ein Fehler aufgetreten',
   },
 });
 
