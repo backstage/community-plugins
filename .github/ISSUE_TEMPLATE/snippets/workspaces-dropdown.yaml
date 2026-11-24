@@ -53,8 +53,6 @@ attributes:
     - gcp-projects
     - git-release-manager
     - github
-    - github-actions
-    - github-discussions
     - gitops-profiles
     - gocd
     - grafana
@@ -73,7 +71,6 @@ attributes:
     - linguist
     - linkerd
     - manage
-    - matomo
     - mcp-chat
     - mend
     - microsoft-calendar
@@ -94,7 +91,6 @@ attributes:
     - puppetdb
     - quay
     - rbac
-    - redhat-argocd
     - report-portal
     - rollbar
     - scaffolder
