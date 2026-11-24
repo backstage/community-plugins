@@ -254,8 +254,9 @@ class MockRBACApi implements RBACAPI {
       plugin.policies.map(policy => {
         const action = policy.policy as PermissionAction;
         const rows = mockPolicies.filter(
-          row =>
-            roleNames.includes(row.entityReference ?? '') &&
+          (row): row is RoleBasedPolicy & { entityReference: string } =>
+            !!row.entityReference &&
+            roleNames.includes(row.entityReference) &&
             row.policy === action &&
             (row.permission === policy.name ||
               (isResourcedPolicy(policy) &&
@@ -263,10 +264,10 @@ class MockRBACApi implements RBACAPI {
         );
         const allowedBy = rows
           .filter(row => row.effect !== 'deny')
-          .map(row => row.entityReference!);
+          .map(row => row.entityReference);
         const deniedBy = rows
           .filter(row => row.effect === 'deny')
-          .map(row => row.entityReference!);
+          .map(row => row.entityReference);
         const conditionalBy = mockConditions.filter(
           condition =>
             roleNames.includes(condition.roleEntityRef) &&
