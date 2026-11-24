@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-annotator
 
+## 2.20.1
+
+### Patch Changes
+
+- 7cfc67c: Move the scaffolder action modules into a shared workspace. Their published package names and behavior remain unchanged.
+
 ## 2.20.0
 
 ### Minor Changes
