@@ -1,10 +1,25 @@
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 ---
+# Full-stack e2e / NFS catalog entity (matches Playwright path
+# /catalog/default/component/backstage/topology and fixture kubernetes-id).
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: backstage
   description: Example component for Topology dev (matches mock fixtures)
+  annotations:
+    backstage.io/kubernetes-id: backstage
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+---
+# NFS e2e entity for the missing-permissions navigation target.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: permission-denied
+  description: Entity for testing Topology permissions navigation
   annotations:
     backstage.io/kubernetes-id: backstage
 spec:

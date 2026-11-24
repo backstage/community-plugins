@@ -89,21 +89,21 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # Local example organizational data
     - type: file
-      target: ../../examples/entities.yaml
+      target: ./examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+    # Local example data
+    - type: file
+      target: ./examples/entities.yaml
 
     # Local example template
     - type: file
-      target: ../../examples/template/template.yaml
+      target: ./examples/template/template.yaml
       rules:
         - allow: [Template]
-
-    # Local example organizational data
-    - type: file
-      target: ../../examples/org.yaml
-      rules:
-        - allow: [User, Group]
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -117,29 +117,37 @@ catalog:
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+  # Dev/e2e: topology-dev-backend replaces cluster fetch/proxy with fixtures
+  # (see plugins/topology-dev-backend/src/fixtures). No live cluster required.
+  # For a real cluster, remove the fixture module and set K8S_* below.
   serviceLocatorMethod:
     type: 'multiTenant'
   clusterLocatorMethods:
     - type: 'config'
       clusters:
-        # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
-        - name: minikube
-          authProvider: 'serviceAccount'
-          url: https://127.0.0.1:59002
-          serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}
+        - name: mock-cluster
+          authProvider: serviceAccount
+          url: http://127.0.0.1:1
+          serviceAccountToken: topology-e2e-fixture-token
           skipTLSVerify: true
+          skipMetricsLookup: true
           customResources:
-            - group: 'tekton.dev'
-              apiVersion: 'v1'
-              plural: 'pipelineruns'
-            - group: 'tekton.dev'
-              apiVersion: 'v1'
-              plural: 'taskruns'
+            - group: route.openshift.io
+              apiVersion: v1
+              plural: routes
+            - group: kubevirt.io
+              apiVersion: v1
+              plural: virtualmachines
+            - group: org.eclipse.che
+              apiVersion: v2
+              plural: checlusters
+            - group: tekton.dev
+              apiVersion: v1
+              plural: pipelineruns
+            - group: tekton.dev
+              apiVersion: v1
+              plural: taskruns
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
   enabled: true
-  rbac:
-    admin:
-      users:
-        - name: user:default/guest

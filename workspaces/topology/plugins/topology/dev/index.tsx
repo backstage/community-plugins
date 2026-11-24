@@ -15,7 +15,7 @@
  */
 
 /**
- * New Frontend System dev mode for the Topology plugin.
+ * New Frontend System dev mode for the Topology plugin (backend data).
  */
 
 import '@backstage/cli/asset-types';
@@ -34,6 +34,8 @@ import {
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha';
 import {
   IdentityPermissionApi,
   permissionApiRef,
@@ -97,6 +99,8 @@ const app = createApp({
   features: [
     devNavModule,
     appDevModule,
+    catalogPlugin,
+    kubernetesPlugin,
     topologyPlugin,
     topologyTranslationsModule,
   ],

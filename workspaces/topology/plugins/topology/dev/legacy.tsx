@@ -15,10 +15,15 @@
  */
 
 /**
- * Legacy frontend system dev mode for the Topology plugin.
+ * Legacy frontend system — full-stack (real catalog/kubernetes APIs → backend).
+ * For UI-only mocks use `yarn start:legacy:mock`.
  */
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 
+import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   CatalogEntityPage,
   CatalogIndexPage,
@@ -28,11 +33,15 @@ import {
 import {
   EntityKubernetesContent,
   isKubernetesAvailable,
+  kubernetesPlugin,
 } from '@backstage/plugin-kubernetes';
-import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { topologyPlugin, TopologyPage } from '../src/legacy';
 import { topologyTranslations } from '../src/translations';
+import { mockEntity, permissionDeniedMockEntity } from './mocks';
 
 createDevApp()
   .registerPlugin(kubernetesPlugin)
@@ -63,5 +72,51 @@ createDevApp()
         </EntityLayout.Route>
       </EntityLayout>
     ),
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={mockEntity}>
+        <Page themeId="service">
+          <Header type="component — service" title={mockEntity.metadata.name} />
+          <TabbedLayout>
+            <TabbedLayout.Route path="/" title="Topology">
+              <TopologyPage />
+            </TabbedLayout.Route>
+          </TabbedLayout>
+        </Page>
+      </EntityProvider>
+    ),
+    title: 'Topology',
+    path: '/topology',
+  })
+  .addPage({
+    // Justified remaining mock: allow-all backend cannot deny kubernetes
+    // permissions; this page only covers the permission alert UI.
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            permissionApiRef,
+            mockApis.permission({ authorize: AuthorizeResult.DENY }),
+          ],
+        ]}
+      >
+        <EntityProvider entity={permissionDeniedMockEntity}>
+          <Page themeId="service">
+            <Header
+              type="component — service"
+              title={permissionDeniedMockEntity.metadata.name}
+            />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="Topology">
+                <TopologyPage />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Missing permissions',
+    path: '/missing-permissions',
   })
   .render();
