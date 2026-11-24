@@ -7,15 +7,40 @@
 
 ### Backstage Installation
 
-1. Run the following command to install the ACS Backstage provider plugin:
+Install the ACS plugin in your Backstage app:
 
 ```console
-yarn --cwd packages/app add @backstage-community/plugin-acs
+yarn workspace app add @backstage-community/plugin-acs
 ```
 
-2. Second we need to add the EntityACSContent extension to the entity page in your app:
+#### New frontend system
 
+If your app explicitly lists its frontend features, add the ACS plugin to that list:
+
+```tsx
+import { createApp } from '@backstage/frontend-defaults';
+import acsPlugin from '@backstage-community/plugin-acs/alpha';
+
+const app = createApp({
+  features: [
+    // Other frontend features
+    acsPlugin,
+  ],
+});
 ```
+
+The plugin adds a **Security** tab to catalog entities with the `acs/deployment-name` annotation.
+
+For Red Hat Developer Hub 2.1, install an ACS dynamic plugin OCI artifact
+that supports the new frontend system. The plugin registers the tab itself, so
+remove any ACS `dynamicPlugins.frontend` configuration for entity tabs and mount
+points. Keep the proxy and ACS configuration below.
+
+#### Legacy frontend system
+
+Add the `EntityACSContent` extension to the entity page in your app:
+
+```tsx
 import { EntityACSContent } from '@backstage-community/plugin-acs';
 
 // For example in the Service section
