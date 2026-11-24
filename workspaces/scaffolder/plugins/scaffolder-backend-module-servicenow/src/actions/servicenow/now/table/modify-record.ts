@@ -1,0 +1,124 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+import { DefaultService, OpenAPI } from '../../../../generated/now/table';
+import { CreateActionOptions, ServiceNowResponses } from '../../../types';
+import { serviceNowApiErrorMessage, updateOpenAPIConfig } from './helpers';
+import { examples } from './modify-record.example';
+
+const id = 'servicenow:now:table:modifyRecord';
+
+/**
+ * Creates an action handler that modifies a record in the specified table.
+ * @public
+ * @param options - options to configure the action
+ * @returns TemplateAction - an action handler
+ */
+export const modifyRecordAction = (options: CreateActionOptions) => {
+  const { config } = options;
+
+  return createTemplateAction({
+    id,
+    examples,
+    description: 'Updates the specified record with the request body',
+    schema: {
+      input: {
+        tableName: z =>
+          z
+            .string()
+            .min(1)
+            .describe('Name of the table in which to modify the record'),
+        sysId: z =>
+          z
+            .string()
+            .min(1)
+            .describe('Unique identifier of the record to modify'),
+        requestBody: z =>
+          z
+            .custom<Record<PropertyKey, unknown>>()
+            .optional()
+            .describe(
+              'Field name and the associated value for each parameter to define in the specified record',
+            ),
+        sysparmDisplayValue: z =>
+          z
+            .enum(['true', 'false', 'all'])
+            .optional()
+            .describe(
+              'Return field display values (true), actual values (false), or both (all) (default: false)',
+            ),
+        sysparmExcludeReferenceLink: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to exclude Table API links for reference fields (default: false)',
+            ),
+        sysparmFields: z =>
+          z
+            .array(z.string().min(1))
+            .optional()
+            .describe('An array of fields to return in the response'),
+        sysparmInputDisplayValue: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'Set field values using their display value (true) or actual value (false) (default: false)',
+            ),
+        sysparmSuppressAutoSysField: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to suppress auto generation of system fields (default: false)',
+            ),
+        sysparmView: z =>
+          z
+            .string()
+            .optional()
+            .describe(
+              'Render the response according to the specified UI view (overridden by sysparm_fields)',
+            ),
+        sysparmQueryNoDomain: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to access data across domains if authorized (default: false)',
+            ),
+      },
+    },
+
+    async handler(ctx) {
+      const input = ctx.input;
+
+      updateOpenAPIConfig(OpenAPI, config);
+
+      let res: ServiceNowResponses['200'];
+      try {
+        res = (await DefaultService.putApiNowTableByTableNameBySysId({
+          ...input,
+          sysparmFields: input.sysparmFields?.join(','),
+        })) as ServiceNowResponses['200'];
+      } catch (error) {
+        throw new Error(serviceNowApiErrorMessage(error));
+      }
+
+      ctx.output('result', res?.result);
+    },
+  });
+};
