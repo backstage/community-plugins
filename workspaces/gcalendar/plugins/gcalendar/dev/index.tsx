@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, Page } from '@backstage/core-components';
 import { googleAuthApiRef } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
 import { calendarListMock, eventsMock } from './mocks';
 import { gcalendarPlugin, HomePageCalendar } from '../src/plugin';
 import { gcalendarApiRef } from '../src';
+import { Container } from '@backstage/ui';
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
@@ -51,11 +51,9 @@ createDevApp()
   })
   .addPage({
     element: (
-      <Page themeId="home">
-        <Content>
-          <HomePageCalendar />
-        </Content>
-      </Page>
+      <Container>
+        <HomePageCalendar />
+      </Container>
     ),
     title: 'Root Page',
   })
