@@ -4,11 +4,86 @@
 
 ```ts
 // @public (undocumented)
+export type ExperimentPhase = {
+  name: string;
+  dateStarted?: string;
+  dateEnded?: string;
+};
+
+// @public (undocumented)
+export type ExperimentResultSummary = {
+  available: boolean;
+  metricName?: string;
+  variations: ExperimentVariationResult[];
+};
+
+// @public (undocumented)
+export type ExperimentRow = {
+  id: string;
+  name: string;
+  status: ExperimentStatus;
+  type?: string;
+  owner?: string;
+  tags: string[];
+  variations: ExperimentVariation[];
+  phases: ExperimentPhase[];
+  winnerVariationId?: string;
+  url: string;
+};
+
+// @public (undocumented)
+export type ExperimentStatus = 'draft' | 'running' | 'stopped';
+
+// @public (undocumented)
+export type ExperimentVariation = {
+  id: string;
+  key: string;
+  name: string;
+};
+
+// @public (undocumented)
+export type ExperimentVariationResult = {
+  id: string;
+  name: string;
+  users?: number;
+  chanceToBeatControl?: number;
+  percentChange?: number;
+  ciLow?: number;
+  ciHigh?: number;
+};
+
+// @public (undocumented)
+export type FlagDetail = {
+  key: string;
+  dateUpdated?: string;
+  archived: boolean;
+  owner?: string;
+  tags: string[];
+  isStale: boolean;
+  staleReason?: string;
+  environments: FlagEnvironmentDetail[];
+};
+
+// @public (undocumented)
+export type FlagEnvironmentDetail = {
+  name: string;
+  enabled: boolean;
+  rules: FlagRuleSummary[];
+};
+
+// @public (undocumented)
 export type FlagRow = {
   key: string;
   type: FlagType;
   valuePreview: string;
   valuePretty?: string;
+};
+
+// @public (undocumented)
+export type FlagRuleSummary = {
+  type: string;
+  description?: string;
+  enabled: boolean;
 };
 
 // @public (undocumented)
