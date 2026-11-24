@@ -1,0 +1,104 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { Alert, Skeleton } from '@backstage/ui';
+import type { Entity } from '@backstage/catalog-model';
+import { MdxContent } from '../MdxContent';
+import { useMdxCardData } from '../../hooks/useMdxCardData';
+import { useMdxCardSource } from '../../hooks/useMdxCardSource';
+import type { DataFetcher, MdxCardProps } from '../../types';
+
+/**
+ * Props for {@link MdxCardContent}.
+ *
+ * @public
+ */
+export type MdxCardContentProps = MdxCardProps & {
+  /** Entity exposed to the template and to data fetcher URLs. */
+  entity?: Entity;
+};
+
+const MdxCardBody = ({
+  template,
+  dataFetchers,
+  components,
+  entity,
+}: Omit<MdxCardContentProps, 'template' | 'templateRef' | 'dataFetchers'> & {
+  template: string;
+  dataFetchers: DataFetcher[];
+}) => {
+  const { value, loading, error } = useMdxCardData({ dataFetchers, entity });
+
+  if (loading) {
+    return <Skeleton width="100%" height={80} />;
+  }
+  if (error) {
+    return (
+      <Alert
+        status="danger"
+        title="Failed to load data"
+        description={error.message}
+      />
+    );
+  }
+  return (
+    <MdxContent
+      template={template}
+      data={value ?? {}}
+      components={components}
+    />
+  );
+};
+
+/**
+ * Resolves the template, loads data fetcher responses and renders the MDX
+ * template without a card wrapper.
+ *
+ * @public
+ */
+export const MdxCardContent = ({
+  template,
+  templateRef,
+  dataFetchers,
+  components,
+  entity,
+}: MdxCardContentProps) => {
+  const { value, loading, error } = useMdxCardSource({
+    template,
+    templateRef,
+    dataFetchers,
+  });
+
+  if (loading) {
+    return <Skeleton width="100%" height={80} />;
+  }
+  if (error || !value) {
+    return (
+      <Alert
+        status="danger"
+        title="Failed to load the MDX card"
+        description={error?.message ?? 'No template'}
+      />
+    );
+  }
+  return (
+    <MdxCardBody
+      template={value.template}
+      dataFetchers={value.dataFetchers}
+      components={components}
+      entity={entity}
+    />
+  );
+};

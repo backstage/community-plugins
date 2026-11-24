@@ -1,0 +1,64 @@
+{
+  "name": "@backstage-community/plugin-mdx-card-backend",
+  "version": "0.0.0",
+  "description": "Stores MDX card templates for the MDX card plugin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mdx-card/plugins/mdx-card-backend"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "mdx-card",
+    "pluginPackages": [
+      "@backstage-community/plugin-mdx-card",
+      "@backstage-community/plugin-mdx-card-backend",
+      "@backstage-community/plugin-mdx-card-common"
+    ]
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-mdx-card-common": "workspace:^",
+    "@backstage/backend-plugin-api": "^1.12.0",
+    "@backstage/errors": "^1.4.0",
+    "@backstage/plugin-permission-common": "^0.9.13",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "knex": "^3.0.0",
+    "zod": "^3.25.76 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "^0.19.0",
+    "@backstage/backend-test-utils": "^1.12.0",
+    "@backstage/cli": "^0.36.8",
+    "@types/express": "^4.17.6",
+    "@types/supertest": "^7.0.0",
+    "supertest": "^7.0.0"
+  },
+  "files": [
+    "dist",
+    "migrations/**/*.{js,d.ts}"
+  ],
+  "keywords": [
+    "backstage",
+    "plugin",
+    "mdx"
+  ],
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "author": "Roadie"
+}
