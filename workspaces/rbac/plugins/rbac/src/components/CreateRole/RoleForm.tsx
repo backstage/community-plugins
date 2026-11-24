@@ -335,25 +335,27 @@ export const RoleForm = ({
             <Paper square elevation={0}>
               <ReviewStep values={formik.values} isEditing={!!roleName} />
               <br />
-              <Button onClick={handleBack}>{t('roleForm.steps.back')}</Button>
-              <Button onClick={e => handleReset(e)}>
-                {t('roleForm.steps.reset')}
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={
-                  !!formik.errors.name ||
-                  !!formik.errors.selectedMembers ||
-                  !formik.dirty
-                }
-              >
-                {submitLabel ||
-                  (roleName
-                    ? t('roleForm.steps.save')
-                    : t('roleForm.steps.create'))}
-              </Button>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button onClick={handleBack}>{t('roleForm.steps.back')}</Button>
+                <Button onClick={e => handleReset(e)}>
+                  {t('roleForm.steps.reset')}
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={
+                    !!formik.errors.name ||
+                    !!formik.errors.selectedMembers ||
+                    !formik.dirty
+                  }
+                >
+                  {submitLabel ||
+                    (roleName
+                      ? t('roleForm.steps.save')
+                      : t('roleForm.steps.create'))}
+                </Button>
+              </Box>
             </Paper>
           </SimpleStepperStep>
         </SimpleStepper>
