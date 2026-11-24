@@ -380,6 +380,29 @@ describe('AccessCheckService', () => {
       conditionalBy: [],
     });
 
+    // the workaround also holds under basic precedence
+    const legacyBasic = serviceWith({
+      enforcer: mockEnforcer({
+        roles: ['role:default/admin'],
+        rowsByRole: {
+          'role:default/admin': [
+            ['role:default/admin', 'policy-entity', 'create', 'allow'],
+          ],
+        },
+      }),
+      rbacConfig: { policyDecisionPrecedence: 'basic' },
+    });
+    const legacyBasicResult = await legacyBasic.service.checkAccess(
+      user,
+      permissionPlugin,
+    );
+    expect(legacyBasicResult.decisions[0]).toMatchObject({
+      permission: 'policy.entity.create',
+      resourceType: 'policy-entity',
+      result: AuthorizeResult.ALLOW,
+      allowedBy: ['role:default/admin'],
+    });
+
     // a policy on the permission name wins and stays a basic permission
     const named = serviceWith({
       enforcer: mockEnforcer({

@@ -98,8 +98,9 @@ export class AccessCheckService {
       };
     }
 
-    // Both config keys are read the same way RBACPermissionPolicy.build
-    // reads them; keep them in sync with that method.
+    // policyDecisionPrecedence is read the same way RBACPermissionPolicy.build
+    // reads it (as is the superUsers list in getSuperUserList); keep both in
+    // sync with that method.
     const context: EvaluationContext = {
       roles,
       policyRows: await this.collectPolicyRows(userEntityRef, roles),
@@ -130,6 +131,21 @@ export class AccessCheckService {
     );
   }
 
+  /** The candidates that connect the user: itself, or groups it belongs to. */
+  private async linkedSubjects(
+    userEntityRef: string,
+    candidates: string[],
+  ): Promise<string[]> {
+    const linked = await Promise.all(
+      [...new Set(candidates)].map(async candidate =>
+        (await this.enforcer.isUserLinkedTo(userEntityRef, candidate))
+          ? candidate
+          : undefined,
+      ),
+    );
+    return linked.filter((candidate): candidate is string => !!candidate);
+  }
+
   private async resolveMemberships(
     userEntityRef: string,
     roles: string[],
@@ -139,16 +155,9 @@ export class AccessCheckService {
         const members = (
           await this.enforcer.getFilteredGroupingPolicy(1, role)
         ).map(groupingPolicy => groupingPolicy[0]);
-        const linked = await Promise.all(
-          [...new Set(members)].map(async member =>
-            (await this.enforcer.isUserLinkedTo(userEntityRef, member))
-              ? member
-              : undefined,
-          ),
-        );
         return {
           roleEntityRef: role,
-          via: linked.filter((member): member is string => !!member),
+          via: await this.linkedSubjects(userEntityRef, members),
         };
       }),
     );
@@ -174,19 +183,13 @@ export class AccessCheckService {
     const directRows = (await this.enforcer.getPolicy()).filter(
       row => row[0].startsWith('user:') || row[0].startsWith('group:'),
     );
-    const subjects = [...new Set(directRows.map(row => row[0]))];
-    const linkedSubjects = new Set(
-      (
-        await Promise.all(
-          subjects.map(async subject =>
-            (await this.enforcer.isUserLinkedTo(userEntityRef, subject))
-              ? subject
-              : undefined,
-          ),
-        )
-      ).filter((subject): subject is string => !!subject),
+    const linked = new Set(
+      await this.linkedSubjects(
+        userEntityRef,
+        directRows.map(row => row[0]),
+      ),
     );
-    return directRows.filter(row => linkedSubjects.has(row[0]));
+    return directRows.filter(row => linked.has(row[0]));
   }
 
   private decide(
