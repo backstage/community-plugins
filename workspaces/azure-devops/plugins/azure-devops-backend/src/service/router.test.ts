@@ -161,6 +161,17 @@ describe('createRouter', () => {
           {
             apiVersion: 'backstage.io/v1alpha1',
             kind: 'Component',
+            metadata: {
+              name: 'malformedwithrepo',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/build-definition': ' , ',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
             metadata: { name: 'unannotated' },
           },
         ],
@@ -205,6 +216,9 @@ describe('createRouter', () => {
         request(app)
           .get('/builds/myProject')
           .query({ entityRef: 'component:default/malformed' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef: 'component:default/malformedwithrepo' }),
         request(app).get('/readme/myProject/otherRepo').query({ entityRef }),
         request(app)
           .get('/builds/otherProject/build/8/log')

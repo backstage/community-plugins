@@ -159,11 +159,19 @@ export async function createRouter(
         .map(d => d.trim())
         .filter(Boolean) ?? [];
     // Fail closed when a malformed annotation leaves nothing to filter on,
-    // otherwise pipeline routes would return every build in the project
-    if (scope === 'pipeline' && !repo && definitions.length === 0) {
-      throw new NotAllowedError(
-        'Entity is not annotated with an Azure DevOps repository or build definition',
-      );
+    // or when a build definition annotation is set but contains no names,
+    // otherwise pipeline routes would drop that restriction
+    if (scope === 'pipeline' && definitions.length === 0) {
+      if (annotations.definition !== undefined) {
+        throw new NotAllowedError(
+          'The dev.azure.com/build-definition annotation does not contain any build definition names',
+        );
+      }
+      if (!repo) {
+        throw new NotAllowedError(
+          'Entity is not annotated with an Azure DevOps repository or build definition',
+        );
+      }
     }
 
     const host = req.query.host?.toString();
