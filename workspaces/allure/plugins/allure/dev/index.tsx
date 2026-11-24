@@ -15,7 +15,7 @@
  */
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityAllureReportContent } from '../src/plugin';
-import { Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
 
@@ -39,14 +39,14 @@ createDevApp()
   })
   .addPage({
     element: (
-      <Page themeId="home">
+      <>
         <Header title="Allure Report" />
-        <Content>
+        <Container>
           <EntityProvider entity={exampleEntity as any as Entity}>
             <EntityAllureReportContent />
           </EntityProvider>
-        </Content>
-      </Page>
+        </Container>
+      </>
     ),
     title: 'Allure Report',
     path: '/allure',
