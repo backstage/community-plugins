@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
+import { Box, Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
 import { ApolloExplorer } from '@apollo/explorer/react';
-import { Content } from '@backstage/core-components';
 import { HandleRequest } from '@apollo/explorer/src/helpers/postMessageRelayHelpers';
 import { EndpointProps } from '../ApolloExplorerPage';
 import { useApiHolder } from '@backstage/core-plugin-api';
@@ -66,7 +65,7 @@ export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
         </TabList>
         {endpoints.map((endpoint, index) => (
           <TabPanel key={index} id={String(index)}>
-            <Content className={styles.content}>
+            <Box className={styles.content} p="6">
               <ApolloExplorer
                 className={styles.explorer}
                 graphRef={endpoint.graphRef}
@@ -76,7 +75,7 @@ export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
                 persistExplorerState={endpoint.persistExplorerState}
                 initialState={endpoint.initialState}
               />
-            </Content>
+            </Box>
           </TabPanel>
         ))}
       </Tabs>
