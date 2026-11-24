@@ -25,7 +25,7 @@ import { CodeSceneApi, codesceneApiRef } from '../../api/api';
 import { ApiProvider } from '@backstage/core-app-api';
 import { Analysis } from '../../api/types';
 import { ConfigReader } from '@backstage/config';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('CodeSceneProjectDetailsPage', () => {
   const server = setupServer();
@@ -80,7 +80,7 @@ describe('CodeSceneProjectDetailsPage', () => {
           fetchLatestAnalysis: jest.fn(() => analysis),
         } as unknown as CodeSceneApi,
       ],
-      [configApiRef, config],
+      [coreApis.config, config],
     );
   });
 

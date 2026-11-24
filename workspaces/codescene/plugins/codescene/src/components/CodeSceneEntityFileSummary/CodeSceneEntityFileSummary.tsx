@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, EmptyState, InfoCard } from '@backstage/core-components';
+import { EmptyState, InfoCard } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import Grid from '@material-ui/core/Grid';
 import Alert from '@material-ui/lab/Alert';
 import {
@@ -51,13 +52,13 @@ export const CodeSceneEntityFileSummary = () => {
 
   return isCodeSceneAvailable(entity) ? (
     <InfoCard>
-      <Content>
+      <Box p="6">
         <Grid container spacing={2} direction="column">
           <Grid item>
             <CodeSceneFileSummary {...analysis} />
           </Grid>
         </Grid>
-      </Content>
+      </Box>
     </InfoCard>
   ) : (
     <MissingAnnotationEmptyState annotation={CODESCENE_PROJECT_ANNOTATION} />
