@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcalendar
 
+## 0.26.0
+
+### Minor Changes
+
+- 502b7a7: Migrated the Google Calendar plugin from Material-UI to Backstage UI.
+
 ## 0.25.0
 
 ### Minor Changes
