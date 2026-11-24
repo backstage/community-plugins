@@ -15,7 +15,6 @@
  */
 
 import {
-  Link,
   Progress,
   StatusError,
   StatusOK,
@@ -23,7 +22,9 @@ import {
   TableColumn,
   WarningPanel,
 } from '@backstage/core-components';
-import { storageApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
+import { Link } from '@backstage/ui';
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
@@ -50,7 +51,7 @@ type DenseTableProps = {
 };
 
 export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
-  const storage = useApi(storageApiRef);
+  const storage = useApi(coreApis.storage);
   const hiddenColumnsKey = 'dag-table-hidden-columns';
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
 
@@ -147,7 +148,7 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       field: 'dagUrl',
       render: (row: Partial<DagTableRow>) =>
         !row.dagUrl ? null : (
-          <Link to={row.dagUrl}>
+          <Link href={row.dagUrl} target="_blank" rel="noopener noreferrer">
             <IconButton aria-label="details">
               <OpenInBrowserIcon />
             </IconButton>
