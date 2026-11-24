@@ -43,10 +43,10 @@ export const ACSComponent = () => {
     <div>
       <Grid container spacing={3}>
         <Grid item xs={8}>
-          <Typography variant="h5" color="textPrimary" gutterBottom>
+          <Typography variant="h5" gutterBottom>
             {title}
           </Typography>
-          <Typography variant="subtitle2" color="textPrimary" gutterBottom>
+          <Typography variant="subtitle2" gutterBottom>
             {subheader}
           </Typography>
         </Grid>
