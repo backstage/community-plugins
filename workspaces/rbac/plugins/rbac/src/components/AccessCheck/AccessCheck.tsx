@@ -16,14 +16,10 @@
 import { useDeferredValue, useMemo, useState } from 'react';
 import { useAsync } from 'react-use';
 
-import { stringifyEntityRef } from '@backstage/catalog-model';
 import { Link, Progress, WarningPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { type Key, SearchField, Select, Text } from '@backstage/ui';
-
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 
 import {
   AccessCheckDecision,
@@ -45,16 +41,12 @@ import {
   useDecisionLabels,
 } from '../PermissionsMatrix/MatrixDecision';
 import styles from './AccessCheck.module.css';
+import { UserPicker } from './UserPicker';
 
 const ALL_RESULTS = 'all';
 // 'none' never appears: every permission gets an allow, deny or conditional
 // answer from the policy, with deny as the default.
 const RESULT_FILTERS: MatrixDecision[] = ['allow', 'deny', 'conditional'];
-
-type UserOption = {
-  ref: string;
-  label: string;
-};
 
 const toDecision = (result: AuthorizeResult): MatrixDecision => {
   if (result === AuthorizeResult.ALLOW) {
@@ -103,63 +95,6 @@ const SourceRef = ({ subject }: { subject: string }) =>
   ) : (
     <Text as="span">{subject}</Text>
   );
-
-const UserPicker = ({
-  onSelect,
-}: {
-  onSelect: (userRef: string | null) => void;
-}) => {
-  const { t } = useTranslation();
-  const rbacApi = useApi(rbacApiRef);
-  const [input, setInput] = useState('');
-  const deferredInput = useDeferredValue(input);
-
-  const { value: options = [], loading } = useAsync(async () => {
-    const result = await rbacApi.searchMembers({
-      searchTerm: deferredInput,
-      kind: 'user',
-      limit: 20,
-    });
-    if (!('items' in result)) {
-      return [];
-    }
-    return result.items.map(member => ({
-      ref: stringifyEntityRef(member),
-      label: member.spec?.profile?.displayName ?? member.metadata.name,
-    }));
-  }, [deferredInput, rbacApi]);
-
-  return (
-    <Autocomplete<UserOption>
-      className={styles.userPicker}
-      options={options}
-      loading={loading}
-      // the catalog search already narrows the options
-      filterOptions={userOptions => userOptions}
-      getOptionLabel={option => option.label}
-      isOptionEqualToValue={(option, value) => option.ref === value.ref}
-      renderOption={(props, option) => (
-        <li {...props} key={option.ref}>
-          <div>
-            {option.label}
-            <Text as="p" variant="body-small" color="secondary">
-              {option.ref}
-            </Text>
-          </div>
-        </li>
-      )}
-      onInputChange={(_event, newInput) => setInput(newInput)}
-      onChange={(_event, option) => onSelect(option?.ref ?? null)}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label={t('accessCheck.selectUser')}
-          variant="outlined"
-        />
-      )}
-    />
-  );
-};
 
 /**
  * Reduced-scope access checker: shows the decision the permission policy

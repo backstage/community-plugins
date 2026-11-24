@@ -71,7 +71,7 @@ The **Access check** tab explains the decisions the permission policy makes for 
 - the user's roles, each with how the user is connected to it: a direct assignment or the group membership that grants it;
 - every plugin permission with the decision the policy answers (allow, deny, or conditional) and the role or group the decision comes from. When a deny policy vetoes an allow, the denying role is shown.
 
-A **Conditional** result is not a final answer: the owning plugin evaluates the stored conditions against a concrete resource at request time, so the access check reports the conditions without evaluating them. Super users configured under `permission.rbac.admin.superUsers` are called out, since every permission is allowed for them regardless of the policies.
+A **Conditional** result is not a final answer: the owning plugin evaluates the stored conditions against a concrete resource at request time, so the access check reports the conditions without evaluating them. Super users configured under `permission.rbac.admin.superUsers` are called out, since every permission is allowed for them regardless of the policies. A user who is a super user only through a group membership is not called out, since the check runs without the user's session.
 
 The check aggregates policies across all roles, so it requires unrestricted `policy.entity.read` access: administrators whose read access is scoped to the roles they own get a 403 from this view.
 

@@ -206,6 +206,8 @@ export class AccessCheckService {
       policyRows.some(
         row => roles.includes(row[0]) && row[1] === obj && row[2] === action,
       );
+    const rowsFor = (obj: string) =>
+      policyRows.filter(row => row[1] === obj && row[2] === action);
     const hasNamed = hasRolePolicy(permission);
 
     // Mirrors the policy's workaround for the legacy 'policy-entity' resource
@@ -231,9 +233,8 @@ export class AccessCheckService {
           ),
       );
       // Named permission policies win over resource-type ones.
-      const obj = hasNamed ? permission : effectivePolicy.resourceType;
-      const objRows = policyRows.filter(
-        row => row[1] === obj && row[2] === action,
+      const objRows = rowsFor(
+        hasNamed ? permission : effectivePolicy.resourceType,
       );
 
       if (preferBasic) {
@@ -254,10 +255,11 @@ export class AccessCheckService {
       return { ...base, ...basicDecision(objRows), conditionalBy: [] };
     }
 
-    const objRows = policyRows.filter(
-      row => row[1] === permission && row[2] === action,
-    );
-    return { ...base, ...basicDecision(objRows), conditionalBy: [] };
+    return {
+      ...base,
+      ...basicDecision(rowsFor(permission)),
+      conditionalBy: [],
+    };
   }
 }
 
