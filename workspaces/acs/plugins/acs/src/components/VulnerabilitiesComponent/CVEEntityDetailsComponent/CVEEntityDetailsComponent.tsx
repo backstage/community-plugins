@@ -94,11 +94,11 @@ export const CVEEntityDetailsComponent = ({
 
   const CVEDetails = () => {
     return (
-      <Box component="section" sx={{ p: 2 }}>
+      <Box component="section" p={2}>
         <Typography>
           <b>{cveDetails}</b>
         </Typography>
-        <Grid container direction="row">
+        <Box display="flex" flexWrap="wrap" gridGap={theme.spacing(1)} mt={1}>
           <Chip label={severityLabel} size="small" variant="outlined" />
           <Chip
             label={firstDiscoveredLabel}
@@ -112,7 +112,7 @@ export const CVEEntityDetailsComponent = ({
             size="small"
             variant="outlined"
           />
-        </Grid>
+        </Box>
         <Typography>{data.expandedData.summary}</Typography>
       </Box>
     );
@@ -120,11 +120,11 @@ export const CVEEntityDetailsComponent = ({
 
   const EntityDetails = () => {
     return (
-      <Box component="section" sx={{ p: 2 }}>
+      <Box component="section" p={2}>
         <Typography>
           <b>{entityDetails}</b>
         </Typography>
-        <Grid container direction="row">
+        <Box display="flex" flexWrap="wrap" gridGap={theme.spacing(1)} mt={1}>
           <Chip
             label={workloadLabel}
             color="default"
@@ -143,14 +143,9 @@ export const CVEEntityDetailsComponent = ({
             size="small"
             variant="outlined"
           />
-        </Grid>
+        </Box>
 
-        <Box
-          component="section"
-          border={1}
-          borderColor="grey.500"
-          sx={{ p: 2, marginTop: '10px' }}
-        >
+        <Box component="section" border={1} borderColor="grey.500" p={2} mt={2}>
           <DataTable
             data={dataRows}
             columns={columns}
