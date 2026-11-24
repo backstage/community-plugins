@@ -13,6 +13,7 @@ import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { ReactElement } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { TranslationRefTuple } from '@backstage/frontend-plugin-api';
 
 // @public
 const bookmarksPlugin: OverridableFrontendPlugin<
@@ -42,6 +43,13 @@ const bookmarksPlugin: OverridableFrontendPlugin<
         | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            TranslationRefTuple<undefined>,
+            'core.titleTranslation',
             {
               optional: true;
             }
@@ -80,7 +88,7 @@ const bookmarksPlugin: OverridableFrontendPlugin<
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
         defaultTitle?: [Error: `Use the 'title' param instead`];
-        title: string;
+        title: string | TranslationRefTuple<undefined>;
         defaultGroup?: [Error: `Use the 'group' param instead`];
         group?:
           | (

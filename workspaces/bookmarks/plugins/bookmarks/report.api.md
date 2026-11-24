@@ -17,6 +17,7 @@ import { ReactElement } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationRefTuple } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
@@ -64,6 +65,13 @@ const bookmarksPlugin_2: OverridableFrontendPlugin<
             }
           >
         | ExtensionDataRef<
+            TranslationRefTuple<undefined>,
+            'core.titleTranslation',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
             {
@@ -97,7 +105,7 @@ const bookmarksPlugin_2: OverridableFrontendPlugin<
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
         defaultTitle?: [Error: `Use the 'title' param instead`];
-        title: string;
+        title: string | TranslationRefTuple<undefined>;
         defaultGroup?: [Error: `Use the 'group' param instead`];
         group?:
           | (
