@@ -16,7 +16,7 @@
 
 import { HomePageStackOverflowQuestions } from '../../plugin';
 import { wrapInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { ConfigReader } from '@backstage/config';
 import Grid from '@material-ui/core/Grid';
 import { ComponentType, PropsWithChildren } from 'react';
@@ -52,7 +52,7 @@ export default {
           <TestApiProvider
             apis={[
               [
-                configApiRef,
+                coreApis.config,
                 new ConfigReader({
                   stackoverflow: {
                     baseUrl: 'https://api.stackexchange.com/2.2',
