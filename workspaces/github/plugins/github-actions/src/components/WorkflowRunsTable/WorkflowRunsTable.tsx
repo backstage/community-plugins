@@ -30,17 +30,18 @@ import {
   Tooltip,
   type ColumnConfig,
   type TableItem,
+  Link,
 } from '@backstage/ui';
 import { RiGithubLine, RiRefreshLine, RiRestartLine } from '@remixicon/react';
-import { Link as RouterLink } from 'react-router-dom';
 import { fetchWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import { buildRouteRef } from '../../routes';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { Entity } from '@backstage/catalog-model';
 
-import { EmptyState, Link } from '@backstage/core-components';
-import { useApi, useRouteRef, errorApiRef } from '@backstage/core-plugin-api';
+import { EmptyState } from '@backstage/core-components';
+import { useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
 import { useMemo, ReactElement, useState } from 'react';
 import { githubActionsApiRef } from '../../api';
@@ -71,11 +72,7 @@ const createColumns = (): ColumnConfig<WorkflowRunWithId>[] => [
         const routeLink = useRouteRef(buildRouteRef);
         const truncatedMessage = truncateAtNewline(item.message!);
         return (
-          <Link
-            component={RouterLink}
-            to={routeLink({ id: item.id! })}
-            title={item.message}
-          >
+          <Link href={routeLink({ id: item.id! })} title={item.message}>
             {truncatedMessage}
           </Link>
         );
@@ -170,7 +167,7 @@ export const WorkflowRunsTableView = ({
   title,
 }: Props) => {
   const api = useApi(githubActionsApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const [searchQuery, setSearchQuery] = useState('');
 
   const columnConfig = useMemo(() => createColumns(), []);

@@ -19,11 +19,8 @@ import { useWorkflowRuns } from '../useWorkflowRuns';
 import { RecentWorkflowRunsCard } from './RecentWorkflowRunsCard';
 
 import { ConfigReader } from '@backstage/core-app-api';
-import {
-  ConfigApi,
-  configApiRef,
-  errorApiRef,
-} from '@backstage/core-plugin-api';
+import { ConfigApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
 import { rootRouteRef } from '../../routes';
 import { screen } from '@testing-library/react';
@@ -32,7 +29,7 @@ jest.mock('../useWorkflowRuns', () => ({
   useWorkflowRuns: jest.fn(),
 }));
 
-const mockErrorApi: jest.Mocked<typeof errorApiRef.T> = {
+const mockErrorApi: jest.Mocked<typeof coreApis.error.T> = {
   post: jest.fn(),
   error$: jest.fn(),
 };
@@ -77,8 +74,8 @@ describe('<RecentWorkflowRunsCard />', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [errorApiRef, mockErrorApi],
-          [configApiRef, configApi],
+          [coreApis.error, mockErrorApi],
+          [coreApis.config, configApi],
         ]}
       >
         <EntityProvider entity={entity}>

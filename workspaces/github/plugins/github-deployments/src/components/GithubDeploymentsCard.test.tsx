@@ -36,12 +36,8 @@ import { ScmIntegrations } from '@backstage/integration';
 import { Entity } from '@backstage/catalog-model';
 
 import { ApiProvider, ConfigReader } from '@backstage/core-app-api';
-import {
-  errorApiRef,
-  configApiRef,
-  ConfigApi,
-  OAuthApi,
-} from '@backstage/core-plugin-api';
+import { ConfigApi, OAuthApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 let entity: { entity: Entity };
 
@@ -85,8 +81,8 @@ const githubAuthApi: OAuthApi = {
 };
 
 const apis = TestApiRegistry.from(
-  [configApiRef, configApi],
-  [errorApiRef, errorApiMock],
+  [coreApis.config, configApi],
+  [coreApis.error, errorApiMock],
   [
     githubDeploymentsApiRef,
     new GithubDeploymentsApiClient({ scmIntegrationsApi, githubAuthApi }),
