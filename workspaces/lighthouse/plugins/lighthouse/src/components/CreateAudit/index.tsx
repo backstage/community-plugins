@@ -31,15 +31,11 @@ import { lighthouseApiRef } from '../../api';
 import { useQuery } from '../../utils';
 import LighthouseSupportButton from '../SupportButton';
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
-  InfoCard,
-  Page,
-} from '@backstage/core-components';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { InfoCard } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 // TODO(freben): move all of this out of index
 
@@ -85,7 +81,7 @@ const formFactorToScreenEmulationMap: Record<
 };
 
 export const CreateAuditContent = () => {
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const lighthouseApi = useApi(lighthouseApiRef);
   const classes = useStyles();
   const query = useQuery();
@@ -121,12 +117,12 @@ export const CreateAuditContent = () => {
 
   return (
     <>
-      <ContentHeader
+      <SectionHeader
         title="Trigger a new audit"
         description="Submitting this form will immediately trigger and store a new Lighthouse audit. Trigger audits to track your website's accessibility, performance, SEO, and best practices over time."
       >
         <LighthouseSupportButton />
-      </ContentHeader>
+      </SectionHeader>
       <Grid container direction="column">
         <Grid item xs={12} sm={6}>
           <InfoCard>
@@ -198,15 +194,19 @@ export const CreateAuditContent = () => {
 };
 
 const CreateAudit = () => (
-  <Page themeId="tool">
-    <Header title="Lighthouse" subtitle="Website audits powered by Lighthouse">
-      <HeaderLabel label="Owner" value="Spotify" />
-      <HeaderLabel label="Lifecycle" value="Alpha" />
-    </Header>
-    <Content>
+  <>
+    <Header
+      title="Lighthouse"
+      description="Website audits powered by Lighthouse"
+      metadata={[
+        { label: 'Owner', value: 'Spotify' },
+        { label: 'Lifecycle', value: 'Alpha' },
+      ]}
+    />
+    <Container>
       <CreateAuditContent />
-    </Content>
-  </Page>
+    </Container>
+  </>
 );
 
 export default CreateAudit;

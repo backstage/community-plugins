@@ -40,7 +40,8 @@ import * as data from '../../__fixtures__/create-audit-response.json';
 import CreateAudit from './index';
 
 import { ApiProvider } from '@backstage/core-app-api';
-import { ErrorApi, errorApiRef } from '@backstage/core-plugin-api';
+import { ErrorApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 const { useNavigate }: { useNavigate: jest.Mock } =
   jest.requireMock('react-router-dom');
@@ -57,7 +58,7 @@ describe('CreateAudit', () => {
     errorApi = { post: jest.fn(), error$: jest.fn() };
     apis = TestApiRegistry.from(
       [lighthouseApiRef, new LighthouseRestApi('http://lighthouse')],
-      [errorApiRef, errorApi],
+      [coreApis.error, errorApi],
     );
   });
 
