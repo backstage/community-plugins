@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 import { Octokit } from '@octokit/rest';
-import {
-  useApi,
-  githubAuthApiRef,
-  configApiRef,
-} from '@backstage/core-plugin-api';
+import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { readGithubIntegrationConfigs } from '@backstage/integration';
 
 let octokit: any;
 
 export const useOctokitGraphQl = <T>() => {
   const auth = useApi(githubAuthApiRef);
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
 
   const baseUrl = readGithubIntegrationConfigs(
     config.getOptionalConfigArray('integrations.github') ?? [],

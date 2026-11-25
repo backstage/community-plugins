@@ -17,7 +17,7 @@
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
-import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { TestApiProvider } from '@backstage/test-utils';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 
@@ -149,14 +149,15 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={teamEntity}>
-          <Page themeId="service">
-            <Header title="Mocked Pull Requests Board">
-              <HeaderLabel label="Mode" value="Development" />
-            </Header>
-            <Content>
+          <>
+            <Header
+              title="Mocked Pull Requests Board"
+              metadata={[{ label: 'Mode', value: 'Development' }]}
+            />
+            <Container>
               <EntityTeamPullRequestsContent />
-            </Content>
-          </Page>
+            </Container>
+          </>
         </EntityProvider>
       </TestApiProvider>
     ),
@@ -171,14 +172,15 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={teamEntity}>
-          <Page themeId="service">
-            <Header title="Mocked Pull Requests Board">
-              <HeaderLabel label="Mode" value="Development" />
-            </Header>
-            <Content>
+          <>
+            <Header
+              title="Mocked Pull Requests Board"
+              metadata={[{ label: 'Mode', value: 'Development' }]}
+            />
+            <Container>
               <EntityTeamPullRequestsContent />
-            </Content>
-          </Page>
+            </Container>
+          </>
         </EntityProvider>
       </TestApiProvider>
     ),
