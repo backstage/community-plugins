@@ -1,5 +1,15 @@
 # @backstage-community/plugin-stack-overflow
 
+## 0.24.0
+
+### Minor Changes
+
+- 6bdec50: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 6bdec50: The question and search result links now use the Backstage UI `Link` component. Questions on the home page card open in a new tab.
+
 ## 0.23.0
 
 ### Minor Changes
