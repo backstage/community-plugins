@@ -2148,6 +2148,7 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-permission-common": "backstage:^"
+    ajv: "npm:^8.10.0"
   languageName: unknown
   linkType: soft
 
