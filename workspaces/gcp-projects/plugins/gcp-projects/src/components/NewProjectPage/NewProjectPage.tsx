@@ -19,17 +19,13 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { useState } from 'react';
 import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
   InfoCard,
-  Page,
   SimpleStepper,
   SimpleStepperStep,
   StructuredMetadataTable,
   SupportButton,
 } from '@backstage/core-components';
+import { Box, Container, Header } from '@backstage/ui';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { useRouteRef } from '@backstage/core-plugin-api';
@@ -46,7 +42,7 @@ export const Project = () => {
   };
 
   return (
-    <Content>
+    <Box>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <InfoCard title="Create new GCP Project">
@@ -107,32 +103,32 @@ export const Project = () => {
           </InfoCard>
         </Grid>
       </Grid>
-    </Content>
+    </Box>
   );
 };
 
-const labels = (
-  <>
-    <HeaderLabel label="Owner" value="Spotify" />
-    <HeaderLabel label="Lifecycle" value="Production" />
-  </>
-);
+const metadata = [
+  { label: 'Owner', value: 'Spotify' },
+  { label: 'Lifecycle', value: 'Production' },
+];
 
 export const NewProjectPage = () => {
   const docsRootLink = useRouteRef(rootRouteRef)();
   return (
-    <Page themeId="tool">
-      <Header title="New GCP Project" type="GCP" typeLink={docsRootLink}>
-        {labels}
-      </Header>
-      <Content>
-        <ContentHeader title="">
+    <>
+      <Header
+        title="New GCP Project"
+        tags={[{ label: 'GCP', href: docsRootLink }]}
+        metadata={metadata}
+        customActions={
           <SupportButton>
             This plugin allows you to view and interact with your gcp projects.
           </SupportButton>
-        </ContentHeader>
+        }
+      />
+      <Container>
         <Project />
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
