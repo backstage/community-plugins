@@ -45,9 +45,9 @@ export class BookmarksPage {
     await this.page.waitForSelector('nav a', { timeout: 120000 });
   }
 
-  /** Navigates to the bookmarks page and waits for it to load. */
+  /** Navigates to the bookmarks tab of the example entity and waits for it to load. */
   async goto() {
-    await this.page.goto('/bookmarks');
+    await this.page.goto('/catalog/default/component/bookmarks/bookmarks');
     await this.waitForBookmarksLoaded();
   }
 
