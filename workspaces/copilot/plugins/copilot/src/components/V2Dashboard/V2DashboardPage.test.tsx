@@ -248,6 +248,24 @@ const getOrganizationSelectTrigger = () => {
 };
 
 describe('V2DashboardPage filter targets', () => {
+  it('places the metrics help link before the filters and aligns it right', async () => {
+    await renderDashboard(createApi());
+
+    const helpLink = await screen.findByRole('link', {
+      name: 'How do I interpret these metrics?',
+    });
+    const dateRangeLabel = await screen.findByText('Date range');
+
+    expect(
+      helpLink.compareDocumentPosition(dateRangeLabel) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(helpLink).toHaveStyle({
+      alignSelf: 'flex-start',
+      marginLeft: 'auto',
+    });
+  });
+
   it('shows the Cost center | Team toggle button group, defaulting to Team', async () => {
     const api = createApi({
       costCenters: [{ id: 'cc-platform', name: 'Platform' }],

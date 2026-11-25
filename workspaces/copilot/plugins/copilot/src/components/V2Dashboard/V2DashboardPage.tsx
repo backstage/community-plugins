@@ -725,150 +725,165 @@ export const V2DashboardPage = () => {
         <Flex direction="column" style={{ gap: 'var(--bui-space-6, 24px)' }}>
           {/* Filters row */}
 
-          <Flex direction="row" gap="4" style={{ flexWrap: 'wrap' }}>
-            <DateRangePicker
-              label="Date range"
-              size="medium"
-              value={{ start: parseDate(from), end: parseDate(to) }}
-              onChange={onDateRangeChange}
-            />
-            {showFilter && (
-              <Flex
-                direction="column"
-                style={{
-                  minWidth: 200,
-                  flex: 1,
-                  gap: 'var(--bui-space-4, 16px)',
-                }}
+          <Flex direction="column" gap="4">
+            <Flex direction="row">
+              <ButtonLink
+                variant="tertiary"
+                href={DOCS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                iconEnd={<RiExternalLinkLine />}
+                style={{ alignSelf: 'flex-start', marginLeft: 'auto' }}
               >
-                {filterTargetToggleAvailable && (
-                  <>
-                    <Flex direction="row" align="center" gap="2">
-                      <Text variant="body-small">Filter by</Text>
-                      <ToggleButtonGroup
-                        aria-label="Filter by"
-                        selectionMode="single"
-                        disallowEmptySelection
-                        selectedKeys={filterTarget ? [filterTarget] : []}
-                        onSelectionChange={keys => {
-                          const [selected] = Array.from(keys);
-                          if (
-                            typeof selected === 'string' &&
-                            filterTargets.includes(selected as FilterTarget)
-                          ) {
-                            selectFilterTarget(selected as FilterTarget);
-                          }
-                        }}
-                        orientation="horizontal"
-                      >
-                        {filterTargetToggles.map(toggle => (
-                          <FilterTargetToggle key={toggle.id} {...toggle} />
-                        ))}
-                      </ToggleButtonGroup>
-                    </Flex>
-                  </>
-                )}
-                {filterTarget === 'costCenter' && (
-                  <Select
-                    searchable
-                    isDisabled={costCenters.loading}
-                    label="Cost center"
-                    selectedKey={getCostCenterSelectionOptionValue(
-                      selectedCostCenter,
-                    )}
-                    onChange={key => {
-                      const value = key ? String(key) : ALL_COST_CENTERS_OPTION;
-                      if (value === UNASSIGNED_OPTION) {
-                        setSelectedCostCenter({ kind: 'noCostCenter' });
-                      } else if (value === ALL_COST_CENTERS_OPTION) {
-                        setSelectedCostCenter({ kind: 'all' });
-                      } else if (value.startsWith(COST_CENTER_OPTION_PREFIX)) {
-                        setSelectedCostCenter({
-                          kind: 'costCenter',
-                          id: value.slice(COST_CENTER_OPTION_PREFIX.length),
-                        });
-                      }
-                    }}
-                    options={costCenterOptions}
-                  />
-                )}
-                {filterTarget === 'organizationTeam' && (
-                  <Select
-                    searchable
-                    isDisabled={organizationTeamOptions.loading}
-                    label="Organization"
-                    selectedKey={
-                      selectedOrganizationTeamOrganization
-                        ? `${ORGANIZATION_OPTION_PREFIX}${selectedOrganizationTeamOrganization}`
-                        : ALL_ORGANIZATIONS_OPTION
-                    }
-                    onChange={key => {
-                      const value = key
-                        ? String(key)
-                        : ALL_ORGANIZATIONS_OPTION;
-                      setSelectedOrganizationTeamOrganization(
-                        value.startsWith(ORGANIZATION_OPTION_PREFIX)
-                          ? value.slice(ORGANIZATION_OPTION_PREFIX.length)
-                          : undefined,
-                      );
-                    }}
-                    options={[
-                      {
-                        value: ALL_ORGANIZATIONS_OPTION,
-                        label: 'All organizations',
-                      },
-                      ...organizationTeamOptions.organizations.map(org => ({
-                        value: `${ORGANIZATION_OPTION_PREFIX}${org}`,
-                        label: org,
-                      })),
-                    ]}
-                  />
-                )}
-                {isTeamTarget && (
-                  <Select
-                    searchable
-                    isDisabled={teamOptionsLoading || Boolean(teamOptionsError)}
-                    label={teamSelectorLabel}
-                    selectedKey={
-                      filterTarget === 'organizationTeam' &&
-                      selectedOrganizationTeamOrganization &&
-                      activeTeam
-                        ? getOrganizationTeamOptionValue(
-                            selectedOrganizationTeamOrganization,
-                            activeTeam,
-                          )
-                        : activeTeam ?? ''
-                    }
-                    onChange={key => {
-                      const value = key ? String(key) : undefined;
-                      if (filterTarget === 'organizationTeam' && value) {
-                        const separator = value.indexOf('/');
-                        setSelectedOrganizationTeamOrganization(
-                          value.slice(0, separator),
-                          value.slice(separator + 1),
-                        );
-                      } else {
-                        setSelectedTeam(value);
-                      }
-                    }}
-                    options={[
-                      { value: '', label: 'All teams' },
-                      ...teamOptions,
-                    ]}
-                  />
-                )}
-              </Flex>
-            )}
-            <ButtonLink
-              variant="tertiary"
-              href={DOCS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              iconEnd={<RiExternalLinkLine />}
-              style={{ alignSelf: 'flex-end', marginLeft: 'auto' }}
+                How do I interpret these metrics?
+              </ButtonLink>
+            </Flex>
+            <Flex
+              direction={{ initial: 'column', lg: 'row' }}
+              gap="4"
+              grow={1}
+              style={{ minWidth: 0 }}
             >
-              How do I interpret these metrics?
-            </ButtonLink>
+              <DateRangePicker
+                label="Date range"
+                size="medium"
+                value={{ start: parseDate(from), end: parseDate(to) }}
+                onChange={onDateRangeChange}
+              />
+              {showFilter && (
+                <Flex
+                  direction="column"
+                  style={{
+                    minWidth: 200,
+                    flex: 1,
+                    gap: 'var(--bui-space-4, 16px)',
+                  }}
+                >
+                  {filterTargetToggleAvailable && (
+                    <>
+                      <Flex direction="row" align="center" gap="2">
+                        <Text variant="body-small">Filter by</Text>
+                        <ToggleButtonGroup
+                          aria-label="Filter by"
+                          selectionMode="single"
+                          disallowEmptySelection
+                          selectedKeys={filterTarget ? [filterTarget] : []}
+                          onSelectionChange={keys => {
+                            const [selected] = Array.from(keys);
+                            if (
+                              typeof selected === 'string' &&
+                              filterTargets.includes(selected as FilterTarget)
+                            ) {
+                              selectFilterTarget(selected as FilterTarget);
+                            }
+                          }}
+                          orientation="horizontal"
+                        >
+                          {filterTargetToggles.map(toggle => (
+                            <FilterTargetToggle key={toggle.id} {...toggle} />
+                          ))}
+                        </ToggleButtonGroup>
+                      </Flex>
+                    </>
+                  )}
+                  {filterTarget === 'costCenter' && (
+                    <Select
+                      searchable
+                      isDisabled={costCenters.loading}
+                      label="Cost center"
+                      selectedKey={getCostCenterSelectionOptionValue(
+                        selectedCostCenter,
+                      )}
+                      onChange={key => {
+                        const value = key
+                          ? String(key)
+                          : ALL_COST_CENTERS_OPTION;
+                        if (value === UNASSIGNED_OPTION) {
+                          setSelectedCostCenter({ kind: 'noCostCenter' });
+                        } else if (value === ALL_COST_CENTERS_OPTION) {
+                          setSelectedCostCenter({ kind: 'all' });
+                        } else if (
+                          value.startsWith(COST_CENTER_OPTION_PREFIX)
+                        ) {
+                          setSelectedCostCenter({
+                            kind: 'costCenter',
+                            id: value.slice(COST_CENTER_OPTION_PREFIX.length),
+                          });
+                        }
+                      }}
+                      options={costCenterOptions}
+                    />
+                  )}
+                  {filterTarget === 'organizationTeam' && (
+                    <Select
+                      searchable
+                      isDisabled={organizationTeamOptions.loading}
+                      label="Organization"
+                      selectedKey={
+                        selectedOrganizationTeamOrganization
+                          ? `${ORGANIZATION_OPTION_PREFIX}${selectedOrganizationTeamOrganization}`
+                          : ALL_ORGANIZATIONS_OPTION
+                      }
+                      onChange={key => {
+                        const value = key
+                          ? String(key)
+                          : ALL_ORGANIZATIONS_OPTION;
+                        setSelectedOrganizationTeamOrganization(
+                          value.startsWith(ORGANIZATION_OPTION_PREFIX)
+                            ? value.slice(ORGANIZATION_OPTION_PREFIX.length)
+                            : undefined,
+                        );
+                      }}
+                      options={[
+                        {
+                          value: ALL_ORGANIZATIONS_OPTION,
+                          label: 'All organizations',
+                        },
+                        ...organizationTeamOptions.organizations.map(org => ({
+                          value: `${ORGANIZATION_OPTION_PREFIX}${org}`,
+                          label: org,
+                        })),
+                      ]}
+                    />
+                  )}
+                  {isTeamTarget && (
+                    <Select
+                      searchable
+                      isDisabled={
+                        teamOptionsLoading || Boolean(teamOptionsError)
+                      }
+                      label={teamSelectorLabel}
+                      selectedKey={
+                        filterTarget === 'organizationTeam' &&
+                        selectedOrganizationTeamOrganization &&
+                        activeTeam
+                          ? getOrganizationTeamOptionValue(
+                              selectedOrganizationTeamOrganization,
+                              activeTeam,
+                            )
+                          : activeTeam ?? ''
+                      }
+                      onChange={key => {
+                        const value = key ? String(key) : undefined;
+                        if (filterTarget === 'organizationTeam' && value) {
+                          const separator = value.indexOf('/');
+                          setSelectedOrganizationTeamOrganization(
+                            value.slice(0, separator),
+                            value.slice(separator + 1),
+                          );
+                        } else {
+                          setSelectedTeam(value);
+                        }
+                      }}
+                      options={[
+                        { value: '', label: 'All teams' },
+                        ...teamOptions,
+                      ]}
+                    />
+                  )}
+                </Flex>
+              )}
+            </Flex>
           </Flex>
           {filterTarget === 'organizationTeam' &&
             (organizationTeamOptions.error || dashboard.error) && (
