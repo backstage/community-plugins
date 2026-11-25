@@ -62,6 +62,7 @@ yarn.lock                                                               @backsta
 /workspaces/git-release-manager                                         @backstage/community-plugins-maintainers  @erikengervall
 /workspaces/github                                                      @backstage/community-plugins-maintainers
 /workspaces/github/plugins/github-actions                               @backstage/community-plugins-maintainers
+/workspaces/github/plugins/github-common                                @backstage/community-plugins-maintainers
 /workspaces/github/plugins/github-deployments                           @backstage/community-plugins-maintainers
 /workspaces/github/plugins/github-discussions                           @backstage/community-plugins-maintainers  @minkimcello @taras
 /workspaces/github/plugins/github-discussions-common                    @backstage/community-plugins-maintainers  @minkimcello @taras

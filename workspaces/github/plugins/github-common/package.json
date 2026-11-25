@@ -1,0 +1,56 @@
+{
+  "name": "@backstage-community/plugin-github-common",
+  "description": "Common functionalities shared by the GitHub plugins",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/github/plugins/github-common"
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "github",
+    "pluginPackages": [
+      "@backstage-community/plugin-github-common"
+    ]
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "backstage:^"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^"
+  },
+  "files": [
+    "dist"
+  ]
+}

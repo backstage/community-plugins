@@ -20,10 +20,8 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import {
-  GITHUB_PROJECT_SLUG_ANNOTATION,
-  isGithubDeploymentsAvailable,
-} from '../Router';
+import { GITHUB_PROJECT_SLUG_ANNOTATION } from '@backstage-community/plugin-github-common';
+import { isGithubDeploymentsAvailable } from '../Router';
 import { GithubDeploymentsTable } from './GithubDeploymentsTable/GithubDeploymentsTable';
 import {
   ANNOTATION_LOCATION,
