@@ -18,13 +18,8 @@ import { JSX } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { EntitySplunkOnCallCard } from './EntitySplunkOnCallCard';
-import {
-  Content,
-  ContentHeader,
-  Page,
-  Header,
-  SupportButton,
-} from '@backstage/core-components';
+import { SupportButton } from '@backstage/core-components';
+import { Container, Flex, Header, Text } from '@backstage/ui';
 
 const useStyles = makeStyles(() => ({
   overflowXScroll: {
@@ -44,21 +39,24 @@ export const SplunkOnCallPage = (props: SplunkOnCallPageProps): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Page themeId="tool">
-      <Header title={title} subtitle={subtitle} />
-      <Content className={classes.overflowXScroll}>
-        <ContentHeader title={pageTitle}>
+    <>
+      <Header title={title} description={subtitle} />
+      <Container className={classes.overflowXScroll}>
+        <Flex justify="between" align="center" mb="4">
+          <Text as="h2" variant="title-medium">
+            {pageTitle}
+          </Text>
           <SupportButton>
             This is used to help you automate incident management.
           </SupportButton>
-        </ContentHeader>
+        </Flex>
         <Grid container spacing={3} direction="row">
           <Grid item xs={12} sm={6} md={4}>
             <EntitySplunkOnCallCard />
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 
