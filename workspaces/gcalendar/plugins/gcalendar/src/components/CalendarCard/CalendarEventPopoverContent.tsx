@@ -17,11 +17,11 @@ import { sortBy } from 'lodash';
 import DOMPurify from 'dompurify';
 
 import { useAnalytics } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
 import {
   Box,
   ButtonIcon,
   Flex,
+  Link,
   Text,
   Tooltip,
   TooltipTrigger,
@@ -58,8 +58,10 @@ export const CalendarEventPopoverContent = ({
           <TooltipTrigger>
             <Link
               data-testid="open-calendar-link"
-              to={event.htmlLink}
-              onClick={_e =>
+              href={event.htmlLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onPress={() =>
                 analytics.captureEvent('click', 'open in calendar')
               }
               noTrack
@@ -76,8 +78,10 @@ export const CalendarEventPopoverContent = ({
       </Flex>
       {zoomLink && (
         <Link
-          to={zoomLink}
-          onClick={_e => analytics.captureEvent('click', 'zoom link')}
+          href={zoomLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          onPress={() => analytics.captureEvent('click', 'zoom link')}
           noTrack
         >
           Join Zoom Meeting
