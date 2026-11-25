@@ -146,6 +146,7 @@ export const StarredRatingButtons = (props: StarredRatingButtonsProps) => {
             aria-label={`Rate ${starRating} ${
               starRating === 1 ? 'star' : 'stars'
             }`}
+            aria-pressed={rating === starRating}
             variant="tertiary"
             icon={
               rating && rating >= starRating ? (
