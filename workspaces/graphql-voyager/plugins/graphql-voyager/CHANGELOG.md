@@ -1,5 +1,15 @@
 # @backstage-community/plugin-graphql-voyager
 
+## 0.23.0
+
+### Minor Changes
+
+- 1c5aa6d: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 1c5aa6d: Replaced deprecated Backstage core components on the GraphQL Voyager page with their Backstage UI equivalents. The page header and layout now use Backstage UI styling.
+
 ## 0.22.0
 
 ### Minor Changes
