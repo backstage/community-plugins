@@ -23,7 +23,9 @@ jest.mock('@backstage/ui', () => ({
   useBreakpoint: jest.fn(),
 }));
 
-const mockUseBreakpoint = useBreakpoint as jest.Mock;
+const mockUseBreakpoint = useBreakpoint as jest.MockedFunction<
+  typeof useBreakpoint
+>;
 
 describe('useIsDesktop', () => {
   it('should export hook', () => {
@@ -32,7 +34,8 @@ describe('useIsDesktop', () => {
 
   it('should return true for desktop viewports', () => {
     const up = jest.fn().mockReturnValue(true);
-    mockUseBreakpoint.mockReturnValue({ breakpoint: 'md', up });
+    const down = jest.fn().mockReturnValue(false);
+    mockUseBreakpoint.mockReturnValue({ breakpoint: 'md', up, down });
     const { result } = renderHook(() => useIsDesktop());
     expect(up).toHaveBeenCalledWith('md');
     expect(result.current).toBe(true);
@@ -40,7 +43,8 @@ describe('useIsDesktop', () => {
 
   it('should return false for mobile viewports', () => {
     const up = jest.fn().mockReturnValue(false);
-    mockUseBreakpoint.mockReturnValue({ breakpoint: 'xs', up });
+    const down = jest.fn().mockReturnValue(true);
+    mockUseBreakpoint.mockReturnValue({ breakpoint: 'xs', up, down });
     const { result } = renderHook(() => useIsDesktop());
     expect(result.current).toBe(false);
   });

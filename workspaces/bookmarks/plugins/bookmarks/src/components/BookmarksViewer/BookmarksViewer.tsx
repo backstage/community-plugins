@@ -29,6 +29,7 @@ import { NavButton } from './helpers/NavButton';
 import { TableOfContents } from './helpers/TableOfContents';
 import { useCustomProtocol } from '../../hooks/useCustomProtocol';
 import { PATH_SEPARATOR } from '../../consts/consts';
+
 import styles from './BookmarksViewer.module.css';
 
 /** Props for layout components */

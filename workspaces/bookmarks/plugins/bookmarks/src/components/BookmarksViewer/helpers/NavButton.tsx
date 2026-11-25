@@ -19,6 +19,7 @@ import { RiArrowLeftLine, RiArrowRightLine } from '@remixicon/react';
 import { PATH_SEPARATOR } from '../../../consts/consts';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { TEST_IDS } from '../../../consts/testids';
+
 import styles from './NavButton.module.css';
 
 /** Button component for navigating between bookmarks */
@@ -42,6 +43,7 @@ export const NavButton = ({
     <Button
       aria-label={`${buttonText}: ${bookmarkName}`}
       variant="tertiary"
+      size="medium"
       data-testid={TEST_IDS.NavButton[direction]}
       onPress={onClick}
       iconStart={!isNext ? <RiArrowLeftLine /> : undefined}
