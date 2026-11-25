@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 2.2.0
+
+### Minor Changes
+
+- 3e2acc3: Backstage version bump to v1.57.1
+
 ## 2.1.1
 
 ### Patch Changes
