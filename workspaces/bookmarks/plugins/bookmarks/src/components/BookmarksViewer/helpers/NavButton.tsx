@@ -41,7 +41,6 @@ export const NavButton = ({
 
   return (
     <Button
-      aria-label={`${buttonText}: ${bookmarkName}`}
       variant="tertiary"
       size="medium"
       data-testid={TEST_IDS.NavButton[direction]}
@@ -54,7 +53,7 @@ export const NavButton = ({
       >
         <Text as="small" variant="body-small" color="secondary">
           {buttonText}
-        </Text>
+        </Text>{' '}
         <Text as="span" variant="body-medium" color="primary">
           {bookmarkName}
         </Text>
