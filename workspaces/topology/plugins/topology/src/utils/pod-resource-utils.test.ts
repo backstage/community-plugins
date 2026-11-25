@@ -142,7 +142,7 @@ describe('PodResourceUtils', () => {
     expect(podRCData.previous).toBeFalsy();
     expect(podRCData.isRollingOut).toBeFalsy();
 
-    podRCData = getPodsForCronJob({}, mockResources);
+    podRCData = getPodsForCronJob({} as V1CronJob, mockResources);
     expect(podRCData.pods).toHaveLength(0);
 
     mockResources = { jobs: { loaded: false, loadError: 'error', data: [] } };
