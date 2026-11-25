@@ -15,7 +15,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -64,7 +64,7 @@ export const StackOverflowSearchResultListItem = (
           <ListItemText
             primaryTypographyProps={{ variant: 'h6' }}
             primary={
-              <Link to={result.location} noTrack onClick={handleClick}>
+              <Link href={result.location} noTrack onPress={handleClick}>
                 {highlight?.fields?.title ? (
                   <HighlightedSearchResultText
                     text={decodeHtml(highlight.fields.title)}

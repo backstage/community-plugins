@@ -15,7 +15,7 @@
  */
 
 import { useApi } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -62,7 +62,7 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
   return (
     <List>
       {value.map(question => (
-        <Link to={question.link}>
+        <Link href={question.link} target="_blank" rel="noopener noreferrer">
           <ListItem key={question.link}>
             {props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
             <ListItemText
