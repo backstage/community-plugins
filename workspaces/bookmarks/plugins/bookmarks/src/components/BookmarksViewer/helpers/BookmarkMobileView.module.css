@@ -32,8 +32,11 @@
 
   /* Pins the dialog to the left edge so it behaves like a side drawer */
   .drawer.drawer {
+    --bookmarks-plugin-drawer-float-amount: var(--bui-space-1);
     height: 100vh;
-    max-height: calc(100vh - 2 * var(--bui-space-1));
-    margin: var(--bui-space-1) auto var(--bui-space-1) var(--bui-space-1);
+    max-height: calc(100vh - 2 * var(--bookmarks-plugin-drawer-float-amount));
+    margin: var(--bookmarks-plugin-drawer-float-amount) auto
+      var(--bookmarks-plugin-drawer-float-amount)
+      var(--bookmarks-plugin-drawer-float-amount);
   }
 }
