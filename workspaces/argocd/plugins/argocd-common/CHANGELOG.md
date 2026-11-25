@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd-common
 
+## 1.19.1
+
+### Patch Changes
+
+- b1b7547: Updated dependency `@kubernetes/client-node` to `^2.0.0`.
+
 ## 1.19.0
 
 ### Minor Changes
