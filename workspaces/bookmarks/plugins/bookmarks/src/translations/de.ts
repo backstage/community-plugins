@@ -25,10 +25,10 @@ export const de = createTranslationMessages({
   ref: bookmarksTranslationRef,
   full: true, // False means that this is a partial translation
   messages: {
+    'bookmarkViewer.tableOfContents': 'Inhaltsverzeichnis',
     'bookmarkViewer.newTab': 'In neuem Tab öffnen',
     'bookmarkViewer.navButton.next': 'Weiter',
     'bookmarkViewer.navButton.previous': 'Zurück',
-    'bookmarkViewer.mobileView.toc': 'Inhaltsverzeichnis',
     'bookmarkViewerFrame.devModeWarning':
       'Sie müssen die Seite möglicherweise neu laden, damit das iFrame im Entwicklungsmodus korrekt geladen wird',
     'entityBookmarksContent.invalid.title': 'Ungültiges Bookmarks-Format',

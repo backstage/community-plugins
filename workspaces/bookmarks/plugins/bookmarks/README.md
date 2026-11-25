@@ -8,7 +8,7 @@ The Bookmarks plugin is a simple tool for saving and viewing links to your favor
 
 Bookmarks are stored in the `metadata` of a Backstage entity, making it easy to manage and access them within your Backstage Software Catalog.
 
-![A screenshot of the Bookmarks plugin](https://i.imgur.com/guMtiax.png)
+![A screenshot of the Bookmarks plugin](https://i.imgur.com/4bSXxua.png)
 
 ## Installation
 

@@ -119,10 +119,10 @@ export default bookmarksPlugin;
 export const bookmarksTranslationRef: TranslationRef<
   'bookmarks',
   {
+    readonly 'bookmarkViewer.tableOfContents': 'Table of Contents';
     readonly 'bookmarkViewer.newTab': 'Open in new tab';
     readonly 'bookmarkViewer.navButton.next': 'Next';
     readonly 'bookmarkViewer.navButton.previous': 'Previous';
-    readonly 'bookmarkViewer.mobileView.toc': 'Table of Contents';
     readonly 'bookmarkViewerFrame.devModeWarning': 'You may have to reload the page for the iframe to load correctly in development mode';
     readonly 'entityBookmarksContent.invalid.title': 'Invalid bookmarks format';
     readonly 'entityBookmarksContent.invalid.description': 'Ensure your bookmarks are structured correctly.';

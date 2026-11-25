@@ -207,22 +207,27 @@ test.describe('Bookmarks Plugin', () => {
       await bookmarksPage.expectNextButtonVisible(true);
     });
 
-    test('tree items can be expanded and collapsed', async () => {
+    test('tree folders can be expanded and collapsed', async () => {
       const toc = page.getByTestId(TEST_IDS.TableOfContents.wrapper);
 
-      const folderItem = toc.getByRole('treeitem', {
-        name: /My cool gadgets and gizmos/i,
+      const folderRow = toc.getByRole('row', {
+        name: 'My cool gadgets and gizmos',
       });
-      await expect(folderItem).toBeVisible();
+      await expect(folderRow).toHaveAttribute('aria-expanded', 'false');
 
-      const expandIcon = folderItem
-        .locator(
-          '[data-testid="ExpandMoreIcon"], [data-testid="ChevronRightIcon"]',
-        )
-        .first();
-      if (await expandIcon.isVisible()) {
-        await expandIcon.click();
-      }
+      // clicking anywhere on the folder row expands it
+      await folderRow.click();
+      await expect(folderRow).toHaveAttribute('aria-expanded', 'true');
+      await expect(
+        toc.getByRole('row', { name: 'fortune cowsay lolcat' }),
+      ).toBeVisible();
+
+      // the chevron button collapses it again
+      await folderRow.getByRole('button').click();
+      await expect(folderRow).toHaveAttribute('aria-expanded', 'false');
+      await expect(
+        toc.getByRole('row', { name: 'fortune cowsay lolcat' }),
+      ).not.toBeVisible();
     });
 
     test('selecting a bookmark highlights it in the tree', async () => {
@@ -231,8 +236,11 @@ test.describe('Bookmarks Plugin', () => {
       await bookmarksPage.clickNextButton();
       await bookmarksPage.clickNextButton();
 
-      const selectedItem = toc.locator('.Mui-selected');
+      // the current node is marked with data-current, and its parents are
+      // expanded automatically so it stays visible
+      const selectedItem = toc.locator('[role="row"][data-current]');
       await expect(selectedItem).toBeVisible();
+      await expect(selectedItem).toHaveText(expectedBookmarks[2].label);
     });
   });
 

@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-import TocIcon from '@mui/icons-material/Toc';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import {
+  ButtonIcon,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
+import { RiListUnordered } from '@remixicon/react';
 import { BookmarkViewerLayoutProps } from '../BookmarksViewer';
 import { useState } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { TEST_IDS } from '../../../consts/testids';
+
+import styles from './BookmarkMobileView.module.css';
 
 export const BookmarkMobileView = ({
   toc,
@@ -35,57 +41,42 @@ export const BookmarkMobileView = ({
   const [tocDrawerOpen, setTocDrawerOpen] = useState(false);
 
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+    <div
+      className={styles.root}
       data-testid={TEST_IDS.BookmarkMobileView.wrapper}
     >
-      <Drawer
-        anchor="left"
-        open={tocDrawerOpen}
-        onClose={() => setTocDrawerOpen(false)}
-        ModalProps={{
-          slotProps: {
-            backdrop: {
-              'data-testid': TEST_IDS.BookmarkMobileView.backdrop,
-            } as React.HTMLAttributes<HTMLDivElement>,
-          },
-        }}
+      <Dialog
+        isOpen={tocDrawerOpen}
+        onOpenChange={setTocDrawerOpen}
+        isDismissable
+        width={280}
+        className={styles.drawer}
+        data-testid={TEST_IDS.BookmarkMobileView.backdrop}
       >
-        <Box sx={{ minWidth: 250, padding: 2 }}>{toc}</Box>
-      </Drawer>
+        <DialogHeader>{t('bookmarkViewer.tableOfContents')}</DialogHeader>
+        <DialogBody>{toc}</DialogBody>
+      </Dialog>
 
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          pb: 2,
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
-          <Tooltip title={t('bookmarkViewer.mobileView.toc')}>
-            <IconButton
-              onClick={() => setTocDrawerOpen(prev => !prev)}
-              sx={{ mb: 2 }}
+      <div className={styles.toolbar}>
+        <div className={styles.group}>
+          <TooltipTrigger>
+            <ButtonIcon
+              aria-label={t('bookmarkViewer.tableOfContents')}
+              icon={<RiListUnordered />}
+              variant="tertiary"
+              className={styles.tocToggle}
+              onPress={() => setTocDrawerOpen(prev => !prev)}
               data-testid={TEST_IDS.BookmarkMobileView.toggleToc}
-            >
-              <TocIcon />
-            </IconButton>
-          </Tooltip>
+            />
+            <Tooltip>{t('bookmarkViewer.tableOfContents')}</Tooltip>
+          </TooltipTrigger>
           {openInNewTab}
-        </Box>
+        </div>
 
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
-          {nextButton}
-        </Box>
-      </Box>
+        <div className={styles.group}>{nextButton}</div>
+      </div>
 
-      <Box
-        sx={{ flexGrow: 1, width: '100%', minHeight: '50vh', height: '100%' }}
-      >
-        {viewer}
-      </Box>
-    </Box>
+      <div className={styles.viewer}>{viewer}</div>
+    </div>
   );
 };
