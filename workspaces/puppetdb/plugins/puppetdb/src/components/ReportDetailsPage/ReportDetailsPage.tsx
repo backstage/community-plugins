@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { Breadcrumbs, Link } from '@backstage/core-components';
+import { useParams } from 'react-router-dom';
+import { Breadcrumbs } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { puppetDbRouteRef } from '../../routes';
@@ -68,9 +69,7 @@ export const ReportDetailsPage = () => {
   return (
     <div>
       <Breadcrumbs aria-label="breadcrumb">
-        <Link component={RouterLink} to={reportsRouteLink()}>
-          PuppetDB Reports
-        </Link>
+        <Link href={reportsRouteLink()}>PuppetDB Reports</Link>
         <Typography noWrap>{hash}</Typography>
       </Breadcrumbs>
       <Card
