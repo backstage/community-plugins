@@ -1915,7 +1915,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-manage-react": "workspace:^"
     "@backstage-community/plugin-tech-insights": "npm:^1.1.0"
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.8.2"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.11.0"
     "@backstage-community/plugin-tech-insights-react": "npm:^1.4.0"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
@@ -2011,23 +2011,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:0.7.2"
+"@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:0.10.0"
   dependencies:
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.8.2"
-    "@backstage-community/plugin-tech-insights-node": "npm:^2.6.2"
-    "@backstage/backend-plugin-api": "npm:^1.6.2"
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/config": "npm:^1.3.6"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-catalog-node": "npm:^1.20.1"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.11.0"
+    "@backstage-community/plugin-tech-insights-node": "npm:^2.9.0"
+    "@backstage/backend-plugin-api": "npm:^1.10.0"
+    "@backstage/catalog-model": "npm:^1.10.0"
+    "@backstage/config": "npm:^1.3.8"
+    "@backstage/errors": "npm:^1.3.1"
+    "@backstage/plugin-catalog-node": "npm:^2.2.4"
     "@backstage/types": "npm:^1.2.2"
     ajv: "npm:^8.10.0"
     json-rules-engine: "npm:^7.0.0"
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
-  checksum: 10/1a523b531395046a33d87c650d418975bdda3580fbf48cdc7037aa1feb51b1db707a81aba1948f5dde217871c6ea5236af3b858a411cb7e76bdf2bcd6d254bc9
+  checksum: 10/ec00c382b452bc616689e33e9001e76b4232ba553e040ab59a6427c26325b9cfde1d2e61e4d025bbf4f664c940abd5052df66aebfab09b07257923db29236ca3
   languageName: node
   linkType: hard
 
@@ -2061,6 +2061,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-tech-insights-common@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@backstage-community/plugin-tech-insights-common@npm:0.11.0"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.10.0"
+    "@backstage/catalog-model": "npm:^1.10.0"
+    "@backstage/core-plugin-api": "npm:^1.12.9"
+    "@backstage/errors": "npm:^1.3.1"
+    "@backstage/plugin-permission-common": "npm:^0.9.10"
+    "@backstage/types": "npm:^1.2.2"
+    "@types/luxon": "npm:^3.0.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    luxon: "npm:^3.0.0"
+    qs: "npm:^6.12.3"
+  checksum: 10/4e7b1fcf78a0c8576eb52429c027d5e81d90e9e1ff3d855fe838c225bc59ef8cf7dd72f21161684b08f33bbd5a4dd4c7984ff0e554b8e2f95bf7f9f3068cc8b8
+  languageName: node
+  linkType: hard
+
 "@backstage-community/plugin-tech-insights-common@npm:^0.8.2":
   version: 0.8.2
   resolution: "@backstage-community/plugin-tech-insights-common@npm:0.8.2"
@@ -2078,18 +2096,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-tech-insights-node@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "@backstage-community/plugin-tech-insights-node@npm:2.6.2"
+"@backstage-community/plugin-tech-insights-node@npm:^2.6.2, @backstage-community/plugin-tech-insights-node@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "@backstage-community/plugin-tech-insights-node@npm:2.9.0"
   dependencies:
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.8.2"
-    "@backstage/backend-plugin-api": "npm:^1.6.2"
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/config": "npm:^1.3.6"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.11.0"
+    "@backstage/backend-plugin-api": "npm:^1.10.0"
+    "@backstage/catalog-model": "npm:^1.10.0"
+    "@backstage/config": "npm:^1.3.8"
     "@backstage/types": "npm:^1.2.2"
     "@types/luxon": "npm:^3.0.0"
     luxon: "npm:^3.0.0"
-  checksum: 10/1b7169651f433b6d234d00b351a8ff6d7b25b2c8eff5d03fbeb2619405f651349d06f6b89f83a231b9c236d30f6974d4f7f0dae0a7311e58683c73ca84e0efbc
+  checksum: 10/43c81d652130203226c2d344833c065fe2dac0d31a9769cce7a2a5f8462ba181ade9c7bac1888c27b34c42640851bc69535177bd3b2812325bc2ea415ce01880
   languageName: node
   linkType: hard
 
@@ -2385,7 +2403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-plugin-api@backstage:^::backstage=1.54.5&npm=1.10.0, @backstage/backend-plugin-api@npm:^1.10.0, @backstage/backend-plugin-api@npm:^1.6.0, @backstage/backend-plugin-api@npm:^1.6.2, @backstage/backend-plugin-api@npm:^1.7.0":
+"@backstage/backend-plugin-api@backstage:^::backstage=1.54.5&npm=1.10.0, @backstage/backend-plugin-api@npm:^1.10.0, @backstage/backend-plugin-api@npm:^1.6.2, @backstage/backend-plugin-api@npm:^1.7.0":
   version: 1.10.0
   resolution: "@backstage/backend-plugin-api@npm:1.10.0"
   dependencies:
@@ -3910,24 +3928,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-node@npm:^1.20.1":
-  version: 1.20.1
-  resolution: "@backstage/plugin-catalog-node@npm:1.20.1"
-  dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.6.0"
-    "@backstage/catalog-client": "npm:^1.12.1"
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-catalog-common": "npm:^1.1.7"
-    "@backstage/plugin-permission-common": "npm:^0.9.3"
-    "@backstage/plugin-permission-node": "npm:^0.10.7"
-    "@backstage/types": "npm:^1.2.2"
-    lodash: "npm:^4.17.21"
-    yaml: "npm:^2.0.0"
-  checksum: 10/9a89dcbbd5f7430f46cde00d19d657fa743cde6d21a9b825db4b3a156dd9a5e17b000eac5c768ffbbf58684ae4aba6805ca83b45b0092e3296b880bd690b29d4
-  languageName: node
-  linkType: hard
-
 "@backstage/plugin-catalog-react@backstage:^::backstage=1.54.5&npm=3.2.2, @backstage/plugin-catalog-react@npm:^3.2.1, @backstage/plugin-catalog-react@npm:^3.2.2":
   version: 3.2.2
   resolution: "@backstage/plugin-catalog-react@npm:3.2.2"
@@ -4169,7 +4169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-common@backstage:^::backstage=1.54.5&npm=0.9.10, @backstage/plugin-permission-common@npm:^0.9.10, @backstage/plugin-permission-common@npm:^0.9.3, @backstage/plugin-permission-common@npm:^0.9.5, @backstage/plugin-permission-common@npm:^0.9.6, @backstage/plugin-permission-common@npm:^0.9.9":
+"@backstage/plugin-permission-common@backstage:^::backstage=1.54.5&npm=0.9.10, @backstage/plugin-permission-common@npm:^0.9.10, @backstage/plugin-permission-common@npm:^0.9.5, @backstage/plugin-permission-common@npm:^0.9.6, @backstage/plugin-permission-common@npm:^0.9.9":
   version: 0.9.10
   resolution: "@backstage/plugin-permission-common@npm:0.9.10"
   dependencies:
@@ -4201,7 +4201,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-node@npm:^0.10.10, @backstage/plugin-permission-node@npm:^0.10.7":
+"@backstage/plugin-permission-node@npm:^0.10.10":
   version: 0.10.10
   resolution: "@backstage/plugin-permission-node@npm:0.10.10"
   dependencies:
@@ -14589,8 +14589,8 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-manage-backend": "workspace:^"
     "@backstage-community/plugin-tech-insights-backend": "npm:^2.5.2"
-    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "npm:^0.7.2"
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.8.2"
+    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "npm:^0.10.0"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.11.0"
     "@backstage-community/plugin-tech-insights-node": "npm:^2.6.2"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
