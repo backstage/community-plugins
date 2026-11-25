@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-sonarqube
 
+## 2.17.1
+
+### Patch Changes
+
+- 7cfc67c: Move the scaffolder action modules into a shared workspace. Their published package names and behavior remain unchanged.
+
 ## 2.17.0
 
 ### Minor Changes

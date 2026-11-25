@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-kubernetes
 
+## 2.21.2
+
+### Patch Changes
+
+- 7cfc67c: Move the scaffolder action modules into a shared workspace. Their published package names and behavior remain unchanged.
+
 ## 2.21.1
 
 ### Patch Changes
