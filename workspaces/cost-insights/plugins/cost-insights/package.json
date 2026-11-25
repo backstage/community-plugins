@@ -70,7 +70,7 @@
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/pickers": "^3.3.11",
     "@material-ui/styles": "^4.9.6",
-    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
     "@types/recharts": "^2.0.0",
     "classnames": "^2.2.6",
     "history": "^5.0.0",
@@ -97,14 +97,14 @@
     "@types/recharts": "^2.0.0",
     "@types/regression": "^2.0.0",
     "@types/yup": "^0.32.0",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "configSchema": "config.d.ts"
 }
