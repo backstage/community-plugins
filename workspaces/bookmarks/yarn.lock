@@ -745,12 +745,12 @@ __metadata:
     "@types/react-dom": "npm:^18"
     jest: "npm:*"
     playwright-core: "npm:*"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react: "npm:^18.0.0"
+    react-dom: "npm:^18.0.0"
     react-router-dom: "npm:~6.30.0"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
   languageName: unknown
   linkType: soft
 
@@ -18880,7 +18880,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0":
+"react-dom@npm:^18.0.0":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -19200,7 +19200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0":
+"react@npm:^18.0.0":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
