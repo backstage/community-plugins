@@ -20,7 +20,7 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import LinkIcon from '@material-ui/icons/Link';
-import { Link, MarkdownContent } from '@backstage/core-components';
+import { MarkdownContent } from '@backstage/core-components';
 import { isValidUrl } from '../../utils/components';
 import type { EntrySnapshot } from '../../utils/types';
 import { RadarTimeline } from '../RadarTimeline';
@@ -64,8 +64,9 @@ const RadarDescription = (props: Props): React.JSX.Element => {
         <DialogActions>
           {links?.map(link => (
             <Button
-              component={Link}
-              to={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={onClose}
               color="primary"
               startIcon={<LinkIcon />}
@@ -76,8 +77,9 @@ const RadarDescription = (props: Props): React.JSX.Element => {
           ))}
           {isValidUrl(url) && (
             <Button
-              component={Link}
-              to={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={onClose}
               color="primary"
               startIcon={<LinkIcon />}
