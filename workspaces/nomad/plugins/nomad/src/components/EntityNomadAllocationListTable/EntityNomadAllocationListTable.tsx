@@ -15,17 +15,15 @@
  */
 
 import { DateTime } from 'luxon';
-import {
-  ResponseErrorPanel,
-  Link as CoreLink,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
 import { useMemo, useState } from 'react';
 import { Allocation, nomadApiRef } from '../../api';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import {
   NOMAD_GROUP_ANNOTATION,
   NOMAD_JOB_ID_ANNOTATION,
@@ -42,6 +40,7 @@ import {
   useTable,
   Header,
   Container,
+  Link,
 } from '@backstage/ui';
 import type { ColumnConfig } from '@backstage/ui';
 
@@ -64,7 +63,7 @@ export const EntityNomadAllocationListTable = () => {
 
   // Get ref to the backend API
   const [init, setInit] = useState(true);
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const nomadApi = useApi(nomadApiRef);
   const nomadAddr = configApi.getString('nomad.addr');
 
@@ -137,12 +136,13 @@ export const EntityNomadAllocationListTable = () => {
         isRowHeader: true,
         cell: (row: rowType) => (
           <Cell>
-            <CoreLink
-              to={`${row.nomadAddr}/ui/allocations/${row.ID}`}
-              underline="always"
+            <Link
+              href={`${row.nomadAddr}/ui/allocations/${row.ID}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {row.ID.split('-')[0]}
-            </CoreLink>
+            </Link>
           </Cell>
         ),
         isSortable: true,
@@ -152,12 +152,13 @@ export const EntityNomadAllocationListTable = () => {
         label: 'Task Group',
         cell: (row: rowType) => (
           <Cell>
-            <CoreLink
-              to={`${row.nomadAddr}/ui/jobs/${row.JobID}/${row.TaskGroup}`}
-              underline="always"
+            <Link
+              href={`${row.nomadAddr}/ui/jobs/${row.JobID}/${row.TaskGroup}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {row.TaskGroup}
-            </CoreLink>
+            </Link>
           </Cell>
         ),
         isSortable: true,
@@ -193,12 +194,13 @@ export const EntityNomadAllocationListTable = () => {
         label: 'Client',
         cell: (row: rowType) => (
           <Cell>
-            <CoreLink
-              to={`${row.nomadAddr}/ui/clients/${row.NodeID}`}
-              underline="always"
+            <Link
+              href={`${row.nomadAddr}/ui/clients/${row.NodeID}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {row.ID.split('-')[0]}
-            </CoreLink>
+            </Link>
           </Cell>
         ),
         isSortable: true,
