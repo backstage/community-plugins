@@ -13,14 +13,15 @@
     "directory": "workspaces/tekton/plugins/tekton-dev-backend"
   },
   "scripts": {
-    "start": "backstage-cli package start",
-    "start:legacy": "backstage-cli package start",
+    "start": "backstage-cli package start --config app-config.yaml",
+    "start:legacy": "backstage-cli package start --config app-config.yaml",
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
     "clean": "backstage-cli package clean"
   },
   "dependencies": {
     "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
@@ -30,6 +31,11 @@
     "better-sqlite3": "^12.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "backstage:^"
+    "@backstage/cli": "backstage:^",
+    "@backstage/plugin-kubernetes-common": "backstage:^",
+    "@backstage/plugin-kubernetes-node": "backstage:^",
+    "@types/express": "^4.17.21",
+    "express": "^4.18.2",
+    "express-promise-router": "^4.1.1"
   }
 }

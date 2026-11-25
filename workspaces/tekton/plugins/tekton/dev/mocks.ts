@@ -26,11 +26,10 @@ import { mockApis } from '@backstage/test-utils';
 
 import { mockKubernetesPlrResponse } from '../src/__fixtures__/1-pipelinesData';
 import {
-  acsDeploymentCheck,
-  acsImageCheckResults,
-  acsImageScanResult,
-} from '../src/__fixtures__/advancedClusterSecurityData';
-import { enterpriseContractResult } from '../src/__fixtures__/enterpriseContractData';
+  buildTektonFixtureResources,
+  FIXTURE_CLUSTER_NAME,
+  getTektonFixturePodLogText,
+} from '../src/__fixtures__/tektonDevShared';
 
 export const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -81,24 +80,24 @@ export class MockKubernetesProxyApi implements KubernetesProxyApi {
         }, ms);
       });
 
+    const text = getTektonFixturePodLogText(
+      _request.podName,
+      _request.containerName,
+    );
+    // Keep staggered delays so expanded-row UI still exercises async log loading.
     if (_request.podName.includes('ec-task')) {
-      return delayedResponse(JSON.stringify(enterpriseContractResult), 100);
+      return delayedResponse(text, 100);
     }
-
     if (_request.podName.includes('image-scan-task')) {
-      return delayedResponse(JSON.stringify(acsImageScanResult), 200);
+      return delayedResponse(text, 200);
     }
-
     if (_request.podName.includes('image-check-task')) {
-      return delayedResponse(JSON.stringify(acsImageCheckResults), 300);
+      return delayedResponse(text, 300);
     }
-
     if (_request.podName.includes('deployment-check-task')) {
-      return delayedResponse(JSON.stringify(acsDeploymentCheck), 400);
+      return delayedResponse(text, 400);
     }
-
-    const response = `\nstreaming logs from container: ${_request.containerName} \n...`;
-    return delayedResponse(response, 500);
+    return delayedResponse(text, 500);
   }
 
   async deletePod(): Promise<any> {
@@ -114,32 +113,14 @@ export class MockKubernetesClient implements KubernetesApi {
   readonly resources;
 
   constructor(fixtureData: { [resourceType: string]: any[] }) {
-    this.resources = Object.entries(fixtureData).flatMap(
-      ([type, resources]) => {
-        if (type === 'pipelineruns' && resources[0]?.kind === 'PipelineRun') {
-          return {
-            type: 'customresources',
-            resources,
-          };
-        } else if (type === 'taskruns' && resources[0]?.kind === 'TaskRun') {
-          return {
-            type: 'customresources',
-            resources,
-          };
-        }
-        return {
-          type: type.toLocaleLowerCase('en-US'),
-          resources,
-        };
-      },
-    );
+    this.resources = buildTektonFixtureResources(fixtureData);
   }
 
   async getWorkloadsByEntity(_request: any): Promise<any> {
     return {
       items: [
         {
-          cluster: { name: 'mock-cluster' },
+          cluster: { name: FIXTURE_CLUSTER_NAME },
           resources: this.resources,
           podMetrics: [],
           errors: [],
@@ -151,7 +132,7 @@ export class MockKubernetesClient implements KubernetesApi {
     return {
       items: [
         {
-          cluster: { name: 'mock-cluster' },
+          cluster: { name: FIXTURE_CLUSTER_NAME },
           resources: this.resources,
           podMetrics: [],
           errors: [],
@@ -164,7 +145,7 @@ export class MockKubernetesClient implements KubernetesApi {
     return {
       items: [
         {
-          cluster: { name: 'mock-cluster' },
+          cluster: { name: FIXTURE_CLUSTER_NAME },
           resources: this.resources,
           podMetrics: [],
           errors: [],
@@ -174,7 +155,7 @@ export class MockKubernetesClient implements KubernetesApi {
   }
 
   async getClusters(): Promise<{ name: string; authProvider: string }[]> {
-    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
+    return [{ name: FIXTURE_CLUSTER_NAME, authProvider: 'serviceAccount' }];
   }
 
   async getCluster(_clusterName: string): Promise<
@@ -186,7 +167,7 @@ export class MockKubernetesClient implements KubernetesApi {
       }
     | undefined
   > {
-    return { name: 'mock-cluster', authProvider: 'serviceAccount' };
+    return { name: FIXTURE_CLUSTER_NAME, authProvider: 'serviceAccount' };
   }
 
   async proxy(_options: { clusterName: String; path: String }): Promise<any> {
