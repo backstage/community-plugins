@@ -1,5 +1,15 @@
 # @backstage-community/plugin-bazaar
 
+## 0.29.0
+
+### Minor Changes
+
+- f2e39d6: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- f2e39d6: Replaced deprecated Backstage core components with their Backstage UI equivalents. The Bazaar page header, tabs, project cards, member avatars, links and project action buttons now use Backstage UI styling.
+
 ## 0.28.0
 
 ### Minor Changes
