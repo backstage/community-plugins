@@ -16,7 +16,7 @@
 import { sortBy } from 'lodash';
 import DOMPurify from 'dompurify';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -69,8 +69,9 @@ export const CalendarEventPopoverContent = ({
           <Tooltip title="Open in Calendar">
             <Link
               data-testid="open-calendar-link"
-              to={event.webLink}
-              onClick={_e => {}}
+              href={event.webLink}
+              target="_blank"
+              rel="noopener noreferrer"
               noTrack
             >
               <IconButton>
@@ -81,7 +82,12 @@ export const CalendarEventPopoverContent = ({
         )}
       </Box>
       {onlineMeetingLink && (
-        <Link to={onlineMeetingLink} onClick={_e => {}} noTrack>
+        <Link
+          href={onlineMeetingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          noTrack
+        >
           Join Online Meeting
         </Link>
       )}
