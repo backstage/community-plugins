@@ -17,7 +17,7 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import userEvent from '@testing-library/user-event';
 import { BuildListFilter } from './BuildListFilter';
 import { BuildFilters, xcmetricsApiRef } from '../../api';
-import { RenderResult, within } from '@testing-library/react';
+import { RenderResult } from '@testing-library/react';
 
 jest.mock('../../api/XcmetricsClient');
 const client = require('../../api/XcmetricsClient');
@@ -47,18 +47,22 @@ const renderWithFiltersVisible = async (
   return rendered;
 };
 
-const setStatusFilter = async (rendered: RenderResult, option: string) => {
-  const statusSelect = rendered.getAllByTestId('select')[0];
-  await userEvent.click(within(statusSelect).getByRole('button'));
-  await userEvent.click((await rendered.findAllByText(option))[0]);
+const selectOption = async (
+  rendered: RenderResult,
+  label: string,
+  option: string,
+) => {
+  await userEvent.click(
+    rendered.getByRole('button', { name: new RegExp(label) }),
+  );
+  await userEvent.click(await rendered.findByRole('option', { name: option }));
 };
 
-const setProjectFilter = async (rendered: RenderResult, option: string) => {
-  const statusSelect = rendered.getAllByTestId('select')[1];
-  await userEvent.click(within(statusSelect).getByRole('button'));
-  const options = await rendered.findAllByText(option);
-  await userEvent.click(options[options.length - 1]);
-};
+const setStatusFilter = (rendered: RenderResult, option: string) =>
+  selectOption(rendered, 'Status', option);
+
+const setProjectFilter = (rendered: RenderResult, option: string) =>
+  selectOption(rendered, 'Project', option);
 
 describe('BuildListFilter', () => {
   it('should render', async () => {
