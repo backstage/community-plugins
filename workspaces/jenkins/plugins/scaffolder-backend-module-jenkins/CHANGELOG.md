@@ -1,5 +1,16 @@
 # @backstage-community/plugin-scaffolder-backend-module-jenkins
 
+## 0.27.0
+
+### Minor Changes
+
+- 6081244: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- Updated dependencies [6081244]
+  - @backstage-community/plugin-jenkins-common@0.25.0
+
 ## 0.26.0
 
 ### Minor Changes

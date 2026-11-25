@@ -1,5 +1,17 @@
 # @backstage-community/plugin-jenkins
 
+## 0.37.0
+
+### Minor Changes
+
+- 6081244: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 6081244: Replaced deprecated Backstage core components with their Backstage UI equivalents. Links to builds, sources and test results now use Backstage UI styling, and links to Jenkins and GitHub open in a new tab.
+- Updated dependencies [6081244]
+  - @backstage-community/plugin-jenkins-common@0.25.0
+
 ## 0.36.0
 
 ### Minor Changes
