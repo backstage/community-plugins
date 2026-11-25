@@ -4047,7 +4047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.20.0":
+"@backstage/ui@backstage:^::backstage=1.57.1&npm=0.20.0, @backstage/ui@npm:^0.20.0":
   version: 0.20.0
   resolution: "@backstage/ui@npm:0.20.0"
   dependencies:
@@ -12918,6 +12918,7 @@ __metadata:
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"
