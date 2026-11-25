@@ -1,5 +1,15 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.26.0
+
+### Minor Changes
+
+- 9f95783: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 9f95783: Replaced deprecated Backstage core links with Backstage UI links.
+
 ## 0.25.0
 
 ### Minor Changes

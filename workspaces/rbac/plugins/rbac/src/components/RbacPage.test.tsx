@@ -90,6 +90,15 @@ describe('RbacPage', () => {
       </TestApiProvider>,
     );
     expect(screen.getByText('RBAC')).toBeInTheDocument();
+    // Both views are offered; switching and the URL behavior are covered by
+    // RbacPageContent.test.tsx.
+    expect(screen.getByRole('tab', { name: 'Roles' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect(
+      screen.getByRole('tab', { name: 'Permissions by plugin' }),
+    ).toHaveAttribute('aria-selected', 'false');
   });
 
   it('should not render if not authorized', async () => {

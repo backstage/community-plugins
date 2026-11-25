@@ -1,5 +1,17 @@
 # @backstage-community/plugin-github-discussions
 
+## 1.7.0
+
+### Minor Changes
+
+- 3605ff9: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 3605ff9: Replaced deprecated Backstage core components with their Backstage UI equivalents. Links and the "View on GitHub" button now use Backstage UI styling, and links to GitHub open in a new tab. The issue comments icon now respects app icon customization.
+- Updated dependencies [3605ff9]
+  - @backstage-community/plugin-github-discussions-common@0.19.0
+
 ## 1.6.0
 
 ### Minor Changes

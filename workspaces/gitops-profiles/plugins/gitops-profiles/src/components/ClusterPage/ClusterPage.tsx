@@ -19,15 +19,8 @@ import { useParams } from 'react-router-dom';
 import { gitOpsApiRef, Status } from '../../api';
 import { transformRunStatus } from '../ProfileCatalog';
 
-import {
-  Content,
-  Header,
-  Page,
-  Table,
-  Progress,
-  HeaderLabel,
-  Link,
-} from '@backstage/core-components';
+import { Table, Progress } from '@backstage/core-components';
+import { Container, Header, Link } from '@backstage/ui';
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
 
 const ClusterPage = () => {
@@ -83,22 +76,29 @@ const ClusterPage = () => {
   }, [pollingLog, api, params, githubAuth, githubAccessToken, githubUsername]);
 
   return (
-    <Page themeId="home">
-      <Header title={`Cluster ${params.owner}/${params.repo}`}>
-        <HeaderLabel label="Welcome" value={githubUsername} />
-      </Header>
-      <Content>
+    <>
+      <Header
+        title={`Cluster ${params.owner}/${params.repo}`}
+        metadata={[{ label: 'Welcome', value: githubUsername }]}
+      />
+      <Container>
         <Progress hidden={!showProgress} />
         <Table
           options={{ search: false, paging: false, toolbar: false }}
           data={transformRunStatus(runStatus)}
           columns={columns}
         />
-        <Link hidden={runLink === ''} to={`${runLink}?check_suite_focus=true`}>
-          Details
-        </Link>
-      </Content>
-    </Page>
+        {runLink !== '' && (
+          <Link
+            href={`${runLink}?check_suite_focus=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Details
+          </Link>
+        )}
+      </Container>
+    </>
   );
 };
 

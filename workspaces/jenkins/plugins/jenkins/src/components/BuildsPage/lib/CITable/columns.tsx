@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Link, Progress, TableColumn } from '@backstage/core-components';
+import { Progress, TableColumn } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { useEntityPermission } from '@backstage/plugin-catalog-react/alpha';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
@@ -116,7 +117,7 @@ export const columnFactories = Object.freeze({
 
           return (
             <Link
-              to={routeLink({
+              href={routeLink({
                 jobFullName: encodeURIComponent(row.fullName),
                 buildNumber: String(row.lastBuild?.number),
               })}
@@ -138,7 +139,11 @@ export const columnFactories = Object.freeze({
       render: (row: Partial<Project>) => (
         <>
           <Typography paragraph>
-            <Link to={row.lastBuild?.source?.url ?? ''}>
+            <Link
+              href={row.lastBuild?.source?.url ?? ''}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {row.lastBuild?.source?.branchName}
             </Link>
           </Typography>
@@ -173,7 +178,11 @@ export const columnFactories = Object.freeze({
           <>
             <Typography paragraph>
               {row.lastBuild?.tests && (
-                <Link to={row.lastBuild?.tests.testUrl ?? ''}>
+                <Link
+                  href={row.lastBuild?.tests.testUrl ?? ''}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {row.lastBuild?.tests.passed} / {row.lastBuild?.tests.total}{' '}
                   passed
                   <FailSkippedWidget
@@ -221,7 +230,7 @@ export const columnFactories = Object.freeze({
             jenkinsExecutePermission,
           );
 
-          const toastApi = useApi(toastApiRef);
+          const toastApi = useApi(coreApis.toast);
           const jobRunsLink = useRouteRef(jobRunsRouteRef);
 
           const onRebuild = async () => {
@@ -265,7 +274,7 @@ export const columnFactories = Object.freeze({
                 </Tooltip>
               )}
               <Link
-                to={jobRunsLink({
+                href={jobRunsLink({
                   jobFullName: encodeURIComponent(row.fullName || ''),
                 })}
               >

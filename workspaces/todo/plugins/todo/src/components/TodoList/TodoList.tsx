@@ -22,13 +22,24 @@ import { TodoItem, TodoListOptions } from '../../api/types';
 import {
   Table,
   TableColumn,
-  OverflowTooltip,
-  Link,
   ResponseErrorPanel,
 } from '@backstage/core-components';
+import { Focusable, Link, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 const PAGE_SIZE = 10;
+
+/** Single-line text that shows the full value in a tooltip. */
+const OverflowText = ({ text }: { text?: string }) => (
+  <TooltipTrigger>
+    <Focusable>
+      <Text as="span" truncate>
+        {text}
+      </Text>
+    </Focusable>
+    <Tooltip>{text}</Tooltip>
+  </TooltipTrigger>
+);
 
 const columns: TableColumn<TodoItem>[] = [
   {
@@ -42,7 +53,7 @@ const columns: TableColumn<TodoItem>[] = [
     field: 'text',
     width: '55%',
     highlight: true,
-    render: ({ text }) => <OverflowTooltip text={text} />,
+    render: ({ text }) => <OverflowText text={text} />,
   },
   {
     title: 'File',
@@ -50,18 +61,26 @@ const columns: TableColumn<TodoItem>[] = [
     width: '25%',
     render: ({ viewUrl, repoFilePath }) =>
       viewUrl ? (
-        <Link to={viewUrl} target="_blank">
-          <OverflowTooltip text={repoFilePath} />
-        </Link>
+        <TooltipTrigger>
+          <Link
+            href={viewUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            truncate
+          >
+            {repoFilePath}
+          </Link>
+          <Tooltip>{repoFilePath}</Tooltip>
+        </TooltipTrigger>
       ) : (
-        <OverflowTooltip text={repoFilePath} />
+        <OverflowText text={repoFilePath} />
       ),
   },
   {
     title: 'Author',
     field: 'author',
     width: '10%',
-    render: ({ author }) => <OverflowTooltip text={author} />,
+    render: ({ author }) => <OverflowText text={author} />,
   },
 ];
 

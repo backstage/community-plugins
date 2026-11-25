@@ -17,7 +17,8 @@ import { useState } from 'react';
 import { DateTime } from 'luxon';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { githubActionsApiRef, GithubActionsApi } from '../api/GithubActionsApi';
-import { useApi, errorApiRef, ErrorApi } from '@backstage/core-plugin-api';
+import { useApi, ErrorApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { Branch } from '../api';
 
 export type WorkflowRun = {
@@ -145,7 +146,7 @@ export function useWorkflowRuns({
   fetchAllBranches?: boolean;
 }) {
   const api = useApi(githubActionsApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);

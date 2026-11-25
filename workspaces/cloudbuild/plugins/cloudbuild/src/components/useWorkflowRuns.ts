@@ -19,7 +19,8 @@ import {
   ActionsListWorkflowRunsForRepoResponseData,
   Substitutions,
 } from '../api/types';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export type WorkflowRun = {
   id: string;
@@ -39,7 +40,7 @@ export function useWorkflowRuns(options: {
 }) {
   const { projectId, location, cloudBuildFilter } = options;
   const api = useApi(cloudbuildApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const {
     loading,

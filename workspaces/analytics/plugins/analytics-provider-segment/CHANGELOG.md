@@ -1,5 +1,20 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 2.2.0
+
+### Minor Changes
+
+- 3e2acc3: Backstage version bump to v1.57.1
+
+## 2.1.1
+
+### Patch Changes
+
+- 9bea4a2: Updated dependency `@testing-library/user-event` to `14.6.12`.
+- 89eebc1: Updated dependency `@testing-library/user-event` to `14.6.13`.
+- 8bd5d75: Updated dependency `@testing-library/user-event` to `14.6.10`.
+- 78d782d: Updated dependency `@testing-library/user-event` to `14.6.9`.
+
 ## 2.1.0
 
 ### Minor Changes

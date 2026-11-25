@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import {
   ButtonIcon,
@@ -24,6 +23,7 @@ import {
   Cell,
   CellText,
   Flex,
+  Link,
   Table,
   Text,
   Tooltip,
@@ -35,7 +35,6 @@ import {
 import { RiCloudLine, RiRefreshLine, RiRestartLine } from '@remixicon/react';
 import { DateTime } from 'luxon';
 import { ReactElement, useMemo } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { buildRouteRef } from '../../routes';
 import { getCloudbuildFilter } from '../useCloudBuildFilter';
 import { getLocation } from '../useLocation';
@@ -63,11 +62,7 @@ const createColumns = (): ColumnConfig<WorkflowRunTableItem>[] => [
       const BuildLink = () => {
         const routeLink = useRouteRef(buildRouteRef);
         return (
-          <Link
-            component={RouterLink}
-            data-testid="cell-source"
-            to={routeLink({ id: item.id })}
-          >
+          <Link data-testid="cell-source" href={routeLink({ id: item.id })}>
             {item.id.substring(0, 8)}
           </Link>
         );

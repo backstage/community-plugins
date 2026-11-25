@@ -56,6 +56,14 @@ permission:
         - name: user:default/<user-name>
 ```
 
+### Permissions by plugin
+
+The RBAC page has a second tab, **Permissions by plugin**, with a read-only matrix of every role against every plugin permission. Each cell shows the decision for that role and permission: allow, deny, conditional (hover the cell to see its rules), or no policy. Roles that cannot be edited in the UI carry a lock icon naming their source.
+
+The sidebar filters the matrix: search roles by name, check a few roles to compare only those, narrow the columns to one plugin, or keep only the rows and columns where a policy decision (allow, deny, conditional) appears. Role names link to the role's overview page.
+
+The matrix shows conditional policies as taking precedence over basic policies, which matches the backend's default `policyDecisionPrecedence: conditional` setting. If your backend sets `policyDecisionPrecedence: basic`, the enforced decision for a cell shown as **Conditional** comes from the basic policy instead.
+
 ---
 
 #### Procedure

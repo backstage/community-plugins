@@ -1,5 +1,15 @@
 # @backstage-community/plugin-code-climate
 
+## 0.25.0
+
+### Minor Changes
+
+- b0f8bac: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- b0f8bac: Replaced deprecated Backstage core links with Backstage UI links.
+
 ## 0.24.0
 
 ### Minor Changes

@@ -32,7 +32,8 @@ import {
   Progress,
 } from '@backstage/core-components';
 
-import { ErrorApi, errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { ErrorApi, useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { Options } from '@material-table/core';
 
 /** @public */
@@ -50,7 +51,7 @@ export const SentryIssuesWidget = (props: {
     variant = 'gridItem',
     query = '',
   } = props;
-  const errorApi = useApi<ErrorApi>(errorApiRef);
+  const errorApi = useApi<ErrorApi>(coreApis.error);
   const sentryApi = useApi(sentryApiRef);
 
   const projectId = useProjectSlug(entity);

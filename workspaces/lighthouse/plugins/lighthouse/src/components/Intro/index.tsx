@@ -23,12 +23,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useState } from 'react';
 import useLocalStorage from 'react-use/esm/useLocalStorage';
 import LighthouseSupportButton from '../SupportButton';
-import {
-  ContentHeader,
-  InfoCard,
-  Link,
-  MarkdownContent,
-} from '@backstage/core-components';
+import { InfoCard, MarkdownContent } from '@backstage/core-components';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 
 // TODO(freben): move all of this out of index
 
@@ -113,8 +109,9 @@ function GettingStartedCard() {
           <Grid container direction="row" justifyContent="flex-end">
             <Grid item>
               <Button
-                component={Link}
-                to="https://github.com/spotify/lighthouse-audit-service"
+                href="https://github.com/spotify/lighthouse-audit-service"
+                target="_blank"
+                rel="noopener noreferrer"
                 size="small"
               >
                 Check out the README
@@ -145,9 +142,9 @@ export default function LighthouseIntro({ onDismiss = () => {} }: Props) {
 
   return (
     <>
-      <ContentHeader title="Welcome to Lighthouse in Backstage!">
+      <SectionHeader title="Welcome to Lighthouse in Backstage!">
         <LighthouseSupportButton />
-      </ContentHeader>
+      </SectionHeader>
       <Grid className={classes.content} container spacing={3} direction="row">
         <Grid item xs={12} sm={6} md={4}>
           <GettingStartedCard />

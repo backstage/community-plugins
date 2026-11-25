@@ -17,7 +17,8 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import useAsync from 'react-use/esm/useAsync';
 import { LIGHTHOUSE_WEBSITE_URL_ANNOTATION } from '../../constants';
 import { lighthouseApiRef } from '../api';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 // For the sake of simplicity we assume that an entity has only one website url. This is to avoid encoding a list
 // type in an annotation which is a plain string.
@@ -26,7 +27,7 @@ export const useWebsiteForEntity = () => {
   const websiteUrl =
     entity.metadata.annotations?.[LIGHTHOUSE_WEBSITE_URL_ANNOTATION] ?? '';
   const lighthouseApi = useApi(lighthouseApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const response = useAsync(
     () => lighthouseApi.getWebsiteByUrl(websiteUrl),
     [websiteUrl],

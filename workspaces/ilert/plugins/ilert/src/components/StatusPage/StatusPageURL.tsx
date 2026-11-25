@@ -16,7 +16,7 @@
 import { ilertApiRef } from '../../api';
 import { StatusPage } from '../../types';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 export const StatusPageURL = ({
@@ -32,5 +32,9 @@ export const StatusPageURL = ({
 
   const url = ilertApi.getStatusPageURL(statusPage);
 
-  return <Link to={`https://${url}`}>{url}</Link>;
+  return (
+    <Link target="_blank" rel="noopener noreferrer" href={`https://${url}`}>
+      {url}
+    </Link>
+  );
 };

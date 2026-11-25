@@ -32,11 +32,12 @@ import { useServiceDetails } from '../serviceDetails';
 import { useServiceAnalytics } from '../serviceAnalytics';
 import {
   InfoCard,
-  Link,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
+import { Link } from '@backstage/ui';
 import { isFireHydrantAvailable, getFireHydrantServiceName } from '../hooks';
 
 const useStyles = makeStyles(theme => ({
@@ -139,7 +140,7 @@ export const ServiceDetailsCard = () => {
   const { entity } = useEntity();
   const classes = useStyles();
   const [showServiceDetails, setShowServiceDetails] = useState(false);
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
 
   const BASE_URL =
     configApi.getOptionalString('firehydrant.baseUrl') ||
@@ -228,7 +229,7 @@ export const ServiceDetailsCard = () => {
               <div key={index}>
                 <Link
                   className={classes.link}
-                  to={incident.incident_url}
+                  href={incident.incident_url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -242,11 +243,10 @@ export const ServiceDetailsCard = () => {
         <Typography variant="subtitle1">View in FireHydrant </Typography>
         <Box className={classes.buttonContainer} marginTop="10px">
           <Button
-            component={Link}
             target="_blank"
             rel="noopener"
             className={classes.button}
-            to={`${BASE_URL}/incidents/new`}
+            href={`${BASE_URL}/incidents/new`}
           >
             <Box flexDirection="column">
               <Box>
@@ -258,11 +258,10 @@ export const ServiceDetailsCard = () => {
             </Box>
           </Button>
           <Button
-            component={Link}
             target="_blank"
             rel="noopener"
             className={classes.button}
-            to={`${BASE_URL}/incidents`}
+            href={`${BASE_URL}/incidents`}
           >
             <Box flexDirection="column">
               <Box>
@@ -275,11 +274,10 @@ export const ServiceDetailsCard = () => {
           </Button>
           {showServiceDetails && (
             <Button
-              component={Link}
               target="_blank"
               rel="noopener"
               className={classes.button}
-              to={`${BASE_URL}/services/${value?.service?.id}`}
+              href={`${BASE_URL}/services/${value?.service?.id}`}
             >
               <Box flexDirection="column">
                 <Box>

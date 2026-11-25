@@ -27,6 +27,7 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Link,
 } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import { DateTime } from 'luxon';
@@ -36,9 +37,9 @@ import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import { useWorkflowRunJobs } from './useWorkflowRunJobs';
 import { useWorkflowRunsDetails } from './useWorkflowRunsDetails';
 import { WorkflowRunLogs } from '../WorkflowRunLogs';
+import { useResolvedPath } from 'react-router-dom';
 import {
   Breadcrumbs,
-  Link,
   Progress,
   StructuredMetadataTable,
 } from '@backstage/core-components';
@@ -129,6 +130,7 @@ export const WorkflowRunDetails = ({ entity }: { entity: Entity }) => {
   const projectName = getProjectNameFromEntity(entity);
 
   const hostname = getHostnameFromEntity(entity);
+  const workflowRunsPath = useResolvedPath('..').pathname;
   const [owner, repo] = (projectName && projectName.split('/')) || [];
   const details = useWorkflowRunsDetails({ hostname, owner, repo });
   const jobs = useWorkflowRunJobs({ hostname, owner, repo });
@@ -146,7 +148,7 @@ export const WorkflowRunDetails = ({ entity }: { entity: Entity }) => {
     <div className={styles.root}>
       <div style={{ marginBottom: 'var(--bui-space-6)' }}>
         <Breadcrumbs aria-label="breadcrumb">
-          <Link to="..">Workflow runs</Link>
+          <Link href={workflowRunsPath}>Workflow runs</Link>
           <Text>Workflow run details</Text>
         </Breadcrumbs>
       </div>
@@ -180,7 +182,11 @@ export const WorkflowRunDetails = ({ entity }: { entity: Entity }) => {
               ),
               author: `${details.value?.head_commit?.author?.name} (${details.value?.head_commit?.author?.email})`,
               links: details.value?.html_url && (
-                <Link to={details.value.html_url}>
+                <Link
+                  href={details.value.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Workflow runs on GitHub{' '}
                   <RiExternalLinkLine
                     size={14}

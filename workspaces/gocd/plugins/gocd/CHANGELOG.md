@@ -1,5 +1,15 @@
 # @backstage-community/plugin-gocd
 
+## 0.25.0
+
+### Minor Changes
+
+- a36aed7: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- a36aed7: Replaced deprecated Backstage core components with their Backstage UI equivalents. The GoCD builds heading, build links and two-line table cells now use Backstage UI styling.
+
 ## 0.24.0
 
 ### Minor Changes

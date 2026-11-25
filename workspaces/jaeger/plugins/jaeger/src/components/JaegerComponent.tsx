@@ -15,15 +15,15 @@
  */
 
 import { Grid } from '@material-ui/core';
-import { Content } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import { JaegerFetchComponent } from './JaegerFetchComponent';
 
 export const JaegerComponent = () => (
-  <Content>
+  <Box p="6">
     <Grid container spacing={3} direction="column">
       <Grid item>
         <JaegerFetchComponent />
       </Grid>
     </Grid>
-  </Content>
+  </Box>
 );

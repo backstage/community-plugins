@@ -15,7 +15,6 @@
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
@@ -33,10 +32,12 @@ import {
   CellText,
   type ColumnConfig,
   type TableItem,
+  Link,
 } from '@backstage/ui';
 
-import { errorApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { ErrorPanel, Link } from '@backstage/core-components';
+import { useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
+import { ErrorPanel } from '@backstage/core-components';
 import { buildRouteRef } from '../../routes';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
 
@@ -53,7 +54,7 @@ const createColumns = (
     isRowHeader: true,
     cell: item => (
       <Cell>
-        <Link component={RouterLink} to={routeLink({ id: String(item.id!) })}>
+        <Link href={routeLink({ id: String(item.id!) })}>
           {firstLine(item.message ?? '')}
         </Link>
       </Cell>
@@ -106,7 +107,7 @@ export const RecentWorkflowRunsCard = (props: {
   const { branch, limit = 5 } = props;
 
   const { entity } = useEntity();
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const hostname = getHostnameFromEntity(entity);
 
@@ -180,7 +181,11 @@ export const RecentWorkflowRunsCard = (props: {
                 found.
               </Text>
               <Text variant="body-small">
-                <Link to={`https://${githubHost}/${owner}/${repo}/actions/new`}>
+                <Link
+                  href={`https://${githubHost}/${owner}/${repo}/actions/new`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Create a new workflow
                 </Link>
               </Text>

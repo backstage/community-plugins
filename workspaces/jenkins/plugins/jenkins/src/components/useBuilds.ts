@@ -16,7 +16,8 @@
 import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { jenkinsApiRef } from '../api';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
 
@@ -35,7 +36,7 @@ export function useBuilds({ branch }: { branch?: string } = {}) {
   const { entity } = useEntity();
   const entityName = getCompoundEntityRef(entity);
   const api = useApi(jenkinsApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);

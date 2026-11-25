@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
-  Page,
-  SupportButton,
-} from '@backstage/core-components';
+import { SupportButton } from '@backstage/core-components';
+import { Container, Flex, Header, Text } from '@backstage/ui';
 import Grid from '@material-ui/core/Grid';
 import { DagTableComponent } from '../DagTableComponent';
 import { StatusComponent } from '../StatusComponent';
 import { VersionComponent } from '../VersionComponent';
 
 export const HomePage = () => (
-  <Page themeId="tool">
-    <Header title="Apache Airflow" subtitle="Workflow management platform">
-      <HeaderLabel label="Lifecycle" value="Alpha" />
-    </Header>
-    <Content>
-      <ContentHeader title="Overview">
+  <>
+    <Header
+      title="Apache Airflow"
+      description="Workflow management platform"
+      metadata={[{ label: 'Lifecycle', value: 'Alpha' }]}
+    />
+    <Container>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          Overview
+        </Text>
         <SupportButton>
           See an overview of your Apache Airflow instance, and manage workflows
         </SupportButton>
-      </ContentHeader>
+      </Flex>
       <Grid container spacing={3} direction="row">
         <Grid item sm={12} lg={6}>
           <VersionComponent />
@@ -49,6 +48,6 @@ export const HomePage = () => (
           <DagTableComponent />
         </Grid>
       </Grid>
-    </Content>
-  </Page>
+    </Container>
+  </>
 );

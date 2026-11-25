@@ -21,8 +21,10 @@ import { TestApiProvider } from '@backstage/frontend-test-utils';
 
 import {
   PageBlueprint,
+  coreApis,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
+import { Container, Header } from '@backstage/ui';
 
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 
@@ -30,7 +32,6 @@ import entityValidationPlugin from '../../src/alpha';
 import { EntityValidationContent } from '../../src/components/EntityValidationPage';
 
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
-import { identityApiRef } from '@backstage/core-plugin-api';
 
 const devPagesPlugin = createFrontendPlugin({
   pluginId: 'entity-validation-dev-pages',
@@ -39,17 +40,14 @@ const devPagesPlugin = createFrontendPlugin({
       name: 'embed-example',
       params: {
         path: '/entity-validation-embed',
-        loader: () =>
-          import('@backstage/core-components').then(
-            ({ Page, Header, Content }) => (
-              <Page themeId="tool">
-                <Header title="Embed Example" />
-                <Content>
-                  <EntityValidationContent />
-                </Content>
-              </Page>
-            ),
-          ),
+        loader: async () => (
+          <>
+            <Header title="Embed Example" />
+            <Container>
+              <EntityValidationContent />
+            </Container>
+          </>
+        ),
       },
     }),
   ],
@@ -98,7 +96,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     apis={
       [
         [catalogApiRef, catalogApi],
-        [identityApiRef, mockIdentityApi],
+        [coreApis.identity, mockIdentityApi],
       ] as const
     }
   >

@@ -16,31 +16,29 @@
 
 import Grid from '@material-ui/core/Grid';
 import NewRelicFetchComponent from '../NewRelicFetchComponent';
-import {
-  Header,
-  Page,
-  Content,
-  ContentHeader,
-  HeaderLabel,
-  SupportButton,
-} from '@backstage/core-components';
+import { SupportButton } from '@backstage/core-components';
+import { Container, Flex, Header, Text } from '@backstage/ui';
 
 export const NewRelicComponent = () => (
-  <Page themeId="tool">
-    <Header title="New Relic">
-      <HeaderLabel label="Owner" value="Engineering" />
-    </Header>
-    <Content>
-      <ContentHeader title="New Relic">
+  <>
+    <Header
+      title="New Relic"
+      metadata={[{ label: 'Owner', value: 'Engineering' }]}
+    />
+    <Container>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          New Relic
+        </Text>
         <SupportButton>
           New Relic Application Performance Monitoring
         </SupportButton>
-      </ContentHeader>
+      </Flex>
       <Grid container spacing={3} direction="column">
         <Grid item>
           <NewRelicFetchComponent />
         </Grid>
       </Grid>
-    </Content>
-  </Page>
+    </Container>
+  </>
 );

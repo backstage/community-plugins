@@ -131,4 +131,4 @@ This workspace intentionally does **not** ship `packages/app` or `packages/backe
 ## Related packages
 
 - [@backstage/plugin-catalog-backend](https://www.npmjs.com/package/@backstage/plugin-catalog-backend) — host catalog backend plugin for this module
-- [@backstage-community/plugin-scaffolder-backend-module-annotator](https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-annotator) — adds `spec.scaffoldedFrom` during scaffolding
+- [@backstage-community/plugin-scaffolder-backend-module-annotator](https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder/plugins/scaffolder-backend-module-annotator/README.md) — adds `spec.scaffoldedFrom` during scaffolding

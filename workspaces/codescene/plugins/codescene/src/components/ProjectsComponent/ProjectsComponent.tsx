@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 import { useState } from 'react';
-import {
-  Content,
-  ContentHeader,
-  Progress,
-  ItemCardHeader,
-} from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { Box, CardHeader, Flex, Text } from '@backstage/ui';
 import { useRouteRef, useApi } from '@backstage/core-plugin-api';
 import Alert from '@material-ui/lab/Alert';
 import useAsync from 'react-use/esm/useAsync';
@@ -151,7 +147,11 @@ export const ProjectsComponent = () => {
             component={RouterLink}
             to={`${routeRef()}/${project.id}`}
           >
-            <ItemCardHeader title={project.name} />
+            <CardHeader>
+              <Text as="h3" variant="title-small">
+                {project.name}
+              </Text>
+            </CardHeader>
             <CardContent>{subtitle}</CardContent>
             <CardActions disableSpacing>{chips}</CardActions>
           </CardActionArea>
@@ -161,16 +161,19 @@ export const ProjectsComponent = () => {
   });
 
   return (
-    <Content className={classes.overflowXScroll}>
-      <ContentHeader title="Projects">
+    <Box className={classes.overflowXScroll}>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          Projects
+        </Text>
         <Input
           id="projects-filter"
           type="search"
           placeholder="Filter"
           onChange={e => setSearchText(e.target.value)}
         />
-      </ContentHeader>
+      </Flex>
       <Grid container>{cards}</Grid>
-    </Content>
+    </Box>
   );
 };

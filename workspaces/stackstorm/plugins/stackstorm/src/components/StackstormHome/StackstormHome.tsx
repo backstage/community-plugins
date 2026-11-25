@@ -17,13 +17,8 @@ import type { ReactNode } from 'react';
 
 import { Fragment } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import {
-  Header,
-  Page,
-  HeaderLabel,
-  TabbedLayout,
-  Content,
-} from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import { ExecutionsTable } from '../ExecutionsTable';
 import { PacksTable } from '../PacksTable/PacksTable';
@@ -38,39 +33,40 @@ export type StackstormHomeProps = {
   headerButtons?: ReactNode[];
 };
 
-export const StackstormHome = (props: StackstormHomeProps) => (
-  <Page themeId="tool">
-    <Header
-      title={props.title || 'Welcome to StackStorm!'}
-      subtitle={props.subtitle || 'Event-driven automation'}
-    >
-      {props.headerButtons ? (
-        props.headerButtons.map((headerButton, idx) => (
-          <Fragment key={idx}>{headerButton}</Fragment>
-        ))
-      ) : (
-        <IconButton aria-label="Docs" href="https://docs.stackstorm.com/">
-          <LibraryBooks htmlColor="white" />
-        </IconButton>
-      )}
-      <HeaderLabel label="Lifecycle" value="Alpha" />
-    </Header>
-    <TabbedLayout>
-      <TabbedLayout.Route path="/history" title="Executions">
-        <Content noPadding>
-          <ExecutionsTable />
-        </Content>
-      </TabbedLayout.Route>
-      <TabbedLayout.Route path="/packs" title="Packs">
-        <Content noPadding>
-          <PacksTable />
-        </Content>
-      </TabbedLayout.Route>
-      <TabbedLayout.Route path="/actions" title="Actions">
-        <Content noPadding>
-          <ActionsList />
-        </Content>
-      </TabbedLayout.Route>
-    </TabbedLayout>
-  </Page>
-);
+export const StackstormHome = (props: StackstormHomeProps) => {
+  const basePath = useResolvedPath('.').pathname.replace(/\/$/, '');
+
+  return (
+    <>
+      <Header
+        title={props.title || 'Welcome to StackStorm!'}
+        description={props.subtitle || 'Event-driven automation'}
+        metadata={[{ label: 'Lifecycle', value: 'Alpha' }]}
+        customActions={
+          props.headerButtons ? (
+            props.headerButtons.map((headerButton, idx) => (
+              <Fragment key={idx}>{headerButton}</Fragment>
+            ))
+          ) : (
+            <IconButton aria-label="Docs" href="https://docs.stackstorm.com/">
+              <LibraryBooks />
+            </IconButton>
+          )
+        }
+        tabs={[
+          { id: 'history', label: 'Executions', href: `${basePath}/history` },
+          { id: 'packs', label: 'Packs', href: `${basePath}/packs` },
+          { id: 'actions', label: 'Actions', href: `${basePath}/actions` },
+        ]}
+      />
+      <Container>
+        <Routes>
+          <Route path="/" element={<Navigate to="history" replace />} />
+          <Route path="/history" element={<ExecutionsTable />} />
+          <Route path="/packs" element={<PacksTable />} />
+          <Route path="/actions" element={<ActionsList />} />
+        </Routes>
+      </Container>
+    </>
+  );
+};

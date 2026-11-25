@@ -16,11 +16,10 @@
 import classnames from 'classnames';
 
 import { useAnalytics } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
-
 import {
   Box,
   Card,
+  Link,
   DialogTrigger,
   Flex,
   Popover,
@@ -89,11 +88,10 @@ export const CalendarEvent = ({ event }: { event: GCalendarEvent }) => {
               <Link
                 data-testid="calendar-event-zoom-link"
                 className={styles.zoomLink}
-                to={zoomLink}
-                onClick={e => {
-                  e.stopPropagation();
-                  analytics.captureEvent('click', 'zoom link');
-                }}
+                href={zoomLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onPress={() => analytics.captureEvent('click', 'zoom link')}
                 noTrack
               >
                 <img src={zoomIcon} alt="Zoom link" />

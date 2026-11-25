@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { EmptyState, GaugeCard, InfoCard } from '@backstage/core-components';
-import { configApiRef, useApi, useApp } from '@backstage/core-plugin-api';
+import { useApi, useApp } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import Alert from '@material-ui/lab/Alert';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import useAsync from 'react-use/esm/useAsync';
@@ -35,7 +36,7 @@ export const CodeSceneEntityKPICard = () => {
   const { entity } = useEntity();
   const { projectId } = getProjectAnnotation(entity);
   const codesceneApi = useApi(codesceneApiRef);
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
   const codesceneHost = config.getString('codescene.baseUrl');
   const { Progress } = useApp().getComponents();
 

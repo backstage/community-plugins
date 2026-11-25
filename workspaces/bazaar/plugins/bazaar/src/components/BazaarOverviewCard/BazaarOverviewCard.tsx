@@ -24,7 +24,8 @@ import type { BazaarProject } from '../../types';
 import { bazaarApiRef } from '../../api';
 import { fetchCatalogItems } from '../../util/fetchMethods';
 import { parseBazaarProject } from '../../util/parseMethods';
-import { ErrorPanel, InfoCard, Link } from '@backstage/core-components';
+import { ErrorPanel, InfoCard } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { bazaarPlugin } from '../../plugin';
 import IconButton from '@material-ui/core/IconButton';
 import StorefrontIcon from '@material-ui/icons/Storefront';
@@ -134,7 +135,7 @@ export const BazaarOverviewCard = (props: BazaarOverviewCardProps) => {
       title={title ?? defaultTitle}
       action={
         <IconButton>
-          <Link to={bazaarLink.link} title={bazaarLink.title}>
+          <Link href={bazaarLink.link} title={bazaarLink.title}>
             <StorefrontIcon />
           </Link>
         </IconButton>

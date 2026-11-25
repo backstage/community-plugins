@@ -936,4 +936,58 @@ describe('RBACBackendClient', () => {
       );
     });
   });
+
+  describe('getRoleConditions / getAllRoleConditions', () => {
+    it('should fetch the conditions of one role or of all roles and return error responses as-is', async () => {
+      const conditions = [
+        {
+          id: 1,
+          result: 'CONDITIONAL',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          roleEntityRef: 'role:default/one',
+          permissionMapping: ['read'],
+          conditions: { rule: 'IS_ENTITY_OWNER', params: {} },
+        },
+      ];
+      server.use(
+        rest.get(
+          `${LOCAL_ADDR}/api/permission/roles/conditions`,
+          (req, res, ctx) => {
+            lastRequest = {
+              url: req.url.toString(),
+              authorizationHeader: req.headers.get('authorization'),
+            };
+            return res(ctx.status(200), ctx.json(conditions));
+          },
+        ),
+      );
+
+      await expect(rbacApi.getAllRoleConditions()).resolves.toEqual(conditions);
+      expect(lastRequest.url).toBe(
+        'https://localhost:7007/api/permission/roles/conditions',
+      );
+      expect(lastRequest.authorizationHeader).toBe('Bearer test-token');
+
+      await expect(
+        rbacApi.getRoleConditions('role:default/one'),
+      ).resolves.toEqual(conditions);
+      expect(lastRequest.url).toBe(
+        'https://localhost:7007/api/permission/roles/conditions?roleEntityRef=role:default/one',
+      );
+
+      server.use(
+        rest.get(
+          `${LOCAL_ADDR}/api/permission/roles/conditions`,
+          (_req, res, ctx) => res(ctx.status(403)),
+        ),
+      );
+      await expect(rbacApi.getAllRoleConditions()).resolves.toEqual(
+        expect.objectContaining({ status: 403 }),
+      );
+      await expect(
+        rbacApi.getRoleConditions('role:default/one'),
+      ).resolves.toEqual(expect.objectContaining({ status: 403 }));
+    });
+  });
 });

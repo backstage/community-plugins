@@ -16,7 +16,7 @@
 
 import { useState, useEffect } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { ProjectDialog } from '../ProjectDialog';
 import { BazaarProject, FormValues } from '../../types';
 import { bazaarApiRef } from '../../api';
@@ -54,7 +54,7 @@ export const EditProjectDialog = ({
 }: Props) => {
   const classes = useStyles();
   const bazaarApi = useApi(bazaarApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const [openDelete, setOpenDelete] = useState(false);
   const [defaultValues, setDefaultValues] = useState<FormValues>({
     ...bazaarProject,

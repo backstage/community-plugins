@@ -15,7 +15,7 @@
  */
 
 import { useState } from 'react';
-import { ItemCardHeader } from '@backstage/core-components';
+import { CardHeader, Text } from '@backstage/ui';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
@@ -89,15 +89,18 @@ export const ProjectCard = ({
 
       <Card key={id}>
         <CardActionArea onClick={() => setOpenCard(true)}>
-          <ItemCardHeader
-            classes={{ root: classes.header }}
-            title={title}
-            subtitle={`updated ${DateTime.fromISO(
-              new Date(updatedAt!).toISOString(),
-            ).toRelative({
-              base: DateTime.now(),
-            })}`}
-          />
+          <CardHeader className={classes.header}>
+            <Text as="h3" variant="title-small" truncate>
+              {title}
+            </Text>
+            <Text variant="body-small" color="secondary">
+              {`updated ${DateTime.fromISO(
+                new Date(updatedAt!).toISOString(),
+              ).toRelative({
+                base: DateTime.now(),
+              })}`}
+            </Text>
+          </CardHeader>
           <CardContent>
             <StatusTag styles={classes.statusTag} status={status} />
             <Typography variant="body2" className={classes.memberCount}>

@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  Page,
-  SupportButton,
-  Link,
-} from '@backstage/core-components';
+import { SupportButton } from '@backstage/core-components';
+import { Container, Flex, Header, Link, Text } from '@backstage/ui';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
 import { makeStyles } from '@material-ui/core/styles';
@@ -71,35 +65,44 @@ export function RadarPage(props: TechRadarPageProps) {
   const [searchText, setSearchText] = useState('');
 
   return (
-    <Page themeId="tool">
-      <Header title={title} subtitle={subtitle} />
-      <Content className={classes.overflowXScroll}>
-        <ContentHeader title={pageTitle}>
-          <Input
-            id="tech-radar-filter"
-            type="search"
-            placeholder="Filter"
-            onChange={e => setSearchText(e.target.value)}
-          />
-          <SupportButton>
-            <Typography paragraph>
-              This is used for visualizing the official guidelines of different
-              areas of software development such as languages, frameworks,
-              infrastructure and processes. You can find an explanation for the
-              radar at{' '}
-              <Link to="https://opensource.zalando.com/tech-radar/">
-                Zalando Tech Radar
-              </Link>
-              .
-            </Typography>
-          </SupportButton>
-        </ContentHeader>
+    <>
+      <Header title={title} description={subtitle} />
+      <Container className={classes.overflowXScroll}>
+        <Flex justify="between" align="center" mb="4">
+          <Text as="h2" variant="title-medium">
+            {pageTitle}
+          </Text>
+          <Flex align="center" gap="2">
+            <Input
+              id="tech-radar-filter"
+              type="search"
+              placeholder="Filter"
+              onChange={e => setSearchText(e.target.value)}
+            />
+            <SupportButton>
+              <Typography paragraph>
+                This is used for visualizing the official guidelines of
+                different areas of software development such as languages,
+                frameworks, infrastructure and processes. You can find an
+                explanation for the radar at{' '}
+                <Link
+                  href="https://opensource.zalando.com/tech-radar/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Zalando Tech Radar
+                </Link>
+                .
+              </Typography>
+            </SupportButton>
+          </Flex>
+        </Flex>
         <Grid container spacing={3} direction="row">
           <Grid item xs={12} sm={6} md={4}>
             <RadarComponent searchText={searchText} {...componentProps} />
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 }

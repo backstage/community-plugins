@@ -1,5 +1,15 @@
 # @backstage-community/plugin-ilert
 
+## 0.26.0
+
+### Minor Changes
+
+- d2e4127: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- d2e4127: Replaced deprecated Backstage core components with their Backstage UI equivalents. The ilert page header, tabs, section headings, links and alert source action buttons now use Backstage UI styling.
+
 ## 0.25.0
 
 ### Minor Changes
