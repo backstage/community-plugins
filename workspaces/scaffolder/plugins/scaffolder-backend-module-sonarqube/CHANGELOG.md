@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-sonarqube
 
+## 2.18.0
+
+### Minor Changes
+
+- e5b25f4: Backstage version bump to v1.57.1
+
 ## 2.17.1
 
 ### Patch Changes
