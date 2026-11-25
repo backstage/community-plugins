@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Content,
-  Header,
-  HeaderLabel,
-  HeaderTabs,
-  Page,
-} from '@backstage/core-components';
+import { Header, Tab, TabList, Tabs } from '@backstage/ui';
 import { useState } from 'react';
 import { AlertsPage } from '../AlertsPage';
 import { OnCallSchedulesPage } from '../OnCallSchedulesPage';
@@ -51,22 +45,29 @@ export const ILertPage = () => {
   };
 
   return (
-    <Page themeId="website">
-      <Header title="ilert" type="tool">
-        <HeaderLabel label="Owner" value="ilert" />
-        <HeaderLabel label="Lifecycle" value="Alpha" />
-      </Header>
-      <HeaderTabs
-        selectedIndex={selectedTab}
-        onChange={index => setSelectedTab(index)}
-        tabs={tabs.map(({ label }, index) => ({
-          id: index.toString(),
-          label,
-        }))}
+    <>
+      <Header
+        title="ilert"
+        tags={[{ label: 'tool' }]}
+        metadata={[
+          { label: 'Owner', value: 'ilert' },
+          { label: 'Lifecycle', value: 'Alpha' },
+        ]}
       />
-
-      <Content noPadding>{renderTab()}</Content>
-    </Page>
+      <Tabs
+        selectedKey={selectedTab.toString()}
+        onSelectionChange={key => setSelectedTab(Number(key))}
+      >
+        <TabList>
+          {tabs.map(({ label }, index) => (
+            <Tab key={index} id={index.toString()}>
+              {label}
+            </Tab>
+          ))}
+        </TabList>
+      </Tabs>
+      {renderTab()}
+    </>
   );
 };
 

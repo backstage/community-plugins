@@ -30,7 +30,7 @@ import { DateTimePicker } from '@material-ui/pickers/DateTimePicker';
 import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
 import LuxonUtils from '@date-io/luxon';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -79,7 +79,7 @@ export const ShiftOverrideModal = ({
     { setUser, setStart, setEnd, setIsLoading },
   ] = useShiftOverride(shift, isModalOpened);
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const classes = useStyles();
 
   const handleClose = () => {

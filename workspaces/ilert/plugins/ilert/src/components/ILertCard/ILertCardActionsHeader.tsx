@@ -29,12 +29,9 @@ import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { AlertSource } from '../../types';
 
-import {
-  HeaderIconLinkRow,
-  IconLinkVerticalProps,
-} from '@backstage/core-components';
+import { ActionLink, ActionLinks } from './ActionLinks';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const ILertCardActionsHeader = ({
   alertSource,
@@ -48,7 +45,7 @@ export const ILertCardActionsHeader = ({
   setIsMaintenanceModalOpened: (isOpen: boolean) => void;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisableModalOpened, setIsDisableModalOpened] = useState(false);
 
@@ -100,45 +97,44 @@ export const ILertCardActionsHeader = ({
     setIsMaintenanceModalOpened(true);
   };
 
-  const alertSourceLink: IconLinkVerticalProps = {
+  const alertSourceLink: ActionLink = {
     label: 'Alert Source',
     href: ilertApi.getAlertSourceDetailsURL(alertSource),
     icon: <WebIcon />,
   };
 
-  const createAlertLink: IconLinkVerticalProps = {
+  const createAlertLink: ActionLink = {
     label: 'Create Alert',
     onClick: handleCreateNewAlert,
     icon: <AlarmAddIcon />,
-    color: 'secondary',
     disabled:
       !alertSource ||
       alertSource.status === 'DISABLED' ||
       alertSource.status === 'IN_MAINTENANCE',
   };
 
-  const enableAlertSourceLink: IconLinkVerticalProps = {
+  const enableAlertSourceLink: ActionLink = {
     label: 'Enable',
     onClick: handleEnableAlertSource,
     icon: <PlayArrowIcon />,
     disabled: !alertSource || isLoading,
   };
 
-  const disableAlertSourceLink: IconLinkVerticalProps = {
+  const disableAlertSourceLink: ActionLink = {
     label: 'Disable',
     onClick: handleDisableAlertSourceWarningOpen,
     icon: <PauseIcon />,
     disabled: !alertSource || isLoading,
   };
 
-  const maintenanceAlertSourceLink: IconLinkVerticalProps = {
+  const maintenanceAlertSourceLink: ActionLink = {
     label: 'Immediate maintenance',
     onClick: handleMaintenanceAlertSource,
     icon: <BuildIcon />,
     disabled: !alertSource || isLoading,
   };
 
-  const links: IconLinkVerticalProps[] = [
+  const links: ActionLink[] = [
     alertSourceLink,
     createAlertLink,
     alertSource && alertSource.active
@@ -152,7 +148,7 @@ export const ILertCardActionsHeader = ({
 
   return (
     <>
-      <HeaderIconLinkRow links={links} />
+      <ActionLinks links={links} />
       <Dialog
         open={isDisableModalOpened}
         onClose={handleDisableAlertSourceWarningClose}

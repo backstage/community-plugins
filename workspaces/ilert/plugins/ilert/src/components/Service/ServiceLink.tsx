@@ -16,7 +16,7 @@
 import { ilertApiRef } from '../../api';
 import { Service } from '../../types';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 export const ServiceLink = ({ service }: { service: Service | null }) => {
@@ -26,5 +26,13 @@ export const ServiceLink = ({ service }: { service: Service | null }) => {
     return null;
   }
 
-  return <Link to={ilertApi.getServiceDetailsURL(service)}>#{service.id}</Link>;
+  return (
+    <Link
+      target="_blank"
+      rel="noopener noreferrer"
+      href={ilertApi.getServiceDetailsURL(service)}
+    >
+      #{service.id}
+    </Link>
+  );
 };
