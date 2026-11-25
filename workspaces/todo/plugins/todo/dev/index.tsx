@@ -21,7 +21,7 @@ import OnlineIcon from '@material-ui/icons/Cloud';
 import OfflineIcon from '@material-ui/icons/Storage';
 import { EntityTodoContent, todoApiRef, todoPlugin } from '../src';
 
-import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { TestApiProvider } from '@backstage/test-utils';
 
 const entity: Entity = {
@@ -61,14 +61,15 @@ createDevApp()
     element: (
       <TestApiProvider apis={[[todoApiRef, mockedApi]]}>
         <EntityProvider entity={entity}>
-          <Page themeId="service">
-            <Header title="Mocked TODO Data">
-              <HeaderLabel label="Mode" value="Development" />
-            </Header>
-            <Content>
+          <>
+            <Header
+              title="Mocked TODO Data"
+              metadata={[{ label: 'Mode', value: 'Development' }]}
+            />
+            <Container>
               <EntityTodoContent />
-            </Content>
-          </Page>
+            </Container>
+          </>
         </EntityProvider>
       </TestApiProvider>
     ),
@@ -78,14 +79,15 @@ createDevApp()
   .addPage({
     element: (
       <EntityProvider entity={entity}>
-        <Page themeId="service">
-          <Header title="Live TODO Data">
-            <HeaderLabel label="Mode" value="Development" />
-          </Header>
-          <Content>
+        <>
+          <Header
+            title="Live TODO Data"
+            metadata={[{ label: 'Mode', value: 'Development' }]}
+          />
+          <Container>
             <EntityTodoContent />
-          </Content>
-        </Page>
+          </Container>
+        </>
       </EntityProvider>
     ),
     title: 'Backend Connected',
