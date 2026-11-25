@@ -253,6 +253,58 @@ describe('MCPClientServiceImpl', () => {
       expect(result.toolResponses[0].serverId).toBe('error');
     });
 
+    it('should not throw when a failing tool call has malformed JSON arguments', async () => {
+      const toolCall: ToolCall = {
+        id: 'call_bad_json',
+        type: 'function',
+        function: {
+          name: 'failing_tool',
+          arguments: 'not valid json',
+        },
+      };
+
+      const initialResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall],
+            },
+          },
+        ],
+      };
+
+      const followUpResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Recovered after the tool error.',
+            },
+          },
+        ],
+      };
+
+      mockLLMProvider.sendMessage
+        .mockResolvedValueOnce(initialResponse)
+        .mockResolvedValueOnce(followUpResponse);
+
+      utils.executeToolCall.mockRejectedValue(
+        new Error('Tool execution failed'),
+      );
+
+      const result = await service.processQuery([
+        { role: 'user', content: 'Use the failing tool' },
+      ]);
+
+      expect(result.reply).toBe('Recovered after the tool error.');
+      expect(result.toolResponses[0].serverId).toBe('error');
+      expect(result.toolResponses[0].arguments).toEqual({
+        _raw: 'not valid json',
+      });
+    });
+
     it('should handle LLM provider errors', async () => {
       mockLLMProvider.sendMessage.mockRejectedValue(
         new Error('LLM connection failed'),
@@ -261,6 +313,215 @@ describe('MCPClientServiceImpl', () => {
       await expect(
         service.processQuery([{ role: 'user', content: 'Hello' }]),
       ).rejects.toThrow('LLM connection failed');
+    });
+
+    it('should pass tools on every sendMessage call (multi-round loop)', async () => {
+      const toolCall1: ToolCall = {
+        id: 'call_1',
+        type: 'function',
+        function: { name: 'tool_one', arguments: '{"a": 1}' },
+      };
+      const toolCall2: ToolCall = {
+        id: 'call_2',
+        type: 'function',
+        function: { name: 'tool_two', arguments: '{"b": 2}' },
+      };
+
+      const firstResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall1],
+            },
+          },
+        ],
+      };
+      const secondResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall2],
+            },
+          },
+        ],
+      };
+      const finalResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Both tools executed successfully.',
+            },
+          },
+        ],
+      };
+
+      mockLLMProvider.sendMessage
+        .mockResolvedValueOnce(firstResponse)
+        .mockResolvedValueOnce(secondResponse)
+        .mockResolvedValueOnce(finalResponse);
+
+      const result = await service.processQuery([
+        { role: 'user', content: 'Use both tools' },
+      ]);
+
+      expect(result.reply).toBe('Both tools executed successfully.');
+      expect(result.toolCalls).toHaveLength(2);
+      expect(result.toolResponses).toHaveLength(2);
+
+      // All three sendMessage calls must receive tools (the key fix)
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledTimes(3);
+      for (const call of mockLLMProvider.sendMessage.mock.calls) {
+        expect(call[1]).toBeDefined();
+        expect(Array.isArray(call[1])).toBe(true);
+      }
+
+      expect(utils.executeToolCall).toHaveBeenCalledTimes(2);
+    });
+
+    it('should record one assistant message with all tool calls followed by tool messages', async () => {
+      const toolCall1: ToolCall = {
+        id: 'call_a',
+        type: 'function',
+        function: { name: 'tool_a', arguments: '{"x": 1}' },
+      };
+      const toolCall2: ToolCall = {
+        id: 'call_b',
+        type: 'function',
+        function: { name: 'tool_b', arguments: '{"y": 2}' },
+      };
+
+      const firstResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall1, toolCall2],
+            },
+          },
+        ],
+      };
+      const finalResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Done.',
+            },
+          },
+        ],
+      };
+
+      mockLLMProvider.sendMessage
+        .mockResolvedValueOnce(firstResponse)
+        .mockResolvedValueOnce(finalResponse);
+
+      utils.executeToolCall.mockImplementation((toolCall: ToolCall) =>
+        Promise.resolve({
+          id: toolCall.id,
+          name: toolCall.function.name,
+          arguments: {},
+          result: `result for ${toolCall.id}`,
+          serverId: 'test-server',
+        }),
+      );
+
+      await service.processQuery([{ role: 'user', content: 'Use both tools' }]);
+
+      // Inspect the conversation handed to the second (final) LLM round.
+      const secondRoundMessages = mockLLMProvider.sendMessage.mock.calls[1][0];
+      const appended = secondRoundMessages.slice(-3);
+
+      expect(appended[0]).toEqual({
+        role: 'assistant',
+        content: null,
+        tool_calls: [toolCall1, toolCall2],
+      });
+      expect(appended[1]).toEqual({
+        role: 'tool',
+        content: 'result for call_a',
+        tool_call_id: 'call_a',
+      });
+      expect(appended[2]).toEqual({
+        role: 'tool',
+        content: 'result for call_b',
+        tool_call_id: 'call_b',
+      });
+    });
+
+    it('should return fallback message when max tool iterations reached', async () => {
+      const toolCall: ToolCall = {
+        id: 'call_loop',
+        type: 'function',
+        function: { name: 'infinite_tool', arguments: '{}' },
+      };
+      const toolResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall],
+            },
+          },
+        ],
+      };
+
+      // Always return a tool call so the loop never terminates naturally
+      mockLLMProvider.sendMessage.mockResolvedValue(toolResponse);
+
+      const result = await service.processQuery([
+        { role: 'user', content: 'Loop forever' },
+      ]);
+
+      expect(result.reply).toContain(
+        "couldn't compile a final answer within the allowed number of steps",
+      );
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledTimes(8);
+    });
+
+    it('should honor a configured maxToolIterations cap', async () => {
+      mockConfig.getOptionalNumber.mockImplementation((key: string) =>
+        key === 'mcpChat.maxToolIterations' ? 3 : undefined,
+      );
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      const toolCall: ToolCall = {
+        id: 'call_loop',
+        type: 'function',
+        function: { name: 'infinite_tool', arguments: '{}' },
+      };
+      const toolResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall],
+            },
+          },
+        ],
+      };
+
+      // Always return a tool call so the loop never terminates naturally
+      mockLLMProvider.sendMessage.mockResolvedValue(toolResponse);
+
+      const result = await service.processQuery([
+        { role: 'user', content: 'Loop forever' },
+      ]);
+
+      expect(result.reply).toContain(
+        "couldn't compile a final answer within the allowed number of steps",
+      );
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledTimes(3);
     });
   });
 
