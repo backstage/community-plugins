@@ -16,7 +16,8 @@
 import useAsync from 'react-use/esm/useAsync';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { InfoCard } from '@backstage/core-components';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { dynatraceApiRef } from '../../../api';
 import { SyntheticsLocation } from '../SyntheticsLocation';
 
@@ -39,7 +40,7 @@ const dynatraceMonitorPrefixes = (idPrefix: string): string => {
 
 export const SyntheticsCard = (props: SyntheticsCardProps) => {
   const { syntheticsId } = props;
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const dynatraceApi = useApi(dynatraceApiRef);
   const dynatraceBaseUrl = configApi.getString('dynatrace.baseUrl');
 
