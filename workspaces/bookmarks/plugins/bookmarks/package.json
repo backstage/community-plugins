@@ -69,7 +69,8 @@
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@remixicon/react": ">=4.6.0 <4.9.0"
+    "@remixicon/react": ">=4.6.0 <4.9.0",
+    "react-aria-components": "~1.22.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "*",

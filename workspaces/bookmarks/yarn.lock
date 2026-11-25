@@ -743,6 +743,7 @@ __metadata:
     jest: "npm:*"
     playwright-core: "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-aria-components: "npm:~1.22.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:~6.30.0"
   peerDependencies:

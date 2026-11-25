@@ -98,13 +98,13 @@ export class BookmarksPage {
   /** Clicks a tree item in the table of contents by its label. */
   async clickTreeItem(label: string) {
     const toc = this.page.getByTestId(TEST_IDS.TableOfContents.wrapper);
-    await toc.getByText(label).click();
+    await toc.getByRole('row', { name: label }).click();
   }
 
   /** Asserts that a tree item with the given label is visible or hidden. */
   async expectTreeItemVisible(label: string, visible = true) {
     const toc = this.page.getByTestId(TEST_IDS.TableOfContents.wrapper);
-    const item = toc.getByText(label);
+    const item = toc.getByRole('row', { name: label });
     if (visible) {
       await expect(item).toBeVisible();
     } else {
@@ -112,33 +112,30 @@ export class BookmarksPage {
     }
   }
 
-  /** Expands all collapsed tree items in the table of contents. */
+  /** Expands all collapsed folders in the table of contents. */
   async expandAllTreeItems() {
     const toc = this.page.getByTestId(TEST_IDS.TableOfContents.wrapper);
-    // Find all collapsed tree items (folders) and expand them using keyboard
-    // MUI TreeView items can be expanded by clicking on them or using arrow keys
-    const treeItems = toc.locator('[role="treeitem"]');
-    const count = await treeItems.count();
-
-    for (let i = 0; i < count; i++) {
-      const item = treeItems.nth(i);
-      const ariaExpanded = await item.getAttribute('aria-expanded');
-      // If aria-expanded exists and is 'false', it's a collapsed folder
-      if (ariaExpanded === 'false') {
-        await item.click();
-        await this.page.waitForTimeout(50);
+    // nested folders only render once their parents are expanded, so keep
+    // expanding the first collapsed row until none are left
+    for (let i = 0; i < 50; i++) {
+      const collapsed = toc.locator('[role="row"][aria-expanded="false"]');
+      if (!(await collapsed.count())) {
+        return;
       }
+      await collapsed.first().click();
+      await this.page.waitForTimeout(50);
     }
   }
 
-  /** Expands a specific tree item by its label if it is collapsed. */
+  /** Expands a specific folder in the table of contents by its label. */
   async expandTreeItem(label: string) {
     const toc = this.page.getByTestId(TEST_IDS.TableOfContents.wrapper);
-    const treeItem = toc.getByRole('treeitem', { name: label });
-    const ariaExpanded = await treeItem.getAttribute('aria-expanded');
-    if (ariaExpanded === 'false') {
-      await treeItem.click();
+    const row = toc.getByRole('row', { name: label });
+    if ((await row.getAttribute('aria-expanded')) === 'false') {
+      // clicking anywhere on the row toggles the folder
+      await row.click();
     }
+    await expect(row).toHaveAttribute('aria-expanded', 'true');
   }
 
   /** Sets the viewport to desktop dimensions (1280x720). */

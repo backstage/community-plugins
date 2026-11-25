@@ -1,42 +1,62 @@
 @layer components {
-  .tree,
-  .group {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
   .tree {
     flex-grow: 1;
+    display: block;
     color: var(--bui-fg-primary);
   }
 
-  .group {
-    padding-left: var(--bui-space-4);
-  }
-
-  /* doubled selector so these win over BUI's own Button rules */
-  .item.item {
-    width: 100%;
-    height: auto;
-    min-height: 2rem;
+  .item {
+    display: flex;
     align-items: center;
-    text-align: left;
+    gap: var(--bui-space-1_5);
+    min-height: 2rem;
+    padding: var(--bui-space-1) var(--bui-space-2);
+    border-radius: var(--bui-radius-2);
+    font-size: var(--bui-font-size-3);
+    font-weight: var(--bui-font-weight-medium);
+    cursor: pointer;
+
+    & .treeLabel {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    &:hover {
+      background-color: var(--bui-bg-neutral-1-hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--bui-ring);
+    }
+
+    &[data-expanded] .chevron .chevronIcon {
+      transform: rotate(90deg);
+    }
+
+    &.leaf {
+      padding-left: var(--bui-space-6);
+    }
+
+    &.selected {
+      background-color: var(--bui-bg-neutral-2);
+    }
   }
 
-  /* BUI centers the label inside an inner span, so align that span instead */
-  .item.item > span {
-    justify-content: flex-start;
-    height: auto;
-    padding-block: var(--bui-space-1);
-  }
+  /* the expand/collapse button rendered by react-aria-components' chevron slot */
+  .chevron {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
 
-  .leaf.leaf {
-    padding-left: var(--bui-space-6);
-  }
-
-  .selected.selected {
-    background-color: var(--bui-bg-neutral-2);
-    font-weight: var(--bui-font-weight-bold);
+    & .chevronIcon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
   }
 }
