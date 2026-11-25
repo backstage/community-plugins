@@ -718,12 +718,12 @@ __metadata:
   dependencies:
     "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
-    "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -746,12 +746,12 @@ __metadata:
   resolution: "@backstage-community/plugin-analytics-module-matomo@workspace:plugins/analytics-module-matomo"
   dependencies:
     "@backstage/cli": "backstage:^"
-    "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@testing-library/jest-dom": "npm:6.9.1"
     cross-fetch: "npm:4.1.0"
   peerDependencies:
@@ -765,12 +765,12 @@ __metadata:
   dependencies:
     "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
-    "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@newrelic/browser-agent": "npm:^1.295.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -789,7 +789,6 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
-    "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-defaults": "backstage:^"
@@ -1493,7 +1492,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@backstage:^::backstage=1.57.1&npm=0.18.16, @backstage/core-components@npm:^0.18.16":
+"@backstage/core-components@npm:^0.18.16":
   version: 0.18.16
   resolution: "@backstage/core-components@npm:0.18.16"
   dependencies:
