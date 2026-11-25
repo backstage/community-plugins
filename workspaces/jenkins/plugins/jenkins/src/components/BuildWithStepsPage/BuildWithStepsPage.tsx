@@ -27,7 +27,9 @@ import { buildRouteRef } from '../../plugin';
 import { JenkinsRunStatus } from '../BuildsPage/lib/Status';
 import { useBuildWithSteps } from '../useBuildWithSteps';
 
-import { Breadcrumbs, Content, Link } from '@backstage/core-components';
+import { Breadcrumbs } from '@backstage/core-components';
+import { Box as BuiBox, Link } from '@backstage/ui';
+import { useResolvedPath } from 'react-router-dom';
 import { useRouteRefParams } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles(theme => ({
@@ -46,6 +48,7 @@ const useStyles = makeStyles(theme => ({
 const BuildWithStepsView = () => {
   // TODO: Add a test that react-router decodes this (even though `generatePath` doesn't encode it for you!)
   const { jobFullName, buildNumber } = useRouteRefParams(buildRouteRef);
+  const projectsPath = useResolvedPath('..').pathname;
   const classes = useStyles();
 
   const [{ value }] = useBuildWithSteps({ jobFullName, buildNumber });
@@ -54,7 +57,7 @@ const BuildWithStepsView = () => {
     <div className={classes.root}>
       <Breadcrumbs aria-label="breadcrumb">
         {/* TODO: don't hardcode this link */}
-        <Link to="..">Projects</Link>
+        <Link href={projectsPath}>Projects</Link>
         <Typography>Run</Typography>
       </Breadcrumbs>
       <Box m={2} />
@@ -99,7 +102,11 @@ const BuildWithStepsView = () => {
               </TableCell>
               <TableCell>
                 {value?.url && (
-                  <Link to={value.url}>
+                  <Link
+                    href={value.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     View on Jenkins{' '}
                     <ExternalLinkIcon className={classes.externalLinkIcon} />
                   </Link>
@@ -113,7 +120,11 @@ const BuildWithStepsView = () => {
               </TableCell>
               <TableCell>
                 {value?.source?.url && (
-                  <Link to={value.source.url}>
+                  <Link
+                    href={value.source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     View on GitHub{' '}
                     <ExternalLinkIcon className={classes.externalLinkIcon} />
                   </Link>
@@ -127,9 +138,9 @@ const BuildWithStepsView = () => {
   );
 };
 const Page = () => (
-  <Content>
+  <BuiBox p="6">
     <BuildWithStepsView />
-  </Content>
+  </BuiBox>
 );
 
 export default Page;
