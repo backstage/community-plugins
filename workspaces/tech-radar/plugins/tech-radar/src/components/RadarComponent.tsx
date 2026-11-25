@@ -15,7 +15,8 @@
  */
 
 import { Progress } from '@backstage/core-components';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { useEffect, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { techRadarApiRef } from '../api';
@@ -27,7 +28,7 @@ import Radar from '../components/Radar';
 import type { Entry } from '../utils/types';
 
 const useTechRadarLoader = (id: string | undefined) => {
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const techRadarApi = useApi(techRadarApiRef);
 
   const { error, value, loading } = useAsync(

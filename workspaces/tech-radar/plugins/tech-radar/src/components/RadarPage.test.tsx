@@ -25,7 +25,7 @@ import GetBBoxPolyfill from '../utils/polyfills/getBBox';
 import { RadarPage } from './RadarPage';
 import { techRadarApiRef, TechRadarApi } from '../api';
 
-import { errorApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('RadarPage', () => {
   beforeAll(() => {
@@ -150,7 +150,7 @@ describe('RadarPage', () => {
     const { queryByTestId } = await renderInTestApp(
       <TestApiProvider
         apis={[
-          [errorApiRef, errorApi],
+          [coreApis.error, errorApi],
           [techRadarApiRef, mockClient],
         ]}
       >
