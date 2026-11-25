@@ -1,5 +1,15 @@
 # @backstage-community/plugin-tekton-react
 
+## 0.10.0
+
+### Minor Changes
+
+- bfc301d: Backstage version bump to v1.56.4
+
+### Patch Changes
+
+- 9ba4b65: Updated dependency `@kubernetes/client-node` to `2.0.2`.
+
 ## 0.9.1
 
 ### Patch Changes

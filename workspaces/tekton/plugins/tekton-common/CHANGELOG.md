@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton-common
 
+## 1.25.0
+
+### Minor Changes
+
+- bfc301d: Backstage version bump to v1.56.4
+
 ## 1.24.1
 
 ### Patch Changes
