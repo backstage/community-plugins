@@ -1,5 +1,15 @@
 # @backstage-community/plugin-gcalendar
 
+## 0.27.0
+
+### Minor Changes
+
+- c600965: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- c600965: Replaced deprecated Backstage core links with Backstage UI links for the Zoom and "Open in Calendar" links.
+
 ## 0.26.0
 
 ### Minor Changes
