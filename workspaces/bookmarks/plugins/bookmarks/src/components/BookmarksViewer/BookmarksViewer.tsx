@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ButtonLink } from '@backstage/ui';
+import { ButtonLink, FullPage } from '@backstage/ui';
 import { RiArrowRightLine } from '@remixicon/react';
 import { ReactNode, memo, useMemo, useState } from 'react';
 import { UrlTree } from '../../types';
@@ -112,12 +112,14 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
   );
 
   return (
-    <View
-      toc={toc}
-      previousButton={previousButton}
-      viewer={viewer}
-      openInNewTab={openInNewTab}
-      nextButton={nextButton}
-    />
+    <FullPage>
+      <View
+        toc={toc}
+        previousButton={previousButton}
+        viewer={viewer}
+        openInNewTab={openInNewTab}
+        nextButton={nextButton}
+      />
+    </FullPage>
   );
 });
