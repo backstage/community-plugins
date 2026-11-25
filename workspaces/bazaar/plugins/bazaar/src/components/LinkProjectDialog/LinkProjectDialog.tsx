@@ -26,7 +26,7 @@ import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 
 import { bazaarApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 import { BazaarProject } from '../../types';
 
@@ -53,7 +53,7 @@ export const LinkProjectDialog = ({
 }: Props) => {
   const classes = useStyles();
   const bazaarApi = useApi(bazaarApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const [selectedEntity, setSelectedEntity] = useState(initEntity);
   const [selectedEntityName, setSelectedEntityName] = useState('');
   const handleEntityClick = (entity: Entity) => {

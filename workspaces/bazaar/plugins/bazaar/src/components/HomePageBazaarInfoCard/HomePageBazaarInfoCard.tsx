@@ -21,10 +21,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {
-  HeaderIconLinkRow,
-  IconLinkVerticalProps,
-} from '@backstage/core-components';
+import { ProjectLink, ProjectLinks } from '../ProjectLinks';
 import EditIcon from '@material-ui/icons/Edit';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -35,12 +32,8 @@ import LinkOffIcon from '@material-ui/icons/LinkOff';
 import Description from '@material-ui/icons/Description';
 import { EditProjectDialog } from '../EditProjectDialog';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {
-  useApi,
-  identityApiRef,
-  useRouteRef,
-} from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { Member, BazaarProject } from '../../types';
 import { bazaarApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
@@ -84,8 +77,8 @@ export const HomePageBazaarInfoCard = ({
   const classes = useStyles();
   const entityLink = useRouteRef(entityRouteRef);
   const bazaarApi = useApi(bazaarApiRef);
-  const identity = useApi(identityApiRef);
-  const alertApi = useApi(toastApiRef);
+  const identity = useApi(coreApis.identity);
+  const alertApi = useApi(coreApis.toast);
   const catalogApi = useApi(catalogApiRef);
   const [openEdit, setOpenEdit] = useState(false);
   const [openProjectSelector, setOpenProjectSelector] = useState(false);
@@ -168,7 +161,7 @@ export const HomePageBazaarInfoCard = ({
     }
   };
 
-  const links: IconLinkVerticalProps[] = [
+  const links: ProjectLink[] = [
     {
       label: 'Entity page',
       icon: <DashboardIcon />,
@@ -285,7 +278,7 @@ export const HomePageBazaarInfoCard = ({
               </IconButton>
             </div>
           }
-          subheader={<HeaderIconLinkRow links={links} />}
+          subheader={<ProjectLinks links={links} />}
         />
         <Divider />
 

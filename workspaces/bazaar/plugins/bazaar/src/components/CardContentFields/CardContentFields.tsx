@@ -22,7 +22,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { GridSize } from '@material-ui/core/Grid';
 import { parseEntityRef } from '@backstage/catalog-model';
-import { Avatar, Link } from '@backstage/core-components';
+import { Avatar, Link } from '@backstage/ui';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { AboutField } from './AboutField';
@@ -41,17 +41,8 @@ type Props = {
 const useStyles = makeStyles(
   {
     avatar: {
-      width: '19px',
-      height: '19px',
       float: 'left',
       marginRight: '0.3rem',
-      marginTop: '0rem',
-      marginBottom: '0rem',
-      alignItems: 'left',
-    },
-    avatarText: {
-      fontSize: '8px',
-      textAlign: 'left',
     },
   },
   { name: 'CardContentFields' },
@@ -108,13 +99,16 @@ export const CardContentFields = ({
                         key={member.userId}
                       >
                         <Avatar
-                          displayName={member.userId}
-                          classes={classes}
-                          picture={member.picture}
+                          name={member.userId}
+                          src={member.picture ?? ''}
+                          size="x-small"
+                          purpose="decoration"
+                          className={classes.avatar}
                         />
                         <Link
                           target="_blank"
-                          to={
+                          rel="noopener noreferrer"
+                          href={
                             member.userRef
                               ? `${catalogEntityRoute(
                                   parseEntityRef(member.userRef),
