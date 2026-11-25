@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Text } from '@backstage/ui';
-import { RiLoader4Line } from '@remixicon/react';
+import { Skeleton, Text } from '@backstage/ui';
 import { memo, useRef } from 'react';
 import { useIsIframeLoading } from '../../../hooks/useIsIframeLoading';
 import { TEST_IDS } from '../../../consts/testids';
 import { useTranslation } from '../../../hooks/useTranslation';
+
 import styles from './BookmarkViewerFrame.module.css';
 
 type FrameProps = {
@@ -43,10 +43,11 @@ export const BookmarkViewerFrame = memo(({ src, title }: FrameProps) => {
   return (
     <>
       {isIframeLoading && (
-        <div className={styles.loading}>
-          <div role="progressbar" className={styles.spinner}>
-            <RiLoader4Line size={40} aria-hidden />
-          </div>
+        <div
+          className={styles.loading}
+          data-testid={TEST_IDS.BookmarkViewerFrame.loading}
+        >
+          <Skeleton width="100%" height={128} />
 
           {isDevEnv && (
             <Text

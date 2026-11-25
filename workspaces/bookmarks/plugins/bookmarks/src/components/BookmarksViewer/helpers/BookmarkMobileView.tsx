@@ -27,6 +27,7 @@ import { BookmarkViewerLayoutProps } from '../BookmarksViewer';
 import { useState } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { TEST_IDS } from '../../../consts/testids';
+
 import styles from './BookmarkMobileView.module.css';
 
 export const BookmarkMobileView = ({

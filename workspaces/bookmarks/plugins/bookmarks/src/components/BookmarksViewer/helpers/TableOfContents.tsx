@@ -24,9 +24,10 @@ import {
   useUnorderedFlattenedTree,
 } from '../../../hooks/useFlattenTree';
 import { TEST_IDS } from '../../../consts/testids';
+
 import styles from './TableOfContents.module.css';
 
-type TreeItemsProps = {
+interface TreeItemsProps {
   /** the tree (or subtree) whose entries are rendered */
   subTree: UrlTree;
   /** keys leading to this subtree */
@@ -34,8 +35,8 @@ type TreeItemsProps = {
   selectedId: string;
   expandedItems: string[];
   onToggle: (itemId: string) => void;
-  onSelect: (itemId: string) => void;
-};
+  onSelect: (itemId: string, value: string) => void;
+}
 
 /** Recursively render a portion of a UrlTree */
 const TreeItems = ({
