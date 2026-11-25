@@ -695,11 +695,10 @@ __metadata:
     "@axe-core/playwright": "npm:*"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
-    "@backstage/core-compat-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
-    "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-defaults": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
@@ -1349,7 +1348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-compat-api@backstage:^::backstage=1.57.1&npm=0.6.0, @backstage/core-compat-api@npm:^0.6.0":
+"@backstage/core-compat-api@npm:^0.6.0":
   version: 0.6.0
   resolution: "@backstage/core-compat-api@npm:0.6.0"
   dependencies:
@@ -1437,7 +1436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@backstage:^::backstage=1.57.1&npm=1.13.0, @backstage/core-plugin-api@npm:^1.13.0":
+"@backstage/core-plugin-api@npm:^1.13.0":
   version: 1.13.0
   resolution: "@backstage/core-plugin-api@npm:1.13.0"
   dependencies:

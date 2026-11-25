@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { useApi } from '@backstage/core-plugin-api';
-import { coreApis } from '@backstage/frontend-plugin-api';
+import { coreApis, useApi } from '@backstage/frontend-plugin-api';
 
 import { Config } from '../../config';
 
