@@ -1,5 +1,15 @@
 # @backstage-community/plugin-apollo-explorer
 
+## 0.27.0
+
+### Minor Changes
+
+- 5e783f9: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 5e783f9: Replaced deprecated Backstage core components on the Apollo Explorer page with their Backstage UI equivalents. The page header and layout now use Backstage UI styling.
+
 ## 0.26.0
 
 ### Minor Changes
