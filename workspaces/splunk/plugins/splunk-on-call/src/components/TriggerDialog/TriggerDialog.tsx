@@ -35,7 +35,7 @@ import { splunkOnCallApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
 import { TriggerAlarmRequest } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 type Props = {
   routingKey: string;
@@ -80,7 +80,7 @@ export const TriggerDialog = ({
   handleDialog,
   onIncidentCreated: onIncidentCreated,
 }: Props) => {
-  const toastApi = useApi(toastApiRef);
+  const toastApi = useApi(coreApis.toast);
   const api = useApi(splunkOnCallApiRef);
   const classes = useStyles();
 
