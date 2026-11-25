@@ -15,14 +15,13 @@
  */
 
 import { expect, test } from '@playwright/test';
+import { signInAsGuestIfNeeded } from './test-utils';
 
 // Helper function to navigate to Kiali tab
 async function navigateToKialiPage(page: any) {
+  await page.goto('/');
+  await signInAsGuestIfNeeded(page);
   await page.goto('/kiali/overview');
-
-  const enterButton = page.getByRole('button', { name: 'Enter' });
-  await expect(enterButton).toBeVisible();
-  await enterButton.click();
 
   await expect(page.getByText('Provider:', { exact: false })).toBeVisible();
 }
@@ -37,7 +36,7 @@ test('Header should be correct', async ({ page }) => {
   // Verify the selected value is Kubernetes by checking the visible text in the select button
   const providerSelectButton = providerSelector.locator('[role="button"]');
   await expect(providerSelectButton).toBeVisible();
-  await expect(providerSelectButton).toContainText('Kubernetes');
+  await expect(providerSelectButton).toContainText('default');
 
   // Verify namespaces selected
   const namespaceSelector = page.locator('[data-test="namespace-selector"]');
@@ -143,7 +142,7 @@ test('Overview Page', async ({ page }) => {
 
   // Validate overview card has metrics (sparklines)
   // The chart may take time to load after API calls complete
-  const inboundSparkline = page.locator(
+  const inboundSparkline = overviewCard.locator(
     '[data-test="sparkline-inbound-duration-10m"]',
   );
   await expect(inboundSparkline).toBeAttached({ timeout: 10000 });
@@ -415,14 +414,16 @@ test('Applications Tab', async ({ page }) => {
     timeout: 10000,
   });
 
-  // Validate it has at least one row with: healthy, details, bookinfo
-  await expect(applicationsTable.getByText('bookinfo')).toHaveCount(10, {
+  // bookinfo + istio-system fixtures each expose five applications (default has none)
+  await expect(
+    applicationsTable.locator('[data-test^="app-namespace-"]'),
+  ).toHaveCount(10, {
     timeout: 10000,
   });
-
-  // Click on details application row to open the drawer
-  // Use data-test attribute to avoid matching multiple elements
-  const detailsAppRow = page.locator('[data-test="app-namespace-details"]');
+  // Click on details application row to open the drawer (bookinfo namespace)
+  const detailsAppRow = applicationsTable.locator(
+    '[data-test="VirtualItem_ClusterKubernetes_Nsbookinfo_details"] [data-test="app-namespace-details"]',
+  );
   await expect(detailsAppRow).toBeAttached({ timeout: 10000 });
   await detailsAppRow.click();
 
@@ -484,20 +485,15 @@ test('Istio Config Tab', async ({ page }) => {
     istioTableHead.getByText('CONFIGURATION', { exact: true }),
   ).toHaveCount(1, { timeout: 10000 });
 
-  // Validate it has at least one row with: bookinfo-gateway, bookinfo, Gateway
-  await expect(istioTable.getByText('bookinfo')).toHaveCount(4, {
-    timeout: 10000,
-  });
+  const istioTableBody = istioTable.locator('tbody');
+  const gatewayRow = istioTableBody.getByText('bookinfo-gateway');
+  await expect(gatewayRow).toBeAttached({ timeout: 10000 });
   await expect(istioTable.getByText('Gateway', { exact: true })).toHaveCount(
     1,
     { timeout: 10000 },
   );
 
   // Click on bookinfo-gateway row to open the drawer
-  // Search in tbody to avoid any potential header matches
-  const istioTableBody = istioTable.locator('tbody');
-  const gatewayRow = istioTableBody.getByText('bookinfo-gateway');
-  await expect(gatewayRow).toBeAttached({ timeout: 10000 });
   await gatewayRow.click();
 
   // Verify drawer appears

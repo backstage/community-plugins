@@ -7,6 +7,7 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
+    "start:with-kiali-mock": "concurrently -k -n mock,backstage \"node scripts/kiali-e2e-mock-server.mjs\" \"backstage-cli repo start\"",
     "start-app": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
@@ -19,6 +20,7 @@
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
     "test:e2e": "playwright test",
+    "e2e:mock-kiali": "node scripts/kiali-e2e-mock-server.mjs",
     "fix": "backstage-cli repo fix --publish",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",

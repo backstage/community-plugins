@@ -40,12 +40,41 @@ This section describes how to run the project locally using the Backstage local 
          # highlight-add-end
    ```
 
-2. Run
+2. Run Backstage with a Kiali API available on port **20001** (required by `app-config.yaml`):
 
-```bash
-    export KIALI_BASE_URL=https://kiali-istio-system.apps-crc.testing;`
-    yarn start
-```
+   **Option A — mock API (fixtures, no cluster):** recommended for Playwright and local UI work without port-forward:
+
+   ```bash
+   yarn start:with-kiali-mock
+   ```
+
+   **Option B — real Kiali** (e.g. OpenShift/CRC): port-forward then start only Backstage:
+
+   ```bash
+   kubectl port-forward -n istio-system svc/kiali 20001:20001
+   yarn start
+   ```
+
+   **Option C — real Kiali URL in config:**
+
+   ```bash
+   export KIALI_BASE_URL=https://kiali-istio-system.apps-crc.testing
+   yarn start
+   ```
+
+   If you run `yarn start` without anything listening on `localhost:20001`, the Kiali plugin shows errors such as **Could not fetch auth info** (empty response from the Kiali API).
+
+   The mock on port 20001 reuses `plugins/kiali/dev/__fixtures__` but **normalizes** them to the current Kiali API shape (`objectGVK` on Istio references, `resources` map for Istio config, `api/clusters/metrics` for overview metrics). Empty Istio lists or `objectGVK` TypeErrors usually mean the mock is not running or you are hitting a real Kiali with a different API version.
+
+3. If the catalog shows **Could not fetch catalog entities** and `/kiali` also fails:
+   - Confirm the **backend** is up: http://localhost:7007/api/kiali/status (POST with `{"provider":"Kubernetes"}` should return JSON when the mock is running).
+   - After switching Node.js versions, rebuild native modules:
+
+     ```bash
+     npm rebuild better-sqlite3
+     ```
+
+   - Use **http://localhost:3000** for the app unless you override `app.baseUrl`. If you use another port (e.g. 3001), ensure `backend.cors.origin` in `app-config.yaml` includes that origin.
 
 ## Configure auth
 
@@ -246,12 +275,16 @@ git diff
 yarn start
 ```
 
-Verify e2e test pass with the following commands:
+Verify e2e tests pass with the following commands (Playwright starts a mock Kiali API on port 20001 and the Backstage app automatically):
 
 ```bash
 yarn install
 yarn test:e2e
 ```
+
+Extended smoke (health failures, standalone list drawers, namespace filter): `packages/app/e2e-tests/kiali-health-and-drawers.test.ts`. Playwright sets `KIALI_E2E_PATCH_HEALTH=1` so the mock marks `ratings-v1` unavailable for failure indicators.
+
+To run only the mock Kiali server (e.g. while debugging): `yarn e2e:mock-kiali`.
 
 Or, in interactive mode:
 

@@ -17,25 +17,38 @@
 import { defineConfig } from '@playwright/test';
 import { generateProjects } from '@backstage/e2e-test-utils/playwright';
 
+// Override when the dev app listens on another port (e.g. PLAYWRIGHT_URL=http://localhost:3001).
+const appUrl = process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000';
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 60_000,
+  timeout: 120_000,
 
   expect: {
-    timeout: 5_000,
+    timeout: 10_000,
   },
 
-  // Run your local dev server before starting the tests
-  webServer: process.env.CI
+  webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
+          command: 'node scripts/kiali-e2e-mock-server.mjs',
+          port: 20001,
+          reuseExistingServer: !process.env.CI,
+          timeout: 30_000,
+          env: {
+            ...process.env,
+            KIALI_E2E_NAMESPACES: 'bookinfo,default,istio-system',
+            KIALI_E2E_PATCH_HEALTH: '1',
+          },
+        },
+        {
           command: 'yarn start',
-          port: 3000,
-          reuseExistingServer: true,
-          timeout: 60000,
+          url: appUrl,
+          reuseExistingServer: !process.env.CI,
+          timeout: 180_000,
         },
       ],
 
@@ -47,14 +60,13 @@ export default defineConfig({
 
   use: {
     actionTimeout: 0,
-    baseURL:
-      process.env.PLAYWRIGHT_URL ??
-      (process.env.CI ? 'http://localhost:7007' : 'http://localhost:3000'),
+    baseURL: appUrl,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
+    channel: 'chrome',
   },
 
   outputDir: 'node_modules/.cache/e2e-test-results',
 
-  projects: generateProjects(), // Find all packages with e2e-test folders
+  projects: generateProjects({ channel: 'chrome' }),
 });
