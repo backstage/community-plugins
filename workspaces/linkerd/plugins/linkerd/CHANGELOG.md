@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd
 
+## 0.26.0
+
+### Minor Changes
+
+- 35a1fea: Backstage version bump to v1.57.1
+
 ## 0.25.1
 
 ### Patch Changes
