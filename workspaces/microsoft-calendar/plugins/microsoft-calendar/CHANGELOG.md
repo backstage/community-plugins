@@ -1,5 +1,15 @@
 # @backstage-community/plugin-microsoft-calendar
 
+## 0.25.0
+
+### Minor Changes
+
+- cef5b67: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- cef5b67: The calendar and online meeting links now use the Backstage UI `Link` component and open in a new tab.
+
 ## 0.24.0
 
 ### Minor Changes
