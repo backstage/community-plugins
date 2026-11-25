@@ -18,30 +18,23 @@ import {
   GraphQLVoyagerEndpoint,
   introspectionQuery,
 } from '../../lib/api/types';
-import { useState } from 'react';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { Suspense } from 'react';
-import { Content, ErrorPanel, Progress } from '@backstage/core-components';
+import { Suspense, useState } from 'react';
+import { Box, Tab, TabList, TabPanel, Tabs, Text } from '@backstage/ui';
+import { ErrorPanel, Progress } from '@backstage/core-components';
 import { Voyager } from 'graphql-voyager';
 import useAsync from 'react-use/esm/useAsync';
-
-const useStyles = makeStyles({
-  root: {
-    height: '100%',
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-});
+import styles from './GraphQLVoyagerBrowser.module.css';
 
 type GraphQLVoyagerBrowserProps = {
   endpoints: GraphQLVoyagerEndpoint[];
 };
 
 const NoEndpoints = () => {
-  return <Typography variant="h4">No endpoints available</Typography>;
+  return (
+    <Text as="h4" variant="title-large">
+      No endpoints available
+    </Text>
+  );
 };
 
 const VoyagerBrowserContent = ({
@@ -53,7 +46,8 @@ const VoyagerBrowserContent = ({
     endpoint;
   const { value, loading, error } = useAsync(
     () => introspection(introspectionQuery),
-    [endpoint],
+    // Depend on id so a stable endpoint identity does not re-trigger the fetch.
+    [id, introspection],
   );
 
   if (loading) {
@@ -64,32 +58,45 @@ const VoyagerBrowserContent = ({
   return value.data ? (
     <Voyager key={id} introspection={value} {...voyagerProps} />
   ) : (
-    <Typography variant="h4" color="error">
+    <Text as="h4" variant="title-large" color="danger">
       {introspectionErrorMessage}
-    </Typography>
+    </Text>
   );
 };
 
 const VoyagerBrowser = (props: GraphQLVoyagerBrowserProps) => {
   const { endpoints } = props;
-  const [tabIndex, setTabIndex] = useState(0);
-  const classes = useStyles();
+  const [tabId, setTabId] = useState('0');
 
   return (
-    <div className={classes.root}>
+    <div className={styles.root}>
       <Suspense fallback={<Progress />}>
         <Tabs
-          value={tabIndex}
-          onChange={(_, value) => setTabIndex(value)}
-          indicatorColor="primary"
+          selectedKey={tabId}
+          onSelectionChange={key => setTabId(String(key))}
         >
-          {endpoints.map(({ title, id }, index) => (
-            <Tab key={id} label={title} value={index} />
+          <TabList className={styles.tabs}>
+            {endpoints.map(({ title, id }, index) => (
+              <Tab key={id} id={String(index)}>
+                {title}
+              </Tab>
+            ))}
+          </TabList>
+          {endpoints.map((endpoint, index) => (
+            <TabPanel
+              key={endpoint.id}
+              id={String(index)}
+              // Keep panels mounted so switching tabs does not re-run
+              // introspection or remount Voyager (avoids a loading flash).
+              shouldForceMount
+              className={styles.tabPanel}
+            >
+              <Box>
+                <VoyagerBrowserContent endpoint={endpoint} />
+              </Box>
+            </TabPanel>
           ))}
         </Tabs>
-        <Content>
-          <VoyagerBrowserContent endpoint={endpoints[tabIndex]} />
-        </Content>
       </Suspense>
     </div>
   );
