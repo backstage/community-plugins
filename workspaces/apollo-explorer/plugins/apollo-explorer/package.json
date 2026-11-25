@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@apollo/explorer": "^3.0.0",
-    "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
