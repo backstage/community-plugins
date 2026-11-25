@@ -1,0 +1,19 @@
+workspaces/adr/plugins/adr/src/components/EntityAdrContent/EntityAdrContent.test.tsx
+  s_f970c81d30f960::t_0b023d336d80c9 60-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9-factset.2",
+  "base_commit_sha": "9a86cfa19518fa13ad0a3f4898bf1a02d6a4d8f4",
+  "prompts": {},
+  "sessions": {
+    "s_f970c81d30f960": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9baea3c2-7d9b-46ba-a2a3-a07e4b6fb608",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Phil Kuang <pkuang@factset.com>"
+    }
+  }
+}
