@@ -53,7 +53,7 @@ export const BookmarkMobileView = ({
         className={styles.drawer}
         data-testid={TEST_IDS.BookmarkMobileView.backdrop}
       >
-        <DialogHeader>{t('bookmarkViewer.mobileView.toc')}</DialogHeader>
+        <DialogHeader>{t('bookmarkViewer.tableOfContents')}</DialogHeader>
         <DialogBody>{toc}</DialogBody>
       </Dialog>
 
@@ -61,14 +61,14 @@ export const BookmarkMobileView = ({
         <div className={styles.group}>
           <TooltipTrigger>
             <ButtonIcon
-              aria-label={t('bookmarkViewer.mobileView.toc')}
+              aria-label={t('bookmarkViewer.tableOfContents')}
               icon={<RiListUnordered />}
               variant="tertiary"
               className={styles.tocToggle}
               onPress={() => setTocDrawerOpen(prev => !prev)}
               data-testid={TEST_IDS.BookmarkMobileView.toggleToc}
             />
-            <Tooltip>{t('bookmarkViewer.mobileView.toc')}</Tooltip>
+            <Tooltip>{t('bookmarkViewer.tableOfContents')}</Tooltip>
           </TooltipTrigger>
           {openInNewTab}
         </div>

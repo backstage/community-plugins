@@ -33,8 +33,7 @@
   /* Pins the dialog to the left edge so it behaves like a side drawer */
   .drawer.drawer {
     height: 100vh;
-    max-height: 100vh;
-    margin: 0 auto 0 0;
-    border-radius: 0;
+    max-height: calc(100vh - 2 * var(--bui-space-1));
+    margin: var(--bui-space-1) auto var(--bui-space-1) var(--bui-space-1);
   }
 }
