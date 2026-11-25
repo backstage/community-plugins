@@ -40,6 +40,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@remixicon/react": ">=4.6.0 <4.9.0",
