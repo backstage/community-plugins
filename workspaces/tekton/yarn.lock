@@ -1162,7 +1162,7 @@ __metadata:
   resolution: "@backstage-community/plugin-tekton-react@workspace:plugins/tekton-react"
   dependencies:
     "@backstage/cli": "backstage:^"
-    "@kubernetes/client-node": "npm:1.4.0"
+    "@kubernetes/client-node": "npm:2.0.2"
     "@testing-library/jest-dom": "npm:^6.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
   peerDependencies:
@@ -1201,7 +1201,7 @@ __metadata:
     "@backstage/ui": "backstage:^"
     "@emotion/cache": "npm:^11.14.0"
     "@emotion/react": "npm:^11.11.4"
-    "@kubernetes/client-node": "npm:1.4.0"
+    "@kubernetes/client-node": "npm:2.0.2"
     "@mui/icons-material": "npm:^5.18.0"
     "@mui/material": "npm:^5.18.0"
     "@patternfly/patternfly": "npm:^6.0.0"
@@ -5035,6 +5035,30 @@ __metadata:
     tar-fs: "npm:^3.0.9"
     ws: "npm:^8.18.2"
   checksum: 10/67237d327d44bc2b77dc68d44f03699e71ff85bc120b086565bab8446cf288a3da5132f7444bbfe971fbe1c1a544a1bc4c13bd7ffb7a745b3b810662017af8dd
+  languageName: node
+  linkType: hard
+
+"@kubernetes/client-node@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@kubernetes/client-node@npm:2.0.2"
+  dependencies:
+    "@types/js-yaml": "npm:^4.0.1"
+    "@types/node": "npm:^26.0.0"
+    "@types/stream-buffers": "npm:^3.0.3"
+    form-data: "npm:^4.0.0"
+    hpagent: "npm:^1.2.0"
+    isomorphic-ws: "npm:^5.0.0"
+    js-yaml: "npm:^5.1.0"
+    jsonpath-plus: "npm:^10.3.0"
+    openid-client: "npm:^6.1.3"
+    rfc4648: "npm:^1.3.0"
+    socks: "npm:^2.8.4"
+    socks-proxy-agent: "npm:^10.0.0"
+    stream-buffers: "npm:^3.0.2"
+    tar-fs: "npm:^3.0.9"
+    undici: "npm:^8.7.0"
+    ws: "npm:^8.18.2"
+  checksum: 10/155d604ffd7a304ca58059c0b35e55badf6275d27db740c0166cddeb9e773c34a072a4131db13be4c0e966de2a39e64bf537f2103ccf66900330ce7163668aa0
   languageName: node
   linkType: hard
 
@@ -8960,12 +8984,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 26.5.0
-  resolution: "@types/node@npm:26.5.0"
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^26.0.0":
+  version: 26.6.6
+  resolution: "@types/node@npm:26.6.6"
   dependencies:
     undici-types: "npm:~8.9.0"
-  checksum: 10/db4b0ac5289abaf7fa6f280610853a3a9c88cd60ef686513fb773badf77bbf6089cafc9522bc99d0765f13b43cde3109b37a8183859a2adeec00ae07f0a4710d
+  checksum: 10/07c6c6fc1f5cc89c700ac9ebcebd42b000fef234bf0b80e9461a8f077105f15faf16df95b83745e0c0e37338d1fbc28cb402ef27b5787fd7a57b492c926ff7ae
   languageName: node
   linkType: hard
 
@@ -16808,10 +16832,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^10.0.1, ip-address@npm:^10.2.0":
-  version: 10.7.0
-  resolution: "ip-address@npm:10.7.0"
-  checksum: 10/81d954eb5806e82460cb749b9651a2040630cadf4db9d53abc13122e60e4ae6f9ae8555282386c63a11093dd6380a62f64f7a22aba18abc6109ff316a6660b0a
+"ip-address@npm:^10.1.1, ip-address@npm:^10.2.0":
+  version: 10.7.6
+  resolution: "ip-address@npm:10.7.6"
+  checksum: 10/16b2604753400f8eedb17d482f9cdbb6e8ca6dac31bcb6fa6984e6098091ac58acd92990cc4d09a9ee96936b6ab19fd60e5622f4add52bd7d2465969a04e2ca9
   languageName: node
   linkType: hard
 
@@ -18063,7 +18087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^5.0.0":
+"js-yaml@npm:^5.0.0, js-yaml@npm:^5.1.0":
   version: 5.5.0
   resolution: "js-yaml@npm:5.5.0"
   dependencies:
@@ -24630,7 +24654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks-proxy-agent@npm:10.1.0":
+"socks-proxy-agent@npm:10.1.0, socks-proxy-agent@npm:^10.0.0":
   version: 10.1.0
   resolution: "socks-proxy-agent@npm:10.1.0"
   dependencies:
@@ -24663,13 +24687,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks@npm:^2.6.2, socks@npm:^2.8.3":
-  version: 2.8.7
-  resolution: "socks@npm:2.8.7"
+"socks@npm:^2.6.2, socks@npm:^2.8.3, socks@npm:^2.8.4":
+  version: 2.8.11
+  resolution: "socks@npm:2.8.11"
   dependencies:
-    ip-address: "npm:^10.0.1"
+    ip-address: "npm:^10.1.1"
     smart-buffer: "npm:^4.2.0"
-  checksum: 10/d19366c95908c19db154f329bbe94c2317d315dc933a7c2b5101e73f32a555c84fb199b62174e1490082a593a4933d8d5a9b297bde7d1419c14a11a965f51356
+  checksum: 10/6e04a51e3c56561007abeed6e7424586726a774082b91cb4c69defcbd9b286e160dac8bc07830b31b8ff8ad972e916de0f8212873cc65dd70ae99344d507c2b8
   languageName: node
   linkType: hard
 
@@ -26278,6 +26302,13 @@ __metadata:
   version: 7.29.1
   resolution: "undici@npm:7.29.1"
   checksum: 10/8b9eaf83615e96f83826c9b6b129bd378c26f750f183e931df89bf07dfae24a39736b3648c16c25904e59e34f9e151e7a852c82ef0f1fb8e8a1297c52ff3170c
+  languageName: node
+  linkType: hard
+
+"undici@npm:^8.7.0":
+  version: 8.13.1
+  resolution: "undici@npm:8.13.1"
+  checksum: 10/6409e6a4ee7eae5f67f97b92232ab00417db4a0af1b4bc42a13d59ebac0775534b8e340c9dfbf7ce34d4cbde349b6fd52fc95dd92a1fdf00cf951119a5aa431f
   languageName: node
   linkType: hard
 
