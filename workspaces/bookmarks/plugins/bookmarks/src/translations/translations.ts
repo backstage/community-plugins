@@ -17,7 +17,7 @@
 import {
   createTranslationRef,
   createTranslationResource,
-} from '@backstage/core-plugin-api/alpha';
+} from '@backstage/frontend-plugin-api';
 
 /**
  * Bookmarks plugin translation ref

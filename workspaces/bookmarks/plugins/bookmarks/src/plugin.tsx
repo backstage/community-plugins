@@ -16,7 +16,6 @@
 
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import { compatWrapper } from '@backstage/core-compat-api';
 import { isBookmarksAvailable } from './utils/isBookmarksAvailable';
 
 const bookmarksEntityContent = EntityContentBlueprint.make({
@@ -29,7 +28,7 @@ const bookmarksEntityContent = EntityContentBlueprint.make({
       /* istanbul ignore next: very difficult to test this in Jest */
       async () =>
         import('./components/EntityBookmarksContent/EntityBookmarksContent').then(
-          m => compatWrapper(<m.EntityBookmarksContent />),
+          m => <m.EntityBookmarksContent />,
         ),
   },
 });

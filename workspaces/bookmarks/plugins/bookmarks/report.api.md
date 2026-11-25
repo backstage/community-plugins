@@ -4,35 +4,24 @@
 
 ```ts
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { FilterPredicate } from '@backstage/filter-predicates';
 import { JSX as JSX_2 } from 'react';
-import { JSX as JSX_3 } from 'react/jsx-runtime';
 import { JSXElementConstructor } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { ReactElement } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
-import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationRefTuple } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
 export const AVAILABLE_LANGUAGES: string[];
 
 // @public
-export const bookmarksPlugin: BackstagePlugin<
-  {
-    entityContent: RouteRef_2<undefined>;
-  },
-  {},
-  {}
->;
-
-// @public
-const bookmarksPlugin_2: OverridableFrontendPlugin<
+const bookmarksPlugin: OverridableFrontendPlugin<
   {},
   {},
   {
@@ -59,6 +48,13 @@ const bookmarksPlugin_2: OverridableFrontendPlugin<
         | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            TranslationRefTuple<undefined>,
+            'core.titleTranslation',
             {
               optional: true;
             }
@@ -97,7 +93,7 @@ const bookmarksPlugin_2: OverridableFrontendPlugin<
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
         defaultTitle?: [Error: `Use the 'title' param instead`];
-        title: string;
+        title: string | TranslationRefTuple<undefined>;
         defaultGroup?: [Error: `Use the 'group' param instead`];
         group?:
           | (
@@ -117,7 +113,7 @@ const bookmarksPlugin_2: OverridableFrontendPlugin<
     }>;
   }
 >;
-export default bookmarksPlugin_2;
+export default bookmarksPlugin;
 
 // @public
 export const bookmarksTranslationRef: TranslationRef<
@@ -137,9 +133,6 @@ export const bookmarksTranslationRef: TranslationRef<
 
 // @public
 export const bookmarksTranslations: TranslationResource<'bookmarks'>;
-
-// @public
-export const EntityBookmarksContent: () => JSX_3.Element;
 
 // @public
 export const isBookmarksAvailable: (entity: Entity) => entity is Entity & {
