@@ -109,4 +109,33 @@ describe('<MaturityRankInfoCard />', () => {
     expect(getByText('Custom Bronze Title')).toBeInTheDocument();
     expect(getByText('Custom Bronze Description')).toBeInTheDocument();
   });
+
+  it('uses config values for the title and help link', async () => {
+    const mockConfig = mockApis.config({
+      data: {
+        techInsights: {
+          maturity: {
+            title: 'Scorecards',
+            help: {
+              url: 'https://example.com/scorecards',
+              tooltip: 'Read the scorecard guide',
+            },
+          },
+        },
+      },
+    });
+
+    const { getByText, queryByText, getByTestId } = await renderInTestApp(
+      <TestApiProvider apis={[[configApiRef, mockConfig]]}>
+        <MaturityRankInfoCard summary={summary} />
+      </TestApiProvider>,
+    );
+
+    expect(getByText('Scorecards Rank')).toBeInTheDocument(); // Title
+    expect(queryByText('Maturity Rank')).not.toBeInTheDocument();
+    expect(getByTestId('HelpOutlineIcon').closest('a')).toHaveAttribute(
+      'href',
+      'https://example.com/scorecards',
+    );
+  });
 });

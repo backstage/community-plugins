@@ -131,27 +131,35 @@ describe('<MaturitySummaryTable />', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('shows maturity summary table', async () => {
-    const { getByText, queryByText, getAllByAltText, getAllByTestId } =
-      await renderInTestApp(
-        <TestApiProvider
-          apis={[
-            [catalogApiRef, catalogApi],
-            [maturityApiRef, scoringDataApi],
-          ]}
-        >
-          <EntityProvider entity={mockSystem}>
-            <MaturitySummaryTable entities={[mockComponent]} />
-          </EntityProvider>
-        </TestApiProvider>,
-        {
-          mountedRoutes: {
-            '/catalog/:namespace/:kind/:name': entityRouteRef,
-          },
+    const {
+      getByText,
+      getByRole,
+      queryByText,
+      getAllByAltText,
+      getAllByTestId,
+    } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [catalogApiRef, catalogApi],
+          [maturityApiRef, scoringDataApi],
+        ]}
+      >
+        <EntityProvider entity={mockSystem}>
+          <MaturitySummaryTable entities={[mockComponent]} />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
         },
-      );
+      },
+    );
     expect(queryByText(/Component Maturity/)).toBeInTheDocument(); // Title
 
     expect(getByText(mockComponent.metadata.name)).toBeInTheDocument(); // Component name
+    expect(
+      getByRole('link', { name: mockComponent.metadata.name }),
+    ).toHaveAttribute('href', '/catalog/default/component/mock-name/maturity');
     expect(getAllByAltText(/Silver/)).toHaveLength(2); // Overall, Ownership
     expect(queryByText(/100%/)).not.toBeInTheDocument(); // Overall progress hidden by default
     expect(getByText(/Ownership/)).toBeInTheDocument(); // Area name
@@ -159,5 +167,40 @@ describe('<MaturitySummaryTable />', () => {
     expect(queryByText(/0 Gold tasks left/)).toBeInTheDocument(); // Next Rank progress tip
     expect(queryByText(/Max rank!/)).not.toBeInTheDocument(); // Next Rank progress tip
     expect(getAllByTestId('progressbar').length).toBeGreaterThan(0); // Next Rank progress bar
+  });
+
+  it('uses the title prop for the table title', async () => {
+    const { findByText, queryByText } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            catalogApiRef,
+            {
+              getEntitiesByRefs: jest
+                .fn()
+                .mockResolvedValue({ items: [mockComponent] }),
+            },
+          ],
+          [
+            maturityApiRef,
+            {
+              getBulkMaturitySummary: jest.fn().mockResolvedValue(bulkSummary),
+            },
+          ],
+        ]}
+      >
+        <EntityProvider entity={mockSystem}>
+          <MaturitySummaryTable entities={[mockComponent]} title="Scorecards" />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    expect(await findByText(/Component Scorecards/)).toBeInTheDocument(); // Title
+    expect(queryByText(/Component Maturity/)).not.toBeInTheDocument();
   });
 });
