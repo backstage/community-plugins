@@ -1,5 +1,15 @@
 # @backstage-community/plugin-opencost
 
+## 0.26.0
+
+### Minor Changes
+
+- 7a08310: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 7a08310: The OpenCost page header and layout now use Backstage UI components.
+
 ## 0.25.1
 
 ### Patch Changes
