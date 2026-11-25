@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 import { newRelicDashboardApiRef } from '../../api';
@@ -22,14 +23,19 @@ import useAsync from 'react-use/esm/useAsync';
 import {
   Progress,
   InfoCard,
+  InfoCardVariants,
   Link,
   ErrorPanel,
 } from '@backstage/core-components';
 import DesktopMac from '@material-ui/icons/DesktopMac';
 import { DashboardEntitySummary } from '../../api/NewRelicDashboardApi';
 import { ResultEntity } from '../../types/DashboardEntity';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import {
+  useEntity,
+  MissingAnnotationEmptyState,
+} from '@backstage/plugin-catalog-react';
 import { NEWRELIC_GUID_ANNOTATION } from '../../constants';
+import { getDashboardGuids } from '../../dashboardGuids';
 
 const useStyles = makeStyles({
   svgIcon: {
@@ -41,19 +47,22 @@ const useStyles = makeStyles({
     },
   },
 });
-export const DashboardEntityList = () => {
-  const { entity } = useEntity();
+
+/** Lists the pages of the New Relic dashboard with the given GUID. */
+export const DashboardPagesCard = (props: {
+  guid: string;
+  variant?: InfoCardVariants;
+}) => {
+  const { guid, variant } = props;
   const classes = useStyles();
   const newRelicDashboardAPI = useApi(newRelicDashboardApiRef);
   const { value, loading, error } = useAsync(async (): Promise<
     DashboardEntitySummary | undefined
   > => {
     const dashboardObject: Promise<DashboardEntitySummary | undefined> =
-      newRelicDashboardAPI.getDashboardEntity(
-        String(entity.metadata.annotations?.[NEWRELIC_GUID_ANNOTATION]),
-      );
+      newRelicDashboardAPI.getDashboardEntity(guid);
     return dashboardObject;
-  }, [entity.metadata.annotations?.[NEWRELIC_GUID_ANNOTATION]]);
+  }, [guid]);
   if (loading) {
     return <Progress />;
   }
@@ -61,7 +70,7 @@ export const DashboardEntityList = () => {
     return <ErrorPanel title={error.name} defaultExpanded error={error} />;
   }
   return (
-    <InfoCard title="New Relic Dashboard Pages" variant="gridItem">
+    <InfoCard title="New Relic Dashboard Pages" variant={variant}>
       {value?.getDashboardEntity === undefined &&
         'Unauthorized Request , please check API Key'}
       {value?.getDashboardEntity !== undefined &&
@@ -86,5 +95,28 @@ export const DashboardEntityList = () => {
         },
       )}
     </InfoCard>
+  );
+};
+
+export const DashboardEntityList = () => {
+  const { entity } = useEntity();
+  const guids = getDashboardGuids(entity);
+
+  if (guids.length === 0) {
+    return (
+      <MissingAnnotationEmptyState annotation={NEWRELIC_GUID_ANNOTATION} />
+    );
+  }
+  if (guids.length === 1) {
+    return <DashboardPagesCard guid={guids[0]} variant="gridItem" />;
+  }
+  return (
+    <Grid container spacing={3} direction="column">
+      {guids.map(guid => (
+        <Grid item key={guid}>
+          <DashboardPagesCard guid={guid} />
+        </Grid>
+      ))}
+    </Grid>
   );
 };
