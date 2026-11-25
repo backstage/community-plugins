@@ -38,6 +38,7 @@ import {
   getPermissionsData,
   getPluginInfo,
   getPoliciesData,
+  getRoleOverviewPath,
 } from './rbac-utils';
 
 // Mock translation function for tests
@@ -265,6 +266,17 @@ describe('rbac utils', () => {
   });
 });
 
+describe('getRoleOverviewPath', () => {
+  it('builds the role path and degrades to the RBAC page for a malformed reference', () => {
+    expect(getRoleOverviewPath('role:default/dev')).toBe(
+      'roles/role/default/dev',
+    );
+    // getShortRoleName degrades on a malformed ref instead of throwing; the
+    // overview path must not crash the same render either
+    expect(getRoleOverviewPath('not a ref')).toBe('');
+  });
+});
+
 describe('getConditionUpperCriteria', () => {
   it('should return the upper criteria', () => {
     const conditions = mockConditions[1].conditions;
@@ -433,6 +445,16 @@ describe('getConditionalPermissionsData', () => {
         id: 1,
       },
     ]);
+  });
+
+  it('skips conditions whose plugin has no permission metadata', () => {
+    const result = getConditionalPermissionsData(
+      [mockConditions[0]],
+      { plugins: [], pluginsPermissions: {} },
+      [],
+    );
+
+    expect(result).toEqual([]);
   });
 
   it('should return empty array if no conditional permissions provided', () => {

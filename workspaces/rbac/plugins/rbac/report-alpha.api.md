@@ -216,6 +216,29 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'common.configureAccessFor': string;
     readonly 'common.defaultResourceTypeVisible': string;
     readonly 'common.tableAction': string;
+    readonly 'permissionsMatrix.roles': string;
+    readonly 'permissionsMatrix.legend': string;
+    readonly 'permissionsMatrix.title': string;
+    readonly 'permissionsMatrix.errors.fetchPermissions': string;
+    readonly 'permissionsMatrix.description': string;
+    readonly 'permissionsMatrix.allPlugins': string;
+    readonly 'permissionsMatrix.plugin': string;
+    readonly 'permissionsMatrix.tabs.roles': string;
+    readonly 'permissionsMatrix.tabs.label': string;
+    readonly 'permissionsMatrix.tabs.permissionsByPlugin': string;
+    readonly 'permissionsMatrix.roleColumn': string;
+    readonly 'permissionsMatrix.filterRoles': string;
+    readonly 'permissionsMatrix.policy': string;
+    readonly 'permissionsMatrix.allPolicies': string;
+    readonly 'permissionsMatrix.viewOnlyRole': string;
+    readonly 'permissionsMatrix.conditionalRules': string;
+    readonly 'permissionsMatrix.emptyRoles': string;
+    readonly 'permissionsMatrix.emptyPermissions': string;
+    readonly 'permissionsMatrix.noMatches': string;
+    readonly 'permissionsMatrix.decisions.conditional': string;
+    readonly 'permissionsMatrix.decisions.allow': string;
+    readonly 'permissionsMatrix.decisions.deny': string;
+    readonly 'permissionsMatrix.decisions.none': string;
   }
 >;
 

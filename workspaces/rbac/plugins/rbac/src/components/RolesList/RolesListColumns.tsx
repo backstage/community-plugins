@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { parseEntityRef } from '@backstage/catalog-model';
 import { Link, TableColumn } from '@backstage/core-components';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { Focusable, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 
 import { rbacTranslationRef } from '../../alpha/translations';
 import { RolesData } from '../../types';
-import { getMembers } from '../../utils/rbac-utils';
+import { getMembers, getRoleOverviewPath } from '../../utils/rbac-utils';
 import {
   getRoleSourceActionTooltip,
   getRoleSourceLabel,
@@ -39,12 +38,9 @@ export const getColumns = (
       title: t('table.headers.name'),
       field: 'name',
       type: 'string',
-      render: (props: RolesData) => {
-        const { kind, namespace, name } = parseEntityRef(props.name);
-        return (
-          <Link to={`roles/${kind}/${namespace}/${name}`}>{props.name}</Link>
-        );
-      },
+      render: (props: RolesData) => (
+        <Link to={getRoleOverviewPath(props.name)}>{props.name}</Link>
+      ),
     },
     {
       title: t('table.headers.source'),
