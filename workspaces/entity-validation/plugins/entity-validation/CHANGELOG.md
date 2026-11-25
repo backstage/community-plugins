@@ -1,5 +1,15 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.26.0
+
+### Minor Changes
+
+- c07b6de: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- c07b6de: Replaced deprecated Backstage core components on the Entity Validator page with their Backstage UI equivalents. The page header and layout now use Backstage UI styling.
+
 ## 0.25.0
 
 ### Minor Changes
