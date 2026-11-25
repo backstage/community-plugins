@@ -24,7 +24,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Suspense } from 'react';
-import { Content, ErrorPanel, Progress } from '@backstage/core-components';
+import { ErrorPanel, Progress } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import { Voyager } from 'graphql-voyager';
 import useAsync from 'react-use/esm/useAsync';
 
@@ -87,9 +88,9 @@ const VoyagerBrowser = (props: GraphQLVoyagerBrowserProps) => {
             <Tab key={id} label={title} value={index} />
           ))}
         </Tabs>
-        <Content>
+        <Box p="6">
           <VoyagerBrowserContent endpoint={endpoints[tabIndex]} />
-        </Content>
+        </Box>
       </Suspense>
     </div>
   );
