@@ -47,8 +47,8 @@
     "@backstage/errors": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
     "@backstage/plugin-permission-common": "backstage:^",
-    "@types/express": "^4.17.6",
-    "express": "^4.17.1",
+    "@types/express": "^5.0.0",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
     "node-fetch": "^2.6.7"
   },

@@ -61,12 +61,12 @@
   },
   "peerDependencies": {
     "@backstage/plugin-kubernetes": "^0.12.25",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
-    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/jest-dom": "^8.0.0",
     "@types/dagre": "^0"
   },
   "files": [

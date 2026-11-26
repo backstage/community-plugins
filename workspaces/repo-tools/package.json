@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "22 || 24"
+    "node": "26"
   },
   "workspaces": {
     "packages": [
@@ -42,17 +42,17 @@
     "@backstage/cli": "^0.36.8",
     "@backstage/cli-defaults": "^0.1.8",
     "@backstage/repo-tools": "^0.19.3",
-    "@changesets/cli": "^2.27.4",
+    "@changesets/cli": "^3.0.0",
     "@playwright/test": "^1.32.3",
-    "prettier": "^2.3.2",
-    "ts-morph": "^23.0.0",
+    "prettier": "^3.0.0",
+    "ts-morph": "^28.0.0",
     "typescript": "~5.8.0"
   },
   "devDependencies": {
-    "knip": "^5.27.4"
+    "knip": "^6.0.0"
   },
   "resolutions": {
-    "got": "^11.8.6",
+    "got": "^16.0.0",
     "@types/webpack-env": "^1.18.8"
   }
 }
