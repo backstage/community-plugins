@@ -64,6 +64,7 @@ export type GithubDeployment = {
   environment: string;
   state: string;
   updatedAt: string;
+  id: string;
   commit: {
     abbreviatedOid: string;
     commitUrl: string;
@@ -111,6 +112,7 @@ query deployments($owner: String!, $repo: String!, $environments: [String!] $las
         state
         environment
         updatedAt
+        id
         commit {
           abbreviatedOid
           commitUrl
