@@ -124,9 +124,9 @@
       "allowedVersions": "<4.9.0"
     },
     {
-      "description": "Require manual approval on the Dependency Dashboard before creating major version update PRs",
+      "description": "Disable major version update PRs — grouped per-workspace major bumps are too large to land safely, so majors are upgraded manually",
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true
+      "enabled": false
     },
     {
       "description": "Disable lock file maintenance PRs — each workspace has its own yarn.lock and bulk lock file updates can cause issues",
