@@ -342,7 +342,7 @@ export const rbacMessages = {
     rolesTitle: 'Roles',
     noRoles: 'The user has no roles.',
     directAssignment: 'direct assignment',
-    viaGroup: 'via {{ref}}',
+    viaGroup: 'via {{ref}}' as const,
     appliesToEveryUser: 'applies to every user',
     superUser:
       'This user is configured as a super user: every permission is allowed.',

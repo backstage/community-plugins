@@ -235,7 +235,7 @@ export const AccessCheck = () => {
                           .map(ref =>
                             ref === check.userEntityRef
                               ? t('accessCheck.directAssignment')
-                              : t('accessCheck.viaGroup' as any, { ref }),
+                              : t('accessCheck.viaGroup', { ref }),
                           )
                           .join(', ')}
                   </Text>
