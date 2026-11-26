@@ -252,7 +252,7 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'accessCheck.rolesTitle': string;
     readonly 'accessCheck.noRoles': string;
     readonly 'accessCheck.directAssignment': string;
-    readonly 'accessCheck.viaGroup': string;
+    readonly 'accessCheck.viaGroup': 'via {{ref}}';
     readonly 'accessCheck.appliesToEveryUser': string;
     readonly 'accessCheck.superUser': string;
     readonly 'accessCheck.permissionsTitle': string;
