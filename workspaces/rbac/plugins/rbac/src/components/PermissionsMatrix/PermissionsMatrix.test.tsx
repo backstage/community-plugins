@@ -211,6 +211,28 @@ describe('PermissionsMatrix', () => {
     expect(
       screen.getByRole('link', { name: 'role:default/admins' }),
     ).toBeInTheDocument();
+
+    // a checked role the search hides is ignored instead of emptying the
+    // table, and the selection applies again once the search clears
+    await userEvent.click(developers);
+    await userEvent.type(
+      screen.getByRole('searchbox', { name: 'Filter roles' }),
+      'admins',
+    );
+    expect(
+      await screen.findByRole('link', { name: 'role:default/admins' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('No roles found')).not.toBeInTheDocument();
+
+    await userEvent.clear(
+      screen.getByRole('searchbox', { name: 'Filter roles' }),
+    );
+    expect(
+      await screen.findByRole('link', { name: 'role:default/developers' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'role:default/admins' }),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps only the rows and columns where the selected policy appears', async () => {

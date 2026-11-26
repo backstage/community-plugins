@@ -200,6 +200,17 @@ export const PermissionsMatrix = () => {
     [matrix, deferredRoleSearch, locale],
   );
 
+  // A checked role the search hides is ignored instead of ANDing the two
+  // controls into an empty table; the box stays checked and applies again
+  // once the search clears.
+  const effectiveSelectedRoles = useMemo(
+    () =>
+      selectedRoles.filter(name =>
+        sidebarRows.some(row => row.roleName === name),
+      ),
+    [selectedRoles, sidebarRows],
+  );
+
   const filtered = useMemo(
     () =>
       matrix &&
@@ -208,13 +219,20 @@ export const PermissionsMatrix = () => {
       filterPermissionsMatrix(
         { ...matrix, rows: sidebarRows },
         {
-          roleNames: selectedRoles,
+          roleNames: effectiveSelectedRoles,
           pluginId: pluginFilter === ALL_PLUGINS ? undefined : pluginFilter,
           decision: DECISION_FILTERS.find(d => d === decisionFilter),
         },
         locale,
       ),
-    [matrix, sidebarRows, selectedRoles, pluginFilter, decisionFilter, locale],
+    [
+      matrix,
+      sidebarRows,
+      effectiveSelectedRoles,
+      pluginFilter,
+      decisionFilter,
+      locale,
+    ],
   );
 
   const toSingleValue = (value: Key | Key[] | null) => {
@@ -239,16 +257,13 @@ export const PermissionsMatrix = () => {
     return <Progress />;
   }
 
-  // The roles the search and the checkboxes leave visible, before the policy
-  // filter: when these are empty, every column loses its decisions too, and
-  // the missing roles are the message, not the filters.
-  const visibleRoles = sidebarRows.filter(
-    row => !selectedRoles.length || selectedRoles.includes(row.roleName),
-  );
+  // With the selection narrowed to the searched rows, the role list only
+  // comes out empty when the search itself matches no role, and then the
+  // missing roles are the message, not the filters.
   let emptyMessage: string | undefined;
   if (!matrix.plugins.length) {
     emptyMessage = t('permissionsMatrix.emptyPermissions');
-  } else if (!visibleRoles.length) {
+  } else if (!sidebarRows.length) {
     emptyMessage = t('permissionsMatrix.emptyRoles');
   } else if (!filtered.plugins.length || !filtered.rows.length) {
     emptyMessage = t('permissionsMatrix.noMatches');
