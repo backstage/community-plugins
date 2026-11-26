@@ -113,11 +113,12 @@ export const EntityTechInsightsScorecardContent = techInsightsPlugin.provide(
  * @public
  */
 export const EntityTechInsightsScorecardCard = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'EntityTechInsightsScorecardCard',
-    component: () =>
-      import('./components/ScorecardsCard').then(m => m.ScorecardsCard),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsCard').then(m => m.ScorecardsCard),
+    },
   }),
 );
 
