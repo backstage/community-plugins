@@ -41,8 +41,8 @@
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/types": "backstage:^",
-    "@types/express": "^4.17.6",
-    "express": "^4.17.1",
+    "@types/express": "^5.0.0",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
     "zod": "^3.22.4"
   },
