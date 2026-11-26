@@ -119,7 +119,10 @@ export class TechInsightsClient {
   ): Promise<BulkCheckResponse> {
     const checkIds = checks ? checks.map(check => check.id) : [];
     let bulkResponse: BulkCheckResponse = [];
-    for (let i = 0; i <= entities.length; i += this.chunkSize) {
+    // An empty list still sends one request: the backend reads it as every
+    // entity with facts, which `ScorecardsPage` relies on. A list whose length
+    // is a multiple of the chunk size must not end in an empty chunk.
+    for (let i = 0; i < Math.max(entities.length, 1); i += this.chunkSize) {
       const chunk = entities.slice(i, i + this.chunkSize);
       const requestBody = {
         entities: chunk,
