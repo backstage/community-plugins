@@ -1366,6 +1366,44 @@ describe('JsonRulesEngineFactChecker', () => {
     });
   });
 
+  describe('when reading fact schemas', () => {
+    const checkerWith = (getLatestSchemas: jest.Mock) =>
+      new JsonRulesEngineFactCheckerFactory({
+        checkRegistry: mockCheckRegistry,
+        checks: [],
+        logger: mockServices.logger.mock(),
+      }).construct({
+        ...mockRepository,
+        getLatestSchemas,
+      } as unknown as TechInsightsStore);
+
+    it('reads them once across entities and check results', async () => {
+      const getLatestSchemas = jest.fn(latestSchemasMock);
+      const checker = checkerWith(getLatestSchemas);
+
+      await checker.runChecks('component:default/a', ['simple', 'simple2']);
+      await checker.runChecks('component:default/b', ['simple', 'simple2']);
+
+      expect(getLatestSchemas).toHaveBeenCalledTimes(1);
+    });
+
+    it('reads them again after a failed lookup', async () => {
+      const getLatestSchemas = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('database unavailable'))
+        .mockImplementation(latestSchemasMock);
+      const checker = checkerWith(getLatestSchemas);
+
+      await expect(
+        checker.runChecks('component:default/a', ['simple']),
+      ).rejects.toThrow('database unavailable');
+      await expect(
+        checker.runChecks('component:default/a', ['simple']),
+      ).resolves.toHaveLength(1);
+      expect(getLatestSchemas).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('when validating checks', () => {
     [testChecks.simple[0], testChecks.customOperator[0]].forEach(check => {
       it(`should succeed on valid rule: ${check.name}`, async () => {
