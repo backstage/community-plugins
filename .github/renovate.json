@@ -41,6 +41,12 @@
       "matchPackageNames": ["/^@material-ui//"]
     },
     {
+      "description": "Disable Yarn version updates — every workspace inherits the root yarnPath, so upgrades need a coordinated manual migration of all workspace lockfiles",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["yarn"],
+      "enabled": false
+    },
+    {
       "description": "Group dependency updates per workspace so each workspace gets its own PR",
       "matchFileNames": ["workspaces/**"],
       "groupName": "workspace/{{lookup (split packageFileDir '/') 1}} dependencies",
