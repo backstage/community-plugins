@@ -20,8 +20,18 @@ import { generateProjects } from '@backstage/e2e-test-utils/playwright';
 // Override when the dev app listens on another port (e.g. PLAYWRIGHT_URL=http://localhost:3001).
 const appUrl = process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000';
 
+const kialiMockEnv = {
+  ...process.env,
+  KIALI_E2E_NAMESPACES: 'bookinfo,default,istio-system',
+  KIALI_E2E_PATCH_HEALTH: '1',
+};
+
 /**
- * See https://playwright.dev/docs/test-configuration.
+ * Full-stack e2e: mock Kiali API, Backstage backend (Kiali proxy + catalog), then frontend.
+ * Playwright must wait for port 7007 — not only webpack on 3000 — or /api/kiali/* fails and the
+ * plugin never renders the header (see workspaces/npm/playwright.config.ts).
+ *
+ * @see https://playwright.dev/docs/test-webserver
  */
 export default defineConfig({
   timeout: 120_000,
@@ -34,18 +44,23 @@ export default defineConfig({
     ? []
     : [
         {
+          name: 'Kiali mock',
           command: 'node scripts/kiali-e2e-mock-server.mjs',
           port: 20001,
           reuseExistingServer: !process.env.CI,
           timeout: 30_000,
-          env: {
-            ...process.env,
-            KIALI_E2E_NAMESPACES: 'bookinfo,default,istio-system',
-            KIALI_E2E_PATCH_HEALTH: '1',
-          },
+          env: kialiMockEnv,
         },
         {
-          command: 'yarn start',
+          name: 'Backend',
+          command: 'yarn workspace backend start',
+          port: 7007,
+          reuseExistingServer: !process.env.CI,
+          timeout: 180_000,
+        },
+        {
+          name: 'Frontend',
+          command: 'yarn workspace app start',
           url: appUrl,
           reuseExistingServer: !process.env.CI,
           timeout: 180_000,

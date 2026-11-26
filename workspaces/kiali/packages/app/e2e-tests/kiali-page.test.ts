@@ -15,15 +15,12 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { signInAsGuestIfNeeded } from './test-utils';
+import { navigateToKialiOverview } from './test-utils';
 
-// Helper function to navigate to Kiali tab
-async function navigateToKialiPage(page: any) {
-  await page.goto('/');
-  await signInAsGuestIfNeeded(page);
-  await page.goto('/kiali/overview');
-
-  await expect(page.getByText('Provider:', { exact: false })).toBeVisible();
+async function navigateToKialiPage(
+  page: Parameters<typeof navigateToKialiOverview>[0],
+) {
+  await navigateToKialiOverview(page);
 }
 
 test('Header should be correct', async ({ page }) => {

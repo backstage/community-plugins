@@ -275,7 +275,7 @@ git diff
 yarn start
 ```
 
-Verify e2e tests pass with the following commands (Playwright starts a mock Kiali API on port 20001 and the Backstage app automatically):
+Verify e2e tests pass with the following commands (Playwright starts the Kiali mock on port 20001, the Backstage backend on 7007, and the frontend on 3000 — see `playwright.config.ts`):
 
 ```bash
 yarn install

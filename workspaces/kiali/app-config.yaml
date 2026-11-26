@@ -22,7 +22,11 @@ backend:
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
-    origin: http://localhost:3000
+    origin:
+      - http://localhost:3000
+      - http://localhost:3001
+      - http://127.0.0.1:3000
+      - http://127.0.0.1:3001
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   # This is for local development only, it is not recommended to use this in production
@@ -63,10 +67,14 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
+  # Required for guest sign-in in CI and local Playwright runs (NODE_ENV=production when CI=true).
+  environment: development
   # see https://backstage.io/docs/auth/ to learn about auth providers
   providers:
     # See https://backstage.io/docs/auth/guest/provider
-    guest: {}
+    guest:
+      userEntityRef: user:default/guest
+      dangerouslyAllowOutsideDevelopment: true
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -76,9 +84,11 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location]
+    - allow: [Component, System, API, Resource, Location, User, Group]
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/org.yaml
     - type: file
       target: ../../examples/kialiEntities.yaml
 
@@ -87,6 +97,10 @@ kubernetes:
 
 kiali:
   providers:
+    - name: default
+      url: http://localhost:20001/kiali/
+      skipTLSVerify: true
+      sessionTime: 60
     - name: Kubernetes
       # See the README file for configuration
       url: http://localhost:20001/kiali/
