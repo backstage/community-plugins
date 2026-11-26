@@ -27,6 +27,7 @@ import {
   useTable,
   type ColumnConfig,
   type TableItem,
+  Link,
 } from '@backstage/ui';
 import { RiRefreshLine } from '@remixicon/react';
 import {
@@ -35,7 +36,6 @@ import {
   StatusOK,
   StatusAborted,
   StatusError,
-  Link,
 } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import styles from './GithubDeploymentsTable.module.css';
@@ -88,7 +88,11 @@ const createColumns = (): ColumnConfig<GithubDeploymentWithId>[] => [
     cell: (item): ReactElement => (
       <Cell>
         {item.commit && (
-          <Link to={item.commit.commitUrl} target="_blank" rel="noopener">
+          <Link
+            href={item.commit.commitUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {item.commit.abbreviatedOid}
           </Link>
         )}

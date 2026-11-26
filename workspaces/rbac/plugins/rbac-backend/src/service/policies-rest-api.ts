@@ -701,8 +701,14 @@ export class PoliciesServer {
           throw new NotAllowedError(); // 403
         }
 
+        // Owner is compared only when the request sends one, so a client that
+        // omits it still gets a no-op instead of clearing the stored owner.
+        const isSameOwner =
+          newRoleRaw.metadata?.owner === undefined ||
+          (oldMetadata.owner ?? '') === newMetadata.owner;
         if (
           isEqual(oldRole, newRole) &&
+          isSameOwner &&
           deepSortedEqual(oldMetadata, newMetadata, [
             'author',
             'modifiedBy',

@@ -101,6 +101,34 @@ describe('TechInsightsClient', () => {
     expect(result).toEqual([...mockResponses[0], ...mockResponses[1]]);
   });
 
+  it('should not send an empty trailing chunk when the entity count is a multiple of the chunk size', async () => {
+    const entities: CompoundEntityRef[] = Array.from(
+      { length: 750 },
+      (_, i) => ({
+        namespace: 'default',
+        kind: 'Component',
+        name: `entity-${i}`,
+      }),
+    );
+    const mockResponse: BulkCheckResponse = [
+      { entity: 'default/Component/entity-0', results: [] },
+    ];
+
+    mockApi.mockResolvedValueOnce(mockResponse);
+
+    const result = await client.runBulkChecks(entities);
+
+    expect(mockApi).toHaveBeenCalledTimes(1);
+    expect(mockApi).toHaveBeenCalledWith('/checks/run', {
+      method: 'POST',
+      body: JSON.stringify({
+        entities,
+        checks: undefined,
+      }),
+    });
+    expect(result).toEqual(mockResponse);
+  });
+
   it('should handle cases where no checks are provided', async () => {
     const entities: CompoundEntityRef[] = [
       { namespace: 'default', kind: 'Component', name: 'entity-1' },

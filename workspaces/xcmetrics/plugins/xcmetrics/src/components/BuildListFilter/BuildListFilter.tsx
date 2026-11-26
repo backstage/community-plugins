@@ -20,7 +20,8 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import FilterList from '@material-ui/icons/FilterList';
-import { InfoCard, Select } from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
+import { Select } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { BuildFilters, BuildStatus, xcmetricsApiRef } from '../../api';
@@ -111,9 +112,10 @@ export const BuildListFilter = ({
       <Grid item sm={6} md={4} lg={2}>
         <Select
           label="Status"
-          items={statusItems}
-          selected={!values.buildStatus ? 'all' : values.buildStatus}
+          options={statusItems}
+          value={!values.buildStatus ? 'all' : values.buildStatus}
           onChange={selection => {
+            if (selection === null) return;
             const buildStatus =
               selection === 'all' ? undefined : (selection as BuildStatus);
             setValues({ ...values, buildStatus });
@@ -125,21 +127,22 @@ export const BuildListFilter = ({
           <Select
             label="Project"
             placeholder="Loading.."
-            items={[]}
-            onChange={() => undefined}
+            options={[]}
+            isDisabled
           />
         ) : (
           <Select
             label="Project"
-            items={toSelectItems(['All'].concat(projects ?? []))}
-            selected={values.project ? values.project : 'All'}
-            onChange={selection =>
+            options={toSelectItems(['All'].concat(projects ?? []))}
+            value={values.project ? values.project : 'All'}
+            onChange={selection => {
+              if (selection === null) return;
               setValues({
                 ...values,
                 project:
                   selection === 'All' ? undefined : (selection as string),
-              })
-            }
+              });
+            }}
           />
         )}
       </Grid>

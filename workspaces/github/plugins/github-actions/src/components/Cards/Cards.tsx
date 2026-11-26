@@ -23,6 +23,7 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Link,
 } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import { useEffect } from 'react';
@@ -30,12 +31,9 @@ import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunsTable } from '../WorkflowRunsTable';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
-import {
-  Link,
-  Progress,
-  StructuredMetadataTable,
-} from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
+import { Progress, StructuredMetadataTable } from '@backstage/core-components';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
 import { useDefaultBranch } from '../useDefaultBranch';
 import styles from './Cards.module.css';
@@ -72,7 +70,11 @@ const WidgetContent = (props: {
         ),
         message: lastRun.message,
         url: (
-          <Link to={lastRun.githubUrl ?? ''}>
+          <Link
+            href={lastRun.githubUrl ?? ''}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             See more on GitHub{' '}
             <RiExternalLinkLine size={14} className={styles.externalLinkIcon} />
           </Link>
@@ -85,7 +87,7 @@ const WidgetContent = (props: {
 /** @public */
 export const LatestWorkflowRunCard = (props: { branch?: string }) => {
   const { entity } = useEntity();
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (
     entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'

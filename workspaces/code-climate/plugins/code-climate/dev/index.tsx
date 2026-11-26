@@ -25,7 +25,7 @@ import {
   codeClimateApiRef,
 } from '../src';
 import { CODECLIMATE_REPO_ID_ANNOTATION } from '../src/plugin';
-import { Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 
 const entity = (name?: string) =>
   ({
@@ -68,9 +68,9 @@ createDevApp()
   .addPage({
     title: 'Cards',
     element: (
-      <Page themeId="home">
+      <>
         <Header title="Code Climate" />
-        <Content>
+        <Container>
           <Grid container>
             <EntityGridItem xs={12} md={6} entity={entity('error')}>
               <EntityCodeClimateCard />
@@ -85,8 +85,8 @@ createDevApp()
               <EntityCodeClimateCard />
             </EntityGridItem>
           </Grid>
-        </Content>
-      </Page>
+        </Container>
+      </>
     ),
   })
   .render();

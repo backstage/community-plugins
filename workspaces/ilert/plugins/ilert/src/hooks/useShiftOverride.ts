@@ -18,11 +18,12 @@ import { ilertApiRef } from '../api';
 import { AuthenticationError } from '@backstage/errors';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { User, Shift } from '../types';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const useShiftOverride = (s: Shift, isModalOpened: boolean) => {
   const ilertApi = useApi(ilertApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const [shift, setShift] = useState<Shift>(s);
   const [usersList, setUsersList] = useState<User[]>([]);

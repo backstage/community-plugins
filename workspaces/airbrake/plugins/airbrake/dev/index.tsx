@@ -23,7 +23,7 @@ import {
   ProductionAirbrakeApi,
 } from '../src/api';
 import { ApiBar } from './components/ApiBar';
-import { Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { createEntity } from '../src/api';
 import CloudOffIcon from '@material-ui/icons/CloudOff';
@@ -39,16 +39,16 @@ createDevApp()
   .registerPlugin(airbrakePlugin)
   .addPage({
     element: (
-      <Page themeId="tool">
-        <Header title="Airbrake demo application" subtitle="Mock API" />
-        <Content>
+      <>
+        <Header title="Airbrake demo application" description="Mock API" />
+        <Container>
           <TestApiProvider apis={[[airbrakeApiRef, new MockAirbrakeApi(800)]]}>
             <EntityProvider entity={createEntity(1234)}>
               <EntityAirbrakeContent />
             </EntityProvider>
           </TestApiProvider>
-        </Content>
-      </Page>
+        </Container>
+      </>
     ),
     title: 'Mock API',
     path: '/airbrake-mock-api',
@@ -57,14 +57,13 @@ createDevApp()
   .addPage({
     element: (
       <ContextProvider>
-        <Page themeId="tool">
+        <>
           <Header
             title="Airbrake demo application"
-            subtitle="Real API (The Airbrake backend plugin must be running for this to work)"
-          >
-            <ApiBar />
-          </Header>
-          <Content>
+            description="Real API (The Airbrake backend plugin must be running for this to work)"
+            customActions={<ApiBar />}
+          />
+          <Container>
             <Context.Consumer>
               {value => (
                 <TestApiProvider
@@ -81,8 +80,8 @@ createDevApp()
                 </TestApiProvider>
               )}
             </Context.Consumer>
-          </Content>
-        </Page>
+          </Container>
+        </>
       </ContextProvider>
     ),
     title: 'Real API',

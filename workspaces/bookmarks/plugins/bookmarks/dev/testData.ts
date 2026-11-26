@@ -25,16 +25,24 @@ export const testData: UrlTree = {
     notepad: 'https://notepad.logonoff.co',
   },
   'Important documents': {
-    'Team sync notes':
-      'https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic',
+    'Team sync notes': 'data:text/html;base64,dGVhbSBzeW5jIG5vdGVz',
     Manifesto: {
-      'Agile manifesto':
-        'https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic',
-      'Scrum manifesto':
-        'https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic',
+      'Agile manifesto': 'data:text/html;base64,YWdpbGUgbWFuaWZlc3Rv',
+      'Scrum manifesto': 'data:text/html;base64,c2NydW0gbWFuaWZlc3Rv',
     },
-    'Sprint planning':
-      'https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic',
+    'Really boring documents': {
+      Taxes: {
+        'Tax return 2023': 'data:text/html;base64,dGF4IHJldHVybiAyMDIz',
+        'Income statements': {
+          'Company income statement 2023':
+            'data:text/html;base64,Y29tcGFueSBpbmNvbWUgc3RhdGVtZW50IDIwMjM=',
+          'Company income statement 2024':
+            'data:text/html;base64,Y29tcGFueSBpbmNvbWUgc3RhdGVtZW50IDIwMjQ=',
+        },
+        'Tax return 2024': 'data:text/html;base64,dGF4IHJldHVybiAyMDI0',
+      },
+    },
+    'Sprint planning': 'data:text/html;base64,c3ByaW50IHBsYW5uaW5n',
   },
 };
 

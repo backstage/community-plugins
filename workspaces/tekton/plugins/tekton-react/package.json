@@ -35,7 +35,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@kubernetes/client-node": "1.4.0"
+    "@kubernetes/client-node": "2.0.2"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 export const Playground = () => {
   return (
     <>
-      <Link to="#clicked">Click Here</Link>
+      <Link href="#clicked">Click Here</Link>
     </>
   );
 };

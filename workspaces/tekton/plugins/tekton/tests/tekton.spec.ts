@@ -178,8 +178,22 @@ test.describe('Tekton plugin', () => {
       });
 
       test.afterAll(async () => {
-        await page.getByLabel('close').click();
+        const close = page.getByLabel('close');
+        if (await close.isVisible().catch(() => false)) {
+          await close.click({ timeout: 5_000 }).catch(() => undefined);
+        }
       });
+
+      const ensureOutputDialogOpen = async () => {
+        const dialog = page.getByTestId('pipelinerun-output-dialog');
+        if (await dialog.isVisible().catch(() => false)) {
+          return;
+        }
+        const btn = row.getByTestId('view-output-icon');
+        await expect(btn).toBeEnabled({ timeout: 15_000 });
+        await btn.click();
+        await expect(dialog).toBeVisible({ timeout: 15_000 });
+      };
 
       test('Vulnerabilities are shown in the run', async () => {
         await checkVulnerabilities(row, output.vulnerabilities, translations);
@@ -188,13 +202,11 @@ test.describe('Tekton plugin', () => {
       test('Output action is available', async () => {
         const btn = row.getByTestId('view-output-icon');
         await expect(btn).toBeEnabled();
-        await btn.click();
-        await expect(
-          page.getByTestId('pipelinerun-output-dialog'),
-        ).toBeVisible();
+        await ensureOutputDialogOpen();
       });
 
       test('Enterprise contract output is shown', async () => {
+        await ensureOutputDialogOpen();
         const card = page.getByTestId('enterprise-contract');
         const title = page.locator('[id="{enterprise contract-title}"]');
         // check the title and the badge
@@ -226,11 +238,11 @@ test.describe('Tekton plugin', () => {
       });
 
       test('ACS Image Scan is shown', async () => {
-        const card = page.locator(`[id='advanced cluster security']`);
-        await card
-          .locator(`[id='advanced cluster security-toggle-button']`)
-          .click();
-        await card.scrollIntoViewIfNeeded();
+        await ensureOutputDialogOpen();
+        const card = await expandOutputSection(
+          page,
+          'advanced cluster security',
+        );
 
         // check the title and the badge
         await expect(card.getByTestId('card-title')).toBeVisible();
@@ -256,7 +268,11 @@ test.describe('Tekton plugin', () => {
       });
 
       test('ACS Image Check is shown', async () => {
-        const card = page.locator(`[id='advanced cluster security']`);
+        await ensureOutputDialogOpen();
+        const card = await expandOutputSection(
+          page,
+          'advanced cluster security',
+        );
         await card.getByRole('tab', { name: 'Image Check' }).click();
         const cards = ['CVEs by severity', 'Failing policy checks'];
 
@@ -264,7 +280,11 @@ test.describe('Tekton plugin', () => {
       });
 
       test('ACS Deployment Check is shown', async () => {
-        const card = page.locator(`[id='advanced cluster security']`);
+        await ensureOutputDialogOpen();
+        const card = await expandOutputSection(
+          page,
+          'advanced cluster security',
+        );
         await card.getByRole('tab', { name: 'Deployment Check' }).click();
         const cards = ['Violations by severity', 'Failing policy checks'];
 
@@ -272,12 +292,12 @@ test.describe('Tekton plugin', () => {
       });
 
       test('Check other output', async ({ browser }, testInfo) => {
-        const card = page.locator('[id="others"]');
-        await card.locator(`[id='others-toggle-button']`).click();
-        await card.scrollIntoViewIfNeeded();
+        await ensureOutputDialogOpen();
+        const card = await expandOutputSection(page, 'others');
 
         await expect(card.getByRole('gridcell').first()).toContainText(
           'SCAN_OUTPUT',
+          { timeout: 15_000 },
         );
 
         const text = (await card
@@ -370,6 +390,31 @@ test.describe('Tekton plugin', () => {
   });
 });
 
+/**
+ * Opens an @aonic-ui/pipelines Output accordion. Scroll first — ACS/Others sit
+ * below a tall Enterprise Contract section and clicks often miss when collapsed
+ * off-screen.
+ */
+async function expandOutputSection(
+  page: Page,
+  sectionId: string,
+): Promise<Locator> {
+  const card = page.locator(`[id='${sectionId}']`);
+  const toggle = card.locator(`[id='${sectionId}-toggle-button']`);
+
+  await card.scrollIntoViewIfNeeded();
+  await expect(toggle).toBeVisible({ timeout: 15_000 });
+
+  if ((await toggle.getAttribute('aria-expanded')) !== 'true') {
+    await toggle.click();
+  }
+
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true', {
+    timeout: 15_000,
+  });
+  return card;
+}
+
 async function checkCards(
   base: Locator,
   sectionTitles: string[],
@@ -379,12 +424,14 @@ async function checkCards(
   // check the violations summary
   const sections = base.locator('.pf-v6-c-card:visible');
   for (const item of sectionTitles) {
-    await expect(sections.filter({ hasText: item })).toBeVisible();
+    await expect(sections.filter({ hasText: item })).toBeVisible({
+      timeout: 15_000,
+    });
   }
 
   // check the violations table
   const table = base.getByTestId(tableName);
-  await expect(table).toBeVisible();
+  await expect(table).toBeVisible({ timeout: 15_000 });
 
   for (const col of columns) {
     await expect(

@@ -25,16 +25,10 @@ import useLocalStorage from 'react-use/esm/useLocalStorage';
 import { gitOpsApiRef, Status } from '../../api';
 
 import {
-  Header,
-  Page,
-  Content,
-  ContentHeader,
-  HeaderLabel,
   SupportButton,
   SimpleStepper,
   SimpleStepperStep,
   InfoCard,
-  Link,
   Progress,
   Table,
   StatusWarning,
@@ -44,6 +38,7 @@ import {
   StatusPending,
   StatusAborted,
 } from '@backstage/core-components';
+import { Container, Flex, Header, Link, Text } from '@backstage/ui';
 
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
 
@@ -262,17 +257,19 @@ const ProfileCatalog = () => {
   ];
 
   return (
-    <Page themeId="tool">
+    <>
       <Header
         title="Create GitOps-managed Cluster"
-        subtitle="Kubernetes cluster with ready-to-use profiles"
-      >
-        <HeaderLabel label="Welcome" value={githubUsername} />
-      </Header>
-      <Content>
-        <ContentHeader title="Create Cluster">
+        description="Kubernetes cluster with ready-to-use profiles"
+        metadata={[{ label: 'Welcome', value: githubUsername }]}
+      />
+      <Container>
+        <Flex justify="between" align="center" mb="4">
+          <Text as="h2" variant="title-medium">
+            Create Cluster
+          </Text>
           <SupportButton>A description of your plugin goes here.</SupportButton>
-        </ContentHeader>
+        </Flex>
         <SimpleStepper>
           <SimpleStepperStep title="Choose Cluster Template">
             <ClusterTemplateCardList template={clusterTemplates} />
@@ -341,15 +338,18 @@ const ProfileCatalog = () => {
             data={transformRunStatus(runStatus)}
             columns={columns}
           />
-          <Link
-            hidden={runLink === ''}
-            to={`${runLink}?check_suite_focus=true`}
-          >
-            Details
-          </Link>
+          {runLink !== '' && (
+            <Link
+              href={`${runLink}?check_suite_focus=true`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Details
+            </Link>
+          )}
         </div>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

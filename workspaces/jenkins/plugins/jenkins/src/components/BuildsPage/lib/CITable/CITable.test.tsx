@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { CITable } from './CITable';
 import { JenkinsApi, jenkinsApiRef } from '../../../../api';
@@ -56,7 +56,7 @@ describe('<CITable />', () => {
         <TestApiProvider
           apis={[
             [jenkinsApiRef, jenkinsApi],
-            [toastApiRef, {}],
+            [coreApis.toast, {}],
           ]}
         >
           <EntityProvider entity={entity}>
@@ -75,7 +75,7 @@ describe('<CITable />', () => {
         <TestApiProvider
           apis={[
             [jenkinsApiRef, jenkinsApi],
-            [toastApiRef, {}],
+            [coreApis.toast, {}],
           ]}
         >
           <EntityProvider entity={entity}>

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-gocd",
-  "version": "0.23.0",
+  "version": "0.25.0",
   "description": "A Backstage plugin that integrates towards GoCD",
   "backstage": {
     "role": "frontend-plugin",
@@ -42,7 +42,9 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",

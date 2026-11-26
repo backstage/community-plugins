@@ -28,6 +28,8 @@ import {
   CardHeader,
   CardBody,
   Select,
+  ButtonLink,
+  Link,
 } from '@backstage/ui';
 import TablePagination from '@material-ui/core/TablePagination';
 import {
@@ -36,12 +38,7 @@ import {
   RiRestartLine,
   RiExternalLinkLine,
 } from '@remixicon/react';
-import {
-  LinkButton,
-  Link,
-  Progress,
-  StructuredMetadataTable,
-} from '@backstage/core-components';
+import { Progress, StructuredMetadataTable } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
@@ -133,7 +130,7 @@ export const WorkflowRunsCardView = ({
                           />
                         </div>
                         <Link
-                          to={routeLink({ id: run.id })}
+                          href={routeLink({ id: run.id })}
                           style={{ display: 'flex', alignItems: 'center' }}
                         >
                           <Text variant="title-small">{run.workflowName}</Text>
@@ -200,12 +197,15 @@ export const WorkflowRunsCardView = ({
                   </Button>
 
                   {run.githubUrl && (
-                    <LinkButton
-                      to={run.githubUrl}
-                      endIcon={<RiExternalLinkLine size={14} />}
+                    <ButtonLink
+                      variant="secondary"
+                      href={run.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      iconEnd={<RiExternalLinkLine size={14} />}
                     >
                       View on GitHub
-                    </LinkButton>
+                    </ButtonLink>
                   )}
                 </Flex>
               </Flex>

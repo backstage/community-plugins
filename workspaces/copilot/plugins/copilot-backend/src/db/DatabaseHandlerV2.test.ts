@@ -15,13 +15,18 @@
  */
 
 import { TestDatabaseId, TestDatabases } from '@backstage/backend-test-utils';
-import { Knex } from 'knex';
+import { randomUUID } from 'node:crypto';
+import { rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import knexFactory, { Knex } from 'knex';
+import { DateTime } from 'luxon';
 import {
   V2DailyTotal,
   V2CustomizationMetricRow,
   V2CustomizationSummaryRow,
   V2IngestionLogRow,
   V2UserMetricRow,
+  V2UserCostCenterRow,
   V2UserMetricsByFeatureRow,
   V2UserMetricsByIdeRow,
   V2UserMetricsByLanguageFeatureRow,
@@ -30,9 +35,104 @@ import {
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
-import { DatabaseHandlerV2 } from './DatabaseHandlerV2';
+import type { CostCenterAggregateRows } from './DatabaseHandlerV2';
+import {
+  DatabaseHandlerV2,
+  OrganizationIngestionLeaseLostError,
+} from './DatabaseHandlerV2';
+
+const costCenterMigration = jest.requireActual<{
+  up(knex: Knex): Promise<void>;
+  down(knex: Knex): Promise<void>;
+}>('../../migrations/202611020000_add_cost_centers.js');
 
 jest.setTimeout(60_000);
+
+const costCenterAggregateUniqueColumns: Record<string, string[]> = {
+  copilot_daily_totals: ['day', 'metrics_type', 'entity_id', 'team_slug'],
+  copilot_pr_metrics: ['day', 'metrics_type', 'entity_id', 'team_slug'],
+  copilot_metrics_by_feature: [
+    'day',
+    'metrics_type',
+    'entity_id',
+    'team_slug',
+    'feature',
+  ],
+  copilot_metrics_by_ide: [
+    'day',
+    'metrics_type',
+    'entity_id',
+    'team_slug',
+    'ide',
+  ],
+  copilot_metrics_by_language_feature: [
+    'day',
+    'metrics_type',
+    'entity_id',
+    'team_slug',
+    'language',
+    'feature',
+  ],
+  copilot_metrics_by_model_feature: [
+    'day',
+    'metrics_type',
+    'entity_id',
+    'team_slug',
+    'model_id',
+    'feature',
+  ],
+  copilot_metrics_by_language_model: [
+    'day',
+    'metrics_type',
+    'entity_id',
+    'team_slug',
+    'language',
+    'model_id',
+  ],
+  copilot_metrics_by_cli: ['day', 'metrics_type', 'entity_id', 'team_slug'],
+  copilot_metrics_by_vscode_agent: [
+    'day',
+    'metrics_type',
+    'entity_id',
+    'team_slug',
+  ],
+};
+
+const costCenterAggregateTables = Object.keys(costCenterAggregateUniqueColumns);
+
+async function createLegacyAggregateSchema(knex: Knex): Promise<void> {
+  for (const [tableName, uniqueColumns] of Object.entries(
+    costCenterAggregateUniqueColumns,
+  )) {
+    await knex.schema.createTable(tableName, table => {
+      table.increments('id').primary();
+      table.date('day').notNullable();
+      table.string('metrics_type', 64).notNullable();
+      table.string('entity_id', 64).notNullable();
+      table.string('team_slug', 64).notNullable().defaultTo('');
+
+      for (const column of uniqueColumns.slice(4)) {
+        table.string(column, 64).notNullable();
+      }
+
+      if (knex.client.config.client === 'mysql2') {
+        table.unique(
+          uniqueColumns,
+          `uq_legacy_${tableName.replace(/^copilot_/, '')}`,
+        );
+      } else {
+        table.unique(uniqueColumns);
+      }
+    });
+
+    await knex.schema.alterTable(tableName, table => {
+      table.index(
+        ['metrics_type', 'entity_id', 'team_slug', 'day'],
+        `idx_${tableName}_type_entity_team_day`,
+      );
+    });
+  }
+}
 
 describe('DatabaseHandlerV2', () => {
   const databases = TestDatabases.create();
@@ -47,10 +147,68 @@ describe('DatabaseHandlerV2', () => {
     let knex: Knex;
     let handler: DatabaseHandlerV2;
 
-    // Skip MySQL tests due to known migration issues in earlier migrations.
     if (databaseId.startsWith('MYSQL')) {
-      // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
-      it.skip('tests for MySQL due to pre-existing migration issue', () => {});
+      it('adds and reverses the cost-center migration on MySQL', async () => {
+        const mysqlKnex = await databases.init(databaseId);
+
+        try {
+          await createLegacyAggregateSchema(mysqlKnex);
+          await costCenterMigration.up(mysqlKnex);
+
+          await mysqlKnex('copilot_daily_totals').insert([
+            {
+              day: '2026-05-01',
+              metrics_type: 'organization',
+              entity_id: 'org-1',
+              team_slug: '',
+              cost_center_id: '',
+            },
+            {
+              day: '2026-05-01',
+              metrics_type: 'organization',
+              entity_id: 'org-1',
+              team_slug: '',
+              cost_center_id: 'cc-a',
+            },
+            {
+              day: '2026-05-01',
+              metrics_type: 'organization',
+              entity_id: 'org-1',
+              team_slug: '',
+              cost_center_id: 'cc-b',
+            },
+          ]);
+
+          await costCenterMigration.down(mysqlKnex);
+
+          for (const tableName of costCenterAggregateTables) {
+            expect(
+              await mysqlKnex.schema.hasColumn(tableName, 'cost_center_id'),
+            ).toBe(false);
+          }
+          expect(await mysqlKnex.schema.hasTable('copilot_cost_centers')).toBe(
+            false,
+          );
+          expect(
+            await mysqlKnex.schema.hasTable('copilot_user_cost_centers'),
+          ).toBe(false);
+          expect(
+            await mysqlKnex.schema.hasTable(
+              'copilot_cost_center_aggregation_log',
+            ),
+          ).toBe(false);
+          expect(
+            await mysqlKnex.schema.hasTable(
+              'copilot_customization_metrics_by_cost_center',
+            ),
+          ).toBe(false);
+          const rows = await mysqlKnex('copilot_daily_totals').select('*');
+          expect(rows).toHaveLength(1);
+          expect(rows[0]).not.toHaveProperty('cost_center_id');
+        } finally {
+          await mysqlKnex.destroy();
+        }
+      });
       return;
     }
 
@@ -66,6 +224,1865 @@ describe('DatabaseHandlerV2', () => {
 
     afterEach(async () => {
       await knex?.destroy();
+    });
+
+    async function syncOrganizations(
+      enterpriseId: string,
+      organizations: string[],
+      now: Date,
+    ): Promise<string> {
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        enterpriseId,
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          enterpriseId,
+          generation,
+          organizations,
+          now,
+        ),
+      ).resolves.toBe('synced');
+      return generation;
+    }
+
+    it.each(['commit', 'rollback', 'invalid replacement'])(
+      'keeps bound inserts and nested replacements in the lease transaction: %s',
+      async outcome => {
+        const now = new Date();
+        await syncOrganizations('ent-1', ['org-1'], now);
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'org-1',
+          now,
+          new Date(now.getTime() + 60_000),
+        );
+        const day = '2026-05-01';
+        const teamTotal = buildDailyTotal({ team_slug: 'platform' });
+        const operation = handler.withOrganizationIngestionLease(
+          lease!,
+          async database => {
+            await database.insertDailyTotals([buildDailyTotal()]);
+            await database.replaceTeamAggregates(
+              day,
+              'organization',
+              'org-1',
+              [buildUserTeam({ team_slug: 'platform' })],
+              {
+                dailyTotals:
+                  outcome === 'invalid replacement'
+                    ? [teamTotal, teamTotal]
+                    : [teamTotal],
+                byFeature: [],
+                byIde: [],
+                byLanguageFeature: [],
+                byModelFeature: [],
+                byLanguageModel: [],
+                customizationMetrics: [],
+                costCenterCustomizationMetrics: [],
+              },
+            );
+            await database.replaceCostCenterAggregates(
+              day,
+              'organization',
+              'org-1',
+              [
+                {
+                  day,
+                  metrics_type: 'organization',
+                  entity_id: 'org-1',
+                  user_id: 1,
+                  user_login: 'user-1',
+                  cost_center_id: 'cc-a',
+                },
+              ],
+              makeCostCenterAggregateRows(
+                day,
+                [
+                  {
+                    costCenterId: 'cc-a',
+                    teamSlug: '',
+                    activeUsers: 1,
+                    locAdded: 10,
+                  },
+                ],
+                'organization',
+                'org-1',
+              ),
+            );
+            await database.upsertIngestionLog(buildIngestionLog());
+            if (outcome === 'rollback') {
+              throw new Error('Abort organization writes');
+            }
+          },
+        );
+
+        const error = await operation.then(
+          () => undefined,
+          (cause: Error) => cause,
+        );
+        const expectedMessage = {
+          commit: /^$/,
+          rollback: /Abort organization writes/,
+          'invalid replacement': /unique|duplicate/i,
+        }[outcome];
+        expect(error?.message ?? '').toMatch(expectedMessage!);
+        for (const table of [
+          ...costCenterAggregateTables,
+          'copilot_user_teams',
+          'copilot_user_cost_centers',
+          'copilot_cost_center_aggregation_log',
+          'copilot_ingestion_log',
+        ]) {
+          const committedCount = table === 'copilot_daily_totals' ? 3 : 1;
+          const expectedCount = outcome === 'commit' ? committedCount : 0;
+          expect(await knex(table).select('day')).toHaveLength(expectedCount);
+        }
+      },
+    );
+
+    it('fences organization work, hides inaccessible orgs, and retains history', async () => {
+      const now = new Date();
+      const nextAttemptAt = new Date(now.getTime() + 60_000);
+      await syncOrganizations('ent-1', ['Org-A', 'org-a', 'Org-B'], now);
+
+      const organizationsToIngest =
+        await handler.getEnterpriseOrganizationsToIngest(
+          'ent-1',
+          now,
+          5,
+          1,
+          'org-b',
+        );
+      expect(organizationsToIngest).toEqual(['Org-A']);
+
+      const firstLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      expect(firstLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          nextAttemptAt,
+        ),
+      ).resolves.toBeUndefined();
+
+      await handler.withOrganizationIngestionLease(
+        firstLease!,
+        async database => {
+          await database.updateEnterpriseOrganizationState(firstLease!, {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: new Date(),
+          });
+        },
+      );
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+
+      const secondStartedAt = new Date();
+      const secondExpiresAt = new Date(secondStartedAt.getTime() + 60_000);
+      const secondLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        secondStartedAt,
+        secondExpiresAt,
+      );
+      expect(secondLease).toBeDefined();
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          firstLease!,
+          secondStartedAt,
+          secondExpiresAt,
+        ),
+      ).resolves.toBe(false);
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+      const staleOperation = jest.fn();
+      await expect(
+        handler.withOrganizationIngestionLease(firstLease!, staleOperation),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      expect(staleOperation).not.toHaveBeenCalled();
+      await expect(
+        handler.updateEnterpriseOrganizationState(firstLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: secondStartedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          secondStartedAt,
+          secondExpiresAt,
+          firstLease!,
+        ),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      const currentOrganization = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('lease_owner', 'access_state', 'reports_ready');
+      expect(currentOrganization).toMatchObject({
+        lease_owner: secondLease!.owner,
+        access_state: 'accessible',
+      });
+      expect(Boolean(currentOrganization?.reports_ready)).toBe(true);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          secondLease!,
+          secondStartedAt,
+          new Date(secondExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+      await handler.releaseEnterpriseOrganizationLease(secondLease!);
+
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-B', team_slug: '' }),
+      ]);
+      const inaccessibleLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-B',
+        new Date(),
+        new Date(Date.now() + 60_000),
+      );
+      expect(inaccessibleLease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(inaccessibleLease!, {
+        accessState: 'inaccessible',
+        reportsReady: false,
+        lastAttemptedAt: new Date(),
+        nextAttemptAt: new Date(Date.now() + 60_000),
+      });
+      await handler.releaseEnterpriseOrganizationLease(inaccessibleLease!);
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      await syncOrganizations('ent-1', ['Org-A'], new Date());
+      await expect(
+        knex('copilot_daily_totals').where({
+          metrics_type: 'organization',
+          entity_id: 'Org-B',
+        }),
+      ).resolves.toHaveLength(1);
+    });
+
+    it('fences out-of-order directory refreshes across independent connections', async () => {
+      const now = new Date();
+      const day = now.toISOString().slice(0, 10);
+      let primaryClient: Knex | undefined;
+      let secondaryClient: Knex | undefined;
+      let sqliteFile: string | undefined;
+      let primaryHandler = handler;
+
+      try {
+        if (databaseId === 'SQLITE_3') {
+          sqliteFile = join(
+            process.cwd(),
+            `.copilot-directory-${randomUUID()}.sqlite3`,
+          );
+          const sqliteConfig = {
+            client: knex.client.config.client,
+            connection: sqliteFile,
+            useNullAsDefault: true,
+            pool: { min: 0, max: 1 },
+          };
+          primaryClient = knexFactory(sqliteConfig);
+          secondaryClient = knexFactory(sqliteConfig);
+          await primaryClient.migrate.latest({ directory: migrationsDir });
+          primaryHandler = await DatabaseHandlerV2.create({
+            database: {
+              getClient: async () => primaryClient!,
+              migrations: { skip: true },
+            } as any,
+          });
+        } else {
+          secondaryClient = knexFactory({
+            client: knex.client.config.client,
+            connection: knex.client.config.connection,
+            pool: { min: 0, max: 1 },
+          });
+        }
+
+        const secondaryHandler = await DatabaseHandlerV2.create({
+          database: {
+            getClient: async () => secondaryClient!,
+            migrations: { skip: true },
+          } as any,
+        });
+        const [firstGeneration, secondGeneration] =
+          databaseId === 'SQLITE_3'
+            ? [
+                await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+                await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+              ]
+            : await Promise.all([
+                primaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+                secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+                  'ent-1',
+                ),
+              ]);
+        const firstIsOlder = BigInt(firstGeneration) < BigInt(secondGeneration);
+        const olderRun = {
+          handler: firstIsOlder ? primaryHandler : secondaryHandler,
+          generation: firstIsOlder ? firstGeneration : secondGeneration,
+        };
+        const newerRun = {
+          handler: firstIsOlder ? secondaryHandler : primaryHandler,
+          generation: firstIsOlder ? secondGeneration : firstGeneration,
+        };
+
+        await expect(
+          newerRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            newerRun.generation,
+            ['Newer-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await expect(
+          olderRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            olderRun.generation,
+            ['Older-Org'],
+            now,
+          ),
+        ).resolves.toBe('superseded');
+        await expect(
+          olderRun.handler.markEnterpriseOrganizationDirectoryFailed(
+            'ent-1',
+            olderRun.generation,
+            now,
+          ),
+        ).resolves.toBe('superseded');
+
+        const stateClient = primaryClient ?? knex;
+        const directory = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(directory?.is_complete)).toBe(true);
+        expect(String(directory?.sync_generation)).toBe(newerRun.generation);
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Newer-Org']);
+
+        const acceptedGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          primaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            acceptedGeneration,
+            ['Accepted-Org', 'Claim-Only-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        const acceptedLeaseExpiresAt = new Date(Date.now() + 60 * 60 * 1_000);
+        const acceptedLease =
+          await primaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Accepted-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            acceptedGeneration,
+          );
+        expect(acceptedLease).toBeDefined();
+        await primaryHandler.updateEnterpriseOrganizationState(acceptedLease!, {
+          accessState: 'accessible',
+          reportsReady: true,
+          lastAttemptedAt: now,
+        });
+
+        const supersedingGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        expect(BigInt(supersedingGeneration)).toBeGreaterThan(
+          BigInt(acceptedGeneration),
+        );
+        await expect(
+          primaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Claim-Only-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            acceptedGeneration,
+          ),
+        ).resolves.toBeUndefined();
+        await expect(
+          primaryHandler.updateEnterpriseOrganizationState(acceptedLease!, {
+            accessState: 'inaccessible',
+            reportsReady: false,
+            lastAttemptedAt: now,
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+        let staleWriteRan = false;
+        await expect(
+          primaryHandler.withOrganizationIngestionLease(
+            acceptedLease!,
+            async database => {
+              staleWriteRan = true;
+              await database.insertDailyTotals([
+                buildDailyTotal({
+                  day,
+                  entity_id: 'Accepted-Org',
+                }),
+              ]);
+            },
+          ),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+        expect(staleWriteRan).toBe(false);
+        const acceptedOrganization = await stateClient(
+          'copilot_enterprise_organizations',
+        )
+          .where({
+            enterprise_id: 'ent-1',
+            organization_key: 'accepted-org',
+          })
+          .first('access_state', 'reports_ready');
+        expect(acceptedOrganization?.access_state).toBe('accessible');
+        expect(Boolean(acceptedOrganization?.reports_ready)).toBe(true);
+        await expect(
+          stateClient('copilot_daily_totals').where({
+            day,
+            metrics_type: 'organization',
+            entity_id: 'Accepted-Org',
+          }),
+        ).resolves.toHaveLength(0);
+        const supersedingDirectory = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(supersedingDirectory?.is_complete)).toBe(true);
+        expect(String(supersedingDirectory?.sync_generation)).toBe(
+          supersedingGeneration,
+        );
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .orderBy('organization_login', 'asc')
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Accepted-Org', 'Claim-Only-Org']);
+
+        await expect(
+          secondaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            supersedingGeneration,
+            ['Current-Org'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        const currentLease =
+          await secondaryHandler.claimEnterpriseOrganizationLease(
+            'ent-1',
+            'Current-Org',
+            now,
+            acceptedLeaseExpiresAt,
+            true,
+            supersedingGeneration,
+          );
+        expect(currentLease).toBeDefined();
+        await secondaryHandler.updateEnterpriseOrganizationState(
+          currentLease!,
+          {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: now,
+          },
+        );
+        await secondaryHandler.releaseEnterpriseOrganizationLease(
+          currentLease!,
+        );
+        await primaryHandler.releaseEnterpriseOrganizationLease(acceptedLease!);
+
+        const emptyGeneration =
+          await newerRun.handler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          olderRun.handler.syncEnterpriseOrganizations(
+            'ent-1',
+            emptyGeneration,
+            [],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual([]);
+
+        const lastGoodGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await primaryHandler.syncEnterpriseOrganizations(
+          'ent-1',
+          lastGoodGeneration,
+          ['Last-Good-Org'],
+          now,
+        );
+        const delayedGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        const failedNewerGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await expect(
+          secondaryHandler.markEnterpriseOrganizationDirectoryFailed(
+            'ent-1',
+            failedNewerGeneration,
+            now,
+          ),
+        ).resolves.toBe('marked');
+        await expect(
+          primaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            delayedGeneration,
+            ['Stale-Org'],
+            now,
+          ),
+        ).resolves.toBe('superseded');
+        const afterStaleSuccess = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(afterStaleSuccess?.is_complete)).toBe(false);
+        expect(String(afterStaleSuccess?.sync_generation)).toBe(
+          failedNewerGeneration,
+        );
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Last-Good-Org']);
+
+        const baselineGeneration =
+          await primaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        await primaryHandler.syncEnterpriseOrganizations(
+          'ent-1',
+          baselineGeneration,
+          ['Before-Failed-Refresh'],
+          now,
+        );
+        const failedGeneration =
+          await secondaryHandler.beginEnterpriseOrganizationDirectorySync(
+            'ent-1',
+          );
+        if (stateClient.client.config.client === 'better-sqlite3') {
+          await stateClient.raw(`
+            CREATE TRIGGER fail_directory_test_insert
+            BEFORE INSERT ON copilot_enterprise_organizations
+            WHEN NEW.organization_key = 'trigger-failure'
+            BEGIN
+              SELECT RAISE(ABORT, 'forced directory insert failure');
+            END
+          `);
+        } else {
+          await stateClient.raw(`
+            CREATE OR REPLACE FUNCTION fail_directory_test_insert()
+            RETURNS trigger AS $$
+            BEGIN
+              IF NEW.organization_key = 'trigger-failure' THEN
+                RAISE EXCEPTION 'forced directory insert failure';
+              END IF;
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql
+          `);
+          await stateClient.raw(`
+            CREATE TRIGGER fail_directory_test_insert
+            BEFORE INSERT ON copilot_enterprise_organizations
+            FOR EACH ROW EXECUTE FUNCTION fail_directory_test_insert()
+          `);
+        }
+
+        await expect(
+          secondaryHandler.syncEnterpriseOrganizations(
+            'ent-1',
+            failedGeneration,
+            ['trigger-failure'],
+            now,
+          ),
+        ).rejects.toThrow('forced directory insert failure');
+        const afterFailure = await stateClient(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: 'ent-1' })
+          .first('is_complete', 'sync_generation');
+        expect(Boolean(afterFailure?.is_complete)).toBe(true);
+        expect(String(afterFailure?.sync_generation)).toBe(failedGeneration);
+        await expect(
+          stateClient('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', is_current: true })
+            .pluck('organization_login'),
+        ).resolves.toEqual(['Before-Failed-Refresh']);
+      } finally {
+        await secondaryClient?.destroy();
+        await primaryClient?.destroy();
+        if (sqliteFile) {
+          await Promise.all([
+            rm(sqliteFile, { force: true }),
+            rm(`${sqliteFile}-wal`, { force: true }),
+            rm(`${sqliteFile}-shm`, { force: true }),
+          ]);
+        }
+      }
+    });
+
+    it('adopts the historical organization ID before configured ingestion and preserves scoped data', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      const day = '2026-05-01';
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day, entity_id: 'Org-A' }),
+        buildDailyTotal({ day, entity_id: 'Org-A', team_slug: 'platform' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({ day, entity_id: 'Org-A' }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({ day, entity_id: 'Org-A', team_slug: 'platform' }),
+      ]);
+
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      const historyLookupQueries: string[] = [];
+      const captureHistoryLookup = (query: { sql: string }) => {
+        if (query.sql.includes('LOWER(entity_id)')) {
+          historyLookupQueries.push(query.sql);
+        }
+      };
+      knex.on('query', captureHistoryLookup);
+      try {
+        await expect(
+          handler.syncEnterpriseOrganizations(
+            'ent-1',
+            generation,
+            ['ORG-A'],
+            now,
+            'org-a',
+          ),
+        ).resolves.toEqual({
+          configuredOrganizationLogin: 'Org-A',
+          configuredOrganizationAmbiguous: false,
+        });
+      } finally {
+        knex.off('query', captureHistoryLookup);
+      }
+      expect(historyLookupQueries).toHaveLength(3);
+      expect(
+        historyLookupQueries.every(query => /select\s+distinct/i.test(query)),
+      ).toBe(true);
+
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'org-a',
+        now,
+        new Date(now.getTime() + 60_000),
+      );
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      await expect(
+        handler.getDailyTotals('organization', 'Org-A', day, day),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getDailyTotals('organization', 'org-a', day, day),
+      ).resolves.toHaveLength(0);
+      await expect(
+        handler.getUserMetricsForDay('organization', 'Org-A', day),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getUserMetricsForDay('organization', 'org-a', day),
+      ).resolves.toHaveLength(0);
+      await expect(
+        handler.getTeams('organization', 'Org-A', day, day, 1),
+      ).resolves.toEqual(['platform']);
+      await expect(
+        handler.getTeams('organization', 'org-a', day, day, 1),
+      ).resolves.toEqual([]);
+    });
+
+    it('pauses configured ingestion when historical organization IDs differ only by case', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-01', entity_id: 'Org-A' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({ day: '2026-05-01', entity_id: 'org-a' }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({ day: '2026-05-01', entity_id: 'Org-A' }),
+        buildUserTeam({ day: '2026-05-02', entity_id: 'org-a' }),
+      ]);
+
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['ORG-A'],
+          now,
+          'org-a',
+        ),
+      ).resolves.toEqual({
+        configuredOrganizationLogin: undefined,
+        configuredOrganizationAmbiguous: true,
+      });
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: true,
+        organizations: [],
+      });
+    });
+
+    it('fences expired leases across directory revocation and reactivation', async () => {
+      const now = new Date();
+      const firstExpiresAt = new Date(now.getTime() + 60_000);
+      await syncOrganizations('ent-1', ['Org-A'], now);
+
+      const firstLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        firstExpiresAt,
+      );
+      expect(firstLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          firstExpiresAt,
+        ),
+      ).resolves.toBeUndefined();
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          firstLease!,
+          now,
+          firstExpiresAt,
+        ),
+      ).resolves.toBe(true);
+
+      const takeoverAt = new Date(firstExpiresAt.getTime() + 1);
+      const secondExpiresAt = new Date(takeoverAt.getTime() + 60_000);
+      const secondLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        takeoverAt,
+        secondExpiresAt,
+      );
+      expect(secondLease).toBeDefined();
+
+      await handler.releaseEnterpriseOrganizationLease(firstLease!);
+      await handler.updateEnterpriseOrganizationState(secondLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: takeoverAt,
+      });
+      await expect(
+        handler.updateEnterpriseOrganizationState(firstLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: takeoverAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          secondLease!,
+          takeoverAt,
+          new Date(secondExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+
+      const revokedAt = new Date(takeoverAt.getTime() + 1);
+      await syncOrganizations('ent-1', [], revokedAt);
+      await expect(
+        handler.updateEnterpriseOrganizationState(secondLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: revokedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      const reactivatedAt = new Date(revokedAt.getTime() + 1);
+      await syncOrganizations('ent-1', ['Org-A'], reactivatedAt);
+      const thirdExpiresAt = new Date(reactivatedAt.getTime() + 60_000);
+      const thirdLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        reactivatedAt,
+        thirdExpiresAt,
+      );
+      expect(thirdLease).toBeDefined();
+
+      await handler.releaseEnterpriseOrganizationLease(secondLease!);
+      await expect(
+        handler.renewEnterpriseOrganizationLease(
+          thirdLease!,
+          reactivatedAt,
+          new Date(thirdExpiresAt.getTime() + 60_000),
+        ),
+      ).resolves.toBe(true);
+      await expect(
+        handler.updateEnterpriseOrganizationState(secondLease!, {
+          accessState: 'inaccessible',
+          reportsReady: false,
+          lastAttemptedAt: reactivatedAt,
+        }),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      await handler.updateEnterpriseOrganizationState(thirdLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: reactivatedAt,
+      });
+      await handler.releaseEnterpriseOrganizationLease(thirdLease!);
+    });
+
+    it.each(['same-generation', 'previous-generation'] as const)(
+      'revokes an accessible organization and invalidates a live %s lease',
+      async leaseGeneration => {
+        const now = new Date();
+        const firstGeneration =
+          await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+        await expect(
+          handler.syncEnterpriseOrganizations(
+            'ent-1',
+            firstGeneration,
+            ['Org-A'],
+            now,
+          ),
+        ).resolves.toBe('synced');
+        await handler.insertDailyTotals([
+          buildDailyTotal({ entity_id: 'Org-A' }),
+        ]);
+        await expect(
+          handler.markLegacyConfiguredOrganization(
+            'ent-1',
+            'Org-A',
+            now,
+            new Date(now.getTime() + 60_000),
+            undefined,
+            firstGeneration,
+          ),
+        ).resolves.toBe('updated');
+
+        const leaseStartedAt = new Date(now.getTime() + 1);
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          leaseStartedAt,
+          new Date(leaseStartedAt.getTime() + 60_000),
+          true,
+          firstGeneration,
+        );
+        expect(lease).toBeDefined();
+        expect(
+          await handler.getEnterpriseOrganizationDirectory('ent-1'),
+        ).toEqual({
+          complete: true,
+          hasPendingOrganizations: false,
+          organizations: ['Org-A'],
+        });
+
+        let denialGeneration = firstGeneration;
+        let refreshResult:
+          | Awaited<ReturnType<typeof handler.syncEnterpriseOrganizations>>
+          | undefined;
+        if (leaseGeneration === 'previous-generation') {
+          denialGeneration =
+            await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+          refreshResult = await handler.syncEnterpriseOrganizations(
+            'ent-1',
+            denialGeneration,
+            ['Org-A'],
+            new Date(leaseStartedAt.getTime() + 1),
+          );
+        }
+        expect(refreshResult).toBe(
+          leaseGeneration === 'previous-generation' ? 'synced' : undefined,
+        );
+        const stillVisible = await handler.getEnterpriseOrganizationDirectory(
+          'ent-1',
+        );
+        expect(stillVisible.organizations).toEqual(['Org-A']);
+        const stillLeased = await knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+          .first('lease_owner', 'access_state', 'reports_ready');
+        expect(stillLeased).toMatchObject({
+          lease_owner: lease!.owner,
+          access_state: 'accessible',
+        });
+        expect(Boolean(stillLeased?.reports_ready)).toBe(true);
+
+        const deniedAt = new Date(leaseStartedAt.getTime() + 2);
+        await expect(
+          handler.markEnterpriseOrganizationInaccessible(
+            'ent-1',
+            'Org-A',
+            deniedAt,
+            new Date(deniedAt.getTime() + 24 * 60 * 60_000),
+            denialGeneration,
+          ),
+        ).resolves.toBe('updated');
+
+        await expect(
+          handler.getEnterpriseOrganizationDirectory('ent-1'),
+        ).resolves.toEqual({
+          complete: true,
+          hasPendingOrganizations: false,
+          organizations: [],
+        });
+        const inaccessible = await knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+          .first(
+            'access_state',
+            'reports_ready',
+            'lease_owner',
+            'lease_expires_at',
+          );
+        expect(inaccessible?.access_state).toBe('inaccessible');
+        expect(Boolean(inaccessible?.reports_ready)).toBe(false);
+        expect(inaccessible?.lease_owner).toBeNull();
+        expect(inaccessible?.lease_expires_at).toBeNull();
+
+        const attemptedWrite = jest.fn();
+        await expect(
+          handler.withOrganizationIngestionLease(lease!, async () => {
+            attemptedWrite();
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+        expect(attemptedWrite).not.toHaveBeenCalled();
+        await expect(
+          handler.updateEnterpriseOrganizationState(lease!, {
+            accessState: 'accessible',
+            reportsReady: true,
+            lastAttemptedAt: deniedAt,
+          }),
+        ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+      },
+    );
+
+    it('does not let a stale denial override a newer success or lease', async () => {
+      const now = new Date();
+      const oldGeneration =
+        await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          oldGeneration,
+          ['Org-A'],
+          now,
+        ),
+      ).resolves.toBe('synced');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-A' }),
+      ]);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          now,
+          new Date(now.getTime() + 60_000),
+          undefined,
+          oldGeneration,
+        ),
+      ).resolves.toBe('updated');
+
+      const newGeneration =
+        await handler.beginEnterpriseOrganizationDirectorySync('ent-1');
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          newGeneration,
+          ['Org-A'],
+          new Date(now.getTime() + 1),
+        ),
+      ).resolves.toBe('synced');
+      const leaseStartedAt = new Date(now.getTime() + 2);
+      const currentLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        leaseStartedAt,
+        new Date(leaseStartedAt.getTime() + 60_000),
+        true,
+        newGeneration,
+      );
+      expect(currentLease).toBeDefined();
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          leaseStartedAt,
+          new Date(leaseStartedAt.getTime() + 60_000),
+          currentLease,
+        ),
+      ).resolves.toBe('updated');
+
+      const staleDenialAt = new Date(leaseStartedAt.getTime() + 1);
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          staleDenialAt,
+          new Date(staleDenialAt.getTime() + 24 * 60 * 60_000),
+          oldGeneration,
+        ),
+      ).resolves.toBe('superseded');
+
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toEqual({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A'],
+      });
+      const stillCurrent = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('access_state', 'reports_ready', 'lease_owner');
+      expect(stillCurrent).toMatchObject({
+        access_state: 'accessible',
+        lease_owner: currentLease!.owner,
+      });
+      expect(Boolean(stillCurrent?.reports_ready)).toBe(true);
+      const currentWrite = jest.fn();
+      await expect(
+        handler.withOrganizationIngestionLease(currentLease!, async () => {
+          currentWrite();
+        }),
+      ).resolves.toBeUndefined();
+      expect(currentWrite).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps generation-less denials from revoking a successful organization or lease', async () => {
+      const now = new Date();
+      const generation = await handler.beginEnterpriseOrganizationDirectorySync(
+        'ent-1',
+      );
+      await expect(
+        handler.syncEnterpriseOrganizations(
+          'ent-1',
+          generation,
+          ['Org-A'],
+          now,
+        ),
+      ).resolves.toBe('synced');
+      await handler.insertDailyTotals([
+        buildDailyTotal({ entity_id: 'Org-A' }),
+      ]);
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          now,
+          new Date(now.getTime() + 60_000),
+          undefined,
+          generation,
+        ),
+      ).resolves.toBe('updated');
+
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          new Date(now.getTime() + 1),
+          new Date(now.getTime() + 24 * 60 * 60_000),
+        ),
+      ).resolves.toBe('not-current');
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toMatchObject({ organizations: ['Org-A'] });
+
+      const leaseStartedAt = new Date(now.getTime() + 2);
+      const lease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        leaseStartedAt,
+        new Date(leaseStartedAt.getTime() + 60_000),
+        true,
+        generation,
+      );
+      expect(lease).toBeDefined();
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          new Date(leaseStartedAt.getTime() + 1),
+          new Date(leaseStartedAt.getTime() + 24 * 60 * 60_000),
+        ),
+      ).resolves.toBe('not-current');
+
+      const currentWrite = jest.fn();
+      await expect(
+        handler.withOrganizationIngestionLease(lease!, async () => {
+          currentWrite();
+        }),
+      ).resolves.toBeUndefined();
+      expect(currentWrite).toHaveBeenCalledTimes(1);
+      await expect(
+        handler.getEnterpriseOrganizationDirectory('ent-1'),
+      ).resolves.toMatchObject({ organizations: ['Org-A'] });
+    });
+
+    if (databaseId === 'POSTGRES_18') {
+      it('serializes a denial and a leased write in directory-before-organization order', async () => {
+        const now = new Date();
+        const generation = await syncOrganizations('ent-1', ['Org-A'], now);
+        await handler.insertDailyTotals([
+          buildDailyTotal({ entity_id: 'Org-A' }),
+        ]);
+        await expect(
+          handler.markLegacyConfiguredOrganization(
+            'ent-1',
+            'Org-A',
+            now,
+            new Date(now.getTime() + 60_000),
+            undefined,
+            generation,
+          ),
+        ).resolves.toBe('updated');
+        const lease = await handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          now,
+          new Date(now.getTime() + 60_000),
+          true,
+          generation,
+        );
+        expect(lease).toBeDefined();
+
+        const createIndependentHandler = async () => {
+          const client = knexFactory({
+            ...knex.client.config,
+            pool: { min: 0, max: 1 },
+          });
+          const independentHandler = await DatabaseHandlerV2.create({
+            database: {
+              getClient: async () => client,
+              migrations: { skip: true },
+            } as any,
+          });
+          return { client, handler: independentHandler };
+        };
+        const blockerClient = knexFactory({
+          ...knex.client.config,
+          pool: { min: 0, max: 1 },
+        });
+        const observerClient = knexFactory({
+          ...knex.client.config,
+          pool: { min: 0, max: 1 },
+        });
+        const denial = await createIndependentHandler();
+        const writer = await createIndependentHandler();
+
+        let releaseOrganizationRow!: () => void;
+        let organizationRowLocked!: () => void;
+        const organizationRowLockedPromise = new Promise<void>(resolve => {
+          organizationRowLocked = resolve;
+        });
+        const releaseOrganizationRowPromise = new Promise<void>(resolve => {
+          releaseOrganizationRow = resolve;
+        });
+        const blockerPromise = blockerClient.transaction(async transaction => {
+          await transaction('copilot_enterprise_organizations')
+            .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+            .forUpdate()
+            .first('organization_key');
+          organizationRowLocked();
+          await releaseOrganizationRowPromise;
+        });
+
+        const waitForLockWait = async (tableName: string) => {
+          const deadline = Date.now() + 10_000;
+          while (Date.now() < deadline) {
+            const result = await observerClient.raw(
+              `SELECT EXISTS (
+                 SELECT 1
+                 FROM pg_stat_activity
+                 WHERE datname = current_database()
+                   AND state = 'active'
+                   AND wait_event_type = 'Lock'
+                   AND query ILIKE ?
+               ) AS waiting`,
+              [`%${tableName}%`],
+            );
+            if (result.rows[0]?.waiting) {
+              return true;
+            }
+            await new Promise(resolve => setTimeout(resolve, 10));
+          }
+          return false;
+        };
+
+        let denialPromise: Promise<string> | undefined;
+        let writerPromise: Promise<void> | undefined;
+        try {
+          await organizationRowLockedPromise;
+          denialPromise = denial.handler.markEnterpriseOrganizationInaccessible(
+            'ent-1',
+            'Org-A',
+            now,
+            new Date(now.getTime() + 24 * 60 * 60_000),
+            generation,
+          );
+          await expect(
+            waitForLockWait('copilot_enterprise_organizations'),
+          ).resolves.toBe(true);
+
+          const attemptedWrite = jest.fn();
+          writerPromise = writer.handler.withOrganizationIngestionLease(
+            lease!,
+            async () => {
+              attemptedWrite();
+            },
+          );
+          await expect(
+            waitForLockWait('copilot_enterprise_organization_directory'),
+          ).resolves.toBe(true);
+
+          releaseOrganizationRow();
+          await expect(denialPromise).resolves.toBe('updated');
+          await expect(writerPromise).rejects.toBeInstanceOf(
+            OrganizationIngestionLeaseLostError,
+          );
+          expect(attemptedWrite).not.toHaveBeenCalled();
+          await expect(
+            handler.getEnterpriseOrganizationDirectory('ent-1'),
+          ).resolves.toMatchObject({ organizations: [] });
+        } finally {
+          releaseOrganizationRow();
+          await Promise.allSettled([
+            blockerPromise,
+            ...(denialPromise ? [denialPromise] : []),
+            ...(writerPromise ? [writerPromise] : []),
+          ]);
+          await Promise.all([
+            blockerClient.destroy(),
+            observerClient.destroy(),
+            denial.client.destroy(),
+            writer.client.destroy(),
+          ]);
+        }
+      });
+    }
+
+    it('keeps organization status updates scoped and prevents unfenced revocation of active access', async () => {
+      const now = new Date('2026-11-20T00:00:00.000Z');
+      const nextAttemptAt = new Date(now.getTime() + 60_000);
+      const target = { enterprise_id: 'ent-1', organization_key: 'org-a' };
+      const getOrganization = (enterpriseId: string, key: string) =>
+        knex('copilot_enterprise_organizations')
+          .where({ enterprise_id: enterpriseId, organization_key: key })
+          .first('access_state', 'lease_owner', 'lease_expires_at');
+
+      const generation = await syncOrganizations(
+        'ent-1',
+        ['Org-A', 'Org-B'],
+        now,
+      );
+      await syncOrganizations('ent-2', ['Org-A'], now);
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+      await expect(
+        handler.markEnterpriseOrganizationInaccessible(
+          'ent-1',
+          'Org-A',
+          now,
+          nextAttemptAt,
+        ),
+      ).resolves.toBe('not-current');
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-b' })
+        .update({
+          access_state: 'accessible',
+          lease_owner: 'expired-other-org',
+          lease_expires_at: now,
+        });
+      await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-2', organization_key: 'org-a' })
+        .update({
+          access_state: 'accessible',
+          lease_owner: 'expired-other-enterprise',
+          lease_expires_at: now,
+        });
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ access_state: 'accessible', next_attempt_at: null });
+      const expiredLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        now,
+      );
+      expect(expiredLease).toBeDefined();
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+        generation,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+        lease_owner: null,
+        lease_expires_at: null,
+      });
+      await expect(getOrganization('ent-1', 'org-b')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: 'expired-other-org',
+      });
+      await expect(getOrganization('ent-2', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: 'expired-other-enterprise',
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .whereIn('enterprise_id', ['ent-1', 'ent-2'])
+        .update({ access_state: 'inaccessible' });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        now,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+      });
+      await expect(getOrganization('ent-1', 'org-b')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+      await expect(getOrganization('ent-2', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+      });
+
+      const newLeaseStartedAt = new Date(now.getTime() + 1);
+      const newLeaseExpiresAt = new Date(now.getTime() + 60_001);
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ next_attempt_at: null });
+      const newLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        newLeaseExpiresAt,
+      );
+      expect(newLease).toBeDefined();
+
+      await handler.markEnterpriseOrganizationInaccessible(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'accessible',
+        lease_owner: newLease!.owner,
+      });
+
+      await knex('copilot_enterprise_organizations')
+        .where(target)
+        .update({ access_state: 'inaccessible' });
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        newLeaseStartedAt,
+        nextAttemptAt,
+      );
+      await expect(getOrganization('ent-1', 'org-a')).resolves.toMatchObject({
+        access_state: 'inaccessible',
+        lease_owner: newLease!.owner,
+      });
+      await expect(
+        handler.markLegacyConfiguredOrganization(
+          'ent-1',
+          'Org-A',
+          newLeaseStartedAt,
+          nextAttemptAt,
+          expiredLease!,
+        ),
+      ).rejects.toBeInstanceOf(OrganizationIngestionLeaseLostError);
+
+      await handler.releaseEnterpriseOrganizationLease(newLease!);
+    });
+
+    it('keeps configured-organization ownership behind the shared lease', async () => {
+      const now = new Date('2026-11-17T00:00:00.000Z');
+      const leaseExpiresAt = new Date(now.getTime() + 10 * 60_000);
+      await syncOrganizations('ent-1', ['Org-A'], now);
+
+      const scheduledLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        leaseExpiresAt,
+      );
+      expect(scheduledLease).toBeDefined();
+
+      const configuredAt = new Date(now.getTime() + 1_000);
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        configuredAt,
+        new Date(configuredAt.getTime() + 25 * 60 * 60_000),
+      );
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          configuredAt,
+          leaseExpiresAt,
+          true,
+        ),
+      ).resolves.toBeUndefined();
+      await handler.updateEnterpriseOrganizationState(scheduledLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: new Date(configuredAt.getTime() + 1_000),
+      });
+      await handler.releaseEnterpriseOrganizationLease(scheduledLease!);
+
+      const legacyStart = new Date(configuredAt.getTime() + 2_000);
+      const nextAttemptAt = new Date(legacyStart.getTime() + 25 * 60 * 60_000);
+      await handler.markLegacyConfiguredOrganization(
+        'ent-1',
+        'Org-A',
+        legacyStart,
+        nextAttemptAt,
+      );
+      await expect(
+        handler.getEnterpriseOrganizationsToIngest('ent-1', legacyStart, 5, 1),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          legacyStart,
+          leaseExpiresAt,
+        ),
+      ).resolves.toBeUndefined();
+      const legacyLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        legacyStart,
+        leaseExpiresAt,
+        true,
+      );
+      expect(legacyLease).toBeDefined();
+      await handler.releaseEnterpriseOrganizationLease(legacyLease!);
+    });
+
+    it('allows manual discovered-organization backfills during cooldown without bypassing leases', async () => {
+      const refreshedAt = new Date('2026-11-17T00:00:00.000Z');
+      const refreshLeaseExpiresAt = new Date(
+        refreshedAt.getTime() + 10 * 60_000,
+      );
+      const nextAttemptAt = new Date(refreshedAt.getTime() + 23 * 60 * 60_000);
+      await syncOrganizations('ent-1', ['Org-A'], refreshedAt);
+
+      const refreshLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        refreshedAt,
+        refreshLeaseExpiresAt,
+      );
+      expect(refreshLease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(refreshLease!, {
+        accessState: 'accessible',
+        reportsReady: true,
+        lastAttemptedAt: refreshedAt,
+        nextAttemptAt,
+      });
+      await handler.releaseEnterpriseOrganizationLease(refreshLease!);
+
+      const backfillStartedAt = new Date(refreshedAt.getTime() + 1_000);
+      const backfillExpiresAt = new Date(
+        backfillStartedAt.getTime() + 10 * 60_000,
+      );
+      await expect(
+        handler.getEnterpriseOrganizationsToIngest(
+          'ent-1',
+          backfillStartedAt,
+          5,
+          1,
+        ),
+      ).resolves.toEqual([]);
+
+      const backfillLease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        backfillStartedAt,
+        backfillExpiresAt,
+        true,
+      );
+      expect(backfillLease).toBeDefined();
+      await expect(
+        handler.claimEnterpriseOrganizationLease(
+          'ent-1',
+          'Org-A',
+          backfillStartedAt,
+          backfillExpiresAt,
+          true,
+        ),
+      ).resolves.toBeUndefined();
+      const backfillCompletedAt = new Date(backfillStartedAt.getTime() + 1_000);
+      await handler.updateEnterpriseOrganizationState(backfillLease!, {
+        accessState: 'accessible',
+        lastAttemptedAt: backfillCompletedAt,
+      });
+      const currentOrganization = await knex('copilot_enterprise_organizations')
+        .where({ enterprise_id: 'ent-1', organization_key: 'org-a' })
+        .first('next_attempt_at');
+      expect(new Date(currentOrganization?.next_attempt_at).getTime()).toBe(
+        nextAttemptAt.getTime(),
+      );
+      await handler.releaseEnterpriseOrganizationLease(backfillLease!);
+    });
+
+    it('resolves an accessible organization key to its canonical login', async () => {
+      const now = new Date();
+      await syncOrganizations('ent-1', ['Org-A'], now);
+      const lease = await handler.claimEnterpriseOrganizationLease(
+        'ent-1',
+        'Org-A',
+        now,
+        new Date(now.getTime() + 60_000),
+      );
+      expect(lease).toBeDefined();
+      await handler.updateEnterpriseOrganizationState(lease!, {
+        accessState: 'accessible',
+        reportsReady: false,
+        lastAttemptedAt: now,
+      });
+
+      await expect(
+        handler.getCurrentAccessibleEnterpriseOrganizationLogin(
+          'ent-1',
+          'oRg-a',
+        ),
+      ).resolves.toBe('Org-A');
+
+      await handler.updateEnterpriseOrganizationState(lease!, {
+        accessState: 'inaccessible',
+        reportsReady: false,
+        lastAttemptedAt: new Date(),
+      });
+      await expect(
+        handler.getCurrentAccessibleEnterpriseOrganizationLogin(
+          'ent-1',
+          'oRg-a',
+        ),
+      ).resolves.toBeUndefined();
+      await handler.releaseEnterpriseOrganizationLease(lease!);
+    });
+
+    it('lists organization teams with their owning organization from membership history', async () => {
+      const day = DateTime.utc().minus({ days: 1 }).toFormat('yyyy-MM-dd');
+      const organizations = ['Org-A', 'Org-B'];
+      await knex('copilot_user_teams').insert([
+        buildUserTeam({
+          day,
+          entity_id: 'Org-A',
+          user_id: 1,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-A',
+          user_id: 2,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-B',
+          user_id: 1,
+          team_slug: 'shared',
+        }),
+        buildUserTeam({
+          day,
+          entity_id: 'Org-B',
+          user_id: 3,
+          team_slug: 'shared',
+        }),
+      ]);
+      const historyDay = DateTime.utc()
+        .minus({ days: 2 })
+        .toFormat('yyyy-MM-dd');
+      await knex('copilot_user_teams').insert(
+        buildUserTeam({
+          day: historyDay,
+          entity_id: 'Org-A',
+          user_id: 1,
+          team_slug: 'historic-only',
+        }),
+      );
+
+      await expect(
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 2),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(organizations, day, day, 3),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(['Org-A'], day, day, 1),
+      ).resolves.toEqual([{ organization: 'Org-A', team: 'shared' }]);
+      await expect(
+        handler.getTeams('organization', 'Org-A', day, day, 2),
+      ).resolves.toEqual(['shared']);
+      await expect(
+        handler.getAccessibleOrganizationTeams([], day, day, 1),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          undefined,
+          historyDay,
+          1,
+        ),
+      ).resolves.toEqual([{ organization: 'Org-A', team: 'historic-only' }]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          day,
+          undefined,
+          1,
+        ),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
+      await expect(
+        handler.getAccessibleOrganizationTeams(
+          organizations,
+          undefined,
+          undefined,
+          1,
+        ),
+      ).resolves.toEqual([
+        { organization: 'Org-A', team: 'historic-only' },
+        { organization: 'Org-A', team: 'shared' },
+        { organization: 'Org-B', team: 'shared' },
+      ]);
+    });
+
+    it('re-ingests incomplete reports from the customization availability date', async () => {
+      await knex('copilot_ingestion_log').insert([
+        buildIngestionLog({
+          day: '2026-10-21',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-22',
+          status: 'partial',
+          components_loaded: '["totals","users"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-23',
+          status: 'error',
+          components_loaded: '["totals","users","teams"]',
+        }),
+        buildIngestionLog({
+          day: '2026-10-24',
+          status: 'success',
+          components_loaded: '["totals","users","teams"]',
+        }),
+      ]);
+
+      const migration = jest.requireActual(
+        '../../migrations/202611040000_reingest_partial_customization_days',
+      ) as { up: (database: Knex) => Promise<void> };
+      await migration.up(knex);
+
+      const logs = await handler.getIngestionLog('organization', 'org-1');
+      expect(logs.map(({ day, status }) => ({ day, status }))).toEqual([
+        { day: '2026-10-21', status: 'partial' },
+        { day: '2026-10-24', status: 'success' },
+      ]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-10-22',
+          '2026-10-23',
+          ['totals', 'users', 'teams'],
+        ),
+      ).resolves.toEqual(['2026-10-22', '2026-10-23']);
+    });
+    it('adds and reverses the cost-center schema migration', async () => {
+      await costCenterMigration.down(knex);
+
+      for (const tableName of costCenterAggregateTables) {
+        expect(await knex.schema.hasColumn(tableName, 'cost_center_id')).toBe(
+          false,
+        );
+        expect(
+          await knex.schema.hasColumn(tableName, 'without_cost_center'),
+        ).toBe(false);
+      }
+      await expect(knex.schema.hasTable('copilot_cost_centers')).resolves.toBe(
+        false,
+      );
+      await expect(
+        knex.schema.hasTable('copilot_user_cost_centers'),
+      ).resolves.toBe(false);
+      await expect(
+        knex.schema.hasTable('copilot_cost_center_aggregation_log'),
+      ).resolves.toBe(false);
+
+      await costCenterMigration.up(knex);
+
+      for (const tableName of costCenterAggregateTables) {
+        expect(await knex.schema.hasColumn(tableName, 'cost_center_id')).toBe(
+          true,
+        );
+        expect(
+          await knex.schema.hasColumn(tableName, 'without_cost_center'),
+        ).toBe(true);
+      }
+      expect(
+        await knex.schema.hasColumn('copilot_cost_centers', 'metrics_type'),
+      ).toBe(true);
+      expect(
+        await knex.schema.hasColumn(
+          'copilot_cost_center_aggregation_log',
+          'unassigned_complete',
+        ),
+      ).toBe(true);
+
+      await handler.insertDailyTotals([
+        buildDailyTotal({ cost_center_id: 'cc-a' }),
+        buildDailyTotal({ cost_center_id: 'cc-b' }),
+      ]);
+      const rows = await knex('copilot_daily_totals').where({
+        day: '2026-05-01',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+      });
+      expect(rows).toHaveLength(2);
+    });
+
+    it('preserves legacy aggregate rows and merges them after migration', async () => {
+      await costCenterMigration.down(knex);
+      await knex('copilot_daily_totals').insert(
+        buildDailyTotal({
+          day: '2026-05-09',
+          total_ai_credits_used: 3,
+          daily_active_vscode_agent_users: 7,
+        }),
+      );
+
+      await costCenterMigration.up(knex);
+      const migratedRows = await knex('copilot_daily_totals').where({
+        day: '2026-05-09',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+      });
+      expect(migratedRows).toHaveLength(1);
+      expect(migratedRows[0].cost_center_id).toBe('');
+
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          day: '2026-05-09',
+          total_ai_credits_used: 9,
+          daily_active_vscode_agent_users: 11,
+        }),
+      ]);
+
+      const mergedRows = await knex('copilot_daily_totals').where({
+        day: '2026-05-09',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+        cost_center_id: '',
+      });
+      expect(mergedRows).toHaveLength(1);
+      expect(mergedRows[0].total_ai_credits_used).toBe(9);
+      expect(mergedRows[0].daily_active_vscode_agent_users).toBe(11);
+
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({
+          day: '2026-05-09',
+          team_slug: '',
+          cost_center_id: '',
+          daily_active_users: 4,
+        }),
+        without_cost_center: true,
+      });
+      await costCenterMigration.down(knex);
+      const rolledBackRows = await knex('copilot_daily_totals').where({
+        day: '2026-05-09',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+      });
+      expect(rolledBackRows).toHaveLength(1);
+      expect(rolledBackRows[0]).not.toHaveProperty('cost_center_id');
+      expect(rolledBackRows[0]).not.toHaveProperty('without_cost_center');
+      expect(rolledBackRows[0].total_ai_credits_used).toBe(9);
     });
 
     it('getMissingDays returns all days when ingestion log is empty', async () => {
@@ -118,12 +2135,16 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toEqual([]);
     });
 
-    it('getMissingDays does not skip error days', async () => {
+    it('getMissingDays does not skip error days missing required components', async () => {
       await handler.upsertIngestionLog(
         buildIngestionLog({ day: '2026-05-01', status: 'success' }),
       );
       await handler.upsertIngestionLog(
-        buildIngestionLog({ day: '2026-05-02', status: 'error' }),
+        buildIngestionLog({
+          day: '2026-05-02',
+          status: 'error',
+          components_loaded: '[]',
+        }),
       );
 
       const result = await handler.getMissingDays(
@@ -134,6 +2155,35 @@ describe('DatabaseHandlerV2', () => {
       );
 
       expect(result).toEqual(['2026-05-02', '2026-05-03']);
+    });
+
+    it('does not retry components already loaded before a later error', async () => {
+      await knex('copilot_ingestion_log').insert(
+        buildIngestionLog({
+          day: '2026-05-02',
+          status: 'error',
+          components_loaded: '["totals"]',
+        }),
+      );
+
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-02',
+          '2026-05-02',
+          ['totals'],
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-02',
+          '2026-05-02',
+          ['totals', 'users'],
+        ),
+      ).resolves.toEqual(['2026-05-02']);
     });
 
     it('getMissingDays only skips success rows with all required components', async () => {
@@ -182,14 +2232,18 @@ describe('DatabaseHandlerV2', () => {
 
     it('upsertIngestionLog updates existing row on conflict', async () => {
       await handler.upsertIngestionLog(
-        buildIngestionLog({ day: '2026-05-11', status: 'success' }),
+        buildIngestionLog({
+          day: '2026-05-11',
+          status: 'success',
+          components_loaded: '["totals"]',
+        }),
       );
 
       await handler.upsertIngestionLog(
         buildIngestionLog({
           day: '2026-05-11',
           status: 'error',
-          components_loaded: '["totals"]',
+          components_loaded: '[]',
           error_message: 'download failed',
           source: 'backfill',
         }),
@@ -197,10 +2251,718 @@ describe('DatabaseHandlerV2', () => {
 
       const logs = await handler.getIngestionLog('organization', 'org-1');
       expect(logs).toHaveLength(1);
-      expect(logs[0].status).toBe('error');
+      expect(logs[0].status).toBe('success');
       expect(logs[0].components_loaded).toBe('["totals"]');
       expect(logs[0].error_message).toBe('download failed');
       expect(logs[0].source).toBe('backfill');
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-11',
+          '2026-05-11',
+          ['totals'],
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getMissingDays(
+          'organization',
+          'org-1',
+          '2026-05-11',
+          '2026-05-11',
+          ['totals', 'users'],
+        ),
+      ).resolves.toEqual(['2026-05-11']);
+    });
+
+    it('tracks cost-center aggregation idempotently and reads back a day for backfill', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+        buildUserMetric({
+          day: '2026-05-02',
+          user_id: 2,
+          user_login: 'octodog',
+        }),
+      ]);
+      await handler.insertUserMetricsByFeature([
+        buildUserMetricsByFeature({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+      await handler.insertUserMetricsByIde([
+        buildUserMetricsByIde({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+      await handler.insertUserMetricsByLanguageFeature([
+        buildUserMetricsByLanguageFeature({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+      await handler.insertUserMetricsByModelFeature([
+        buildUserMetricsByModelFeature({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+      await handler.insertUserMetricsByLanguageModel([
+        buildUserMetricsByLanguageModel({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+          team_slug: 'alpha',
+        }),
+      ]);
+
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          '2026-05-01',
+          '2026-05-03',
+        ),
+      ).resolves.toEqual(['2026-05-01', '2026-05-02']);
+      await handler.markCostCenterAggregationDone(
+        '2026-05-01',
+        'organization',
+        'org-1',
+      );
+      await handler.markCostCenterAggregationDone(
+        '2026-05-01',
+        'organization',
+        'org-1',
+      );
+
+      const [metric] = await handler.getUserMetricsForDay(
+        'organization',
+        'org-1',
+        '2026-05-01',
+      );
+      const [breakdown] = await handler.getUserBreakdownsForDay(
+        'organization',
+        'org-1',
+        '2026-05-01',
+      );
+      const teams = await knex('copilot_user_teams')
+        .where({
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+        })
+        .select('*');
+
+      expect(metric).toEqual(
+        expect.objectContaining({
+          day: '2026-05-01',
+          user_id: 1,
+          user_login: 'octocat',
+        }),
+      );
+      expect(breakdown).toEqual(
+        expect.objectContaining({
+          user_id: 1,
+          user_login: 'octocat',
+          byFeature: [expect.objectContaining({ feature: 'chat_panel' })],
+          byIde: [expect.objectContaining({ ide: 'vscode' })],
+          byLanguageFeature: [
+            expect.objectContaining({
+              language: 'typescript',
+              feature: 'chat_panel',
+            }),
+          ],
+          byModelFeature: [
+            expect.objectContaining({
+              model_id: 'gpt-4o',
+              feature: 'chat_panel',
+            }),
+          ],
+          byLanguageModel: [
+            expect.objectContaining({
+              language: 'typescript',
+              model_id: 'gpt-4o',
+            }),
+          ],
+        }),
+      );
+      expect(teams).toHaveLength(1);
+      expect(teams[0].team_slug).toBe('alpha');
+      expect(Number(teams[0].user_id)).toBe(1);
+      expect(
+        await knex('copilot_cost_center_aggregation_log').where({
+          day: '2026-05-01',
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+        }),
+      ).toHaveLength(1);
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          '2026-05-01',
+          '2026-05-03',
+        ),
+      ).resolves.toEqual(['2026-05-02']);
+
+      await handler.markCostCenterAggregationDone(
+        '2026-05-02',
+        'organization',
+        'org-1',
+      );
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          '2026-05-01',
+          '2026-05-03',
+        ),
+      ).resolves.toEqual([]);
+    });
+
+    it('includes successfully ingested empty user reports in cost-center backfills', async () => {
+      await handler.upsertIngestionLog(
+        buildIngestionLog({
+          day: '2026-05-03',
+          components_loaded: '["totals","users"]',
+        }),
+      );
+      await handler.upsertIngestionLog(
+        buildIngestionLog({
+          day: '2026-05-04',
+          components_loaded: '["totals"]',
+        }),
+      );
+
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          '2026-05-03',
+          '2026-05-04',
+        ),
+      ).resolves.toEqual(['2026-05-03']);
+    });
+
+    it('requeues refreshed days without hiding their previous unassigned aggregates', async () => {
+      const day = '2026-05-05';
+      await handler.insertUserMetrics([buildUserMetric({ day })]);
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({ day, cost_center_id: '' }),
+        without_cost_center: true,
+      });
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-1');
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-2');
+      await handler.markCostCenterAggregationDone(day, 'enterprise', 'org-1');
+      await handler.markCostCenterAggregationDone(
+        '2026-05-06',
+        'organization',
+        'org-1',
+      );
+      await handler.markCostCenterAggregationPending(
+        day,
+        'organization',
+        'org-1',
+      );
+      await handler.markCostCenterAggregationPending(
+        '2026-05-07',
+        'organization',
+        'org-1',
+      );
+
+      const pendingRows = await knex(
+        'copilot_cost_center_aggregation_log',
+      ).where('needs_reaggregation', true);
+      expect(pendingRows).toHaveLength(1);
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where({
+          day,
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          needs_reaggregation: true,
+        }),
+      ).resolves.toHaveLength(1);
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where({
+          day: '2026-05-07',
+        }),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([day]);
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          '2026-05-06',
+          '2026-05-06',
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getDailyTotals('organization', 'org-1', day, day, undefined, {
+          kind: 'noCostCenter',
+        }),
+      ).resolves.toHaveLength(1);
+      await expect(
+        handler.getCostCenters('organization', 'org-1', day, day, 1),
+      ).resolves.toEqual({ costCenters: [], hasUsersWithoutCostCenter: true });
+
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-1');
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where(
+          'needs_reaggregation',
+          true,
+        ),
+      ).resolves.toEqual([]);
+    });
+
+    it('requeues only days marked with an incomplete unassigned snapshot', async () => {
+      const day = '2026-05-05';
+      await handler.insertUserMetrics([
+        buildUserMetric({ day, user_id: 1, user_login: 'octocat' }),
+      ]);
+      await handler.markCostCenterAggregationDone(
+        day,
+        'organization',
+        'org-1',
+        false,
+      );
+
+      await expect(
+        handler.getDaysMissingCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([]);
+      await expect(
+        handler.getDaysWithIncompleteCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([day]);
+
+      await handler.markCostCenterAggregationDone(day, 'organization', 'org-1');
+      await expect(
+        handler.getDaysWithIncompleteCostCenterAggregation(
+          'organization',
+          'org-1',
+          day,
+          day,
+        ),
+      ).resolves.toEqual([]);
+    });
+
+    it('atomically replaces memberships and all scoped aggregates when a snapshot changes', async () => {
+      const day = '2026-05-10';
+      const scope = {
+        day,
+        metrics_type: 'enterprise' as const,
+        entity_id: 'ent-1',
+      };
+      const memberships = (costCenterForUserSix: string) =>
+        Array.from({ length: 6 }, (_, index) => ({
+          ...scope,
+          user_id: index + 1,
+          user_login: `user-${index + 1}`,
+          cost_center_id: index === 5 ? costCenterForUserSix : 'cc-a',
+        }));
+
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          ...scope,
+          team_slug: '',
+          cost_center_id: '',
+          daily_active_users: 88,
+        }),
+        buildDailyTotal({
+          ...scope,
+          team_slug: 'alpha',
+          cost_center_id: '',
+          daily_active_users: 99,
+        }),
+      ]);
+
+      const firstGroups = makeCostCenterAggregateRows(day, [
+        { costCenterId: 'cc-a', teamSlug: '', activeUsers: 6, locAdded: 60 },
+      ]);
+      await handler.replaceCostCenterAggregates(
+        day,
+        'enterprise',
+        'ent-1',
+        memberships('cc-a'),
+        firstGroups,
+      );
+
+      const updatedGroups = makeCostCenterAggregateRows(day, [
+        { costCenterId: 'cc-a', teamSlug: '', activeUsers: 5, locAdded: 50 },
+        { costCenterId: 'cc-b', teamSlug: '', activeUsers: 1, locAdded: 10 },
+      ]);
+      await handler.markCostCenterAggregationPending(
+        day,
+        'enterprise',
+        'ent-1',
+      );
+      await handler.replaceCostCenterAggregates(
+        day,
+        'enterprise',
+        'ent-1',
+        memberships('cc-b'),
+        updatedGroups,
+      );
+      await expect(
+        knex('copilot_cost_center_aggregation_log')
+          .where(scope)
+          .where('needs_reaggregation', true),
+      ).resolves.toEqual([]);
+
+      const membershipRows = await knex('copilot_user_cost_centers').where(
+        scope,
+      );
+      expect(membershipRows).toHaveLength(6);
+      expect(
+        membershipRows.filter(row => row.cost_center_id === 'cc-a'),
+      ).toHaveLength(5);
+      expect(
+        membershipRows.find(row => Number(row.user_id) === 6)?.cost_center_id,
+      ).toBe('cc-b');
+
+      const costCenterA = await knex('copilot_daily_totals')
+        .where({ ...scope, team_slug: '', cost_center_id: 'cc-a' })
+        .first();
+      expect(costCenterA.daily_active_users).toBe(5);
+      expect(costCenterA.loc_added_sum).toBe(50);
+
+      for (const tableName of costCenterAggregateTables) {
+        await expect(
+          knex(tableName).where({ ...scope, cost_center_id: 'cc-a' }),
+        ).resolves.toEqual(
+          expect.arrayContaining([expect.objectContaining({ team_slug: '' })]),
+        );
+      }
+
+      const unscopedRows = await knex('copilot_daily_totals')
+        .where(scope)
+        .where('cost_center_id', '')
+        .orderBy('team_slug', 'asc');
+      expect(unscopedRows).toHaveLength(2);
+      expect(unscopedRows.map(row => row.daily_active_users)).toEqual([88, 99]);
+      await expect(
+        knex('copilot_cost_center_aggregation_log').where(scope),
+      ).resolves.toHaveLength(1);
+    });
+
+    it('serves unassigned users from the explicit no-cost-center scope', async () => {
+      const day = '2026-05-10';
+      const metricScope = {
+        day,
+        metrics_type: 'enterprise' as const,
+        entity_id: 'ent-1',
+      };
+      const aggregateScope = { ...metricScope, team_slug: '' };
+      await handler.insertUserMetrics(
+        Array.from({ length: 10 }, (_, index) =>
+          buildUserMetric({
+            ...metricScope,
+            user_id: index + 1,
+            user_login: `user-${index + 1}`,
+            used_agent: index < 5,
+          }),
+        ),
+      );
+      const assignedMemberships = Array.from({ length: 5 }, (_, index) => ({
+        ...metricScope,
+        user_id: index + 6,
+        user_login: `user-${index + 6}`,
+        cost_center_id: 'cc-a',
+      }));
+      const assignedTotals = buildDailyTotal({
+        ...aggregateScope,
+        cost_center_id: 'cc-a',
+        daily_active_users: 5,
+        loc_added_sum: 50,
+      });
+      const unassignedTotals = {
+        ...buildDailyTotal({
+          ...aggregateScope,
+          cost_center_id: '',
+          daily_active_users: 5,
+          loc_added_sum: 50,
+        }),
+        without_cost_center: true,
+      };
+      const assignedFeature = {
+        ...aggregateScope,
+        cost_center_id: 'cc-a',
+        feature: 'chat_panel',
+        code_acceptance_activity_count: 5,
+        code_generation_activity_count: 5,
+        loc_added_sum: 50,
+        loc_deleted_sum: 0,
+        loc_suggested_to_add_sum: 0,
+        loc_suggested_to_delete_sum: 0,
+        user_initiated_interaction_count: 5,
+      };
+      const unassignedFeature = {
+        ...assignedFeature,
+        cost_center_id: '',
+        without_cost_center: true,
+      };
+      const assignedCustomization = {
+        ...metricScope,
+        cost_center_id: 'cc-a',
+        category: 'skill',
+        item_name: 'assigned-skill',
+        interaction_count: 7,
+      };
+      const unassignedCustomization = {
+        ...assignedCustomization,
+        cost_center_id: '',
+        without_cost_center: true,
+        item_name: 'unassigned-skill',
+        interaction_count: 3,
+      };
+
+      await handler.replaceCostCenterAggregates(
+        day,
+        'enterprise',
+        'ent-1',
+        assignedMemberships,
+        {
+          dailyTotals: [assignedTotals, unassignedTotals],
+          prMetrics: [],
+          byFeature: [assignedFeature, unassignedFeature],
+          byIde: [],
+          byLanguageFeature: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          byCli: [],
+          byVscodeAgent: [],
+          customizationMetrics: [
+            assignedCustomization,
+            unassignedCustomization,
+          ],
+        },
+      );
+
+      const noCostCenterDashboard = await handler.getDashboardData(
+        'enterprise',
+        'ent-1',
+        day,
+        day,
+        undefined,
+        { kind: 'noCostCenter' },
+      );
+      const assignedDashboard = await handler.getDashboardData(
+        'enterprise',
+        'ent-1',
+        day,
+        day,
+        undefined,
+        { kind: 'costCenter', id: 'cc-a' },
+      );
+
+      expect(noCostCenterDashboard.daily).toHaveLength(1);
+      expect(
+        noCostCenterDashboard.daily[0].weekly_active_users,
+      ).toBeUndefined();
+      expect(noCostCenterDashboard.daily[0]).not.toHaveProperty(
+        'without_cost_center',
+      );
+      expect(noCostCenterDashboard.byFeature).toHaveLength(1);
+      expect(noCostCenterDashboard.prMetrics).toEqual([]);
+      expect(noCostCenterDashboard.customizationMetrics).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          item_name: 'unassigned-skill',
+          interaction_count: 3,
+        }),
+      ]);
+      expect(assignedDashboard.daily).toHaveLength(1);
+      expect(assignedDashboard.byFeature).toHaveLength(1);
+      expect(assignedDashboard.customizationMetrics).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          item_name: 'assigned-skill',
+          interaction_count: 7,
+        }),
+      ]);
+      await expect(
+        handler.getPeriodRange('enterprise', 'ent-1', {
+          kind: 'noCostCenter',
+        }),
+      ).resolves.toEqual({ minDate: day, maxDate: day });
+    });
+
+    it('treats a real cost center named __none__ as an ordinary filterable center', async () => {
+      const day = '2026-05-11';
+      const metricScope = {
+        day,
+        metrics_type: 'organization' as const,
+        entity_id: 'org-1',
+      };
+      const aggregateScope = { ...metricScope, team_slug: '' };
+      const userIds = [1, 2, 3, 4, 5];
+      await handler.upsertCostCenters([
+        {
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          cost_center_id: '__none__',
+          name: '__none__',
+        },
+      ]);
+      await handler.insertUserMetrics(
+        userIds.map(userId =>
+          buildUserMetric({
+            ...metricScope,
+            user_id: userId,
+            user_login: `user-${userId}`,
+          }),
+        ),
+      );
+      const memberships: V2UserCostCenterRow[] = userIds.map(userId => ({
+        ...metricScope,
+        user_id: userId,
+        user_login: `user-${userId}`,
+        cost_center_id: '__none__',
+      }));
+      const totals = buildDailyTotal({
+        ...aggregateScope,
+        cost_center_id: '__none__',
+        daily_active_users: 5,
+      });
+      const feature = {
+        ...aggregateScope,
+        cost_center_id: '__none__',
+        feature: 'chat_panel',
+        code_acceptance_activity_count: 5,
+        code_generation_activity_count: 5,
+        loc_added_sum: 0,
+        loc_deleted_sum: 0,
+        loc_suggested_to_add_sum: 0,
+        loc_suggested_to_delete_sum: 0,
+        user_initiated_interaction_count: 5,
+      };
+      await handler.replaceCostCenterAggregates(
+        day,
+        'organization',
+        'org-1',
+        memberships,
+        {
+          dailyTotals: [totals],
+          prMetrics: [],
+          byFeature: [feature],
+          byIde: [],
+          byLanguageFeature: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          byCli: [],
+          byVscodeAgent: [],
+        },
+      );
+
+      const listing = await handler.getCostCenters(
+        'organization',
+        'org-1',
+        day,
+        day,
+      );
+      expect(listing.costCenters).toContainEqual({
+        id: '__none__',
+        name: '__none__',
+      });
+      expect(listing.hasUsersWithoutCostCenter).toBe(false);
+      await expect(
+        handler.getDailyTotals(
+          'organization',
+          'org-1',
+          day,
+          day,
+          undefined,
+          '__none__',
+        ),
+      ).resolves.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ daily_active_users: 5 }),
+        ]),
+      );
+      await expect(
+        handler.getByFeature(
+          'organization',
+          'org-1',
+          day,
+          day,
+          undefined,
+          '__none__',
+        ),
+      ).resolves.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ feature: 'chat_panel' }),
+        ]),
+      );
+    });
+
+    it('rejects cost-center rows without a cost-center ID', async () => {
+      const day = '2026-05-10';
+
+      await expect(
+        handler.replaceCostCenterAggregates(
+          day,
+          'enterprise',
+          'ent-1',
+          [],
+          makeCostCenterAggregateRows(day, [
+            {
+              costCenterId: '',
+              teamSlug: '',
+              activeUsers: 1,
+              locAdded: 10,
+            },
+          ]),
+        ),
+      ).rejects.toThrow(
+        'Cost-center replacement rows must match the requested day and scope and must not include a team scope.',
+      );
+
+      await expect(
+        knex('copilot_daily_totals').where({
+          day,
+          metrics_type: 'enterprise',
+          entity_id: 'ent-1',
+        }),
+      ).resolves.toEqual([]);
     });
 
     it('insertDailyTotals is idempotent with conflict ignore', async () => {
@@ -318,6 +3080,406 @@ describe('DatabaseHandlerV2', () => {
       expect(rows.every(r => r.team_slug === 'team-a')).toBe(true);
     });
 
+    it('scopes aggregate inserts and reads by team or cost center', async () => {
+      const scopes = [
+        { team_slug: '', cost_center_id: '' },
+        { team_slug: 'team-a', cost_center_id: '' },
+        { team_slug: '', cost_center_id: 'cc-a' },
+      ].map(scope => ({
+        day: '2026-05-01',
+        metrics_type: 'organization' as const,
+        entity_id: 'org-1',
+        ...scope,
+      }));
+
+      await handler.insertDailyTotals(
+        scopes.map(scope => ({
+          ...buildDailyTotal(),
+          ...scope,
+        })),
+      );
+      await handler.insertPrMetrics(
+        scopes.map(scope => ({
+          ...scope,
+          total_created: 1,
+          total_merged: 1,
+          total_reviewed: 1,
+          total_created_by_copilot: 1,
+          total_merged_created_by_copilot: 1,
+          total_merged_reviewed_by_copilot: 1,
+          total_reviewed_by_copilot: 1,
+          total_suggestions: 1,
+          total_applied_suggestions: 1,
+          total_copilot_suggestions: 1,
+          total_copilot_applied_suggestions: 1,
+        })),
+      );
+      await handler.insertByFeature(
+        scopes.map(scope => ({
+          ...scope,
+          feature: 'chat_panel',
+          code_acceptance_activity_count: 1,
+          code_generation_activity_count: 1,
+          loc_added_sum: 1,
+          loc_deleted_sum: 1,
+          loc_suggested_to_add_sum: 1,
+          loc_suggested_to_delete_sum: 1,
+          user_initiated_interaction_count: 1,
+        })),
+      );
+      await handler.insertByIde(
+        scopes.map(scope => ({
+          ...scope,
+          ide: 'vscode',
+          code_acceptance_activity_count: 1,
+          code_generation_activity_count: 1,
+          loc_added_sum: 1,
+          loc_deleted_sum: 1,
+          loc_suggested_to_add_sum: 1,
+          loc_suggested_to_delete_sum: 1,
+          user_initiated_interaction_count: 1,
+        })),
+      );
+      await handler.insertByLanguageFeature(
+        scopes.map(scope => ({
+          ...scope,
+          language: 'typescript',
+          feature: 'chat_panel',
+          code_acceptance_activity_count: 1,
+          code_generation_activity_count: 1,
+          loc_added_sum: 1,
+          loc_deleted_sum: 1,
+          loc_suggested_to_add_sum: 1,
+          loc_suggested_to_delete_sum: 1,
+        })),
+      );
+      await handler.insertByModelFeature(
+        scopes.map(scope => ({
+          ...scope,
+          model_id: 'gpt-4o',
+          feature: 'chat_panel',
+          user_initiated_interaction_count: 1,
+          code_generation_activity_count: 1,
+          code_acceptance_activity_count: 1,
+          loc_added_sum: 1,
+          loc_deleted_sum: 1,
+          loc_suggested_to_add_sum: 1,
+          loc_suggested_to_delete_sum: 1,
+        })),
+      );
+      await handler.insertByLanguageModel(
+        scopes.map(scope => ({
+          ...scope,
+          language: 'typescript',
+          model_id: 'gpt-4o',
+          request_count: 1,
+          code_generation_activity_count: 1,
+          code_acceptance_activity_count: 1,
+          loc_added_sum: 1,
+          loc_deleted_sum: 1,
+          loc_suggested_to_add_sum: 1,
+          loc_suggested_to_delete_sum: 1,
+        })),
+      );
+      await handler.insertByCli(
+        scopes.map(scope => ({
+          ...scope,
+          prompt_count: 1,
+          request_count: 1,
+          session_count: 1,
+          avg_tokens_per_request: 1,
+          output_tokens_sum: 1,
+          prompt_tokens_sum: 1,
+        })),
+      );
+      await handler.insertByVscodeAgent(
+        scopes.map(scope => ({
+          ...scope,
+          session_count: 1,
+          total_user_messages: 1,
+        })),
+      );
+
+      for (const scope of scopes) {
+        const teamSlug = scope.team_slug || undefined;
+        const costCenter = scope.cost_center_id || undefined;
+        const [
+          daily,
+          prs,
+          byFeature,
+          byIde,
+          byLanguageFeature,
+          byModelFeature,
+          byLanguageModel,
+        ] = await Promise.all([
+          handler.getDailyTotals(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            costCenter,
+          ),
+          handler.getPrMetrics(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            costCenter,
+          ),
+          handler.getByFeature(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            costCenter,
+          ),
+          handler.getByIde(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            costCenter,
+          ),
+          handler.getByLanguageFeature(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            undefined,
+            costCenter,
+          ),
+          handler.getByModelFeature(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            costCenter,
+          ),
+          handler.getByLanguageModel(
+            'organization',
+            'org-1',
+            '2026-05-01',
+            '2026-05-01',
+            teamSlug,
+            costCenter,
+          ),
+        ]);
+
+        expect(daily).toHaveLength(1);
+        expect(prs).toHaveLength(1);
+        expect(byFeature).toHaveLength(1);
+        expect(byIde).toHaveLength(1);
+        expect(byLanguageFeature).toHaveLength(1);
+        expect(byModelFeature).toHaveLength(1);
+        expect(byLanguageModel).toHaveLength(1);
+        expect(daily[0].team_slug).toBe(scope.team_slug);
+        expect(daily[0].cost_center_id).toBe(scope.cost_center_id);
+      }
+
+      const cliRows = await knex('copilot_metrics_by_cli').where({
+        day: '2026-05-01',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+      });
+      const vscodeAgentRows = await knex(
+        'copilot_metrics_by_vscode_agent',
+      ).where({
+        day: '2026-05-01',
+        metrics_type: 'organization',
+        entity_id: 'org-1',
+        team_slug: '',
+      });
+      expect(cliRows).toHaveLength(2);
+      expect(vscodeAgentRows).toHaveLength(2);
+    });
+
+    it('buckets only cost-center breakdowns into additive top-ten others rows', async () => {
+      const day = '2026-05-01';
+      const costCenterScope = {
+        day,
+        metrics_type: 'organization' as const,
+        entity_id: 'org-1',
+        team_slug: '',
+        cost_center_id: 'cc-a',
+      };
+      const counts = Array.from({ length: 12 }, (_, index) => index + 1);
+      const featureRows = counts.map(count => ({
+        ...costCenterScope,
+        feature: `feature-${count}`,
+        code_generation_activity_count: count,
+        code_acceptance_activity_count: count,
+        loc_added_sum: count * 2,
+        loc_deleted_sum: count * 3,
+        loc_suggested_to_add_sum: count * 4,
+        loc_suggested_to_delete_sum: count * 5,
+        user_initiated_interaction_count: count,
+      }));
+      const ideRows = counts.map(count => ({
+        ...costCenterScope,
+        ide: `ide-${count}`,
+        code_generation_activity_count: count,
+        code_acceptance_activity_count: count,
+        loc_added_sum: count * 2,
+        loc_deleted_sum: count * 3,
+        loc_suggested_to_add_sum: count * 4,
+        loc_suggested_to_delete_sum: count * 5,
+        user_initiated_interaction_count: count,
+      }));
+      const languageFeatureRows = counts.map(count => ({
+        ...costCenterScope,
+        language: `language-${count}`,
+        feature: `feature-${count}`,
+        code_generation_activity_count: count,
+        code_acceptance_activity_count: count,
+        loc_added_sum: count * 2,
+        loc_deleted_sum: count * 3,
+        loc_suggested_to_add_sum: count * 4,
+        loc_suggested_to_delete_sum: count * 5,
+      }));
+      const modelFeatureRows = counts.map(count => ({
+        ...costCenterScope,
+        model_id: `model-${count}`,
+        feature: `feature-${count}`,
+        user_initiated_interaction_count: count,
+        code_generation_activity_count: count,
+        code_acceptance_activity_count: count,
+        loc_added_sum: count * 2,
+        loc_deleted_sum: count * 3,
+        loc_suggested_to_add_sum: count * 4,
+        loc_suggested_to_delete_sum: count * 5,
+      }));
+      const languageModelRows = counts.map(count => ({
+        ...costCenterScope,
+        language: `language-${count}`,
+        model_id: `model-${count}`,
+        request_count: count,
+        code_generation_activity_count: count,
+        code_acceptance_activity_count: count,
+        loc_added_sum: count * 2,
+        loc_deleted_sum: count * 3,
+        loc_suggested_to_add_sum: count * 4,
+        loc_suggested_to_delete_sum: count * 5,
+      }));
+
+      await Promise.all([
+        handler.insertByFeature(featureRows),
+        handler.insertByIde(ideRows),
+        handler.insertByLanguageFeature(languageFeatureRows),
+        handler.insertByModelFeature(modelFeatureRows),
+        handler.insertByLanguageModel(languageModelRows),
+      ]);
+      await handler.insertByFeature(
+        counts.map(count => ({
+          ...featureRows[count - 1],
+          cost_center_id: '',
+        })),
+      );
+      await handler.insertByFeature(
+        counts.map(count => ({
+          ...featureRows[count - 1],
+          cost_center_id: '',
+          team_slug: 'demo-team',
+        })),
+      );
+
+      const [
+        features,
+        ides,
+        languageFeatures,
+        modelFeatures,
+        languageModels,
+        dashboard,
+        unscopedFeatures,
+        teamFeatures,
+      ] = await Promise.all([
+        handler.getByFeature(
+          'organization',
+          'org-1',
+          day,
+          day,
+          undefined,
+          'cc-a',
+        ),
+        handler.getByIde('organization', 'org-1', day, day, undefined, 'cc-a'),
+        handler.getByLanguageFeature(
+          'organization',
+          'org-1',
+          day,
+          day,
+          undefined,
+          undefined,
+          'cc-a',
+        ),
+        handler.getByModelFeature(
+          'organization',
+          'org-1',
+          day,
+          day,
+          undefined,
+          'cc-a',
+        ),
+        handler.getByLanguageModel(
+          'organization',
+          'org-1',
+          day,
+          day,
+          undefined,
+          'cc-a',
+        ),
+        handler.getDashboardData('organization', 'org-1', day, day, undefined, {
+          kind: 'costCenter',
+          id: 'cc-a',
+        }),
+        handler.getByFeature('organization', 'org-1', day, day),
+        handler.getByFeature('organization', 'org-1', day, day, 'demo-team'),
+      ]);
+
+      for (const [rows, dimension] of [
+        [features, 'feature'],
+        [ides, 'ide'],
+        [languageFeatures, 'language'],
+        [modelFeatures, 'model_id'],
+        [languageModels, 'language'],
+      ] as const) {
+        expect(rows).toHaveLength(11);
+        const others = rows.find(
+          row =>
+            (row as unknown as Record<string, unknown>)[dimension] === 'others',
+        );
+        expect(others).toBeDefined();
+        expect(others?.code_generation_activity_count).toBe(3);
+        expect(others?.loc_added_sum).toBe(6);
+      }
+
+      expect(languageFeatures.at(-1)).toEqual(
+        expect.objectContaining({ language: 'others', feature: 'others' }),
+      );
+      expect(modelFeatures.at(-1)).toEqual(
+        expect.objectContaining({ model_id: 'others', feature: 'others' }),
+      );
+      expect(languageModels.at(-1)).toEqual(
+        expect.objectContaining({ language: 'others', model_id: 'others' }),
+      );
+      expect(languageModels.at(-1)?.request_count).toBe(3);
+      expect(dashboard.byFeature).toHaveLength(11);
+      expect(dashboard.byLanguage).toHaveLength(11);
+      expect(dashboard.byModelFeature).toHaveLength(11);
+      expect(dashboard.byLanguageModel).toHaveLength(11);
+      expect(unscopedFeatures).toHaveLength(12);
+      expect(unscopedFeatures.some(row => row.feature === 'others')).toBe(
+        false,
+      );
+      expect(teamFeatures).toHaveLength(12);
+      expect(teamFeatures.some(row => row.feature === 'others')).toBe(false);
+    });
+
     it('getDailyTotals always returns day as a plain YYYY-MM-DD string, regardless of database driver (regression test for #9540)', async () => {
       // On Postgres, Knex deserializes a `date` column as a JS Date object.
       // Before the fix, that Date was returned as-is and serialized by
@@ -341,6 +3503,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals computes rolling weekly/monthly active users for teams', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
       ]);
@@ -399,6 +3562,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals anchors rolling windows to each returned day', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-11', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-08', team_slug: 'team-a' }),
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
@@ -485,16 +3649,29 @@ describe('DatabaseHandlerV2', () => {
           used_chat: false,
         },
       ];
+      const fakeCoverageRows = buildTeamCoverageRows(
+        '2026-04-13',
+        '2026-05-10',
+      );
       const fakeQuery = {
         join: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         whereBetween: jest.fn().mockReturnThis(),
+        whereRaw: jest.fn().mockReturnThis(),
         select: jest.fn().mockResolvedValue(fakeActivityRows),
       };
-      (handler as any).db = jest.fn().mockReturnValue(fakeQuery);
+      const fakeCoverageQuery = {
+        where: jest.fn().mockReturnThis(),
+        whereBetween: jest.fn().mockReturnThis(),
+        select: jest.fn().mockResolvedValue(fakeCoverageRows),
+      };
+      (handler as any).db = jest.fn((table: string) =>
+        table === 'copilot_ingestion_log' ? fakeCoverageQuery : fakeQuery,
+      );
 
       try {
-        const rows = await (handler as any).enrichTeamRollingActiveUsers(
+        const rows = await (handler as any).enrichScopedRollingActiveUsers(
           [
             buildDailyTotal({
               day: new Date('2026-05-10T00:00:00.000Z') as any,
@@ -519,6 +3696,7 @@ describe('DatabaseHandlerV2', () => {
     });
 
     it('getDailyTotals only counts users active within the selected team', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
       ]);
@@ -558,6 +3736,348 @@ describe('DatabaseHandlerV2', () => {
       expect(rows[0].monthly_active_users).toBe(1);
     });
 
+    it.each([
+      {
+        missingComponent: 'users',
+        components_loaded: JSON.stringify(['totals', 'teams']),
+      },
+      {
+        missingComponent: 'teams',
+        components_loaded: JSON.stringify(['totals', 'users']),
+      },
+    ])(
+      'withholds team rolling counts when $missingComponent coverage is missing',
+      async ({ components_loaded }) => {
+        const currentDay = '2026-05-10';
+        await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+          '2026-05-09': { components_loaded },
+        });
+        await handler.insertDailyTotals([
+          buildDailyTotal({ day: currentDay, team_slug: 'team-a' }),
+        ]);
+        await handler.insertUserMetrics([
+          buildUserMetric({
+            day: currentDay,
+            user_id: 1,
+            user_login: 'u1',
+            used_agent: false,
+            used_chat: false,
+          }),
+        ]);
+        await handler.insertUserTeams([
+          buildUserTeam({
+            day: currentDay,
+            user_id: 1,
+            user_login: 'u1',
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ]);
+
+        const rows = await handler.getDailyTotals(
+          'organization',
+          'org-1',
+          currentDay,
+          currentDay,
+          'team-a',
+        );
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].weekly_active_users).toBeUndefined();
+        expect(rows[0].monthly_active_users).toBeUndefined();
+        expect(rows[0].monthly_active_agent_users).toBeUndefined();
+        expect(rows[0].monthly_active_chat_users).toBeUndefined();
+      },
+    );
+
+    it('keeps weekly team counts when a gap is only in monthly coverage', async () => {
+      const currentDay = '2026-05-10';
+      const gapDay = '2026-05-01';
+      await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+        [gapDay]: { components_loaded: JSON.stringify(['totals', 'users']) },
+      });
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: currentDay, team_slug: 'team-a' }),
+      ]);
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+      ]);
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+
+      await knex('copilot_ingestion_log')
+        .where({
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          day: gapDay,
+        })
+        .update({
+          status: 'error',
+          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
+        });
+
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBe(1);
+      expect(rows[0].monthly_active_agent_users).toBe(0);
+      expect(rows[0].monthly_active_chat_users).toBe(0);
+    });
+
+    it('combines team completeness with no-cost-center completeness', async () => {
+      const currentDay = '2026-05-10';
+      const incompleteDay = '2026-05-09';
+      await insertTeamCoverageLogs(knex, '2026-04-13', currentDay, {
+        [incompleteDay]: {
+          components_loaded: JSON.stringify(['totals', 'users']),
+        },
+      });
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({
+          day: currentDay,
+          team_slug: 'team-a',
+          cost_center_id: '',
+        }),
+        without_cost_center: true,
+      });
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+      ]);
+      for (const day of [
+        '2026-05-04',
+        '2026-05-05',
+        '2026-05-06',
+        '2026-05-07',
+        '2026-05-08',
+        currentDay,
+      ]) {
+        await handler.markCostCenterAggregationDone(
+          day,
+          'organization',
+          'org-1',
+        );
+      }
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBeUndefined();
+
+      await handler.markCostCenterAggregationDone(
+        incompleteDay,
+        'organization',
+        'org-1',
+      );
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows[0].weekly_active_users).toBeUndefined();
+
+      await knex('copilot_ingestion_log')
+        .where({
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          day: incompleteDay,
+        })
+        .update({
+          status: 'error',
+          components_loaded: JSON.stringify(['totals', 'users', 'teams']),
+        });
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        'team-a',
+        { kind: 'noCostCenter' },
+      );
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+    });
+
+    it('computes rolling active users for cost centers and teams independently', async () => {
+      await insertTeamCoverageLogs(knex, '2026-04-13', '2026-05-10');
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          day: '2026-05-10',
+          team_slug: '',
+          cost_center_id: 'cc-a',
+        }),
+        buildDailyTotal({
+          day: '2026-05-10',
+          team_slug: 'team-a',
+        }),
+      ]);
+
+      const activity: Array<{
+        day: string;
+        user_id: number;
+        cost_center_id: string;
+        team_slug: string;
+        used_agent?: boolean;
+        used_chat?: boolean;
+      }> = [
+        {
+          day: '2026-05-04',
+          user_id: 1,
+          cost_center_id: 'cc-a',
+          team_slug: 'team-a',
+          used_agent: true,
+        },
+        {
+          day: '2026-05-10',
+          user_id: 1,
+          cost_center_id: 'cc-a',
+          team_slug: 'team-a',
+        },
+        {
+          day: '2026-05-08',
+          user_id: 2,
+          cost_center_id: 'cc-a',
+          team_slug: 'team-a',
+          used_chat: true,
+        },
+        {
+          day: '2026-05-01',
+          user_id: 3,
+          cost_center_id: 'cc-a',
+          team_slug: 'team-b',
+        },
+        {
+          day: '2026-05-09',
+          user_id: 4,
+          cost_center_id: 'cc-a',
+          team_slug: 'team-b',
+        },
+        {
+          day: '2026-05-10',
+          user_id: 5,
+          cost_center_id: 'cc-b',
+          team_slug: 'team-a',
+        },
+      ];
+
+      await handler.insertUserMetrics(
+        activity.map(row =>
+          buildUserMetric({
+            day: row.day,
+            user_id: row.user_id,
+            user_login: `u${row.user_id}`,
+            used_agent: row.used_agent ?? false,
+            used_chat: row.used_chat ?? false,
+          }),
+        ),
+      );
+      await handler.upsertUserCostCenters(
+        activity.map(row => ({
+          day: row.day,
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          user_id: row.user_id,
+          user_login: `u${row.user_id}`,
+          cost_center_id: row.cost_center_id,
+        })),
+      );
+      await handler.insertUserTeams(
+        activity.map(row =>
+          buildUserTeam({
+            day: row.day,
+            user_id: row.user_id,
+            user_login: `u${row.user_id}`,
+            team_slug: row.team_slug,
+            team_id: row.team_slug === 'team-a' ? 1 : 2,
+          }),
+        ),
+      );
+
+      const costCenterRows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+        undefined,
+        'cc-a',
+      );
+      const teamRows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(costCenterRows[0]).toEqual(
+        expect.objectContaining({
+          weekly_active_users: 3,
+          monthly_active_users: 4,
+          monthly_active_agent_users: 1,
+          monthly_active_chat_users: 1,
+        }),
+      );
+      expect(teamRows[0]).toEqual(
+        expect.objectContaining({
+          weekly_active_users: 3,
+          monthly_active_users: 3,
+          monthly_active_agent_users: 1,
+          monthly_active_chat_users: 1,
+        }),
+      );
+    });
+
     it('getDailyTotals leaves org-level rolling counts untouched', async () => {
       await handler.insertDailyTotals([
         buildDailyTotal({
@@ -595,6 +4115,110 @@ describe('DatabaseHandlerV2', () => {
       });
     });
 
+    it('getPeriodRange scopes its date range by cost center', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-01', cost_center_id: '' }),
+        buildDailyTotal({ day: '2026-05-03', cost_center_id: 'cc-a' }),
+        buildDailyTotal({ day: '2026-05-05', cost_center_id: 'cc-b' }),
+      ]);
+
+      await expect(
+        handler.getPeriodRange('organization', 'org-1'),
+      ).resolves.toEqual({
+        minDate: '2026-05-01',
+        maxDate: '2026-05-01',
+      });
+      await expect(
+        handler.getPeriodRange('organization', 'org-1', 'cc-a'),
+      ).resolves.toEqual({
+        minDate: '2026-05-03',
+        maxDate: '2026-05-03',
+      });
+    });
+
+    it('replaces team aggregates without deleting cost-center aggregates', async () => {
+      const day = '2026-05-01';
+      const scope = {
+        day,
+        metrics_type: 'enterprise' as const,
+        entity_id: 'ent-1',
+      };
+      await handler.insertUserTeams([
+        buildUserTeam({ ...scope, team_slug: 'old-team' }),
+      ]);
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          ...scope,
+          team_slug: 'old-team',
+          cost_center_id: '',
+        }),
+        buildDailyTotal({
+          ...scope,
+          team_slug: 'old-team',
+          cost_center_id: 'cc-a',
+        }),
+      ]);
+
+      const newMembership = buildUserTeam({
+        ...scope,
+        team_slug: 'new-team',
+        user_id: 2,
+        user_login: 'user-two',
+      });
+      await handler.replaceTeamAggregates(
+        day,
+        'enterprise',
+        'ent-1',
+        [newMembership],
+        {
+          dailyTotals: [
+            buildDailyTotal({
+              ...scope,
+              team_slug: 'new-team',
+              daily_active_users: 1,
+            }),
+          ],
+          byFeature: [],
+          byIde: [],
+          byLanguageFeature: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          customizationMetrics: [],
+          costCenterCustomizationMetrics: [],
+        },
+      );
+
+      const memberships = await knex('copilot_user_teams').where({
+        day,
+        metrics_type: 'enterprise',
+        entity_id: 'ent-1',
+      });
+      expect(memberships).toHaveLength(1);
+      expect(memberships[0].team_slug).toBe('new-team');
+      expect(Number(memberships[0].user_id)).toBe(2);
+      await expect(
+        knex('copilot_daily_totals').where({
+          ...scope,
+          team_slug: 'old-team',
+          cost_center_id: '',
+        }),
+      ).resolves.toHaveLength(0);
+      await expect(
+        knex('copilot_daily_totals').where({
+          ...scope,
+          team_slug: 'old-team',
+          cost_center_id: 'cc-a',
+        }),
+      ).resolves.toHaveLength(1);
+      await expect(
+        knex('copilot_daily_totals').where({
+          ...scope,
+          team_slug: 'new-team',
+          cost_center_id: '',
+        }),
+      ).resolves.toHaveLength(1);
+    });
+
     it('getTeams returns only team slugs with 5 or more distinct members', async () => {
       // 'alpha' has 5 members — should be returned
       await handler.insertUserTeams([
@@ -609,7 +4233,6 @@ describe('DatabaseHandlerV2', () => {
         buildUserTeam({ team_slug: 'beta', user_id: 3, user_login: 'u3' }),
         buildUserTeam({ team_slug: 'beta', user_id: 4, user_login: 'u4' }),
       ]);
-
       const teams = await handler.getTeams(
         'organization',
         'org-1',
@@ -618,6 +4241,584 @@ describe('DatabaseHandlerV2', () => {
       );
 
       expect(teams).toEqual(['alpha']);
+    });
+
+    it('getCostCenters applies the distinct-user threshold and reports unassigned users separately', async () => {
+      await handler.upsertCostCenters([
+        {
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          cost_center_id: 'cc-alpha',
+          name: 'Alpha',
+        },
+      ]);
+
+      const membershipRows: V2UserCostCenterRow[] = [];
+      const addMemberships = (
+        day: string,
+        costCenterId: string,
+        userIds: number[],
+      ) => {
+        membershipRows.push(
+          ...userIds.map(userId => ({
+            day,
+            metrics_type: 'organization' as const,
+            entity_id: 'org-1',
+            user_id: userId,
+            user_login: `u${userId}`,
+            cost_center_id: costCenterId,
+          })),
+        );
+      };
+
+      addMemberships('2026-05-01', 'cc-alpha', [1, 2, 3, 4, 5]);
+      addMemberships('2026-05-02', 'cc-alpha', [1]);
+      addMemberships('2026-05-01', 'cc-small', [11, 12, 13, 14]);
+      addMemberships('2026-05-01', 'cc-unknown', [31, 32, 33, 34, 35]);
+      addMemberships('2026-05-03', 'cc-outside-range', [41, 42, 43, 44, 45]);
+      await handler.upsertUserCostCenters(membershipRows);
+      await handler.insertUserMetrics([
+        ...[1, 2, 3, 4, 5, 21, 22, 23, 24, 25, 31, 32, 33, 34, 35].map(userId =>
+          buildUserMetric({ user_id: userId, user_login: `u${userId}` }),
+        ),
+        ...[11, 12, 13, 14].map(userId =>
+          buildUserMetric({ user_id: userId, user_login: `u${userId}` }),
+        ),
+        ...[41, 42, 43, 44, 45].map(userId =>
+          buildUserMetric({
+            day: '2026-05-03',
+            user_id: userId,
+            user_login: `u${userId}`,
+          }),
+        ),
+        buildUserMetric({
+          day: '2026-05-02',
+          user_id: 1,
+          user_login: 'u1',
+        }),
+      ]);
+      await Promise.all(
+        ['2026-05-01', '2026-05-02', '2026-05-03'].map(day =>
+          handler.markCostCenterAggregationDone(day, 'organization', 'org-1'),
+        ),
+      );
+
+      const costCenters = await handler.getCostCenters(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-02',
+      );
+
+      expect(costCenters.costCenters).toEqual(
+        expect.arrayContaining([
+          { id: 'cc-alpha', name: 'Alpha' },
+          { id: 'cc-unknown', name: 'cc-unknown' },
+        ]),
+      );
+      expect(
+        costCenters.costCenters.map(costCenter => costCenter.id),
+      ).not.toContain('cc-small');
+      expect(
+        costCenters.costCenters.map(costCenter => costCenter.id),
+      ).not.toContain('cc-outside-range');
+      expect(costCenters.hasUsersWithoutCostCenter).toBe(true);
+      expect(
+        costCenters.costCenters
+          .filter(costCenter => costCenter.name !== null)
+          .map(costCenter => costCenter.name),
+      ).toEqual(['Alpha', 'cc-unknown']);
+      const lowerThreshold = await handler.getCostCenters(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-02',
+        4,
+      );
+      expect(lowerThreshold.costCenters).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'cc-small', name: 'cc-small' }),
+        ]),
+      );
+      expect(lowerThreshold.hasUsersWithoutCostCenter).toBe(true);
+    });
+
+    it('omits incomplete unassigned days and withholds rolling windows spanning them', async () => {
+      const currentDay = '2026-05-10';
+      const incompleteDay = '2026-05-09';
+      const scope = {
+        metrics_type: 'organization' as const,
+        entity_id: 'org-1',
+      };
+
+      await handler.insertUserMetrics([
+        ...[1, 2, 3, 4].map(userId =>
+          buildUserMetric({
+            ...scope,
+            day: currentDay,
+            user_id: userId,
+            user_login: `user-${userId}`,
+            used_agent: false,
+            used_chat: false,
+          }),
+        ),
+        buildUserMetric({
+          ...scope,
+          day: incompleteDay,
+          user_id: 5,
+          user_login: 'user-5',
+          used_agent: false,
+          used_chat: false,
+        }),
+        buildUserMetric({
+          ...scope,
+          day: '2026-05-08',
+          user_id: 6,
+          user_login: 'user-6',
+          used_agent: false,
+          used_chat: false,
+        }),
+      ]);
+      await knex('copilot_daily_totals').insert(
+        [currentDay, incompleteDay, '2026-05-08'].map(day => ({
+          ...buildDailyTotal({
+            ...scope,
+            day,
+            team_slug: '',
+            cost_center_id: '',
+            daily_active_users: day === currentDay ? 4 : 1,
+          }),
+          without_cost_center: true,
+        })),
+      );
+      await knex('copilot_metrics_by_feature').insert(
+        [currentDay, incompleteDay].map(day => ({
+          ...scope,
+          day,
+          team_slug: '',
+          cost_center_id: '',
+          without_cost_center: true,
+          feature: 'completion',
+          code_acceptance_activity_count: 1,
+          code_generation_activity_count: 1,
+          loc_added_sum: 1,
+          loc_deleted_sum: 0,
+          loc_suggested_to_add_sum: 0,
+          loc_suggested_to_delete_sum: 0,
+          user_initiated_interaction_count: 1,
+        })),
+      );
+      for (const day of [
+        '2026-05-04',
+        '2026-05-05',
+        '2026-05-06',
+        '2026-05-07',
+        '2026-05-08',
+        currentDay,
+      ]) {
+        await handler.markCostCenterAggregationDone(
+          day,
+          'organization',
+          'org-1',
+        );
+      }
+      await handler.markCostCenterAggregationDone(
+        incompleteDay,
+        'organization',
+        'org-1',
+        false,
+      );
+
+      let rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        incompleteDay,
+        currentDay,
+        undefined,
+        { kind: 'noCostCenter' },
+      );
+      expect(rows.map(row => row.day)).toEqual([currentDay]);
+      const byFeatureRequest = handler.getByFeature(
+        'organization',
+        'org-1',
+        incompleteDay,
+        currentDay,
+        undefined,
+        { kind: 'noCostCenter' },
+      );
+      const byFeature = await byFeatureRequest;
+      expect(byFeature.map(row => row.day)).toEqual([currentDay]);
+      expect(rows[0].weekly_active_users).toBeUndefined();
+      expect(rows[0].monthly_active_users).toBeUndefined();
+      await expect(
+        handler.getCostCenters(
+          'organization',
+          'org-1',
+          incompleteDay,
+          currentDay,
+        ),
+      ).resolves.toEqual({
+        costCenters: [],
+        hasUsersWithoutCostCenter: false,
+      });
+      await expect(
+        handler.hasUsersWithoutCostCenterOnDashboard(
+          'organization',
+          'org-1',
+          rows,
+        ),
+      ).resolves.toBe(false);
+
+      await handler.markCostCenterAggregationDone(
+        incompleteDay,
+        'organization',
+        'org-1',
+      );
+      rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        undefined,
+        { kind: 'noCostCenter' },
+      );
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(6);
+      expect(rows[0].monthly_active_users).toBeUndefined();
+      await expect(
+        handler.getCostCenters(
+          'organization',
+          'org-1',
+          incompleteDay,
+          currentDay,
+        ),
+      ).resolves.toEqual({
+        costCenters: [],
+        hasUsersWithoutCostCenter: true,
+      });
+      await expect(
+        handler.hasUsersWithoutCostCenterOnDashboard(
+          'organization',
+          'org-1',
+          rows,
+        ),
+      ).resolves.toBe(false);
+    });
+
+    it('checks no-cost-center eligibility only against returned days, not rolling lookback', async () => {
+      const currentDay = '2026-05-10';
+      const earlierDays = [
+        '2026-05-06',
+        '2026-05-07',
+        '2026-05-08',
+        '2026-05-09',
+      ];
+      const completeDays = [
+        '2026-05-04',
+        '2026-05-05',
+        ...earlierDays,
+        currentDay,
+      ];
+
+      await handler.insertUserMetrics([
+        buildUserMetric({
+          day: currentDay,
+          user_id: 1,
+          user_login: 'current-user',
+          used_agent: false,
+          used_chat: false,
+        }),
+        ...earlierDays.map((day, index) =>
+          buildUserMetric({
+            day,
+            user_id: index + 2,
+            user_login: `earlier-user-${index + 1}`,
+            used_agent: false,
+            used_chat: false,
+          }),
+        ),
+      ]);
+      await knex('copilot_daily_totals').insert(
+        [currentDay, ...earlierDays].map(day => ({
+          ...buildDailyTotal({
+            day,
+            team_slug: '',
+            cost_center_id: '',
+            daily_active_users: 1,
+          }),
+          without_cost_center: true,
+        })),
+      );
+      for (const day of completeDays) {
+        await handler.markCostCenterAggregationDone(
+          day,
+          'organization',
+          'org-1',
+        );
+      }
+
+      const dailyRows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        currentDay,
+        currentDay,
+        undefined,
+        { kind: 'noCostCenter' },
+      );
+      expect(dailyRows).toHaveLength(1);
+      expect(dailyRows[0].daily_active_users).toBe(1);
+      expect(dailyRows[0].weekly_active_users).toBe(5);
+      await expect(
+        handler.hasUsersWithoutCostCenterOnDashboard(
+          'organization',
+          'org-1',
+          dailyRows,
+        ),
+      ).resolves.toBe(false);
+    });
+
+    it('withholds no-cost-center data when organization user reports are unavailable', async () => {
+      const day = '2026-05-16';
+      const scope = {
+        day,
+        metrics_type: 'organization' as const,
+        entity_id: 'org-1',
+      };
+      await handler.upsertCostCenters([
+        {
+          metrics_type: 'organization',
+          entity_id: 'org-1',
+          cost_center_id: 'cc-known',
+          name: 'Known center',
+        },
+      ]);
+      await handler.insertUserMetrics(
+        Array.from({ length: 10 }, (_, index) =>
+          buildUserMetric({
+            ...scope,
+            user_id: index + 1,
+            user_login: `user-${index + 1}`,
+          }),
+        ),
+      );
+      await knex('copilot_daily_totals').insert({
+        ...buildDailyTotal({
+          ...scope,
+          team_slug: '',
+          cost_center_id: '',
+          daily_active_users: 5,
+        }),
+        without_cost_center: true,
+      });
+
+      const memberships: V2UserCostCenterRow[] = Array.from(
+        { length: 5 },
+        (_, index) => ({
+          ...scope,
+          user_id: index + 1,
+          user_login: `user-${index + 1}`,
+          cost_center_id: 'cc-known',
+        }),
+      );
+      await handler.replaceCostCenterAggregates(
+        day,
+        'organization',
+        'org-1',
+        memberships,
+        makeCostCenterAggregateRows(
+          day,
+          [
+            {
+              costCenterId: 'cc-known',
+              teamSlug: '',
+              activeUsers: 5,
+              locAdded: 50,
+            },
+          ],
+          'organization',
+          'org-1',
+        ),
+        false,
+      );
+
+      const listing = await handler.getCostCenters(
+        'organization',
+        'org-1',
+        day,
+        day,
+      );
+      const noCostCenterRows = await knex('copilot_daily_totals').where({
+        ...scope,
+        team_slug: '',
+        cost_center_id: '',
+        without_cost_center: true,
+      });
+      const completion = await knex('copilot_cost_center_aggregation_log')
+        .where(scope)
+        .first();
+
+      expect(listing.costCenters).toEqual([
+        { id: 'cc-known', name: 'Known center' },
+      ]);
+      expect(listing.hasUsersWithoutCostCenter).toBe(false);
+      expect(noCostCenterRows).toHaveLength(0);
+      expect(Boolean(completion.unassigned_complete)).toBe(false);
+    });
+
+    it('keeps cost-center names isolated by metrics scope', async () => {
+      await handler.upsertCostCenters([
+        {
+          metrics_type: 'enterprise',
+          entity_id: 'shared',
+          cost_center_id: 'cc-shared',
+          name: 'Enterprise center',
+        },
+        {
+          metrics_type: 'organization',
+          entity_id: 'shared',
+          cost_center_id: 'cc-shared',
+          name: 'Organization center',
+        },
+      ]);
+
+      const addScopeRows = (metricsType: 'enterprise' | 'organization') => {
+        const members = [1, 2, 3, 4, 5].map(userId => ({
+          day: '2026-05-01',
+          metrics_type: metricsType,
+          entity_id: 'shared',
+          user_id: userId,
+          user_login: `${metricsType}-${userId}`,
+          cost_center_id: 'cc-shared',
+        }));
+        return {
+          members,
+          metrics: members.map(member =>
+            buildUserMetric({
+              metrics_type: metricsType,
+              entity_id: 'shared',
+              user_id: member.user_id,
+              user_login: member.user_login,
+            }),
+          ),
+        };
+      };
+      const enterpriseRows = addScopeRows('enterprise');
+      const organizationRows = addScopeRows('organization');
+      await handler.upsertUserCostCenters([
+        ...enterpriseRows.members,
+        ...organizationRows.members,
+      ]);
+      await handler.insertUserMetrics([
+        ...enterpriseRows.metrics,
+        ...organizationRows.metrics,
+      ]);
+
+      await expect(
+        handler.getCostCenters('enterprise', 'shared'),
+      ).resolves.toEqual({
+        costCenters: [{ id: 'cc-shared', name: 'Enterprise center' }],
+        hasUsersWithoutCostCenter: false,
+      });
+      await expect(
+        handler.getCostCenters('organization', 'shared'),
+      ).resolves.toEqual({
+        costCenters: [{ id: 'cc-shared', name: 'Organization center' }],
+        hasUsersWithoutCostCenter: false,
+      });
+    });
+
+    it('does not count membership-only users toward the cost-center threshold', async () => {
+      await handler.upsertUserCostCenters(
+        [1, 2, 3, 4, 5].map(userId => ({
+          day: '2026-05-01',
+          metrics_type: 'organization' as const,
+          entity_id: 'org-1',
+          user_id: userId,
+          user_login: `u${userId}`,
+          cost_center_id: 'cc-membership-only',
+        })),
+      );
+      await handler.insertUserTeams(
+        [1, 2, 3, 4, 5].map(userId =>
+          buildUserTeam({
+            user_id: userId,
+            user_login: `u${userId}`,
+            team_slug: 'membership-only-team',
+          }),
+        ),
+      );
+      await handler.insertUserMetrics(
+        [1, 2, 3, 4].map(userId =>
+          buildUserMetric({ user_id: userId, user_login: `u${userId}` }),
+        ),
+      );
+
+      await expect(
+        handler.getCostCenters(
+          'organization',
+          'org-1',
+          '2026-05-01',
+          '2026-05-01',
+        ),
+      ).resolves.toEqual({
+        costCenters: [],
+        hasUsersWithoutCostCenter: false,
+      });
+    });
+
+    it('getTeams ignores cost-center memberships and keeps its team-only scope', async () => {
+      const teamRows = [
+        ...[1, 2, 3, 4, 5, 6].map(userId =>
+          buildUserTeam({
+            day: '2026-05-01',
+            user_id: userId,
+            user_login: `u${userId}`,
+            team_id: 1,
+            team_slug: 'alpha',
+          }),
+        ),
+        ...[11, 12, 13, 14, 15, 16].map(userId =>
+          buildUserTeam({
+            day: '2026-05-01',
+            user_id: userId,
+            user_login: `u${userId}`,
+            team_id: 2,
+            team_slug: 'beta',
+          }),
+        ),
+      ];
+      await handler.insertUserTeams(teamRows);
+      await handler.insertUserMetrics(
+        [...[1, 2, 3, 4, 5, 6], ...[11, 12, 13, 14, 15]].map(userId =>
+          buildUserMetric({
+            day: '2026-05-01',
+            user_id: userId,
+            user_login: `u${userId}`,
+          }),
+        ),
+      );
+      await handler.upsertUserCostCenters([
+        ...[1, 2, 3, 4, 5, 11, 12, 13, 14].map(userId => ({
+          day: '2026-05-01',
+          metrics_type: 'organization' as const,
+          entity_id: 'org-1',
+          user_id: userId,
+          user_login: `u${userId}`,
+          cost_center_id: 'cc-a',
+        })),
+        ...[6, 15].map(userId => ({
+          day: '2026-05-01',
+          metrics_type: 'organization' as const,
+          entity_id: 'org-1',
+          user_id: userId,
+          user_login: `u${userId}`,
+          cost_center_id: 'cc-b',
+        })),
+      ]);
+
+      await expect(
+        handler.getTeams('organization', 'org-1', '2026-05-01', '2026-05-01'),
+      ).resolves.toEqual(['alpha', 'beta']);
     });
 
     it('getTeams counts distinct members across days, not per-day rows', async () => {
@@ -655,7 +4856,6 @@ describe('DatabaseHandlerV2', () => {
         }),
         // only 4 distinct users — should be excluded
       ]);
-
       const teams = await handler.getTeams(
         'organization',
         'org-1',
@@ -928,6 +5128,54 @@ function buildIngestionLog(
   };
 }
 
+function buildTeamCoverageRows(
+  from: string,
+  to: string,
+  overrides: Record<
+    string,
+    Partial<Pick<V2IngestionLogRow, 'status' | 'components_loaded'>>
+  > = {},
+): V2IngestionLogRow[] {
+  const start = DateTime.fromISO(from, { zone: 'utc' }).startOf('day');
+  const end = DateTime.fromISO(to, { zone: 'utc' }).startOf('day');
+  if (!start.isValid || !end.isValid || start > end) {
+    throw new Error('Invalid team coverage date range.');
+  }
+
+  const rows: V2IngestionLogRow[] = [];
+  for (let cursor = start; cursor <= end; cursor = cursor.plus({ days: 1 })) {
+    const day = cursor.toISODate();
+    if (!day) {
+      throw new Error('Invalid team coverage day.');
+    }
+
+    rows.push(
+      buildIngestionLog({
+        day,
+        components_loaded:
+          overrides[day]?.components_loaded ??
+          JSON.stringify(['totals', 'users', 'teams']),
+        status: overrides[day]?.status ?? 'success',
+      }),
+    );
+  }
+  return rows;
+}
+
+async function insertTeamCoverageLogs(
+  knex: Knex,
+  from: string,
+  to: string,
+  overrides: Record<
+    string,
+    Partial<Pick<V2IngestionLogRow, 'status' | 'components_loaded'>>
+  > = {},
+): Promise<void> {
+  await knex('copilot_ingestion_log').insert(
+    buildTeamCoverageRows(from, to, overrides),
+  );
+}
+
 function buildDailyTotal(overrides: Partial<V2DailyTotal> = {}): V2DailyTotal {
   return {
     day: '2026-05-01',
@@ -948,6 +5196,127 @@ function buildDailyTotal(overrides: Partial<V2DailyTotal> = {}): V2DailyTotal {
     loc_suggested_to_delete_sum: 700,
     user_initiated_interaction_count: 33,
     ...overrides,
+  };
+}
+
+function makeCostCenterAggregateRows(
+  day: string,
+  groups: Array<{
+    costCenterId: string;
+    teamSlug: string;
+    activeUsers: number;
+    locAdded: number;
+  }>,
+  metricsType: 'enterprise' | 'organization' = 'enterprise',
+  entityId: string = 'ent-1',
+): CostCenterAggregateRows {
+  const scopes = groups.map(
+    ({ costCenterId, teamSlug, activeUsers, locAdded }) => ({
+      scope: {
+        day,
+        metrics_type: metricsType,
+        entity_id: entityId,
+        team_slug: teamSlug,
+        cost_center_id: costCenterId,
+      },
+      activeUsers,
+      locAdded,
+    }),
+  );
+
+  return {
+    dailyTotals: scopes.map(({ activeUsers, locAdded, scope }) =>
+      buildDailyTotal({
+        ...scope,
+        daily_active_users: activeUsers,
+        loc_added_sum: locAdded,
+      }),
+    ),
+    prMetrics: scopes.map(({ activeUsers, scope }) => ({
+      ...scope,
+      total_created: activeUsers,
+      total_merged: activeUsers,
+      total_reviewed: activeUsers,
+      total_created_by_copilot: activeUsers,
+      total_merged_created_by_copilot: activeUsers,
+      total_merged_reviewed_by_copilot: activeUsers,
+      total_reviewed_by_copilot: activeUsers,
+      total_suggestions: activeUsers,
+      total_applied_suggestions: activeUsers,
+      total_copilot_suggestions: activeUsers,
+      total_copilot_applied_suggestions: activeUsers,
+    })),
+    byFeature: scopes.map(({ activeUsers, locAdded, scope }) => ({
+      ...scope,
+      feature: 'chat_panel',
+      code_acceptance_activity_count: activeUsers,
+      code_generation_activity_count: activeUsers,
+      loc_added_sum: locAdded,
+      loc_deleted_sum: 0,
+      loc_suggested_to_add_sum: 0,
+      loc_suggested_to_delete_sum: 0,
+      user_initiated_interaction_count: activeUsers,
+    })),
+    byIde: scopes.map(({ activeUsers, locAdded, scope }) => ({
+      ...scope,
+      ide: 'vscode',
+      code_acceptance_activity_count: activeUsers,
+      code_generation_activity_count: activeUsers,
+      loc_added_sum: locAdded,
+      loc_deleted_sum: 0,
+      loc_suggested_to_add_sum: 0,
+      loc_suggested_to_delete_sum: 0,
+      user_initiated_interaction_count: activeUsers,
+    })),
+    byLanguageFeature: scopes.map(({ activeUsers, locAdded, scope }) => ({
+      ...scope,
+      language: 'typescript',
+      feature: 'chat_panel',
+      code_acceptance_activity_count: activeUsers,
+      code_generation_activity_count: activeUsers,
+      loc_added_sum: locAdded,
+      loc_deleted_sum: 0,
+      loc_suggested_to_add_sum: 0,
+      loc_suggested_to_delete_sum: 0,
+    })),
+    byModelFeature: scopes.map(({ activeUsers, locAdded, scope }) => ({
+      ...scope,
+      model_id: 'gpt-4o',
+      feature: 'chat_panel',
+      user_initiated_interaction_count: activeUsers,
+      code_generation_activity_count: activeUsers,
+      code_acceptance_activity_count: activeUsers,
+      loc_added_sum: locAdded,
+      loc_deleted_sum: 0,
+      loc_suggested_to_add_sum: 0,
+      loc_suggested_to_delete_sum: 0,
+    })),
+    byLanguageModel: scopes.map(({ activeUsers, locAdded, scope }) => ({
+      ...scope,
+      language: 'typescript',
+      model_id: 'gpt-4o',
+      request_count: activeUsers,
+      code_generation_activity_count: activeUsers,
+      code_acceptance_activity_count: activeUsers,
+      loc_added_sum: locAdded,
+      loc_deleted_sum: 0,
+      loc_suggested_to_add_sum: 0,
+      loc_suggested_to_delete_sum: 0,
+    })),
+    byCli: scopes.map(({ activeUsers, scope }) => ({
+      ...scope,
+      prompt_count: activeUsers,
+      request_count: activeUsers,
+      session_count: activeUsers,
+      avg_tokens_per_request: 1,
+      output_tokens_sum: activeUsers,
+      prompt_tokens_sum: activeUsers,
+    })),
+    byVscodeAgent: scopes.map(({ activeUsers, scope }) => ({
+      ...scope,
+      session_count: activeUsers,
+      total_user_messages: activeUsers * 2,
+    })),
   };
 }
 

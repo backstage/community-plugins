@@ -20,10 +20,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {
-  HeaderIconLinkRow,
-  IconLinkVerticalProps,
-} from '@backstage/core-components';
+import { ProjectLink, ProjectLinks } from '../ProjectLinks';
 import EditIcon from '@material-ui/icons/Edit';
 import ChatIcon from '@material-ui/icons/Chat';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -31,7 +28,8 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import Description from '@material-ui/icons/Description';
 import { EditProjectDialog } from '../EditProjectDialog';
-import { useApi, identityApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { BazaarProject, Member } from '../../types';
 import { bazaarApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
@@ -61,7 +59,7 @@ export const EntityBazaarInfoContent = ({
 }: Props) => {
   const classes = useStyles();
   const bazaarApi = useApi(bazaarApiRef);
-  const identity = useApi(identityApiRef);
+  const identity = useApi(coreApis.identity);
   const [openEdit, setOpenEdit] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [openUnlink, setOpenUnlink] = useState(false);
@@ -104,7 +102,7 @@ export const EntityBazaarInfoContent = ({
     }
   };
 
-  const links: IconLinkVerticalProps[] = [
+  const links: ProjectLink[] = [
     {
       label: 'Entity page',
       icon: <DashboardIcon />,
@@ -209,7 +207,7 @@ export const EntityBazaarInfoContent = ({
               </IconButton>
             </div>
           }
-          subheader={<HeaderIconLinkRow links={links} />}
+          subheader={<ProjectLinks links={links} />}
         />
         <Divider />
 

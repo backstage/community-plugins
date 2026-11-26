@@ -14,78 +14,37 @@
  * limitations under the License.
  */
 
-import { createDevApp } from '@backstage/dev-utils';
-import {
-  CatalogEntityPage,
-  CatalogIndexPage,
-  catalogPlugin,
-  EntityLayout,
-} from '@backstage/plugin-catalog';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { StrictMode } from 'react';
-import { bookmarksTranslations, isBookmarksAvailable } from '../src';
-import { EntityBookmarksContent } from '../src/components/EntityBookmarksContent/EntityBookmarksContent';
-import { bookmarksPlugin } from '../src/plugin';
-import { AVAILABLE_LANGUAGES } from '../src/translations/translations';
-import { testEntities, testEntity } from './testData';
+import { createRoot } from 'react-dom/client';
+import { createApp } from '@backstage/frontend-defaults';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import bookmarksPlugin from '../src';
+import { testEntities } from './testData';
 
 // This is a dev Backstage instance and not part of the plugin
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
-const PluginTestPage = () => (
-  <EntityLayout>
-    <EntityLayout.Route
-      path="/bookmarks"
-      title="Bookmarks"
-      if={isBookmarksAvailable}
-    >
-      <StrictMode>
-        <EntityBookmarksContent />
-      </StrictMode>
-    </EntityLayout.Route>
+export const catalogApi = catalogApiMock({
+  entities: testEntities,
+});
 
-    {/* to test empty state case */}
-    <EntityLayout.Route
-      path="/bookmarks"
-      title="Bookmarks (not present)"
-      if={e => !isBookmarksAvailable(e)}
-    >
-      <StrictMode>
-        <EntityBookmarksContent />
-      </StrictMode>
-    </EntityLayout.Route>
-  </EntityLayout>
-);
-
-createDevApp()
-  .registerPlugin(catalogPlugin)
-  .addPage({
-    path: '/bookmarks',
-    title: 'Bookmarks test page',
-    element: (
-      <EntityProvider entity={testEntity}>
-        <PluginTestPage />
-      </EntityProvider>
-    ),
-  })
-  .addPage({
-    path: '/catalog',
-    title: 'Catalog',
-    element: <CatalogIndexPage />,
-  })
-  .addPage({
-    path: '/catalog/:namespace/:kind/:name',
-    element: <CatalogEntityPage />,
-    children: <PluginTestPage />,
-  })
-  .registerApi(
-    catalogApiMock.factory({
-      entities: testEntities,
+const catalogPluginOverrides = catalogPlugin.withOverrides({
+  extensions: [
+    catalogPlugin.getExtension('api:catalog').override({
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => catalogApi,
+        }),
     }),
-  )
-  .registerPlugin(bookmarksPlugin)
-  .addTranslationResource(bookmarksTranslations)
-  .setAvailableLanguages(AVAILABLE_LANGUAGES)
-  .render();
+  ],
+});
+
+const app = createApp({
+  features: [catalogPluginOverrides, bookmarksPlugin],
+});
+
+createRoot(document.getElementById('root')!).render(app.createRoot());

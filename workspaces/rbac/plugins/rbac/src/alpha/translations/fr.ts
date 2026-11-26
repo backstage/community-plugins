@@ -34,9 +34,32 @@ const rbacTranslationFr = createTranslationMessages({
     'table.title': 'Tous les rôles',
     'table.titleWithCount': 'Tous les rôles ({{count}})',
     'table.headers.name': 'Nom',
+    'table.headers.source': 'Source',
     'table.headers.usersAndGroups': 'Utilisateurs et groupes',
     'table.headers.accessiblePlugins': 'Plugins accessibles',
     'table.headers.actions': 'Actes',
+    'table.sources.appConfig': 'Config. de l’application',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'Formulaire',
+    'table.sources.legacy': 'Hérité',
+    'table.sources.tooltips.appConfig':
+      'Défini sous permission.rbac.admin dans app-config.yaml.',
+    'table.sources.tooltips.csv':
+      'Défini dans le fichier de stratégies CSV référencé par permission.rbac.policies-csv-file dans app-config.yaml.',
+    'table.sources.tooltips.form':
+      'Créé via le formulaire RBAC dans l’interface utilisateur. Peut également être géré via l’API REST.',
+    'table.sources.tooltips.legacy':
+      'Créé avant l’enregistrement des sources de rôles. Peut être géré via l’API REST ou le fichier de stratégies CSV.',
+    'table.sources.tooltips.generic':
+      'Ce rôle est géré par sa source et ne peut pas être modifié dans l’interface utilisateur.',
+    'table.sources.actionTooltips.appConfig':
+      'Ce rôle est géré via la configuration de l’application (permission.rbac.admin dans app-config.yaml). Mettez à jour la configuration et redéployez pour apporter des modifications.',
+    'table.sources.actionTooltips.csv':
+      'Ce rôle est géré via un fichier de stratégies CSV. Mettez à jour le fichier CSV et redéployez pour apporter des modifications.',
+    'table.sources.actionTooltips.legacy':
+      'Il s’agit d’un rôle hérité qui ne peut pas être modifié dans l’interface utilisateur. Mettez-le à jour via l’API REST ou le fichier de stratégies CSV.',
+    'table.sources.actionTooltips.generic':
+      'Ce rôle est géré par sa source et ne peut pas être modifié dans l’interface utilisateur.',
     'table.defaultRoleUsersAndGroups':
       'Tous les utilisateurs et tous les groupes',
     'table.emptyContent': 'Aucun enregistrement trouvé',
@@ -92,6 +115,17 @@ const rbacTranslationFr = createTranslationMessages({
       'Nom, description et propriétaire du rôle',
     'roleForm.review.permissionPoliciesWithCount':
       "Politiques d'autorisations ({{count}})",
+    'roleForm.review.changes.title': 'Modifications de ce rôle',
+    'roleForm.review.changes.noChanges':
+      "Aucune modification n'a été apportée à ce rôle.",
+    'roleForm.review.changes.added': 'Ajouté',
+    'roleForm.review.changes.removed': 'Supprimé',
+    'roleForm.review.changes.changed': 'Modifié',
+    'roleForm.review.changes.valueChanged':
+      '{{field}} : de « {{previous}} » à « {{current}} »',
+    'roleForm.review.changes.permissionPolicies': "Politiques d'autorisations",
+    'roleForm.review.changes.conditionalPolicies':
+      "Politiques d'accès conditionnel",
     'roleForm.steps.next': 'Suivant',
     'roleForm.steps.back': 'Retour',
     'roleForm.steps.cancel': 'Annuler',
@@ -174,6 +208,16 @@ const rbacTranslationFr = createTranslationMessages({
     'common.noRecordsFound': 'Aucun enregistrement trouvé',
     'common.selectUsersAndGroups':
       'Sélectionner les utilisateurs et les groupes',
+    'common.addMembersAndGroups': 'Ajouter des membres et des groupes',
+    'common.searchMembers': 'Rechercher',
+    'common.searchByName': 'Rechercher par nom',
+    'common.kind': 'Type',
+    'common.kindAll': 'Tous',
+    'common.namespace': 'Espace de noms',
+    'common.namespaceAll': 'Tous',
+    'common.allResults': 'Tous ({{count}})',
+    'common.selectedCount': '{{count}} sélectionné(s)',
+    'common.add': 'Ajouter',
     'common.clearSearch': 'supprimer la recherche',
     'common.closeDrawer': 'Fermez le tiroir',
     'common.remove': 'Supprimer',
@@ -223,7 +267,11 @@ const rbacTranslationFr = createTranslationMessages({
     'common.childGroupsCount': '{{count}} groupes enfants',
     'common.searchAndSelectUsersGroups':
       'Recherchez et sélectionnez les utilisateurs et les groupes à ajouter. Les utilisateurs et groupes sélectionnés apparaîtront dans le tableau ci-dessous.',
+    'common.searchAndFilterCatalog':
+      'Recherchez et filtrez le catalogue pour ajouter des utilisateurs et des groupes. Cela remplace une liste déroulante de 100 éléments pour les grandes listes de membres.',
     'common.noUsersAndGroupsFound': 'Aucun utilisateur ni groupe trouvé.',
+    'common.noMembersMatchSearch':
+      'Aucun membre ne correspond à votre recherche.',
     'common.errorFetchingUserGroups':
       "Erreur lors de la récupération de l'utilisateur et des groupes : {{error}}",
     'common.nameRequired': 'Le nom est obligatoire',
@@ -238,6 +286,33 @@ const rbacTranslationFr = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'Par défaut, le type de ressource sélectionné est visible par tous les utilisateurs ajoutés. Si vous souhaitez restreindre ou accorder une autorisation à des règles de plugin spécifiques, sélectionnez-les et ajoutez les paramètres.',
     'common.tableAction': 'Action de tableau',
+    'permissionsMatrix.tabs.label': 'Vues RBAC',
+    'permissionsMatrix.tabs.roles': 'Rôles',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'Autorisations par plugin',
+    'permissionsMatrix.title': 'Autorisations par plugin',
+    'permissionsMatrix.description':
+      'Vue en lecture seule des autorisations accordées à chaque rôle, regroupées par plugin.',
+    'permissionsMatrix.roleColumn': 'Rôle',
+    'permissionsMatrix.filterRoles': 'Filtrer les rôles',
+    'permissionsMatrix.roles': 'Rôles',
+    'permissionsMatrix.plugin': 'Plugin',
+    'permissionsMatrix.allPlugins': 'Tous les plugins',
+    'permissionsMatrix.policy': 'Politique',
+    'permissionsMatrix.allPolicies': 'Toutes les politiques',
+    'permissionsMatrix.legend': 'Légende',
+    'permissionsMatrix.viewOnlyRole': 'Rôle en lecture seule',
+    'permissionsMatrix.conditionalRules': "Règles d'accès conditionnel",
+    'permissionsMatrix.emptyRoles': 'Aucun rôle trouvé',
+    'permissionsMatrix.noMatches':
+      'Aucune autorisation ne correspond aux filtres actuels',
+    'permissionsMatrix.emptyPermissions':
+      'Aucune autorisation de plugin trouvée',
+    'permissionsMatrix.decisions.allow': 'Autoriser',
+    'permissionsMatrix.decisions.deny': 'Refuser',
+    'permissionsMatrix.decisions.conditional': 'Conditionnel',
+    'permissionsMatrix.decisions.none': 'Non défini',
+    'permissionsMatrix.errors.fetchPermissions':
+      'Une erreur est survenue lors de la récupération des autorisations des plugins',
   },
 });
 

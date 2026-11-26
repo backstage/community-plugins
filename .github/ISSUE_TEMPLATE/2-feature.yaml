@@ -20,6 +20,7 @@ body:
         - adr
         - agent-forge
         - airbrake
+        - akeyless
         - allure
         - amplication
         - analytics
@@ -27,6 +28,7 @@ body:
         - apache-airflow
         - apiiro
         - apollo-explorer
+        - argo-workflows
         - argocd
         - azure-devops
         - azure-resources
@@ -67,6 +69,7 @@ body:
         - graphiql
         - graphql-voyager
         - growthbook-flags
+        - healert
         - ilert
         - jaeger
         - jenkins
@@ -94,16 +97,13 @@ body:
         - periskop
         - pingidentity
         - playlist
+        - pointing-poker
         - puppetdb
         - quay
         - rbac
         - report-portal
         - rollbar
-        - scaffolder-backend-module-annotator
-        - scaffolder-backend-module-kubernetes
-        - scaffolder-backend-module-regex
-        - scaffolder-backend-module-servicenow
-        - scaffolder-backend-module-sonarqube
+        - scaffolder
         - scaffolder-relation-processor
         - sentry
         - servicenow

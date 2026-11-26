@@ -52,6 +52,8 @@ export interface Config {
     /**
      * Earliest date to ingest for v2. Must be >= '2025-10-10' (GitHub API limit).
      * On first run the task backfills every calendar day from this date to yesterday.
+     * User, team, and cost-center report backfills are additionally limited to
+     * GitHub's rolling one-year availability window.
      * @default '2025-10-10'
      */
     backfillFromDate?: string;
@@ -63,10 +65,50 @@ export interface Config {
     backfillDelayMs?: number;
     /**
      * Opt-in to ingesting per-user and team membership metrics (users-1-day and
-     * user-teams-1-day reports). Required for team-level filtering in the UI.
-     * Increases storage and ingestion time.
+     * user-teams-1-day reports) for Enterprise team filtering and the
+     * configured organization's existing team path. Organization team data
+     * requires the GitHub App's Copilot metrics: read permission. A 403/404
+     * for its user-team report is logged as an error and skipped;
+     * organization memberships are not used as a fallback. Membership
+     * snapshots fetched during ingestion are also applied to backfilled days.
+     * The separate ingestOrganizationTeamReports option also enables
+     * organization-team reports for the configured organization. With
+     * cost-center filtering, the applicable team targets appear alongside
+     * Cost center in the dashboard's Filter by group. Increases storage and
+     * ingestion time.
      * @default false
      */
     ingestTeams?: boolean;
+    /**
+     * Opt-in to ingesting Cost Center membership and pre-aggregating per-user
+     * Copilot metrics by cost center. Organization metrics are included when
+     * both copilot.enterprise and copilot.organization are configured. This
+     * ingests the users-1-day report even when ingestTeams is disabled;
+     * ingestTeams independently controls team-level filtering. Team targets
+     * appear alongside Cost center in the dashboard's Filter by group when
+     * team filtering is enabled. Enterprise App installations need Enterprise
+     * billing: read, Enterprise Copilot metrics: read, and Enterprise teams:
+     * read permissions. Org resources also require Members: read on each
+     * referenced organization. Classic PATs require read:enterprise and
+     * read:org.
+     *
+     * @default false
+     */
+    ingestCostCenters?: boolean;
+    /**
+     * Opt-in to discovering enterprise organizations and ingesting their
+     * organization Copilot totals, per-user reports, and team memberships.
+     * Requires copilot.enterprise and credentials that can list enterprise
+     * organizations and read Copilot metrics in each organization. The
+     * configured copilot.organization remains on the existing ingestion path;
+     * this setting makes that path ingest user and team reports as well, even
+     * when copilot.ingestTeams is false, to avoid duplicate imports. Newly
+     * discovered organizations start with the most recent 30 days; older
+     * dates require a manual backfill. Inaccessible organizations are hidden
+     * while their imported history is retained. Increases API use and storage.
+     *
+     * @default false
+     */
+    ingestOrganizationTeamReports?: boolean;
   };
 }

@@ -16,7 +16,7 @@
 import { ilertApiRef } from '../../api';
 import { StatusPage } from '../../types';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 export const StatusPageLink = ({
@@ -31,7 +31,11 @@ export const StatusPageLink = ({
   }
 
   return (
-    <Link to={ilertApi.getStatusPageDetailsURL(statusPage)}>
+    <Link
+      target="_blank"
+      rel="noopener noreferrer"
+      href={ilertApi.getStatusPageDetailsURL(statusPage)}
+    >
       #{statusPage.id}
     </Link>
   );

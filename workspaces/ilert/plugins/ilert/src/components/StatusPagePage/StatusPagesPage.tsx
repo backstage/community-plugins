@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Content,
-  ContentHeader,
-  ResponseErrorPanel,
-  SupportButton,
-} from '@backstage/core-components';
+import { ResponseErrorPanel, SupportButton } from '@backstage/core-components';
+import { Container, Flex, Text } from '@backstage/ui';
 import { useStatusPages } from '../../hooks/useStatusPages';
 import { MissingAuthorizationHeaderError } from '../Errors';
 import { StatusPagesTable } from './StatusPagesTable';
@@ -32,26 +28,31 @@ export const StatusPagesPage = () => {
   if (error) {
     if (error.name === 'AuthenticationError') {
       return (
-        <Content>
+        <Container>
           <MissingAuthorizationHeaderError />
-        </Content>
+        </Container>
       );
     }
 
     return (
-      <Content>
+      <Container>
         <ResponseErrorPanel error={error} />
-      </Content>
+      </Container>
     );
   }
 
   return (
-    <Content>
-      <ContentHeader title="Status pages">
-        <SupportButton>
-          This helps you to bring ilert into your developer portal.
-        </SupportButton>
-      </ContentHeader>
+    <Container>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          Status pages
+        </Text>
+        <Flex align="center" gap="2">
+          <SupportButton>
+            This helps you to bring ilert into your developer portal.
+          </SupportButton>
+        </Flex>
+      </Flex>
       <StatusPagesTable
         statusPages={statusPages}
         tableState={tableState}
@@ -60,6 +61,6 @@ export const StatusPagesPage = () => {
         isLoading={isLoading}
         setIsLoading={setIsLoading}
       />
-    </Content>
+    </Container>
   );
 };

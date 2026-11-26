@@ -26,10 +26,21 @@ interface Props {
   data: V2DailyTotal[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
-export function AvgChatRequestsChart({ data, from, to }: Props) {
-  const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
+export function AvgChatRequestsChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
+  const aggregated = fillDailyTotalsGaps(
+    aggregateDailyTotals(data),
+    from,
+    to,
+    fillMissingDays,
+  );
   const days = aggregated.map(d => d.day);
   const values = aggregated.map(d =>
     d.daily_active_users > 0

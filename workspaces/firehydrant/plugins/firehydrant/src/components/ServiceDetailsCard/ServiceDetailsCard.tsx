@@ -16,7 +16,7 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { ServiceAnalytics } from '../ServiceAnalytics/ServiceAnalytics';
-import { Box, ButtonLink, Flex, Text } from '@backstage/ui';
+import { Box, ButtonLink, Flex, Link, Text } from '@backstage/ui';
 import {
   RiExternalLinkLine,
   RiFileTextLine,
@@ -31,11 +31,11 @@ import { useServiceDetails } from '../serviceDetails';
 import { useServiceAnalytics } from '../serviceAnalytics';
 import {
   InfoCard,
-  Link,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { isFireHydrantAvailable, getFireHydrantServiceName } from '../hooks';
 import styles from './ServiceDetailsCard.module.css';
 
@@ -70,7 +70,7 @@ const ServiceAnalyticsView = ({
 export const ServiceDetailsCard = () => {
   const { entity } = useEntity();
   const [showServiceDetails, setShowServiceDetails] = useState(false);
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
 
   const BASE_URL =
     configApi.getOptionalString('firehydrant.baseUrl') ||
@@ -152,7 +152,7 @@ export const ServiceDetailsCard = () => {
               <Box key={index}>
                 <Link
                   className={styles.link}
-                  to={incident.incident_url}
+                  href={incident.incident_url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -23,6 +23,7 @@ import {
   FieldTransformDefinition,
   FilterDefinition,
   TagFilterDefinition,
+  TagExclusionDefinition,
   TransformDefinition,
 } from './types';
 import { IncrementalEntityProviderOptions } from '@backstage/plugin-catalog-backend-module-incremental-ingestion';
@@ -56,7 +57,7 @@ function readAwsInfrastructureConfig(
 ): AwsInfrastructureConfig {
   const transform = readTransformDefinitionFromConfig(config);
 
-  const filters = readFiltersFromConfig(config.getConfig('filters'));
+  const filters = readFiltersFromConfig(config.getConfig('filters'), id);
 
   const aggregator = config.getOptionalString('aggregator');
   const accountId = config.getOptionalString('accountId');
@@ -118,7 +119,7 @@ function readAwsInfrastructureIncrementalOptionsConfig(
   };
 }
 
-function readFiltersFromConfig(config: Config): FilterDefinition {
+function readFiltersFromConfig(config: Config, id: string): FilterDefinition {
   const tagFilters = readTagFiltersFromConfig(config);
 
   const resourceTypes = config.getStringArray('resourceTypes');
@@ -126,7 +127,46 @@ function readFiltersFromConfig(config: Config): FilterDefinition {
   return {
     resourceTypes,
     tagFilters,
+    excludeTags: readTagExclusionsFromConfig(config, id),
   };
+}
+
+function readTagExclusionsFromConfig(
+  config: Config,
+  id: string,
+): TagExclusionDefinition[] {
+  return (config.getOptionalConfigArray('excludeTags') ?? []).map(
+    (entry, index) => {
+      const path = `catalog.providers.awsConfig.${id}.filters.excludeTags[${index}]`;
+      const key = entry.getString('key');
+      // Config.getOptionalString rejects empty strings, which are valid matches.
+      const value = entry.getOptional('value');
+      const pattern = entry.getOptional('valuePattern');
+      if (value !== undefined && typeof value !== 'string') {
+        throw new Error(`${path}.value: expected a string`);
+      }
+      if (pattern !== undefined && typeof pattern !== 'string') {
+        throw new Error(`${path}.valuePattern: expected a string`);
+      }
+
+      if (value !== undefined && pattern !== undefined) {
+        throw new Error(`${path}: specify only one of value and valuePattern`);
+      }
+
+      let valuePattern: RegExp | undefined;
+      if (pattern !== undefined) {
+        try {
+          valuePattern = new RegExp(pattern);
+        } catch (error) {
+          throw new Error(
+            `${path}: invalid valuePattern '${pattern}': ${error}`,
+          );
+        }
+      }
+
+      return { key, value, valuePattern };
+    },
+  );
 }
 
 function readTagFiltersFromConfig(config: Config): TagFilterDefinition[] {

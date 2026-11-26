@@ -35,14 +35,11 @@ import { EscalationPolicy } from './Escalation';
 import { Incidents } from './Incident';
 import { TriggerDialog } from './TriggerDialog';
 import { RoutingKey, User } from './types';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
-import {
-  EmptyState,
-  HeaderIconLinkRow,
-  IconLinkVerticalProps,
-  Progress,
-} from '@backstage/core-components';
+import { EmptyState, Progress } from '@backstage/core-components';
+import { ActionLink, ActionLinks } from './ActionLinks';
 
 export const SPLUNK_ON_CALL_TEAM = 'splunk.com/on-call-team';
 export const SPLUNK_ON_CALL_ROUTING_KEY = 'splunk.com/on-call-routing-key';
@@ -119,7 +116,7 @@ export type EntitySplunkOnCallCardProps = {
 export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
   const { readOnly } = props;
   const classes = useStyles();
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
   const api = useApi(splunkOnCallApiRef);
   const { entity } = useEntity();
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -219,14 +216,13 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
     );
   }
 
-  const triggerLink: IconLinkVerticalProps = {
+  const triggerLink: ActionLink = {
     label: 'Create Incident',
     onClick: handleDialog,
-    color: 'secondary',
     icon: <AlarmAddIcon />,
   };
 
-  const serviceLink = {
+  const serviceLink: ActionLink = {
     label: 'Portal',
     href: 'https://portal.victorops.com/',
     icon: <WebIcon />,
@@ -246,7 +242,7 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
                 <Typography key="team_name">
                   Team: {team && team.name ? team.name : ''}
                 </Typography>,
-                <HeaderIconLinkRow
+                <ActionLinks
                   key="incident_trigger"
                   links={!readOnly ? [serviceLink, triggerLink] : [serviceLink]}
                 />,

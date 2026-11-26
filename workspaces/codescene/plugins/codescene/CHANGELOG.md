@@ -1,5 +1,21 @@
 # @backstage-community/plugin-codescene
 
+## 0.24.0
+
+### Minor Changes
+
+- 9678228: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 9678228: Replaced deprecated Backstage core components with their Backstage UI equivalents. The CodeScene page headers, layout, project list heading and project cards now use Backstage UI styling.
+
+## 0.23.0
+
+### Minor Changes
+
+- c472104: Backstage version bump to v1.56.2
+
 ## 0.22.0
 
 ### Minor Changes

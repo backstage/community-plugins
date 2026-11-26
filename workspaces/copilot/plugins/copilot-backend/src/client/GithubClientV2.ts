@@ -16,16 +16,133 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Octokit } from '@octokit/rest';
-import { createAppAuth } from '@octokit/auth-app';
+import { z } from 'zod';
+import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import {
   MetricsScope,
   ReportEnvelope,
 } from '@backstage-community/plugin-copilot-common';
+import { resolveCostCenterMemberships } from '../utils/costCenterMembership';
+import type {
+  CostCenterMembership,
+  CostCenterResource,
+  CostCenterWithResources,
+  GithubUser,
+} from '../utils/costCenterMembership';
 import {
   CopilotConfig,
   getCopilotConfig,
   getGithubCredentials,
 } from '../utils/GithubUtils';
+
+const enterpriseOrganizationsResponseSchema = z.object({
+  errors: z.array(z.unknown()).max(0).optional(),
+  data: z.object({
+    enterprise: z.object({
+      organizations: z.object({
+        nodes: z.array(z.object({ login: z.string() })),
+        pageInfo: z.object({
+          hasNextPage: z.boolean(),
+          endCursor: z.string().nullish(),
+        }),
+      }),
+    }),
+  }),
+});
+
+const positiveSafeIntegerSchema = z.int().positive();
+const safeIntegerSchema = z.int();
+
+const githubUserIdSchema = z
+  .union([z.number(), z.string().transform(Number)])
+  .pipe(positiveSafeIntegerSchema);
+
+const githubUserSchema = z.object({
+  id: githubUserIdSchema,
+  login: z.string(),
+});
+
+const githubInstallationResponseSchema = z.object({
+  id: positiveSafeIntegerSchema,
+});
+
+const costCenterApiResourceSchema = z.object({
+  type: z.string(),
+  name: z.string(),
+});
+const costCenterApiResourcesSchema = z.array(costCenterApiResourceSchema);
+type CostCenterApiResource = z.infer<typeof costCenterApiResourceSchema>;
+
+const costCenterListEntrySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+const costCenterDetailObjectSchema = z.object({
+  resources: z.unknown().optional(),
+  has_next_page: z.unknown().optional(),
+  hasNextPage: z.unknown().optional(),
+});
+const optionalCostCenterDetailObjectSchema = costCenterDetailObjectSchema
+  .optional()
+  .catch(undefined);
+const costCenterDetailPageSchema = z.object({
+  resources: z.unknown().optional(),
+  costCenter: optionalCostCenterDetailObjectSchema,
+  cost_center: optionalCostCenterDetailObjectSchema,
+  has_next_page: z.unknown().optional(),
+  hasNextPage: z.unknown().optional(),
+});
+
+const costCenterOrganizationInstallationSchema = z.object({
+  permissions: z
+    .object({ members: z.string().optional().catch(undefined) })
+    .optional()
+    .catch(undefined),
+});
+
+const githubAuthenticationSchema = z.object({ token: z.string() });
+
+const enterpriseTeamIdSchema = z
+  .union([z.number(), z.string().transform(Number)])
+  .pipe(safeIntegerSchema);
+
+const optionalErrorStringSchema = z.string().optional().catch(undefined);
+const optionalGithubStatusSchema = z
+  .union([z.number(), z.nan(), z.literal(Infinity), z.literal(-Infinity)])
+  .optional()
+  .catch(undefined);
+
+// Preserve property reads from array-shaped errors at every metadata level.
+const normalizeErrorArray = (value: unknown) =>
+  Array.isArray(value) ? Object.create(value) : value;
+
+const githubErrorMetadataSchema = z.preprocess(
+  normalizeErrorArray,
+  z.object({
+    message: optionalErrorStringSchema,
+    status: optionalGithubStatusSchema,
+    response: z
+      .preprocess(
+        normalizeErrorArray,
+        z.object({
+          status: optionalGithubStatusSchema,
+          headers: z
+            .preprocess(
+              normalizeErrorArray,
+              z.object({
+                'retry-after': optionalErrorStringSchema,
+                'x-ratelimit-remaining': optionalErrorStringSchema,
+              }),
+            )
+            .optional()
+            .catch(undefined),
+        }),
+      )
+      .optional()
+      .catch(undefined),
+  }),
+);
 
 // GitHub serves user content from this domain on both github.com and GHE.com.
 const GITHUB_USER_CONTENT_DOMAIN = 'githubusercontent.com';
@@ -46,8 +163,207 @@ const MAX_DOWNLOAD_REDIRECTS = 5;
 // copilot-reports.SUBDOMAIN.ghe.com.
 const GHE_COM_API_HOST = /^api\.([a-z0-9-]+\.ghe\.com)$/;
 
+type OctokitResponseHeaders = Awaited<
+  ReturnType<Octokit['request']>
+>['headers'];
+
+interface EnterpriseTeamApiItem {
+  id: number | string;
+  slug: string;
+  name?: string;
+  created_at?: string;
+}
+
+interface CostCenterOrganizationClient {
+  octokit: Octokit;
+  membersPermission?: string;
+}
+
+interface CostCenterOrganizationRoster {
+  members: GithubUser[];
+  skipReason?: string;
+  oauthScopesHeaderMissing?: boolean;
+}
+
+class MissingCostCenterOrganizationInstallationError extends Error {
+  constructor() {
+    super('The GitHub App is not installed for this organization.');
+    this.name = 'MissingCostCenterOrganizationInstallationError';
+  }
+}
+
+export class InaccessibleEnterpriseOrganizationError extends Error {
+  constructor(readonly status = 403) {
+    super('Organization access is unavailable.');
+    this.name = 'InaccessibleEnterpriseOrganizationError';
+  }
+}
+
+export interface CostCenterMembershipSnapshot {
+  costCenters: Array<{ id: string; name: string }>;
+  members: Map<number, CostCenterMembership>;
+  warnings: string[];
+  complete: boolean;
+  unassignedComplete: boolean;
+}
+
 function isWithinDomain(hostname: string, domain: string): boolean {
   return hostname === domain || hostname.endsWith(`.${domain}`);
+}
+
+function buildApiUrl(
+  apiBaseUrl: string,
+  path: string,
+  query?: Record<string, string | number>,
+): string {
+  const url = new URL(apiBaseUrl);
+  url.pathname = `${url.pathname.replace(/\/+$/, '')}${path}`;
+  url.search = '';
+  url.hash = '';
+  for (const [key, value] of Object.entries(query ?? {})) {
+    url.searchParams.set(key, String(value));
+  }
+  return url.toString();
+}
+
+function encodeTeamSlug(teamSlug: string): string {
+  return encodeURIComponent(teamSlug).replace(/%3A/gi, ':');
+}
+
+function hasNextLink(headers: { link?: string; Link?: string }): boolean {
+  return /rel="?next"?/i.test(headers.link ?? headers.Link ?? '');
+}
+
+function getHttpStatus(error: unknown): number | undefined {
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success) {
+    return undefined;
+  }
+  return parsedError.data.status ?? parsedError.data.response?.status;
+}
+
+function isRateLimitError(error: unknown): boolean {
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success) {
+    return false;
+  }
+
+  const headers = parsedError.data.response?.headers;
+  const retryAfter = headers?.['retry-after'];
+  const remaining = headers?.['x-ratelimit-remaining'];
+  const message = parsedError.data.message ?? '';
+  return (
+    (retryAfter !== undefined && Number(retryAfter) > 0) ||
+    remaining === '0' ||
+    /secondary rate limit|api rate limit exceeded/i.test(message)
+  );
+}
+
+export function isOrganizationReportNotFoundError(error: unknown): boolean {
+  return (
+    !(error instanceof InaccessibleEnterpriseOrganizationError) &&
+    getHttpStatus(error) === 404 &&
+    !isRateLimitError(error) &&
+    !isOrganizationReportPermissionError(error)
+  );
+}
+
+export function isOrganizationReportPermissionError(error: unknown): boolean {
+  if (error instanceof InaccessibleEnterpriseOrganizationError) {
+    return true;
+  }
+
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success || isRateLimitError(error)) {
+    return false;
+  }
+
+  const status = parsedError.data.status ?? parsedError.data.response?.status;
+  return (
+    status === 403 ||
+    (status === 404 &&
+      /resource not accessible by integration|permission denied|not authorized/i.test(
+        parsedError.data.message ?? '',
+      ))
+  );
+}
+
+function getResponseHeader(
+  headers: OctokitResponseHeaders,
+  name: string,
+): string | undefined {
+  const header = Object.entries(headers).find(
+    ([key]) => key.toLowerCase() === name.toLowerCase(),
+  )?.[1];
+  return typeof header === 'string' ? header : undefined;
+}
+
+function hasOrganizationMemberScope(scopes: string): boolean {
+  const grantedScopes = new Set(
+    scopes.split(',').map(scope => scope.trim().toLowerCase()),
+  );
+  return ['read:org', 'write:org', 'admin:org'].some(scope =>
+    grantedScopes.has(scope),
+  );
+}
+
+function hasMembersReadPermission(permission?: string): boolean {
+  return (
+    permission !== undefined && ['read', 'write', 'admin'].includes(permission)
+  );
+}
+
+function getInstallationId(data: unknown): number {
+  const parsedResponse = githubInstallationResponseSchema.safeParse(data);
+  if (!parsedResponse.success) {
+    throw new Error('Unexpected GitHub App installation response.');
+  }
+  return parsedResponse.data.id;
+}
+
+function toGithubUser(value: unknown): GithubUser | undefined {
+  const parsedUser = githubUserSchema.safeParse(value);
+  return parsedUser.success ? parsedUser.data : undefined;
+}
+
+function toGithubUsers(values: readonly unknown[]): GithubUser[] {
+  return values.map(user => {
+    const parsed = toGithubUser(user);
+    if (!parsed) {
+      throw new Error('Unexpected GitHub user entry in list response.');
+    }
+    return parsed;
+  });
+}
+
+function getCostCenterDetailPage(data: unknown): {
+  resources: CostCenterApiResource[];
+  hasNextPage: boolean;
+} {
+  const parsedPage = costCenterDetailPageSchema.safeParse(data);
+  if (!parsedPage.success) {
+    throw new Error('Unexpected GitHub cost center response.');
+  }
+
+  const page = parsedPage.data;
+  const nestedCenter = page.costCenter ?? page.cost_center ?? page;
+  const resources = Array.isArray(page.resources)
+    ? page.resources
+    : nestedCenter.resources;
+  const parsedResources = costCenterApiResourcesSchema.safeParse(resources);
+  if (!parsedResources.success) {
+    throw new Error('Unexpected GitHub cost center resources response.');
+  }
+
+  const hasNextPage =
+    page.has_next_page ??
+    page.hasNextPage ??
+    nestedCenter.has_next_page ??
+    nestedCenter.hasNextPage;
+  return {
+    resources: parsedResources.data,
+    hasNextPage: hasNextPage === true,
+  };
 }
 
 // `copilot.host` may carry a port, which URL.hostname never does.
@@ -95,6 +411,16 @@ function isAllowedDownloadHost(
 export class GithubClientV2 {
   private enterpriseOctokit?: Octokit;
   private organizationOctokit?: Octokit;
+  private enterpriseAuthStrategy?: string | StrategyOptions;
+  private organizationAuthStrategy?: string | StrategyOptions;
+  private readonly costCenterOrganizationOctokits = new Map<
+    string,
+    Promise<CostCenterOrganizationClient>
+  >();
+  private readonly enterpriseOrganizationOctokits = new Map<
+    string,
+    Promise<Octokit>
+  >();
 
   constructor(
     private readonly copilotConfig: CopilotConfig,
@@ -110,6 +436,53 @@ export class GithubClientV2 {
     return new GithubClientV2(info, config, logger);
   }
 
+  private getBaseOctokitConfig(): NonNullable<
+    ConstructorParameters<typeof Octokit>[0]
+  > {
+    return {
+      baseUrl: this.copilotConfig.apiBaseUrl,
+    };
+  }
+
+  private createOctokit(
+    options: NonNullable<ConstructorParameters<typeof Octokit>[0]> = {},
+  ): Octokit {
+    const octokit = new Octokit({
+      ...this.getBaseOctokitConfig(),
+      ...options,
+    });
+    octokit.hook.before('request', requestOptions => {
+      requestOptions.headers.accept = 'application/vnd.github+json';
+      requestOptions.headers['x-github-api-version'] ??= '2026-03-10';
+    });
+    return octokit;
+  }
+
+  private async getAppJwtOctokit(
+    authStrategy: StrategyOptions,
+  ): Promise<Octokit> {
+    const { token } = await createAppAuth(authStrategy)({ type: 'app' });
+    const octokit = this.createOctokit();
+    octokit.hook.before('request', requestOptions => {
+      requestOptions.headers.authorization = `Bearer ${token}`;
+    });
+    return octokit;
+  }
+
+  private createInstallationOctokit(
+    authStrategy: StrategyOptions,
+    installationId: number,
+  ): Octokit {
+    return this.createOctokit({
+      authStrategy: createAppAuth,
+      auth: {
+        appId: authStrategy.appId,
+        privateKey: authStrategy.privateKey,
+        installationId,
+      },
+    });
+  }
+
   private async getOctokit(type: MetricsScope): Promise<Octokit> {
     const credentials = await getGithubCredentials(
       this.config,
@@ -123,42 +496,71 @@ export class GithubClientV2 {
       );
     }
 
-    const octokitConfig: ConstructorParameters<typeof Octokit>[0] = {
-      baseUrl: this.copilotConfig.apiBaseUrl,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2026-03-10',
-      },
-    };
-
     if (typeof authStrategy === 'string') {
-      octokitConfig.auth = authStrategy;
+      if (type === 'enterprise') {
+        this.enterpriseAuthStrategy = authStrategy;
+      } else {
+        this.organizationAuthStrategy = authStrategy;
+      }
+      return this.createOctokit({
+        auth: authStrategy,
+      });
+    }
+
+    if (type === 'enterprise') {
+      this.enterpriseAuthStrategy = authStrategy;
     } else {
-      const appOctokit = new Octokit({
-        baseUrl: this.copilotConfig.apiBaseUrl,
+      this.organizationAuthStrategy = authStrategy;
+    }
+
+    const orgName =
+      type === 'organization'
+        ? this.copilotConfig.organization
+        : this.copilotConfig.enterprise;
+    if (!orgName) {
+      throw new Error(`No ${type} name configured.`);
+    }
+
+    let installationId: number;
+    if (type === 'enterprise') {
+      const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
+      try {
+        const { data } = await appJwtOctokit.request(
+          `GET /enterprises/${encodeURIComponent(orgName)}/installation`,
+        );
+        installationId = getInstallationId(data);
+      } catch (error) {
+        if (getHttpStatus(error) !== 404) {
+          throw error;
+        }
+        const { data } = await appJwtOctokit.rest.apps.getOrgInstallation({
+          org: orgName,
+        });
+        installationId = getInstallationId(data);
+      }
+    } else {
+      const appOctokit = this.createOctokit({
         authStrategy: createAppAuth,
         auth: {
           appId: authStrategy.appId,
           privateKey: authStrategy.privateKey,
         },
       });
-      const orgName =
-        type === 'organization'
-          ? this.copilotConfig.organization
-          : this.copilotConfig.enterprise;
-      if (!orgName) {
-        throw new Error(`No ${type} name configured.`);
+      try {
+        const { data } = await appOctokit.rest.apps.getOrgInstallation({
+          org: orgName,
+        });
+        installationId = getInstallationId(data);
+      } catch (error) {
+        const status = getHttpStatus(error);
+        if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+        throw error;
       }
-      const { data: installation } =
-        await appOctokit.rest.apps.getOrgInstallation({ org: orgName });
-      octokitConfig.authStrategy = createAppAuth;
-      octokitConfig.auth = {
-        appId: authStrategy.appId,
-        privateKey: authStrategy.privateKey,
-        installationId: installation.id,
-      };
     }
-    return new Octokit(octokitConfig);
+
+    return this.createInstallationOctokit(authStrategy, installationId);
   }
 
   private async getEnterpriseOctokit(): Promise<Octokit> {
@@ -173,6 +575,661 @@ export class GithubClientV2 {
       this.organizationOctokit = await this.getOctokit('organization');
     }
     return this.organizationOctokit;
+  }
+
+  private async getOrganizationInstallation(
+    appJwtOctokit: Octokit,
+    organization: string,
+  ): Promise<unknown> {
+    const url = buildApiUrl(
+      this.copilotConfig.apiBaseUrl,
+      `/orgs/${encodeURIComponent(organization)}/installation`,
+    );
+    const { data } = await appJwtOctokit.request(`GET ${url}`);
+    return data;
+  }
+
+  private async getCostCenterOrganizationOctokit(
+    organization: string,
+    enterpriseOctokit: Octokit,
+  ): Promise<CostCenterOrganizationClient> {
+    const authStrategy = this.enterpriseAuthStrategy;
+    if (!authStrategy) {
+      throw new Error('No enterprise credentials configured.');
+    }
+    if (typeof authStrategy === 'string') {
+      return { octokit: enterpriseOctokit };
+    }
+
+    const cacheKey = organization.toLowerCase();
+    let octokitPromise = this.costCenterOrganizationOctokits.get(cacheKey);
+    if (!octokitPromise) {
+      octokitPromise = (async () => {
+        const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
+        let data: unknown;
+        try {
+          data = await this.getOrganizationInstallation(
+            appJwtOctokit,
+            organization,
+          );
+        } catch (error) {
+          if (getHttpStatus(error) === 404) {
+            throw new MissingCostCenterOrganizationInstallationError();
+          }
+          throw error;
+        }
+        const installationId = getInstallationId(data);
+        return {
+          octokit: this.createInstallationOctokit(authStrategy, installationId),
+          membersPermission: costCenterOrganizationInstallationSchema
+            .parse(data)
+            .permissions?.members?.toLowerCase(),
+        };
+      })();
+      this.costCenterOrganizationOctokits.set(cacheKey, octokitPromise);
+    }
+
+    try {
+      const client = await octokitPromise;
+      if (
+        !hasMembersReadPermission(client.membersPermission) &&
+        this.costCenterOrganizationOctokits.get(cacheKey) === octokitPromise
+      ) {
+        this.costCenterOrganizationOctokits.delete(cacheKey);
+      }
+      return client;
+    } catch (error) {
+      if (
+        this.costCenterOrganizationOctokits.get(cacheKey) === octokitPromise
+      ) {
+        this.costCenterOrganizationOctokits.delete(cacheKey);
+      }
+      throw error;
+    }
+  }
+
+  private async getEnterpriseOrganizationOctokit(
+    organization: string,
+  ): Promise<Octokit> {
+    const enterpriseOctokit = await this.getEnterpriseOctokit();
+    const authStrategy = this.enterpriseAuthStrategy;
+    if (!authStrategy || typeof authStrategy === 'string') {
+      return enterpriseOctokit;
+    }
+
+    const cacheKey = organization.toLowerCase();
+    let octokitPromise = this.enterpriseOrganizationOctokits.get(cacheKey);
+    if (!octokitPromise) {
+      octokitPromise = (async () => {
+        const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
+        let data: unknown;
+        try {
+          data = await this.getOrganizationInstallation(
+            appJwtOctokit,
+            organization,
+          );
+        } catch (error) {
+          const status = getHttpStatus(error);
+          if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+            throw new InaccessibleEnterpriseOrganizationError(status);
+          }
+          throw error;
+        }
+        return this.createInstallationOctokit(
+          authStrategy,
+          getInstallationId(data),
+        );
+      })();
+      this.enterpriseOrganizationOctokits.set(cacheKey, octokitPromise);
+    }
+
+    try {
+      return await octokitPromise;
+    } catch (error) {
+      if (
+        this.enterpriseOrganizationOctokits.get(cacheKey) === octokitPromise
+      ) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+      throw error;
+    }
+  }
+
+  private async invalidateEnterpriseOrganizationOctokit(
+    organization: string,
+    staleClient: Octokit,
+  ): Promise<void> {
+    const cacheKey = organization.toLowerCase();
+    const cachedPromise = this.enterpriseOrganizationOctokits.get(cacheKey);
+    if (!cachedPromise) {
+      return;
+    }
+
+    try {
+      const cachedClient = await cachedPromise;
+      if (
+        cachedClient === staleClient &&
+        this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise
+      ) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+    } catch {
+      if (this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+    }
+  }
+
+  private invalidateOrganizationOctokit(staleClient: Octokit): void {
+    if (this.organizationOctokit === staleClient) {
+      this.organizationOctokit = undefined;
+    }
+  }
+
+  private async fetchPaginatedList<T>(
+    octokit: Octokit,
+    path: string,
+    description: string,
+    onFirstPage?: (headers: OctokitResponseHeaders) => boolean | void,
+  ): Promise<T[]> {
+    const results: T[] = [];
+    let page = 1;
+    let hasNextPage = true;
+
+    while (hasNextPage) {
+      const url = buildApiUrl(this.copilotConfig.apiBaseUrl, path, {
+        per_page: 100,
+        page,
+      });
+      const response = await octokit.request(`GET ${url}`);
+      if (!Array.isArray(response.data)) {
+        throw new Error(
+          `Unexpected GitHub response while listing ${description}.`,
+        );
+      }
+      const stopAfterFirstPage =
+        page === 1 && onFirstPage?.(response.headers) === false;
+      results.push(...response.data);
+      hasNextPage = !stopAfterFirstPage && hasNextLink(response.headers);
+      page += 1;
+    }
+
+    return results;
+  }
+
+  private async fetchOrganizationMembers(
+    octokit: Octokit,
+    organization: string,
+  ): Promise<{
+    members: GithubUser[];
+    hasRequiredOrganizationScope: boolean;
+    hasOAuthScopesHeader: boolean;
+  }> {
+    let hasRequiredOrganizationScope = false;
+    let hasOAuthScopesHeader = false;
+    const members = await this.fetchPaginatedList<unknown>(
+      octokit,
+      `/orgs/${encodeURIComponent(organization)}/members`,
+      `organization "${organization}" members`,
+      headers => {
+        const value = getResponseHeader(headers, 'x-oauth-scopes');
+        if (value !== undefined) {
+          hasOAuthScopesHeader = true;
+          hasRequiredOrganizationScope = hasOrganizationMemberScope(value);
+        }
+        return !(
+          typeof this.enterpriseAuthStrategy === 'string' &&
+          hasOAuthScopesHeader &&
+          !hasRequiredOrganizationScope
+        );
+      },
+    );
+
+    return {
+      members: toGithubUsers(members),
+      hasRequiredOrganizationScope,
+      hasOAuthScopesHeader,
+    };
+  }
+
+  private async fetchCostCenterResources(
+    octokit: Octokit,
+    enterprise: string,
+    costCenterId: string,
+  ): Promise<CostCenterResource[]> {
+    const resources: CostCenterResource[] = [];
+    let page = 1;
+    let hasNextPage: boolean;
+
+    do {
+      const url = buildApiUrl(
+        this.copilotConfig.apiBaseUrl,
+        `/enterprises/${encodeURIComponent(
+          enterprise,
+        )}/settings/billing/cost-centers/${encodeURIComponent(costCenterId)}`,
+        { per_page: 100, page },
+      );
+      const response = await octokit.request(`GET ${url}`);
+      const resultPage = getCostCenterDetailPage(response.data);
+      resources.push(
+        ...resultPage.resources.map(resource => ({
+          type: resource.type,
+          name: resource.name,
+        })),
+      );
+      hasNextPage = resultPage.hasNextPage;
+      page += 1;
+    } while (hasNextPage);
+
+    return resources;
+  }
+
+  private async fetchEnterpriseTeamMemberships(
+    octokit: Octokit,
+    enterprise: string,
+    teamSlug: string,
+  ): Promise<GithubUser[]> {
+    const authentication =
+      typeof this.enterpriseAuthStrategy === 'string'
+        ? await octokit.auth()
+        : await octokit.auth({ type: 'installation' });
+    const parsedAuthentication =
+      githubAuthenticationSchema.safeParse(authentication);
+    if (!parsedAuthentication.success) {
+      throw new Error('Could not resolve GitHub credentials for team members.');
+    }
+
+    const members: GithubUser[] = [];
+    let page = 1;
+    let hasNextPage = true;
+
+    while (hasNextPage) {
+      // Octokit's route parser treats `:slug` in a URL as a template variable;
+      // use fetch so the enterprise team's raw `ent:` slug reaches GitHub.
+      const path =
+        `/enterprises/${encodeURIComponent(enterprise)}/teams/` +
+        `${encodeTeamSlug(teamSlug)}/memberships`;
+      const url = buildApiUrl(this.copilotConfig.apiBaseUrl, path, {
+        per_page: 100,
+        page,
+      });
+      const response = await fetch(url, {
+        method: 'GET',
+        redirect: 'manual',
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2026-03-10',
+          'User-Agent': 'backstage-community-copilot',
+          authorization: `Bearer ${parsedAuthentication.data.token}`,
+        },
+      });
+      if (!response.ok) {
+        throw Object.assign(
+          new Error(
+            `GitHub team membership request failed with HTTP ${response.status}.`,
+          ),
+          { status: response.status },
+        );
+      }
+
+      const data: unknown = await response.json();
+      if (!Array.isArray(data)) {
+        throw new Error('Unexpected GitHub user list response.');
+      }
+      members.push(...toGithubUsers(data));
+      hasNextPage = hasNextLink({
+        link: response.headers.get('link') ?? undefined,
+      });
+      page += 1;
+    }
+
+    return members;
+  }
+
+  private addCostCenterWarning(warnings: string[], warning: string): void {
+    warnings.push(warning);
+    this.logger.warn(`[GithubClientV2] ${warning}`);
+  }
+
+  async fetchCostCenterMemberships(): Promise<CostCenterMembershipSnapshot> {
+    const enterprise = this.copilotConfig.enterprise;
+    if (!enterprise) {
+      throw new Error('No enterprise name configured.');
+    }
+
+    const enterpriseOctokit = await this.getEnterpriseOctokit();
+    const listUrl = buildApiUrl(
+      this.copilotConfig.apiBaseUrl,
+      `/enterprises/${encodeURIComponent(
+        enterprise,
+      )}/settings/billing/cost-centers`,
+      { state: 'active' },
+    );
+    const listResponse = await enterpriseOctokit.request(`GET ${listUrl}`);
+    const listData = listResponse.data as
+      | { costCenters?: unknown }
+      | null
+      | undefined;
+    const costCentersFromResponse = listData?.costCenters;
+    if (!Array.isArray(costCentersFromResponse)) {
+      throw new Error('Unexpected GitHub cost center list response.');
+    }
+
+    const listedCostCenters = costCentersFromResponse.map(costCenter => {
+      const parsedCostCenter = costCenterListEntrySchema.safeParse(costCenter);
+      if (!parsedCostCenter.success) {
+        throw new Error('Unexpected GitHub cost center entry.');
+      }
+      return parsedCostCenter.data;
+    });
+
+    const warnings: string[] = [];
+    let complete = true;
+    let unassignedComplete = true;
+
+    // The list response has no resource pagination; load each center by ID so
+    // its has_next_page flag can provide a complete resource snapshot.
+    const costCenters: CostCenterWithResources[] = [];
+    for (const costCenter of listedCostCenters) {
+      try {
+        costCenters.push({
+          ...costCenter,
+          resources: await this.fetchCostCenterResources(
+            enterpriseOctokit,
+            enterprise,
+            costCenter.id,
+          ),
+        });
+      } catch (error) {
+        complete = false;
+        const status = getHttpStatus(error);
+        const reason = status
+          ? `GitHub returned HTTP ${status}`
+          : 'the GitHub request failed';
+        this.addCostCenterWarning(
+          warnings,
+          `Could not load resources for cost center "${costCenter.name}" (${reason}); the membership snapshot is incomplete.`,
+        );
+        costCenters.push({ ...costCenter, resources: [] });
+      }
+    }
+
+    const resources = costCenters.flatMap(costCenter =>
+      costCenter.resources.map(resource => ({ costCenter, resource })),
+    );
+
+    const teamResources = resources.filter(
+      ({ resource }) => resource.type === 'Team',
+    );
+    let enterpriseTeams: EnterpriseTeamApiItem[] = [];
+    let enterpriseTeamsLoaded = teamResources.length === 0;
+    if (teamResources.length > 0) {
+      try {
+        enterpriseTeams = await this.fetchPaginatedList<EnterpriseTeamApiItem>(
+          enterpriseOctokit,
+          `/enterprises/${encodeURIComponent(enterprise)}/teams`,
+          'enterprise teams',
+        );
+        enterpriseTeamsLoaded = true;
+      } catch (error) {
+        complete = false;
+        const status = getHttpStatus(error);
+        const reason = status
+          ? `GitHub returned HTTP ${status}`
+          : 'the GitHub request failed';
+        this.addCostCenterWarning(
+          warnings,
+          `Could not list enterprise teams for cost-center membership (${reason}); the membership snapshot is incomplete.`,
+        );
+      }
+    }
+
+    for (const { resource } of resources) {
+      if (
+        resource.type !== 'Team' &&
+        resource.type !== 'Org' &&
+        resource.type !== 'User'
+      ) {
+        this.logger.debug(
+          `[GithubClientV2] Ignoring cost center resource type "${resource.type}" (${resource.name}).`,
+        );
+      }
+    }
+
+    for (const { costCenter, resource } of teamResources) {
+      if (!enterpriseTeamsLoaded) {
+        continue;
+      }
+
+      const team = enterpriseTeams.find(
+        candidate =>
+          candidate.slug.toLowerCase() === resource.name.toLowerCase() ||
+          candidate.name?.toLowerCase() === resource.name.toLowerCase() ||
+          String(candidate.id) === resource.name,
+      );
+      if (!team) {
+        complete = false;
+        this.addCostCenterWarning(
+          warnings,
+          `Could not resolve enterprise team "${resource.name}" for cost center "${costCenter.name}"; the membership snapshot is incomplete.`,
+        );
+        continue;
+      }
+
+      try {
+        resource.members = await this.fetchEnterpriseTeamMemberships(
+          enterpriseOctokit,
+          enterprise,
+          team.slug,
+        );
+      } catch (error) {
+        complete = false;
+        const status = getHttpStatus(error);
+        const reason = status
+          ? `GitHub returned HTTP ${status}`
+          : 'the GitHub request failed';
+        this.addCostCenterWarning(
+          warnings,
+          `Could not load members of enterprise team "${resource.name}" for cost center "${costCenter.name}" (${reason}); the membership snapshot is incomplete.`,
+        );
+        continue;
+      }
+
+      const parsedTeamId = enterpriseTeamIdSchema.safeParse(team.id);
+      resource.teamId = parsedTeamId.success ? parsedTeamId.data : undefined;
+      resource.teamCreatedAt = team.created_at;
+    }
+
+    const orgRosterPromises = new Map<
+      string,
+      Promise<CostCenterOrganizationRoster>
+    >();
+    let warnedAboutFineGrainedPatScopes = false;
+    for (const { costCenter, resource } of resources) {
+      if (resource.type !== 'Org') {
+        continue;
+      }
+
+      const cacheKey = resource.name.toLowerCase();
+      let rosterPromise = orgRosterPromises.get(cacheKey);
+      if (!rosterPromise) {
+        rosterPromise = (async () => {
+          const orgClient = await this.getCostCenterOrganizationOctokit(
+            resource.name,
+            enterpriseOctokit,
+          );
+          if (
+            typeof this.enterpriseAuthStrategy !== 'string' &&
+            !hasMembersReadPermission(orgClient.membersPermission)
+          ) {
+            return {
+              members: [],
+              skipReason:
+                'the GitHub App installation is missing the "members: read" permission required to read a complete roster',
+            };
+          }
+
+          const roster = await this.fetchOrganizationMembers(
+            orgClient.octokit,
+            resource.name,
+          );
+          if (typeof this.enterpriseAuthStrategy === 'string') {
+            if (!roster.hasOAuthScopesHeader) {
+              return {
+                members: roster.members,
+                oauthScopesHeaderMissing: true,
+              };
+            } else if (!roster.hasRequiredOrganizationScope) {
+              return {
+                members: [],
+                skipReason:
+                  'the classic GitHub PAT is missing one of the "read:org", "write:org", or "admin:org" scopes required to read a complete roster',
+              };
+            }
+            const membershipUrl = buildApiUrl(
+              this.copilotConfig.apiBaseUrl,
+              `/user/memberships/orgs/${encodeURIComponent(resource.name)}`,
+            );
+            const membership = await orgClient.octokit.request(
+              `GET ${membershipUrl}`,
+            );
+            if (membership.data?.state !== 'active') {
+              return {
+                members: [],
+                skipReason:
+                  'the classic GitHub PAT owner does not have active organization membership required to read a complete roster',
+              };
+            }
+          }
+
+          return { members: roster.members };
+        })();
+        orgRosterPromises.set(cacheKey, rosterPromise);
+      }
+
+      try {
+        const roster = await rosterPromise;
+        if (
+          roster.oauthScopesHeaderMissing &&
+          !warnedAboutFineGrainedPatScopes
+        ) {
+          complete = false;
+          warnedAboutFineGrainedPatScopes = true;
+          this.addCostCenterWarning(
+            warnings,
+            'The GitHub PAT response did not include the "x-oauth-scopes" header; organization roster completeness cannot be verified for fine-grained PATs, so this membership snapshot is incomplete.',
+          );
+        }
+        if (roster.skipReason) {
+          complete = false;
+          this.addCostCenterWarning(
+            warnings,
+            `Skipping cost center organization "${resource.name}": ${roster.skipReason}.`,
+          );
+          continue;
+        }
+        const { members } = roster;
+        if (members.length === 0) {
+          complete = false;
+          this.addCostCenterWarning(
+            warnings,
+            `Skipping cost center organization "${resource.name}": its member roster is empty, so this membership snapshot is incomplete.`,
+          );
+          continue;
+        }
+        resource.members = members;
+      } catch (error) {
+        if (error instanceof MissingCostCenterOrganizationInstallationError) {
+          unassignedComplete = false;
+          this.addCostCenterWarning(
+            warnings,
+            `Skipping organization resource "${resource.name}" in cost center "${costCenter.name}": the GitHub App is not installed for this organization; its users will not be counted in the no-cost-center bucket.`,
+          );
+          continue;
+        }
+
+        complete = false;
+        const status = getHttpStatus(error);
+        let reason = 'the GitHub request failed';
+        if (status === 404) {
+          reason =
+            'the App installation was not found or could not be accessed';
+        } else if (status) {
+          reason = `GitHub returned HTTP ${status}`;
+        }
+        this.addCostCenterWarning(
+          warnings,
+          `Skipping cost center organization "${resource.name}": ${reason}.`,
+        );
+      }
+    }
+
+    const membersByLogin = new Map<string, GithubUser>();
+    for (const { resource } of resources) {
+      if (resource.type !== 'Team' && resource.type !== 'Org') {
+        continue;
+      }
+      for (const member of resource.members ?? []) {
+        membersByLogin.set(member.login.toLowerCase(), member);
+      }
+    }
+
+    for (const { costCenter, resource } of resources) {
+      if (resource.type !== 'User') {
+        continue;
+      }
+
+      const expandedMember = membersByLogin.get(resource.name.toLowerCase());
+      if (expandedMember) {
+        resource.members = [expandedMember];
+        continue;
+      }
+
+      try {
+        const userUrl = buildApiUrl(
+          this.copilotConfig.apiBaseUrl,
+          `/users/${encodeURIComponent(resource.name)}`,
+        );
+        const response = await enterpriseOctokit.request(`GET ${userUrl}`);
+        const user = toGithubUser(response.data);
+        if (user && user.login.toLowerCase() === resource.name.toLowerCase()) {
+          resource.members = [user];
+        } else {
+          complete = false;
+          this.addCostCenterWarning(
+            warnings,
+            `Could not resolve cost center user "${resource.name}" in "${costCenter.name}"; the membership snapshot is incomplete.`,
+          );
+        }
+      } catch (error) {
+        const status = getHttpStatus(error);
+        if (status === 404) {
+          // A direct-user 404 is terminal: that user cannot contribute metrics.
+          this.addCostCenterWarning(
+            warnings,
+            `Could not resolve direct cost center user "${resource.name}" in "${costCenter.name}" (GitHub returned HTTP 404); skipping the unavailable user.`,
+          );
+          continue;
+        }
+
+        complete = false;
+        const reason = status
+          ? `GitHub returned HTTP ${status}`
+          : 'the GitHub request failed';
+        this.addCostCenterWarning(
+          warnings,
+          `Could not resolve cost center user "${resource.name}" in "${costCenter.name}" (${reason}); the membership snapshot is incomplete.`,
+        );
+      }
+    }
+
+    return {
+      costCenters: listedCostCenters,
+      members: resolveCostCenterMemberships(costCenters),
+      warnings,
+      complete,
+      unassignedComplete,
+    };
   }
 
   private async fetchReportLinks(
@@ -196,6 +1253,213 @@ export class GithubClientV2 {
     }
 
     return envelope;
+  }
+
+  async fetchEnterpriseOrganizations(): Promise<string[]> {
+    const enterprise = this.copilotConfig.enterprise;
+    if (!enterprise) {
+      return [];
+    }
+
+    const octokit = await this.getEnterpriseOctokit();
+    const organizations: string[] = [];
+    const seenCursors = new Set<string>();
+    let cursor: string | null = null;
+    for (let page = 1; ; page += 1) {
+      if (page > 100) {
+        throw new Error(
+          'Enterprise organization discovery exceeded its safe GraphQL pagination limit.',
+        );
+      }
+      const response: { data: unknown } = await octokit.request(
+        'POST /graphql',
+        {
+          query: `
+            query EnterpriseOrganizations(
+              $slug: String!
+              $first: Int!
+              $after: String
+            ) {
+              enterprise(slug: $slug) {
+                organizations(first: $first, after: $after) {
+                  nodes {
+                    login
+                  }
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            slug: enterprise,
+            first: 100,
+            after: cursor,
+          },
+        },
+      );
+      const parsed = enterpriseOrganizationsResponseSchema.safeParse(
+        response.data,
+      );
+      if (!parsed.success) {
+        throw new Error(
+          'GitHub returned an error while listing enterprise organizations.',
+        );
+      }
+
+      const { nodes, pageInfo } = parsed.data.data.enterprise.organizations;
+
+      for (const value of nodes) {
+        const login = value.login.trim();
+        if (login) {
+          organizations.push(login);
+        }
+      }
+
+      if (!pageInfo.hasNextPage) {
+        break;
+      }
+      const nextCursor = pageInfo.endCursor;
+      if (
+        typeof nextCursor !== 'string' ||
+        nextCursor.length === 0 ||
+        seenCursors.has(nextCursor)
+      ) {
+        throw new Error(
+          'Unexpected pagination cursor while listing enterprise organizations.',
+        );
+      }
+      seenCursors.add(nextCursor);
+      cursor = nextCursor;
+    }
+
+    const uniqueOrganizations = new Map<string, string>();
+    for (const login of organizations) {
+      const key = login.toLowerCase();
+      if (!uniqueOrganizations.has(key)) {
+        uniqueOrganizations.set(key, login);
+      }
+    }
+
+    return [...uniqueOrganizations.values()].sort((left, right) =>
+      left.localeCompare(right),
+    );
+  }
+
+  private async fetchOrganizationReportLinksFor(
+    organization: string,
+    reportType: 'organization-1-day' | 'users-1-day' | 'user-teams-1-day',
+    day: string,
+  ): Promise<ReportEnvelope> {
+    const isConfiguredOrganization =
+      this.copilotConfig.organization?.toLowerCase() ===
+      organization.toLowerCase();
+    const octokit = isConfiguredOrganization
+      ? await this.getOrganizationOctokit()
+      : await this.getEnterpriseOrganizationOctokit(organization);
+    const hasCachedInstallationClient = isConfiguredOrganization
+      ? this.organizationAuthStrategy !== undefined &&
+        typeof this.organizationAuthStrategy !== 'string'
+      : this.enterpriseOrganizationOctokits.has(organization.toLowerCase());
+    const invalidateClient = async (staleClient: Octokit) => {
+      if (isConfiguredOrganization) {
+        this.invalidateOrganizationOctokit(staleClient);
+      } else {
+        await this.invalidateEnterpriseOrganizationOctokit(
+          organization,
+          staleClient,
+        );
+      }
+    };
+    const path = `/orgs/${encodeURIComponent(
+      organization,
+    )}/copilot/metrics/reports/${reportType}?day=${encodeURIComponent(day)}`;
+    try {
+      return await this.fetchReportLinks(octokit, path);
+    } catch (error) {
+      const status = getHttpStatus(error);
+      if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+        if (hasCachedInstallationClient) {
+          await invalidateClient(octokit);
+          const refreshedOctokit = isConfiguredOrganization
+            ? await this.getOrganizationOctokit()
+            : await this.getEnterpriseOrganizationOctokit(organization);
+          try {
+            return await this.fetchReportLinks(refreshedOctokit, path);
+          } catch (retryError) {
+            const retryStatus = getHttpStatus(retryError);
+            if (retryStatus === 403 && !isRateLimitError(retryError)) {
+              await invalidateClient(refreshedOctokit);
+              throw new InaccessibleEnterpriseOrganizationError(retryStatus);
+            }
+            if (retryStatus === 404 && !isRateLimitError(retryError)) {
+              await invalidateClient(refreshedOctokit);
+              if (isOrganizationReportPermissionError(retryError)) {
+                throw new InaccessibleEnterpriseOrganizationError(retryStatus);
+              }
+            }
+            throw retryError;
+          }
+        }
+        if (status === 403) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+        if (status === 404 && isOrganizationReportPermissionError(error)) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async fetchEnterpriseOrganizationReportLinks(
+    organization: string,
+    day: string,
+  ): Promise<ReportEnvelope> {
+    return this.fetchOrganizationReportLinksFor(
+      organization,
+      'organization-1-day',
+      day,
+    );
+  }
+
+  async verifyEnterpriseOrganizationAccess(
+    organization: string,
+    day: string,
+  ): Promise<boolean> {
+    try {
+      await this.fetchEnterpriseOrganizationReportLinks(organization, day);
+      return true;
+    } catch (error) {
+      if (isOrganizationReportNotFoundError(error)) {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  async fetchEnterpriseOrganizationUserReportLinks(
+    organization: string,
+    day: string,
+  ): Promise<ReportEnvelope> {
+    return this.fetchOrganizationReportLinksFor(
+      organization,
+      'users-1-day',
+      day,
+    );
+  }
+
+  async fetchEnterpriseOrganizationUserTeamsLinks(
+    organization: string,
+    day: string,
+  ): Promise<ReportEnvelope> {
+    return this.fetchOrganizationReportLinksFor(
+      organization,
+      'user-teams-1-day',
+      day,
+    );
   }
 
   async fetchEnterpriseReportLinks(day: string): Promise<ReportEnvelope> {

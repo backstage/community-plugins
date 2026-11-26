@@ -97,8 +97,12 @@ function categorizeWorkspaces(workspaces, latestVersion) {
     else if (versionDiff === 1) tiers.tier3.push(workspace);
   });
 
-  // sort each tier by workspace name
-  Object.values(tiers).forEach(tier =>
+  // Show the most outdated workspaces first, then sort ties by name.
+  tiers.tier1.sort(
+    (a, b) =>
+      semver.compare(a.version, b.version) || a.name.localeCompare(b.name),
+  );
+  [tiers.tier2, tiers.tier3].forEach(tier =>
     tier.sort((a, b) => a.name.localeCompare(b.name)),
   );
 

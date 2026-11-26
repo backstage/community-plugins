@@ -42,6 +42,40 @@ const getAdrLocationDir = (entity: Entity) =>
 export const isAdrAvailable = (entity: Entity) =>
   Boolean(getAdrLocationDir(entity));
 
+const BITBUCKET_SERVER_REPO_PATH =
+  /^(.*?\/(?:projects|users)\/[^/]+\/repos\/[^/]+)(\/.*)?$/;
+const BITBUCKET_SERVER_FILE_PATH_TYPE = /^\/(?:browse|raw|src)(?:\/|$)/;
+
+/**
+ * Bitbucket Server URLs only point at repository content when they include a
+ * `/browse/` (or `/raw/`, `/src/`) segment. Entity source locations that point
+ * at the repository root without it would otherwise resolve to URLs that the
+ * Bitbucket Server URL reader rejects, so add the missing segment.
+ */
+const getSourceLocationBase = (
+  entity: Entity,
+  scmIntegration: ScmIntegrationRegistry,
+) => {
+  const base = getEntitySourceLocation(entity).target;
+  if (scmIntegration.byUrl(base)?.type !== 'bitbucketServer') {
+    return base;
+  }
+
+  const url = new URL(base);
+  const match = url.pathname.match(BITBUCKET_SERVER_REPO_PATH);
+  if (!match) {
+    return base;
+  }
+
+  const [, repoPath, rest = ''] = match;
+  if (BITBUCKET_SERVER_FILE_PATH_TYPE.test(rest)) {
+    return base;
+  }
+
+  url.pathname = `${repoPath}/browse${rest || '/'}`;
+  return url.toString();
+};
+
 /**
  * Utility function to extract the ADR location URL from an entity based off
  * its ADR annotation and relative to the entity source location.
@@ -64,7 +98,7 @@ export const getAdrLocationUrl = (
 
   return scmIntegration.resolveUrl({
     url,
-    base: getEntitySourceLocation(entity).target,
+    base: getSourceLocationBase(entity, scmIntegration),
   });
 };
 

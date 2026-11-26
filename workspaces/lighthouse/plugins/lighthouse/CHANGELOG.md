@@ -1,5 +1,28 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.29.0
+
+### Minor Changes
+
+- 23e5c8f: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 23e5c8f: Replaced deprecated Backstage core components with their Backstage UI equivalents. The Lighthouse page headers, section headings and audit links now use Backstage UI styling, and the README link opens in a new tab.
+- Updated dependencies [23e5c8f]
+  - @backstage-community/plugin-lighthouse-common@0.26.0
+
+## 0.28.0
+
+### Minor Changes
+
+- 04d0519: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [04d0519]
+  - @backstage-community/plugin-lighthouse-common@0.25.0
+
 ## 0.27.0
 
 ### Minor Changes

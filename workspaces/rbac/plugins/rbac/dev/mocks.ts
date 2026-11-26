@@ -20,6 +20,7 @@ import {
   RoleBasedPolicy,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockApis } from '@backstage/test-utils';
 
 import { mockConditionRules } from '../src/__fixtures__/mockConditionRules';
@@ -33,6 +34,25 @@ import type {
   RoleBasedConditions,
   RoleError,
 } from '../src/types';
+
+// Dev-only conditional policy so the edit role flow can show conditional
+// access changes for a role that is editable in the UI.
+const devConditions: RoleConditionalPolicyDecision[] = [
+  ...mockConditions,
+  {
+    id: 100,
+    result: AuthorizeResult.CONDITIONAL,
+    pluginId: 'catalog',
+    resourceType: 'catalog-entity',
+    conditions: {
+      rule: 'IS_ENTITY_OWNER',
+      resourceType: 'catalog-entity',
+      params: { claims: ['group:default/janus-authors'] },
+    },
+    roleEntityRef: 'role:default/guests',
+    permissionMapping: ['delete'],
+  },
+];
 
 class MockRBACApi implements RBACAPI {
   readonly resources;
@@ -97,13 +117,66 @@ class MockRBACApi implements RBACAPI {
     });
   }
 
-  async searchMembers(searchTerm: string): Promise<MemberEntity[]> {
-    if (!searchTerm.trim()) {
-      return mockMembers;
+  async searchMembers(options?: {
+    searchTerm?: string;
+    limit?: number;
+    offset?: number;
+    kind?: 'user' | 'group';
+    namespace?: string;
+    orderBy?: 'name' | 'type' | 'namespace';
+    orderDirection?: 'asc' | 'desc';
+  }): Promise<{ items: MemberEntity[]; totalItems: number }> {
+    const {
+      searchTerm = '',
+      limit = 100,
+      offset = 0,
+      kind,
+      namespace,
+      orderBy = 'name',
+      orderDirection = 'asc',
+    } = options ?? {};
+    let filtered = [...mockMembers];
+    if (kind) {
+      filtered = filtered.filter(
+        m => m.kind.toLowerCase() === kind.toLowerCase(),
+      );
     }
-    return mockMembers.filter(m =>
-      m.metadata.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    if (namespace) {
+      filtered = filtered.filter(m => m.metadata.namespace === namespace);
+    }
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(m =>
+        m.metadata.name.toLowerCase().includes(term),
+      );
+    }
+    const direction = orderDirection === 'desc' ? -1 : 1;
+    const sortValue = (member: (typeof mockMembers)[number]) => {
+      if (orderBy === 'type') {
+        return member.kind;
+      }
+      if (orderBy === 'namespace') {
+        return member.metadata.namespace ?? '';
+      }
+      return member.metadata.name;
+    };
+    filtered.sort(
+      (a, b) => sortValue(a).localeCompare(sortValue(b)) * direction,
     );
+    return {
+      items: filtered.slice(offset, offset + limit),
+      totalItems: filtered.length,
+    };
+  }
+
+  async getMemberNamespaces(): Promise<string[]> {
+    return [
+      ...new Set(
+        mockMembers
+          .map(m => m.metadata.namespace)
+          .filter((ns): ns is string => Boolean(ns)),
+      ),
+    ].sort();
   }
 
   async listPermissions(): Promise<PluginPermissionMetaData[]> {
@@ -142,7 +215,13 @@ class MockRBACApi implements RBACAPI {
   async getRoleConditions(
     roleRef: string,
   ): Promise<RoleConditionalPolicyDecision[] | Response> {
-    return mockConditions.filter(mc => mc.roleEntityRef === roleRef);
+    return devConditions.filter(mc => mc.roleEntityRef === roleRef);
+  }
+
+  async getAllRoleConditions(): Promise<
+    RoleConditionalPolicyDecision[] | Response
+  > {
+    return mockConditions;
   }
 
   async updateConditionalPolicies(
@@ -163,10 +242,12 @@ export const mockRBACApi = new MockRBACApi([
   {
     memberReferences: ['user:default/guest'],
     name: 'role:default/guests',
+    metadata: { source: 'rest' },
   },
   {
     memberReferences: ['user:default/xyz', 'group:default/admins'],
     name: 'role:default/rbac_admin',
+    metadata: { source: 'configuration' },
   },
 ]);
 

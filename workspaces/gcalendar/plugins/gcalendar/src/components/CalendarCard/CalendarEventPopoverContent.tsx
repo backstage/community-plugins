@@ -17,39 +17,21 @@ import { sortBy } from 'lodash';
 import DOMPurify from 'dompurify';
 
 import { useAnalytics } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import {
+  Box,
+  ButtonIcon,
+  Flex,
+  Link,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
+import { RiArrowRightLine } from '@remixicon/react';
 
 import { AttendeeChip } from './AttendeeChip';
 import { GCalendarEvent } from '../../api';
 import { getTimePeriod, getZoomLink } from './util';
-
-const useStyles = makeStyles(
-  theme => {
-    return {
-      description: {
-        wordBreak: 'break-word',
-        '& a': {
-          color: theme.palette.primary.main,
-          fontWeight: 500,
-        },
-      },
-      divider: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-      },
-    };
-  },
-  {
-    name: 'GCalendarEventPopoverContent',
-  },
-);
+import styles from './CalendarEventPopoverContent.module.css';
 
 type CalendarEventPopoverProps = {
   event: GCalendarEvent;
@@ -58,38 +40,48 @@ type CalendarEventPopoverProps = {
 export const CalendarEventPopoverContent = ({
   event,
 }: CalendarEventPopoverProps) => {
-  const classes = useStyles({ event });
   const analytics = useAnalytics();
   const zoomLink = getZoomLink(event);
 
   return (
-    <Box display="flex" flexDirection="column" width={400} p={2}>
-      <Box display="flex" alignItems="center">
-        <Box flex={1}>
-          <Typography variant="h6">{event.summary}</Typography>
-          <Typography variant="subtitle2">{getTimePeriod(event)}</Typography>
+    <Flex direction="column" className={styles.root} p="4">
+      <Flex align="center" gap="2">
+        <Box className={styles.title}>
+          <Text as="h6" variant="title-small">
+            {event.summary}
+          </Text>
+          <Text as="p" variant="body-small">
+            {getTimePeriod(event)}
+          </Text>
         </Box>
         {event.htmlLink && (
-          <Tooltip title="Open in Calendar">
+          <TooltipTrigger>
             <Link
               data-testid="open-calendar-link"
-              to={event.htmlLink}
-              onClick={_e =>
+              href={event.htmlLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onPress={() =>
                 analytics.captureEvent('click', 'open in calendar')
               }
               noTrack
             >
-              <IconButton>
-                <ArrowForwardIcon />
-              </IconButton>
+              <ButtonIcon
+                aria-label="Open in Calendar"
+                variant="tertiary"
+                icon={<RiArrowRightLine />}
+              />
             </Link>
-          </Tooltip>
+            <Tooltip>Open in Calendar</Tooltip>
+          </TooltipTrigger>
         )}
-      </Box>
+      </Flex>
       {zoomLink && (
         <Link
-          to={zoomLink}
-          onClick={_e => analytics.captureEvent('click', 'zoom link')}
+          href={zoomLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          onPress={() => analytics.captureEvent('click', 'zoom link')}
           noTrack
         >
           Join Zoom Meeting
@@ -98,9 +90,9 @@ export const CalendarEventPopoverContent = ({
 
       {event.description && (
         <>
-          <Divider className={classes.divider} variant="fullWidth" />
-          <Box
-            className={classes.description}
+          <hr className={styles.divider} />
+          <div
+            className={styles.description}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(event.description, {
                 USE_PROFILES: { html: true },
@@ -112,16 +104,19 @@ export const CalendarEventPopoverContent = ({
 
       {event.attendees && (
         <>
-          <Divider className={classes.divider} variant="fullWidth" />
+          <hr className={styles.divider} />
           <Box>
-            <Typography variant="subtitle2">Attendees</Typography>
-            <Box mb={1} />
-            {sortBy(event.attendees || [], 'email').map(user => (
-              <AttendeeChip key={user.email} user={user} />
-            ))}
+            <Text as="p" variant="body-small">
+              Attendees
+            </Text>
+            <Box className={styles.attendees}>
+              {sortBy(event.attendees || [], 'email').map(user => (
+                <AttendeeChip key={user.email} user={user} />
+              ))}
+            </Box>
           </Box>
         </>
       )}
-    </Box>
+    </Flex>
   );
 };

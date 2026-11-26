@@ -17,8 +17,10 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 
+import { createNpmActions } from './actions';
 import { createRouter } from './router';
 import { NpmRegistryServiceImpl } from './services/NpmRegistryServiceImpl';
 
@@ -37,8 +39,16 @@ export const npmPlugin = createBackendPlugin({
         httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
         catalog: catalogServiceRef,
+        actionsRegistry: actionsRegistryServiceRef,
       },
-      async init({ logger, config, httpAuth, httpRouter, catalog }) {
+      async init({
+        logger,
+        config,
+        httpAuth,
+        httpRouter,
+        catalog,
+        actionsRegistry,
+      }) {
         const npmRegistryService = new NpmRegistryServiceImpl({
           logger,
           config,
@@ -51,6 +61,12 @@ export const npmPlugin = createBackendPlugin({
             npmRegistryService,
           }),
         );
+
+        createNpmActions({
+          actionsRegistry,
+          catalog,
+          npmRegistryService,
+        });
       },
     });
   },

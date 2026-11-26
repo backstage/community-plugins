@@ -16,7 +16,6 @@
 import { puppetDbApiRef, PuppetDbReport } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
@@ -24,7 +23,7 @@ import {
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from '@backstage/ui';
 import { puppetDbReportRouteRef } from '../../routes';
 import { StatusField } from '../StatusField';
 
@@ -64,10 +63,7 @@ export const ReportsTable = (props: ReportsTableProps) => {
       title: 'Configuration Version',
       field: 'configuration_version',
       render: rowData => (
-        <Link
-          component={RouterLink}
-          to={reportsRouteLink({ hash: rowData.hash! })}
-        >
+        <Link href={reportsRouteLink({ hash: rowData.hash! })}>
           {rowData.configuration_version !== '' ? (
             <Typography noWrap>{rowData.configuration_version}</Typography>
           ) : (

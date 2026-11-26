@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
+import { createTranslationMessages } from '@backstage/frontend-plugin-api';
 import { npmTranslationRef } from './ref';
 
 /**
@@ -35,6 +35,7 @@ const de = createTranslationMessages({
     'infoCard.codeRepository': 'Code-Repository',
     'infoCard.issueTracker': 'Problemverfolgung',
     'infoCard.homepage': 'Startseite',
+    'releaseTab.title': 'Npm Releases',
     'releaseOverviewCard.title': 'Aktuelle Tags',
     'releaseOverviewCard.toolbar.searchPlaceholder': 'Suchen',
     'releaseOverviewCard.columns.tag': 'Tag',

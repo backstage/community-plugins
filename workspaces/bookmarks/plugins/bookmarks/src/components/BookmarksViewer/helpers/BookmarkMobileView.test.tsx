@@ -15,7 +15,7 @@
  */
 
 import { renderInTestApp } from '@backstage/test-utils';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { BookmarkMobileView } from './BookmarkMobileView';
 import { TEST_IDS } from '../../../consts/testids';
 
@@ -54,9 +54,13 @@ describe('BookmarkMobileView', () => {
     expect(screen.getByTestId('toc')).toBeInTheDocument();
 
     // clicking the backdrop should close the drawer
-    act(() => {
-      screen.getByTestId(TEST_IDS.BookmarkMobileView.backdrop).click();
-    });
+    // react-aria dismisses on pointer events, not on a bare click event
+    const backdrop = screen.getByTestId(TEST_IDS.BookmarkMobileView.backdrop);
+    fireEvent.pointerDown(backdrop);
+    fireEvent.mouseDown(backdrop);
+    fireEvent.pointerUp(backdrop);
+    fireEvent.mouseUp(backdrop);
+    fireEvent.click(backdrop);
     await waitFor(() => {
       expect(
         screen.queryByTestId(TEST_IDS.BookmarkMobileView.backdrop),

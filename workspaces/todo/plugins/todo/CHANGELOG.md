@@ -1,5 +1,21 @@
 # @backstage-community/plugin-todo
 
+## 0.27.0
+
+### Minor Changes
+
+- f66968a: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- f66968a: The TODO list's truncated text, file links and tooltips now use Backstage UI components. Tooltips can now also be opened with the keyboard.
+
+## 0.26.0
+
+### Minor Changes
+
+- 825d902: Backstage version bump to v1.56.2
+
 ## 0.25.0
 
 ### Minor Changes

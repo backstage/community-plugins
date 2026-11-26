@@ -15,11 +15,11 @@
  */
 import { useState } from 'react';
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
 } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import { Execution, stackstormApiRef } from '../../api';
 import { Status } from './Status';
@@ -60,7 +60,15 @@ export const DenseTable = ({
     {
       title: 'Execution ID',
       field: 'id',
-      render: e => <Link to={st2.getExecutionHistoryUrl(e.id)}>{e.id}</Link>,
+      render: e => (
+        <Link
+          href={st2.getExecutionHistoryUrl(e.id)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {e.id}
+        </Link>
+      ),
     },
   ];
 

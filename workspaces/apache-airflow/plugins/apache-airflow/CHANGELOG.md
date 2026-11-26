@@ -1,5 +1,21 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.26.0
+
+### Minor Changes
+
+- 97ae5e3: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 97ae5e3: Replaced deprecated Backstage core components on the Apache Airflow page with their Backstage UI equivalents. The page header, layout and links now use Backstage UI styling.
+
+## 0.25.0
+
+### Minor Changes
+
+- 4826d5d: Backstage version bump to v1.56.2
+
 ## 0.24.0
 
 ### Minor Changes

@@ -17,11 +17,11 @@ import { ProblemsTable } from './ProblemsTable';
 import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
 import { problems } from '../../../mocks/problems.json';
 import { ApiProvider, ConfigReader } from '@backstage/core-app-api';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('ProblemsTable', () => {
   const apis = TestApiRegistry.from([
-    configApiRef,
+    coreApis.config,
     new ConfigReader({ dynatrace: { baseUrl: '__dynatrace__' } }),
   ]);
   it('renders the table with some problem data', async () => {

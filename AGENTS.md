@@ -36,6 +36,21 @@ workspaces/<name>/
 
 Before starting work, check whether there is already an open pull request for the same change. Use `gh pr list` or search GitHub to avoid duplicating effort.
 
+## Backstage Skills
+
+Backstage publishes agent skills for common plugin tasks at <https://backstage.io/.well-known/skills/>. Before starting one of these tasks, read the matching skill's `SKILL.md` and follow it, together with the reference files it links to. Fetch them from the URLs below if your agent hasn't installed them locally.
+
+| Task                                                                        | Skill                                                                                                                   |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Adding new frontend system support to a plugin, or migrating a plugin to it | [`new-frontend-system-migration`](https://backstage.io/.well-known/skills/new-frontend-system-migration/SKILL.md)       |
+| Building, wiring, testing or debugging a plugin on the new frontend system  | [`frontend-plugin-development`](https://backstage.io/.well-known/skills/frontend-plugin-development/SKILL.md)           |
+| Building or changing a backend plugin or module                             | [`backend-plugin-development`](https://backstage.io/.well-known/skills/backend-plugin-development/SKILL.md)             |
+| Moving components from Material UI to Backstage UI                          | [`mui-to-bui-migration`](https://backstage.io/.well-known/skills/mui-to-bui-migration/SKILL.md)                         |
+| Adding analytics events to a plugin                                         | [`plugin-analytics-instrumentation`](https://backstage.io/.well-known/skills/plugin-analytics-instrumentation/SKILL.md) |
+| Moving a backend plugin's API to an OpenAPI spec                            | [`onboard-to-openapi-server`](https://backstage.io/.well-known/skills/onboard-to-openapi-server/SKILL.md)               |
+
+The full list, with descriptions, is in [`index.json`](https://backstage.io/.well-known/skills/index.json). Where a skill and this file disagree, follow this file for repository conventions (workspaces, commands, changesets) and the skill for how Backstage APIs are used.
+
 ## Code Standards
 
 - Follow the guidelines in `/CONTRIBUTING.md`.

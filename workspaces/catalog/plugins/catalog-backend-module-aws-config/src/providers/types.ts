@@ -38,7 +38,7 @@ export interface AwsConfigResource {
   resourceName?: string;
   resourceType: string;
   arn: string;
-  tags: AwsTagValue[];
+  tags?: AwsTagValue[];
   awsRegion?: string;
   accountId: string;
 }
@@ -74,10 +74,17 @@ export interface FieldTransformDefinition {
 
 export interface FilterDefinition {
   tagFilters?: TagFilterDefinition[];
+  excludeTags?: TagExclusionDefinition[];
   resourceTypes: string[];
 }
 
 export interface TagFilterDefinition {
   key: string;
   value?: string;
+}
+
+export interface TagExclusionDefinition {
+  key: string;
+  value?: string;
+  valuePattern?: RegExp;
 }

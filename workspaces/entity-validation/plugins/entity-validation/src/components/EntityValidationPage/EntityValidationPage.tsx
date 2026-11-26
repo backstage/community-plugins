@@ -17,7 +17,7 @@
 import { useState } from 'react';
 
 import * as React from 'react';
-import { Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { EntityTextArea } from '../EntityTextArea';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -144,19 +144,19 @@ export const EntityValidationPage = (props: {
   } = props;
 
   return (
-    <Page themeId="tool">
+    <>
       <Header
         title="Entity Validator"
-        subtitle="Validate Backstage catalog entity descriptor YAML files"
+        description="Validate Backstage catalog entity descriptor YAML files"
       />
-      <Content>
+      <Container>
         <EntityValidationContent
           defaultYaml={defaultYaml}
           defaultLocation={defaultLocation}
           hideFileLocationField={hideFileLocationField}
           contentHead={contentHead}
         />
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };

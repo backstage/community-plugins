@@ -29,6 +29,7 @@ export const TEST_IDS = {
   },
   BookmarkViewerFrame: {
     iframe: 'plugin-bookmarks-iframe',
+    loading: 'plugin-bookmarks-loading',
   },
   TableOfContents: {
     leaf: 'plugin-bookmarks-toc-leaf',

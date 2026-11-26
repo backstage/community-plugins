@@ -1,5 +1,28 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.25.0
+
+### Minor Changes
+
+- 3b4cb4d: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 3b4cb4d: The Tech Radar page header, heading and links now use Backstage UI components. Links in the entry dialog open in a new tab.
+- Updated dependencies [3b4cb4d]
+  - @backstage-community/plugin-tech-radar-common@1.24.0
+
+## 1.24.0
+
+### Minor Changes
+
+- 0107c8c: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [0107c8c]
+  - @backstage-community/plugin-tech-radar-common@1.23.0
+
 ## 1.23.0
 
 ### Minor Changes

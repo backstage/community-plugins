@@ -19,7 +19,8 @@ import {
   ResponseErrorPanel,
   EmptyState,
 } from '@backstage/core-components';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { ProblemsTable } from '../ProblemsTable';
 import { dynatraceApiRef, DynatraceProblem } from '../../../api';
 import { InfoCard } from '@backstage/core-components';
@@ -69,7 +70,7 @@ const dynatraceEntityPrefixes = (idPrefix: string): string => {
 
 export const ProblemsList = (props: ProblemsListProps) => {
   const { dynatraceEntityId } = props;
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const dynatraceApi = useApi(dynatraceApiRef);
   const dynatraceBaseUrl = configApi.getString('dynatrace.baseUrl');
 

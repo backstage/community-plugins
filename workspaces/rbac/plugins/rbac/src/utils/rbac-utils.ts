@@ -35,6 +35,7 @@ import {
   permissionMappingAction,
   PluginPermissionMetaData,
   PolicyDetails,
+  ResourcedPolicy,
   RoleBasedPolicy,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
@@ -57,6 +58,18 @@ import {
   PluginInfoType,
 } from '../types';
 import { getMembersCount } from './create-role-utils';
+
+/** Path of a role's overview page, relative to the RBAC root page. */
+export const getRoleOverviewPath = (roleRef: string): string => {
+  try {
+    const { kind, namespace, name } = parseEntityRef(roleRef);
+    return `roles/${kind}/${namespace}/${name}`;
+  } catch {
+    // Like getShortRoleName, degrade instead of crashing the render: an
+    // empty path keeps the link on the RBAC page itself.
+    return '';
+  }
+};
 
 export const getPermissionsArray = (
   role: string,
@@ -332,6 +345,36 @@ export const getPolicyString = (policies: RowPolicy[]) => {
   return policyStr.slice(0, policyStr.length - 2);
 };
 
+/**
+ * Whether a conditional policy applies to the given plugin permission: the
+ * resource types must match and the condition's permission mapping must cover
+ * the permission, either by name and action or by action alone.
+ */
+export const isPolicyCoveredByCondition = (
+  condition: Pick<
+    RoleConditionalPolicyDecision,
+    'resourceType' | 'permissionMapping'
+  >,
+  permission: { name: string; policy: string; resourceType?: string },
+  locale = 'en-US',
+): boolean => {
+  if (permission.resourceType !== condition.resourceType) {
+    return false;
+  }
+  const action = permission.policy.toLocaleLowerCase(locale);
+  return condition.permissionMapping.some(entry => {
+    // {name, action} → match by specific permission name
+    if (isPermissionInfo(entry)) {
+      return (
+        permission.name === entry.name &&
+        action === entry.action.toLocaleLowerCase(locale)
+      );
+    }
+    // plain action string → broad match, all permissions with this action
+    return action === entry.toLocaleLowerCase(locale);
+  });
+};
+
 export const getConditionalPermissionsData = (
   conditionalPermissions: RoleConditionalPolicyDecision[],
   permissionPolicies: PluginsPermissionPoliciesData,
@@ -349,26 +392,10 @@ export const getConditionalPermissionsData = (
     );
 
     const perms =
-      pluginPermissionMetaData?.policies.filter(po => {
-        if (!isResourcedPolicy(po) || po.resourceType !== cp.resourceType) {
-          return false;
-        }
-        return cp.permissionMapping.some(entry => {
-          // {name, action} → match by specific permission name
-          if (isPermissionInfo(entry)) {
-            return (
-              po.name === entry.name &&
-              po.policy.toLocaleLowerCase(locale) ===
-                entry.action.toLocaleLowerCase(locale)
-            );
-          }
-          // plain action string → broad match, all permissions with this action
-          return (
-            po.policy.toLocaleLowerCase(locale) ===
-            entry.toLocaleLowerCase(locale)
-          );
-        });
-      }) ?? [];
+      pluginPermissionMetaData?.policies.filter(
+        (po): po is ResourcedPolicy =>
+          isResourcedPolicy(po) && isPolicyCoveredByCondition(cp, po, locale),
+      ) ?? [];
 
     const allPolicies = (pm: string) =>
       permissionPolicies.pluginsPermissions?.[cp.pluginId]?.policies?.[pm]
@@ -445,10 +472,10 @@ export const isSamePermissionPolicy = (
   a.policy === b.policy &&
   a.effect === b.effect;
 
-export const onlyInLeft = (
-  left: RoleBasedPolicy[],
-  right: RoleBasedPolicy[],
-  compareFunction: (a: RoleBasedPolicy, b: RoleBasedPolicy) => boolean,
+export const onlyInLeft = <T>(
+  left: T[],
+  right: T[],
+  compareFunction: (a: T, b: T) => boolean,
 ) =>
   left.filter(
     leftValue =>

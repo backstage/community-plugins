@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-splunk-on-call",
-  "version": "0.27.0",
+  "version": "0.29.0",
   "description": "A Backstage plugin that integrates towards Splunk On-Call",
   "backstage": {
     "role": "frontend-plugin",
@@ -61,6 +61,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",

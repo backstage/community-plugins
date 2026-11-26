@@ -1,5 +1,21 @@
 # @backstage-community/plugin-gitops-profiles
 
+## 0.27.0
+
+### Minor Changes
+
+- 7d36446: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 7d36446: Replaced deprecated Backstage core components with their Backstage UI equivalents. The page headers, section headings and links now use Backstage UI styling.
+
+## 0.26.0
+
+### Minor Changes
+
+- 6a1b5a8: Backstage version bump to v1.56.2
+
 ## 0.25.0
 
 ### Minor Changes

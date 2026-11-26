@@ -17,10 +17,41 @@ The plugin now defaults to the V2 dashboard, backed by GitHub's report-based Cop
 - **Enterprise and Organization Integration**: Use the dashboard with a GitHub enterprise, a GitHub organization, or both.
 - **V2 Insights Dashboard**: View daily totals, feature usage, IDE breakdowns, language views, model usage, and PR metrics from the new GitHub reports API.
 - **Legacy Dashboard Access**: Keep the pre-V2 dashboard available during migration when you need to compare behavior.
-- **Team Filtering**: Filter V2 data by team when backend ingestion is configured to collect team membership data.
+- **Team Filtering**: `copilot.ingestTeams` enables configured-organization team filtering and enterprise team filtering in enterprise view. `copilot.ingestOrganizationTeamReports` enables enterprise-wide organization discovery and team filtering; with both enterprise and configured organization set, it also enables Team filtering in organization view.
+- **Cost Center Filtering**: In enterprise views, and in organization views when both `copilot.enterprise` and `copilot.organization` are configured, filter by eligible cost centers when `copilot.ingestCostCenters` is enabled. The Consumption tab also works for a selected cost center.
+- **No Cost Center View**: View users without a cost-center membership as a separate dashboard scope. This option is not represented by a reserved cost-center ID, so every real cost-center ID remains selectable.
+- **Exclusive V2 Filters**: Filter by one target at a time. Enterprise view can offer Cost center, Enterprise team, and Organization team, depending on enabled settings. Organization view keeps Team scoped to the configured organization. Organization teams are available in enterprise view when `copilot.ingestOrganizationTeamReports` is enabled, or when `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are configured. **All organizations** with **All teams** retains enterprise-wide totals; selecting a team scopes the dashboard to its owning organization. The dashboard identifies enterprise and organization teams separately in tooltips.
 - **Individual ("Me") Metrics**: A privacy-scoped view, mounted by default at `/copilot/me`, that shows only the signed-in user's own Copilot usage and consumption — see [Individual ("Me") Metrics](#individual-me-metrics) below.
 
-_GitHub APIs will only show metrics for teams of 5 or more active users per day_
+_Enterprise and organization-team filters list teams with at least five
+distinct users in the selected date range. Organization-team options remain
+qualified by their owning organization; partial report coverage can still
+produce partial metrics._
+
+_Cost-center views require at least five distinct Copilot users across the selected date range._
+
+The **No cost center** dashboard uses its own backend route and is offered only
+when at least five distinct users without a cost-center membership have data in
+the selected range. Cost-center dashboard breakdowns keep the top ten values
+per day and combine the remaining additive metrics into `others`; full detail
+remains in the database.
+
+Organization team filtering and organization-scope cost-center views require
+the GitHub App's organization-level **Organization Copilot metrics: read**
+permission, or `read:org` for classic PATs. Without this access, GitHub may
+return 403/404 for organization per-user or user-teams reports. If the
+per-user report is denied, organization team and organization-scope
+cost-center data will not sync; if the user-teams report is denied, team data
+will not sync. Other ingestion continues. See the
+[backend permission requirements](../copilot-backend/README.md#required-github-permissions)
+for enterprise permissions and further details.
+
+When multiple targets are available, a target whose list finishes loading with
+no eligible data is disabled in the toggle button group with an explanation.
+If the active target is empty and another has options, the dashboard falls back
+to one with options. If all targets are empty, Cost center remains selected
+when available; otherwise, the default team target remains selected. Its empty
+dropdown stays enabled.
 
 ## Setup
 
@@ -194,6 +225,9 @@ The frontend reads the following `app-config.yaml` settings:
 - `copilot.defaultView`: Optional default scope when both enterprise and organization are configured. Supported values are `enterprise` and `organization`.
 - `copilot.showLegacyView`: When `true`, the sidebar shows a link to the legacy dashboard.
 - `copilot.showUserMetrics`: Set to `false` to disable the individual ("me") metrics view — it will render a message explaining the feature has been turned off, rather than being removed from navigation. Defaults to `true`.
+- `copilot.ingestTeams`: Backend opt-in that enables team filtering; this value is frontend-visible so the dashboard can show the Team target.
+- `copilot.ingestOrganizationTeamReports`: Backend opt-in that enables enterprise-wide organization discovery and organization-team filtering. This value is frontend-visible so the dashboard can show the Organization team target in enterprise view and the Team target for the configured organization in organization view when both `copilot.enterprise` and `copilot.organization` are set. Defaults to `false`.
+- `copilot.ingestCostCenters`: Backend opt-in that enables cost-center filtering; this value is frontend-visible so the dashboard can show the Cost center target.
 
 Example:
 
@@ -204,7 +238,16 @@ copilot:
   defaultView: enterprise
   showLegacyView: true
   showUserMetrics: true
+  ingestTeams: true
+  ingestCostCenters: true
+  ingestOrganizationTeamReports: true
 ```
+
+Organization-team dashboards use the selected organization's scope for
+dashboard, customization, and consumption metrics, matching the corresponding
+organization-view data. Choosing a team with All organizations selected also
+selects its owning organization; equal team slugs remain distinct.
+Organization view continues to use the `Team` label.
 
 ## Routes And Legacy Dashboard
 
@@ -249,7 +292,7 @@ This plugin moved to V2 because GitHub replaced the older direct metrics endpoin
 That change affects the frontend in three visible ways:
 
 1. V2 is the default UI.
-2. Historical data in V2 depends on backend backfill from the GitHub report window, which starts at `2025-10-10`.
+2. Historical user, team, and cost-center data in V2 depends on backend backfill within GitHub's roughly one-year report window.
 3. Team filtering in V2 depends on backend ingestion of user and user-team reports.
 
 For operator upgrade steps and configuration guidance, see [../../docs/copilot-v2-migration-guide.md](../../docs/copilot-v2-migration-guide.md).

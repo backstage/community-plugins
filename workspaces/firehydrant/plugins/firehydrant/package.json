@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-firehydrant",
-  "version": "0.24.0",
+  "version": "0.26.0",
   "description": "A Backstage plugin that integrates towards FireHydrant",
   "backstage": {
     "role": "frontend-plugin",
@@ -55,7 +55,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/ui": "^0.18.0",
+    "@backstage/ui": "backstage:^",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^18.0.0",
     "luxon": "^3.0.0",

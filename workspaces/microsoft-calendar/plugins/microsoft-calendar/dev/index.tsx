@@ -18,7 +18,7 @@ import { microsoftCalendarPlugin, MicrosoftCalendarCard } from '../src/plugin';
 import { microsoftCalendarApiRef } from '../src';
 import responseMock from './mock.json';
 import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
-import { Content, Page } from '@backstage/core-components';
+import { Container } from '@backstage/ui';
 import Grid from '@material-ui/core/Grid';
 
 createDevApp()
@@ -48,13 +48,11 @@ createDevApp()
   })
   .addPage({
     element: (
-      <Page themeId="home">
-        <Content>
-          <Grid item xs={12} md={6}>
-            <MicrosoftCalendarCard />
-          </Grid>
-        </Content>
-      </Page>
+      <Container>
+        <Grid item xs={12} md={6}>
+          <MicrosoftCalendarCard />
+        </Grid>
+      </Container>
     ),
     title: 'Microsoft-Calendar Plugin Demo',
     path: '/microsoft-calendar',
