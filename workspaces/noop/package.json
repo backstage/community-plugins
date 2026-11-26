@@ -2,7 +2,7 @@
   "name": "@internal/noop",
   "private": true,
   "engines": {
-    "node": "24"
+    "node": "26"
   },
   "scripts": {
     "backstage-cli": "exit 0",

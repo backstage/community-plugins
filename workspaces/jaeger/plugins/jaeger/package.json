@@ -58,17 +58,17 @@
     "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
-    "pretty-ms": "^9.0.0",
+    "pretty-ms": "^10.0.0",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
-    "@testing-library/jest-dom": "^6.0.0",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "@testing-library/jest-dom": "^8.0.0",
+    "react": "^19.0.0"
   },
   "files": [
     "dist"
