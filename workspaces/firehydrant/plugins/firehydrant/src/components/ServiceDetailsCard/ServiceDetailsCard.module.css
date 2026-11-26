@@ -14,36 +14,24 @@
  * limitations under the License.
  */
 
-.link {
-  text-decoration: underline;
-  font-size: 16px;
-  line-height: 27px;
-  color: #3b2492;
-}
-
-.link:hover,
-.link:focus {
-  font-weight: 500;
-}
-
 .linksContainer {
-  border-bottom: 1px solid #d5d5d5;
-  padding: 10px 0px 10px 20px;
-  background-color: #f1edff;
-  margin-bottom: 20px;
-}
-
-.warning {
-  padding: 10px;
-  background: #f1edff;
-  color: #3b2492;
+  border-bottom: 1px solid var(--bui-border-1);
+  padding: var(--bui-space-2) 0 var(--bui-space-2) var(--bui-space-5);
+  background-color: var(--bui-bg-neutral-2);
+  margin-bottom: var(--bui-space-5);
 }
 
 .headerRow {
-  border-bottom: 1px solid #d5d5d5;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--bui-border-1);
+  padding-bottom: var(--bui-space-2);
+}
+
+.buttonRow {
+  flex-wrap: wrap;
 }
 
 .viewSection {
-  padding-left: 16px;
-  margin-top: 10px;
+  padding-left: var(--bui-space-4);
+  margin-top: var(--bui-space-3);
 }

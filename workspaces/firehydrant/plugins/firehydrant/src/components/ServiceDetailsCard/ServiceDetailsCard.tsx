@@ -16,12 +16,11 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { ServiceAnalytics } from '../ServiceAnalytics/ServiceAnalytics';
-import { Box, ButtonLink, Flex, Link, Text } from '@backstage/ui';
+import { Alert, Box, ButtonLink, Flex, Link, Text } from '@backstage/ui';
 import {
   RiExternalLinkLine,
   RiFileTextLine,
   RiFireLine,
-  RiAlertLine,
   RiAddLine,
 } from '@remixicon/react';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -120,17 +119,19 @@ export const ServiceDetailsCard = () => {
   return (
     <InfoCard>
       {!showServiceDetails && !loading && (
-        <Flex
-          align="center"
-          style={{ gap: 'var(--bui-space-2)' }}
-          className={styles.warning}
-        >
-          <RiAlertLine size={20} />
-          <Text as="span">This service does not exist in FireHydrant.</Text>
-        </Flex>
+        <Alert
+          status="warning"
+          icon
+          title="This service does not exist in FireHydrant."
+        />
       )}
       {showServiceDetails && (
-        <Flex align="center" justify="between" className={styles.headerRow}>
+        <Flex
+          align="center"
+          justify="between"
+          gap="2"
+          className={styles.headerRow}
+        >
           <Text as="h2" variant="title-medium">
             {headerText}
           </Text>
@@ -139,8 +140,8 @@ export const ServiceDetailsCard = () => {
             target="_blank"
             rel="noopener"
             variant="primary"
+            iconStart={<RiExternalLinkLine />}
           >
-            <RiExternalLinkLine size={16} />
             View service incidents
           </ButtonLink>
         </Flex>
@@ -151,7 +152,6 @@ export const ServiceDetailsCard = () => {
             incidents?.slice(0, 5).map((incident: Incident, index: number) => (
               <Box key={index}>
                 <Link
-                  className={styles.link}
                   href={incident.incident_url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -164,16 +164,14 @@ export const ServiceDetailsCard = () => {
       )}
       <Box className={styles.viewSection}>
         <Text variant="body-medium">View in FireHydrant </Text>
-        <Flex
-          style={{ marginTop: 'var(--bui-space-2)', gap: 'var(--bui-space-6)' }}
-        >
+        <Flex gap="4" mt="2" className={styles.buttonRow}>
           <ButtonLink
             href={`${BASE_URL}/incidents/new`}
             target="_blank"
             rel="noopener"
             variant="secondary"
+            iconStart={<RiAddLine />}
           >
-            <RiAddLine size={20} />
             Declare an incident
           </ButtonLink>
           <ButtonLink
@@ -181,8 +179,8 @@ export const ServiceDetailsCard = () => {
             target="_blank"
             rel="noopener"
             variant="secondary"
+            iconStart={<RiFireLine />}
           >
-            <RiFireLine size={20} />
             View all incidents
           </ButtonLink>
           {showServiceDetails && (
@@ -191,8 +189,8 @@ export const ServiceDetailsCard = () => {
               target="_blank"
               rel="noopener"
               variant="secondary"
+              iconStart={<RiFileTextLine />}
             >
-              <RiFileTextLine size={20} />
               View Service Details
             </ButtonLink>
           )}
