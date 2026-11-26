@@ -15,7 +15,7 @@
  */
 import { compatWrapper } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
-import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
+import { RiLightbulbLine } from '@remixicon/react';
 import { rootRouteRef } from '../routes';
 
 /**
@@ -27,7 +27,7 @@ export const techInsightsScorecardPage = PageBlueprint.make({
   params: {
     path: '/tech-insights',
     title: 'Tech Insights',
-    icon: <EmojiObjectsIcon />,
+    icon: <RiLightbulbLine />,
     routeRef: rootRouteRef,
     loader: () =>
       import('../components/ScorecardsPage').then(m =>
