@@ -15,7 +15,8 @@
  */
 import { useQuery } from '@tanstack/react-query';
 
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 import { gcalendarApiRef } from '../api';
 
@@ -26,7 +27,7 @@ type Options = {
 
 export const useCalendarsQuery = ({ enabled }: Options) => {
   const calendarApi = useApi(gcalendarApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   return useQuery(
     ['calendars'],

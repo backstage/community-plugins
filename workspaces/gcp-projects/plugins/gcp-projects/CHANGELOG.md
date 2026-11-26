@@ -1,5 +1,15 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.23.0
+
+### Minor Changes
+
+- a0e73a9: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- a0e73a9: Replaced deprecated Backstage core components on the GCP Projects pages with their Backstage UI equivalents. The page headers, labels, layout and project links now use Backstage UI styling.
+
 ## 0.22.0
 
 ### Minor Changes

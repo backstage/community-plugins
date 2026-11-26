@@ -19,7 +19,7 @@ import {
   ScmAuth,
 } from '@backstage/integration-react';
 import {
-  AnyApiFactory,
+  ApiFactory,
   configApiRef,
   createApiFactory,
 } from '@backstage/core-plugin-api';
@@ -28,7 +28,7 @@ import {
   sentryApiRef,
 } from '@backstage-community/plugin-sentry';
 
-export const apis: AnyApiFactory[] = [
+export const apis: ApiFactory[] = [
   createApiFactory({
     api: scmIntegrationsApiRef,
     deps: { configApi: configApiRef },

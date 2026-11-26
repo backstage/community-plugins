@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 import type { ReactNode } from 'react';
-import {
-  Content,
-  Header,
-  HeaderLabel,
-  Page,
-  TabbedLayout,
-} from '@backstage/core-components';
+import { Box, Header, Tab, TabList, Tabs } from '@backstage/ui';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { Overview } from '../Overview';
 import { buildsRouteRef } from '../../routes';
 import { BuildList } from '../BuildList';
@@ -44,25 +39,55 @@ const TABS: TabConfig[] = [
   },
 ];
 
-const XcmetricsTabs = () => (
-  <TabbedLayout>
-    {TABS.map(tab => (
-      <TabbedLayout.Route key={tab.path} path={tab.path} title={tab.title}>
-        <Content>{tab.component}</Content>
-      </TabbedLayout.Route>
-    ))}
-  </TabbedLayout>
-);
+const XcmetricsTabs = () => {
+  const basePath = useResolvedPath('.').pathname.replace(/\/$/, '');
+
+  return (
+    <>
+      <Tabs>
+        <TabList>
+          {TABS.map(tab => (
+            <Tab
+              key={tab.path}
+              id={tab.path}
+              href={
+                tab.path === '/' ? basePath || '/' : `${basePath}${tab.path}`
+              }
+              matchStrategy={tab.path === '/' ? 'exact' : 'prefix'}
+            >
+              {tab.title}
+            </Tab>
+          ))}
+        </TabList>
+      </Tabs>
+      <Box p="6">
+        <Routes>
+          {TABS.map(tab => (
+            <Route
+              key={tab.path}
+              path={tab.path === '/' ? '/' : `${tab.path}/*`}
+              element={tab.component}
+            />
+          ))}
+        </Routes>
+      </Box>
+    </>
+  );
+};
 
 // Used by the old frontend system — includes the full page shell
 export const XcmetricsLayout = () => (
-  <Page themeId="tool">
-    <Header title="XCMetrics" subtitle="Dashboard">
-      <HeaderLabel label="Owner" value="Spotify" />
-      <HeaderLabel label="Lifecycle" value="Alpha" />
-    </Header>
+  <>
+    <Header
+      title="XCMetrics"
+      description="Dashboard"
+      metadata={[
+        { label: 'Owner', value: 'Spotify' },
+        { label: 'Lifecycle', value: 'Alpha' },
+      ]}
+    />
     <XcmetricsTabs />
-  </Page>
+  </>
 );
 
 // Used by the new frontend system — no page shell, just content.

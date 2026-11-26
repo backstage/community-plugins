@@ -19,10 +19,8 @@ import {
   ConfigApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
-import {
-  AnalyticsEvent,
-  AnalyticsImplementation,
-} from '@backstage/frontend-plugin-api';
+import { AnalyticsEvent } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementation } from '@backstage/plugin-app-react';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 
 /**

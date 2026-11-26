@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Link, Table, TableColumn } from '@backstage/core-components';
+import { Table, TableColumn } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -34,7 +35,13 @@ const generatedColumns: TableColumn[] = [
       return (
         <Box display="flex" alignItems="center">
           <Typography paragraph>
-            <Link to={row.url ?? ''}>{row.number}</Link>
+            <Link
+              href={row.url ?? ''}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {row.number}
+            </Link>
           </Typography>
         </Box>
       );
@@ -92,9 +99,13 @@ const generatedColumns: TableColumn[] = [
           <div style={{ width: '98px' }}>
             {row?.url && (
               <Tooltip title="View build">
-                <Link component={IconButton} to={row.url}>
+                <IconButton
+                  href={row.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <VisibilityIcon />
-                </Link>
+                </IconButton>
               </Tooltip>
             )}
           </div>

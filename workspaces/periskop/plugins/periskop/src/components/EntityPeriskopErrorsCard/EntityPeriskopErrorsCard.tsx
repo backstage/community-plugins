@@ -22,8 +22,6 @@ import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
-  Content,
-  ContentHeader,
   Table,
   TableColumn,
   Progress,
@@ -31,10 +29,9 @@ import {
   StatusWarning,
   StatusError,
   StatusPending,
-  Select,
   EmptyState,
-  Link,
 } from '@backstage/core-components';
+import { Flex, Link, Select, Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { periskopApiRef } from '../../plugin';
 import { AggregatedError, NotFoundInInstance } from '../../types';
@@ -55,7 +52,11 @@ export const isPeriskopAvailable = (entity: Entity): boolean =>
   Boolean(entity.metadata.annotations?.[PERISKOP_NAME_ANNOTATION]);
 
 const renderKey = (error: AggregatedError, linkTarget: string): ReactNode => {
-  return <Link to={linkTarget}>{error.aggregation_key}</Link>;
+  return (
+    <Link href={linkTarget} target="_blank" rel="noopener noreferrer">
+      {error.aggregation_key}
+    </Link>
+  );
 };
 
 const renderSeverity = (severity: string): ReactNode => {
@@ -138,37 +139,45 @@ export const EntityPeriskopErrorsCard = () => {
 
   const sortingSelect = (
     <Select
-      selected={instanceOption}
+      value={instanceOption}
       label="Instance"
-      items={instanceNames.map(e => ({
+      options={instanceNames.map(e => ({
         label: e,
         value: e,
       }))}
-      onChange={el => setInstanceOption(el.toString())}
+      onChange={key => key !== null && setInstanceOption(key.toString())}
     />
   );
 
   const contentHeader = (
-    <ContentHeader title="Periskop" description={entityPeriskopName}>
+    <Flex justify="between" align="center" gap="4" mb="4">
+      <Flex direction="column" gap="1">
+        <Text as="h2" variant="title-medium">
+          Periskop
+        </Text>
+        <Text as="p" variant="body-medium" color="secondary">
+          {entityPeriskopName}
+        </Text>
+      </Flex>
       {sortingSelect}
-    </ContentHeader>
+    </Flex>
   );
 
   if (isNotFoundInInstance(aggregatedErrors)) {
     return (
-      <Content noPadding>
+      <>
         {contentHeader}
         <EmptyState
           title="Periskop returned an error"
           description={aggregatedErrors.body}
           missing="data"
         />
-      </Content>
+      </>
     );
   }
 
   return (
-    <Content noPadding>
+    <>
       {contentHeader}
       <Table
         options={{
@@ -181,6 +190,6 @@ export const EntityPeriskopErrorsCard = () => {
         columns={columns}
         data={aggregatedErrors || []}
       />
-    </Content>
+    </>
   );
 };

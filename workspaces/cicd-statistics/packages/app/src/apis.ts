@@ -16,7 +16,7 @@
 import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics';
 import { CicdStatisticsApiGitlab } from '@backstage-community/plugin-cicd-statistics-module-gitlab';
 import {
-  AnyApiFactory,
+  ApiFactory,
   configApiRef,
   createApiFactory,
   gitlabAuthApiRef,
@@ -27,7 +27,7 @@ import {
   scmIntegrationsApiRef,
 } from '@backstage/integration-react';
 
-export const apis: AnyApiFactory[] = [
+export const apis: ApiFactory[] = [
   createApiFactory({
     api: scmIntegrationsApiRef,
     deps: { configApi: configApiRef },

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -72,7 +72,7 @@ export const AlertAssignModal = ({
   ] = useAssignAlert(alert, isModalOpened);
   const callback = onAlertChanged || ((_: Alert): void => {});
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const classes = useStyles();
 
   const handleClose = () => {

@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { UseFormReset, UseFormGetValues } from 'react-hook-form';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { ProjectDialog } from '../ProjectDialog';
 import { ProjectSelector } from '../ProjectSelector';
 import { BazaarProject, FormValues, Size, Status } from '../../types';
@@ -40,7 +40,7 @@ export const AddProjectDialog = ({
   fetchCatalogEntities,
 }: Props) => {
   const bazaarApi = useApi(bazaarApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
 
   const defaultValues = {

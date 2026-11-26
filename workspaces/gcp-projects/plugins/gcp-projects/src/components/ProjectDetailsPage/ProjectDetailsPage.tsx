@@ -26,15 +26,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useAsync, useMountEffect } from '@react-hookz/web';
 import { gcpApiRef } from '../../api';
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
-  Page,
-  SupportButton,
-  WarningPanel,
-} from '@backstage/core-components';
+import { SupportButton, WarningPanel } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { rootRouteRef } from '../../routes';
@@ -151,27 +144,25 @@ const DetailsPage = () => {
   );
 };
 
-const labels = (
-  <>
-    <HeaderLabel label="Owner" value="Spotify" />
-    <HeaderLabel label="Lifecycle" value="Production" />
-  </>
-);
+const metadata = [
+  { label: 'Owner', value: 'Spotify' },
+  { label: 'Lifecycle', value: 'Production' },
+];
 
 export const ProjectDetailsPage = () => {
   const docsRootLink = useRouteRef(rootRouteRef)();
 
   return (
-    <Page themeId="service">
-      <Header title="GCP Project Details" type="GCP" typeLink={docsRootLink}>
-        {labels}
-      </Header>
-      <Content>
-        <ContentHeader title="">
-          <SupportButton>Support Button</SupportButton>
-        </ContentHeader>
+    <>
+      <Header
+        title="GCP Project Details"
+        tags={[{ label: 'GCP', href: docsRootLink }]}
+        metadata={metadata}
+        customActions={<SupportButton>Support Button</SupportButton>}
+      />
+      <Container>
         <DetailsPage />
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };

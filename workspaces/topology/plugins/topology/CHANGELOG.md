@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 3.1.1
+
+### Patch Changes
+
+- af5ae7d: Updated dependency `@kubernetes/client-node` to `2.0.2`.
+
 ## 3.1.0
 
 ### Minor Changes

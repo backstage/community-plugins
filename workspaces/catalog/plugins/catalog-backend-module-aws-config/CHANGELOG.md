@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-aws-config
 
+## 0.5.0
+
+### Minor Changes
+
+- 5e8eb2b: Backstage version bump to v1.57.1
+
 ## 0.4.1
 
 ### Patch Changes

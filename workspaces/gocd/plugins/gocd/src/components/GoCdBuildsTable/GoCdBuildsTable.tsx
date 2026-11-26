@@ -30,8 +30,6 @@ import { DateTime } from 'luxon';
 import {
   Table,
   TableColumn,
-  Link,
-  SubvalueCell,
   StatusOK,
   StatusWarning,
   StatusAborted,
@@ -39,6 +37,24 @@ import {
   StatusRunning,
   StatusPending,
 } from '@backstage/core-components';
+import { Flex, Link, Text } from '@backstage/ui';
+
+const SubvalueCell = ({
+  value,
+  subvalue,
+}: {
+  value: React.ReactNode;
+  subvalue?: React.ReactNode;
+}) => (
+  <Flex direction="column" gap="1">
+    <Text as="div" variant="body-medium">
+      {value}
+    </Text>
+    <Text as="div" variant="body-small" color="secondary">
+      {subvalue}
+    </Text>
+  </Flex>
+);
 
 type GoCdBuildsProps = {
   goCdBaseUrl: string;
@@ -140,7 +156,7 @@ const renderId = (
   return (
     <SubvalueCell
       value={
-        <Link to={goCdBuildUrl} target="_blank" rel="noreferrer">
+        <Link href={goCdBuildUrl} target="_blank" rel="noopener noreferrer">
           {build.id}
         </Link>
       }

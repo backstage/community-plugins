@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-stack-overflow",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "stack-overflow",
@@ -58,6 +58,7 @@
     "@backstage/plugin-home-react": "backstage:^",
     "@backstage/plugin-search-common": "backstage:^",
     "@backstage/plugin-search-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^6.0.0",

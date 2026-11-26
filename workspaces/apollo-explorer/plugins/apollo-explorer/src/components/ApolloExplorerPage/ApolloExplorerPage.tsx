@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Content, Header, Page } from '@backstage/core-components';
+import { Header } from '@backstage/ui';
 import { ApolloExplorerBrowser } from '../ApolloExplorerBrowser';
 import { JSONObject } from '@apollo/explorer/src/helpers/types';
 import { ApiHolder } from '@backstage/core-plugin-api';
@@ -60,11 +60,9 @@ export const ApolloExplorerPage = (props: Props) => {
   const { title, subtitle, endpoints } = props;
 
   return (
-    <Page themeId="tool">
-      <Header title={title ?? 'Apollo Explorer 👩‍🚀'} subtitle={subtitle ?? ''} />
-      <Content noPadding>
-        <ApolloExplorerBrowser endpoints={endpoints} />
-      </Content>
-    </Page>
+    <>
+      <Header title={title ?? 'Apollo Explorer 👩‍🚀'} description={subtitle} />
+      <ApolloExplorerBrowser endpoints={endpoints} />
+    </>
   );
 };

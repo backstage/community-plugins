@@ -17,12 +17,8 @@ import { AuthenticationError } from '@backstage/errors';
 import { OnCallSchedulesGrid } from './OnCallSchedulesGrid';
 import { MissingAuthorizationHeaderError } from '../Errors';
 import { useOnCallSchedules } from '../../hooks/useOnCallSchedules';
-import {
-  Content,
-  ContentHeader,
-  SupportButton,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { SupportButton, ResponseErrorPanel } from '@backstage/core-components';
+import { Container, Flex, Text } from '@backstage/ui';
 
 export const OnCallSchedulesPage = () => {
   const [{ onCallSchedules, isLoading, error }, { refetchOnCallSchedules }] =
@@ -31,31 +27,36 @@ export const OnCallSchedulesPage = () => {
   if (error) {
     if (error instanceof AuthenticationError) {
       return (
-        <Content>
+        <Container>
           <MissingAuthorizationHeaderError />
-        </Content>
+        </Container>
       );
     }
 
     return (
-      <Content>
+      <Container>
         <ResponseErrorPanel error={error} />
-      </Content>
+      </Container>
     );
   }
 
   return (
-    <Content>
-      <ContentHeader title="Who is on call?">
-        <SupportButton>
-          This helps you to bring ilert into your developer portal.
-        </SupportButton>
-      </ContentHeader>
+    <Container>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          Who is on call?
+        </Text>
+        <Flex align="center" gap="2">
+          <SupportButton>
+            This helps you to bring ilert into your developer portal.
+          </SupportButton>
+        </Flex>
+      </Flex>
       <OnCallSchedulesGrid
         onCallSchedules={onCallSchedules}
         isLoading={isLoading}
         refetchOnCallSchedules={refetchOnCallSchedules}
       />
-    </Content>
+    </Container>
   );
 };

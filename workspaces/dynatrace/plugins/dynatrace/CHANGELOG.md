@@ -1,5 +1,15 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.26.0
+
+### Minor Changes
+
+- c340b16: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- c340b16: Replaced deprecated Backstage core components with their Backstage UI equivalents. The Dynatrace tab layout and problem links now use Backstage UI styling.
+
 ## 10.25.0
 
 ### Minor Changes

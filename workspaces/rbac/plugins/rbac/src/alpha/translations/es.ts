@@ -279,6 +279,33 @@ const rbacTranslationEs = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'De forma predeterminada, todos los usuarios agregados pueden visualizar el tipo de recurso seleccionado. Si desea restringir u otorgar permiso a reglas de complementos específicas, selecciónelas y agregue los parámetros.',
     'common.tableAction': 'Acción de tabla',
+    'permissionsMatrix.tabs.label': 'Vistas de RBAC',
+    'permissionsMatrix.tabs.roles': 'Roles',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'Permisos por plugin',
+    'permissionsMatrix.title': 'Permisos por plugin',
+    'permissionsMatrix.description':
+      'Vista de solo lectura de los permisos concedidos a cada rol, agrupados por plugin.',
+    'permissionsMatrix.roleColumn': 'Rol',
+    'permissionsMatrix.filterRoles': 'Filtrar roles',
+    'permissionsMatrix.roles': 'Roles',
+    'permissionsMatrix.plugin': 'Plugin',
+    'permissionsMatrix.allPlugins': 'Todos los plugins',
+    'permissionsMatrix.policy': 'Política',
+    'permissionsMatrix.allPolicies': 'Todas las políticas',
+    'permissionsMatrix.legend': 'Leyenda',
+    'permissionsMatrix.viewOnlyRole': 'Rol de solo lectura',
+    'permissionsMatrix.conditionalRules': 'Reglas de acceso condicional',
+    'permissionsMatrix.emptyRoles': 'No se encontraron roles',
+    'permissionsMatrix.noMatches':
+      'Ningún permiso coincide con los filtros actuales',
+    'permissionsMatrix.emptyPermissions':
+      'No se encontraron permisos de plugins',
+    'permissionsMatrix.decisions.allow': 'Permitir',
+    'permissionsMatrix.decisions.deny': 'Denegar',
+    'permissionsMatrix.decisions.conditional': 'Condicional',
+    'permissionsMatrix.decisions.none': 'No definido',
+    'permissionsMatrix.errors.fetchPermissions':
+      'Se produjo un error al obtener los permisos de los plugins',
   },
 });
 

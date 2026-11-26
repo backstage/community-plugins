@@ -1,0 +1,5 @@
+@layer components {
+  .newTab {
+    margin-bottom: var(--bui-space-4);
+  }
+}

@@ -19,13 +19,10 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import {
-  Content,
-  ContentHeader,
-  EmptyState,
-  Page,
-} from '@backstage/core-components';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { EmptyState } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
+import { Flex, Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { gocdApiRef } from '../../plugin';
 import { GoCdBuildsTable } from '../GoCdBuildsTable/GoCdBuildsTable';
@@ -50,7 +47,7 @@ export const isGoCdAvailable = (entity: Entity): boolean =>
 
 export const GoCdBuildsComponent = (): JSX.Element => {
   const { entity } = useEntity();
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
   const rawPipelines: string[] | undefined = (
     entity.metadata.annotations?.[GOCD_PIPELINES_ANNOTATION] as
       | string
@@ -113,28 +110,29 @@ export const GoCdBuildsComponent = (): JSX.Element => {
   }
 
   return (
-    <Page themeId="tool">
-      <Content noPadding>
-        <ContentHeader title={entity.metadata.name}>
-          <Select
-            value={selectedPipeline}
-            onChange={pipeline => onSelectedPipelineChanged(pipeline)}
-            label="Pipeline"
-            items={getSelectionItems(rawPipelines)}
-          />
-        </ContentHeader>
-        <GoCdBuildsInsights
-          pipelineHistory={pipelineHistory}
-          loading={loading}
-          error={error}
+    <>
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          {entity.metadata.name}
+        </Text>
+        <Select
+          value={selectedPipeline}
+          onChange={pipeline => onSelectedPipelineChanged(pipeline)}
+          label="Pipeline"
+          items={getSelectionItems(rawPipelines)}
         />
-        <GoCdBuildsTable
-          goCdBaseUrl={config.getString('gocd.baseUrl')}
-          pipelineHistory={pipelineHistory}
-          loading={loading}
-          error={error}
-        />
-      </Content>
-    </Page>
+      </Flex>
+      <GoCdBuildsInsights
+        pipelineHistory={pipelineHistory}
+        loading={loading}
+        error={error}
+      />
+      <GoCdBuildsTable
+        goCdBaseUrl={config.getString('gocd.baseUrl')}
+        pipelineHistory={pipelineHistory}
+        loading={loading}
+        error={error}
+      />
+    </>
   );
 };

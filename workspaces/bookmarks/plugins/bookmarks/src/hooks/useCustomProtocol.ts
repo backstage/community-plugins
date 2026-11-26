@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { coreApis, useApi } from '@backstage/frontend-plugin-api';
 
 import { Config } from '../../config';
 
@@ -61,7 +61,7 @@ const validateCustomProtocolConfig = (
  */
 export const useCustomProtocol = (url: string): UseCustomProtocolResult => {
   const customProtocols = useApi(
-    configApiRef,
+    coreApis.config,
   ).getOptional<CustomProtocolConfig>('bookmarks.customProtocols');
 
   if (!customProtocols) {

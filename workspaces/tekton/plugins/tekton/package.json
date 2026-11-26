@@ -73,7 +73,7 @@
     "@backstage/theme": "backstage:^",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.11.4",
-    "@kubernetes/client-node": "1.4.0",
+    "@kubernetes/client-node": "2.0.2",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
     "@patternfly/patternfly": "^6.0.0",

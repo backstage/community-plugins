@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.25.1
+
+### Patch Changes
+
+- b563723: Screen readers can now tell which star rating is selected in the entity feedback plugin.
+
 ## 0.25.0
 
 ### Minor Changes

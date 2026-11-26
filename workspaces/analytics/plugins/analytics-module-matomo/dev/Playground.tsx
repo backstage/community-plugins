@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LinkButton } from '@backstage/core-components';
+import { ButtonLink } from '@backstage/ui';
 import { useAnalytics } from '@backstage/core-plugin-api';
 
 export const Playground = () => {
@@ -25,14 +25,9 @@ export const Playground = () => {
 
   return (
     <div style={{ display: 'flex', margin: '4rem' }}>
-      <LinkButton
-        variant="contained"
-        color="primary"
-        to="#clicked"
-        onClick={handleEvent}
-      >
+      <ButtonLink variant="primary" href="#clicked" onPress={handleEvent}>
         Click Here
-      </LinkButton>
+      </ButtonLink>
     </div>
   );
 };

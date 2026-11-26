@@ -18,7 +18,7 @@ import {
   useTranslationRef,
   TranslationFunction,
   TranslationRef,
-} from '@backstage/core-plugin-api/alpha';
+} from '@backstage/frontend-plugin-api';
 import { bookmarksTranslationRef } from '../translations/translations';
 
 type BookmarksMessages =

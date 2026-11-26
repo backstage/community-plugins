@@ -25,7 +25,7 @@ import TextField from '@material-ui/core/TextField';
 import { ilertApiRef } from '../../api';
 import { AlertSource } from '../../types';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const ILertCardMaintenanceModal = ({
   alertSource,
@@ -39,7 +39,7 @@ export const ILertCardMaintenanceModal = ({
   setIsModalOpened: (isModalOpened: boolean) => void;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(toastApiRef);
+  const alertApi = useApi(coreApis.toast);
   const [minutes, setMinutes] = useState(5);
 
   const handleClose = () => {

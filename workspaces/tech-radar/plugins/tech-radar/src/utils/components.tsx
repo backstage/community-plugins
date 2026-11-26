@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import type { ReactNode } from 'react';
 
 type WithLinkProps = {
@@ -33,7 +33,7 @@ export const WithLink = ({
   children,
 }: WithLinkProps): React.JSX.Element =>
   isValidUrl(url) ? (
-    <Link className={className} to={url}>
+    <Link className={className} href={url}>
       {children}
     </Link>
   ) : (

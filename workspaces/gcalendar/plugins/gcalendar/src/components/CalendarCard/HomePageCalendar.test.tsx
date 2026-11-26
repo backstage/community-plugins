@@ -15,7 +15,8 @@
  */
 
 import { within } from '@testing-library/react';
-import { googleAuthApiRef, storageApiRef } from '@backstage/core-plugin-api';
+import { googleAuthApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import {
   mockApis,
   TestApiProvider,
@@ -149,7 +150,7 @@ describe('<HomePageCalendar />', () => {
         apis={[
           [gcalendarApiRef, getMockedApi(calendarData, eventData)],
           [googleAuthApiRef, getAuthMockApi()],
-          [storageApiRef, mockStorage],
+          [coreApis.storage, mockStorage],
         ]}
       >
         <HomePageCalendar />

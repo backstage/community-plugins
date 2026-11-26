@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { useTheme } from '@mui/material/styles';
-import { useMediaQuery } from '@mui/system';
+import { useBreakpoint } from '@backstage/ui';
 
 /** A hook that determines if the current viewport is considered desktop-sized. */
 export const useIsDesktop = (): boolean => {
-  const theme = useTheme();
-  return useMediaQuery(theme.breakpoints.up('md'));
+  const { up } = useBreakpoint();
+  return up('md');
 };

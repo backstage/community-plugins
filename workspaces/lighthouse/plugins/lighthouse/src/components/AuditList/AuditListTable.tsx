@@ -24,16 +24,12 @@ import {
   CATEGORY_LABELS,
   buildSparklinesDataForItem,
 } from '../../utils';
-import { generatePath } from 'react-router-dom';
+import { generatePath, resolvePath, useResolvedPath } from 'react-router-dom';
 import AuditStatusIcon from '../AuditStatusIcon';
 
-import {
-  Link,
-  Table,
-  TableColumn,
-  TrendLine,
-} from '@backstage/core-components';
+import { Table, TableColumn, TrendLine } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import { Link } from '@backstage/ui';
 
 const columns: TableColumn[] = [
   {
@@ -63,6 +59,7 @@ const columns: TableColumn[] = [
 export const AuditListTable = ({ items }: { items: Website[] }) => {
   const [websiteState, setWebsiteState] = useState(items);
   const lighthouseApi = useApi(lighthouseApiRef);
+  const basePath = useResolvedPath('.').pathname;
 
   useEffect(() => {
     setWebsiteState(items);
@@ -106,7 +103,14 @@ export const AuditListTable = ({ items }: { items: Website[] }) => {
 
     return {
       websiteUrl: (
-        <Link to={generatePath('audit/:id', { id: website.lastAudit.id })}>
+        <Link
+          href={
+            resolvePath(
+              generatePath('audit/:id', { id: website.lastAudit.id }),
+              basePath,
+            ).pathname
+          }
+        >
           {website.url}
         </Link>
       ),

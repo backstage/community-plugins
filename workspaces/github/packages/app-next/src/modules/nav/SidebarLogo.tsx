@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Link,
-  sidebarConfig,
-  useSidebarOpenState,
-} from '@backstage/core-components';
+import { sidebarConfig, useSidebarOpenState } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { makeStyles } from '@material-ui/core';
 import { LogoFull } from './LogoFull';
 import { LogoIcon } from './LogoIcon';
@@ -43,7 +40,7 @@ export const SidebarLogo = () => {
 
   return (
     <div className={classes.root}>
-      <Link to="/" underline="none" className={classes.link} aria-label="Home">
+      <Link href="/" className={classes.link} aria-label="Home">
         {isOpen ? <LogoFull /> : <LogoIcon />}
       </Link>
     </div>

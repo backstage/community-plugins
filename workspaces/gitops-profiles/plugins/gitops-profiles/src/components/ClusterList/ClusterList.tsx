@@ -21,15 +21,8 @@ import useAsync from 'react-use/esm/useAsync';
 import { gitOpsApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  SupportButton,
-  Page,
-  Progress,
-  HeaderLabel,
-} from '@backstage/core-components';
+import { SupportButton, Progress } from '@backstage/core-components';
+import { Container, Flex, Header, Text } from '@backstage/ui';
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';
 
 const ClusterList = () => {
@@ -50,51 +43,51 @@ const ClusterList = () => {
   });
   let content: JSX.Element;
   if (loading) {
-    content = (
-      <Content>
-        <Progress />
-      </Content>
-    );
+    content = <Progress />;
   } else if (error) {
     content = (
-      <Content>
-        <div>
-          <Alert severity="error">
-            Error encountered while fetching list of GitOps-managed cluster.{' '}
-            {error.toString()}
-          </Alert>
-          <Alert severity="info">
-            Please make sure that you start GitOps-API backend on localhost port
-            3008 before using this plugin.
-          </Alert>
-        </div>
-      </Content>
+      <div>
+        <Alert severity="error">
+          Error encountered while fetching list of GitOps-managed cluster.{' '}
+          {error.toString()}
+        </Alert>
+        <Alert severity="info">
+          Please make sure that you start GitOps-API backend on localhost port
+          3008 before using this plugin.
+        </Alert>
+      </div>
     );
   } else {
     content = (
-      <Content>
-        <ContentHeader title="Clusters">
-          <Button
-            variant="contained"
-            color="primary"
-            href="/gitops-cluster-create"
-          >
-            Create GitOps-managed Cluster
-          </Button>
-          <SupportButton>All clusters</SupportButton>
-        </ContentHeader>
+      <>
+        <Flex justify="between" align="center" mb="4">
+          <Text as="h2" variant="title-medium">
+            Clusters
+          </Text>
+          <Flex align="center" gap="2">
+            <Button
+              variant="contained"
+              color="primary"
+              href="/gitops-cluster-create"
+            >
+              Create GitOps-managed Cluster
+            </Button>
+            <SupportButton>All clusters</SupportButton>
+          </Flex>
+        </Flex>
         <ClusterTable components={value!.result} />
-      </Content>
+      </>
     );
   }
 
   return (
-    <Page themeId="home">
-      <Header title="GitOps-managed Clusters">
-        <HeaderLabel label="Welcome" value={githubUsername} />
-      </Header>
-      {content}
-    </Page>
+    <>
+      <Header
+        title="GitOps-managed Clusters"
+        metadata={[{ label: 'Welcome', value: githubUsername }]}
+      />
+      <Container>{content}</Container>
+    </>
   );
 };
 

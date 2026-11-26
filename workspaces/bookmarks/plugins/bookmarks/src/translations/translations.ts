@@ -17,7 +17,7 @@
 import {
   createTranslationRef,
   createTranslationResource,
-} from '@backstage/core-plugin-api/alpha';
+} from '@backstage/frontend-plugin-api';
 
 /**
  * Bookmarks plugin translation ref
@@ -28,13 +28,11 @@ export const bookmarksTranslationRef = createTranslationRef({
   id: 'bookmarks',
   messages: {
     bookmarkViewer: {
+      tableOfContents: 'Table of Contents',
       newTab: 'Open in new tab',
       navButton: {
         next: 'Next',
         previous: 'Previous',
-      },
-      mobileView: {
-        toc: 'Table of Contents',
       },
     },
     bookmarkViewerFrame: {

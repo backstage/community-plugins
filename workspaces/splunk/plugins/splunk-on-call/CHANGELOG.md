@@ -1,5 +1,15 @@
 # @backstage-community/plugin-splunk-on-call
 
+## 0.29.0
+
+### Minor Changes
+
+- c716870: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- c716870: The Splunk On-Call page header and the card's Portal and Create Incident actions now use Backstage UI components.
+
 ## 0.28.0
 
 ### Minor Changes
