@@ -40,9 +40,6 @@ import { rootRouteRef } from './plugin';
 /** @alpha */
 export const techRadarPage = PageBlueprint.makeWithOverrides({
   configSchema: {
-    subtitle: z
-      .string()
-      .default('Pick the recommended technologies for your projects'),
     pageTitle: z.string().default('Company Radar'),
     id: z.string().optional(),
   },
@@ -55,8 +52,7 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
       loader: async () =>
         import('./components/TechRadarPage').then(m =>
           compatWrapper(
-            <m.TechRadarPage
-              subtitle={config.subtitle}
+            <m.TechRadarPageContent
               pageTitle={config.pageTitle}
               id={config.id}
             />,

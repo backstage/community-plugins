@@ -25,23 +25,43 @@ export type TechRadarPageProps = {
   id?: string;
 };
 
+const DEFAULT_SUBTITLE = 'Pick the recommended technologies for your projects';
+const DEFAULT_PAGE_TITLE = 'Company Radar';
+
+/**
+ * The page content without a page header. Used directly by the new frontend
+ * system, where the page header is rendered by the app.
+ *
+ * @internal
+ */
+export const TechRadarPageContent = (props: {
+  pageTitle?: string;
+  id?: string;
+}) => {
+  const { pageTitle = DEFAULT_PAGE_TITLE, id } = props;
+
+  return (
+    <Container>
+      <Text as="h2" variant="title-medium">
+        {pageTitle}
+      </Text>
+      <TechRadarComponent id={id} />
+    </Container>
+  );
+};
+
 export const TechRadarPage = (props: TechRadarPageProps) => {
   const {
     title = 'Tech Radar',
-    pageTitle = 'Company Radar',
-    subtitle = 'Pick the recommended technologies for your projects',
+    pageTitle = DEFAULT_PAGE_TITLE,
+    subtitle = DEFAULT_SUBTITLE,
     id,
   } = props;
 
   return (
     <>
       <Header title={title} description={subtitle} />
-      <Container>
-        <Text as="h2" variant="title-medium">
-          {pageTitle}
-        </Text>
-        <TechRadarComponent id={id} />
-      </Container>
+      <TechRadarPageContent pageTitle={pageTitle} id={id} />
     </>
   );
 };

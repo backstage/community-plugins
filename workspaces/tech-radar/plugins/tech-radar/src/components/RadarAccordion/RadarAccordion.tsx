@@ -27,7 +27,7 @@ import { RadarFilterContext } from '../RadarFilterContext';
 import { Blip, Quadrant, Ring } from '../../types';
 import { RadarBlipDetails } from '../RadarBlipDetails/RadarBlipDetails';
 import color from 'color';
-import { appThemeApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { useApi } from '@backstage/core-plugin-api';
 import useObservable from 'react-use/esm/useObservable';
 
@@ -74,7 +74,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
     selectedFilters,
   } = useContext(RadarFilterContext);
 
-  const appThemeApi = useApi(appThemeApiRef);
+  const appThemeApi = useApi(coreApis.appTheme);
   const themeId = useObservable(
     appThemeApi.activeThemeId$(),
     appThemeApi.getActiveThemeId(),

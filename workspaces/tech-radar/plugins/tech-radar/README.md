@@ -63,7 +63,7 @@ export type TechRadarComponentProps = {
 
 #### Backstage UI styles
 
-The Tech Radar is built with [Backstage UI](https://ui.backstage.io). If your app uses the legacy frontend system, import the Backstage UI styles once in your app, or the radar won't be styled:
+The Tech Radar is built with [Backstage UI](https://ui.backstage.io). Your app must import the Backstage UI styles once, or the radar won't be styled. Apps created from a recent Backstage template already do this, but older apps (on either frontend system) may not:
 
 ```ts
 // In packages/app/src/index.tsx
