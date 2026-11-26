@@ -57,6 +57,7 @@ import {
 } from 'azure-devops-node-api/interfaces/CoreInterfaces';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
+import { NotFoundError } from '@backstage/errors';
 import {
   AzureDevOpsCredentialsProvider,
   DefaultAzureDevOpsCredentialsProvider,
@@ -559,15 +560,60 @@ export class AzureDevOpsApi {
     const url = buildEncodedUrl(host, org, project, repo, path, version);
     const response = await this.urlReader.readUrl(url);
     const buffer = await response.buffer();
-    const content = await replaceReadme(
-      this.urlReader,
+    const content = buffer.toString();
+
+    if (!isFolderListing(content)) {
+      return {
+        url,
+        content: await replaceReadme(
+          this.urlReader,
+          host,
+          org,
+          project,
+          repo,
+          content,
+        ),
+      };
+    }
+
+    // The path points at a folder, so fall back to the README.md it contains.
+    const readmePath = `${path.replace(/\/+$/, '')}/README.md`;
+    const readmeUrl = buildEncodedUrl(
       host,
       org,
       project,
       repo,
-      buffer.toString(),
+      readmePath,
+      version,
     );
-    return { url, content };
+    const readmeContent = await this.readFileContent(readmeUrl);
+
+    if (readmeContent === undefined || isFolderListing(readmeContent)) {
+      throw new NotFoundError(
+        `README path '${path}' is a folder; point 'dev.azure.com/readme-path' at a markdown file.`,
+      );
+    }
+
+    return {
+      url: readmeUrl,
+      content: await replaceReadme(
+        this.urlReader,
+        host,
+        org,
+        project,
+        repo,
+        readmeContent,
+      ),
+    };
+  }
+
+  private async readFileContent(url: string): Promise<string | undefined> {
+    try {
+      const response = await this.urlReader.readUrl(url);
+      return (await response.buffer()).toString();
+    } catch {
+      return undefined;
+    }
   }
 
   public async getBuildRunLog(
@@ -602,4 +648,36 @@ export class AzureDevOpsApi {
 
     return results.flat();
   }
+}
+
+/**
+ * Azure DevOps answers a request for a folder with a JSON listing of the folder
+ * contents instead of failing, which would otherwise end up being rendered as if
+ * it were the markdown of the README.
+ */
+function isFolderListing(content: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(content);
+  } catch {
+    return false;
+  }
+
+  if (typeof parsed !== 'object' || parsed === null) {
+    return false;
+  }
+
+  const { count, value } = parsed as { count?: unknown; value?: unknown };
+
+  if (typeof count !== 'number' || !Array.isArray(value)) {
+    return false;
+  }
+
+  return value.every(entry => {
+    if (typeof entry !== 'object' || entry === null) {
+      return false;
+    }
+    const item = entry as Record<string, unknown>;
+    return 'isFolder' in item || typeof item.path === 'string';
+  });
 }

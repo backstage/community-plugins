@@ -21,6 +21,7 @@ jest.mock('azure-devops-node-api', () => ({
 
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import { ConfigReader } from '@backstage/config';
+import { NotFoundError } from '@backstage/errors';
 import { AzureDevOpsApi } from './AzureDevOpsApi';
 import { WebApi } from 'azure-devops-node-api';
 import { TeamProjectReference } from 'azure-devops-node-api/interfaces/CoreInterfaces';
@@ -783,5 +784,108 @@ describe('AzureDevOpsApi', () => {
       'Log section - Step 3',
       '====================',
     ]);
+  });
+
+  describe('getReadme', () => {
+    const folderListing = JSON.stringify({
+      count: 2,
+      value: [
+        { path: '/docs/README.md', gitObjectType: 'blob' },
+        { path: '/docs/images', gitObjectType: 'tree', isFolder: true },
+      ],
+    });
+
+    const mockUrlReaderWithFiles = (
+      files: Record<string, string>,
+    ): UrlReaderService => ({
+      readUrl: (url: string) => {
+        const path = decodeURIComponent(
+          new URL(url).searchParams.get('path') ?? '',
+        );
+        const content = files[path];
+        if (content === undefined) {
+          return Promise.reject(new Error(`No file at '${path}'`));
+        }
+        return Promise.resolve({
+          buffer: async () => Buffer.from(content),
+          etag: 'buffer',
+          stream: jest.fn(),
+        });
+      },
+      readTree: jest.fn(),
+      search: jest.fn(),
+    });
+
+    it('should return the content when the path points at a markdown file', async () => {
+      const urlReader = mockUrlReaderWithFiles({
+        'README.md': '# Project',
+      });
+
+      const api = AzureDevOpsApi.fromConfig(mockConfig, {
+        logger: mockLogger,
+        urlReader,
+      });
+
+      const result = await api.getReadme(
+        'dev.azure.com',
+        'org',
+        'project',
+        'repo',
+        'README.md',
+      );
+
+      expect(result.content).toEqual('# Project');
+      expect(result.url).toContain('path=README.md');
+    });
+
+    it('should fall back to the README.md in the folder when the path is a folder', async () => {
+      const urlReader = mockUrlReaderWithFiles({
+        docs: folderListing,
+        'docs/README.md': '# Docs',
+      });
+
+      const api = AzureDevOpsApi.fromConfig(mockConfig, {
+        logger: mockLogger,
+        urlReader,
+      });
+
+      const result = await api.getReadme(
+        'dev.azure.com',
+        'org',
+        'project',
+        'repo',
+        'docs/',
+      );
+
+      expect(result.content).toEqual('# Docs');
+      expect(result.url).toContain(
+        `path=${encodeURIComponent('docs/README.md')}`,
+      );
+    });
+
+    it('should throw a NotFoundError when the folder has no README.md', async () => {
+      const urlReader = mockUrlReaderWithFiles({
+        docs: JSON.stringify({
+          count: 1,
+          value: [
+            { path: '/docs/images', gitObjectType: 'tree', isFolder: true },
+          ],
+        }),
+      });
+
+      const api = AzureDevOpsApi.fromConfig(mockConfig, {
+        logger: mockLogger,
+        urlReader,
+      });
+
+      await expect(
+        api.getReadme('dev.azure.com', 'org', 'project', 'repo', 'docs'),
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        api.getReadme('dev.azure.com', 'org', 'project', 'repo', 'docs'),
+      ).rejects.toThrow(
+        "README path 'docs' is a folder; point 'dev.azure.com/readme-path' at a markdown file.",
+      );
+    });
   });
 });
