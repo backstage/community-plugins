@@ -1865,7 +1865,7 @@ __metadata:
     reactflow: "npm:^11.11.0"
   peerDependencies:
     "@backstage/plugin-kubernetes": ^0.12.25
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react: ^18.0.0
   languageName: unknown
   linkType: soft
 

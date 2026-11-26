@@ -42,7 +42,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
@@ -54,14 +54,14 @@
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
     "msw": "^1.0.0",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "configSchema": {
     "$schema": "https://backstage.io/schema/config-v1",

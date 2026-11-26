@@ -2162,19 +2162,19 @@ __metadata:
     "@testing-library/user-event": "npm:^14.0.0"
     "@types/color": "npm:^4.0.0"
     "@types/d3-force": "npm:^3.0.0"
-    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    "@types/react": "npm:^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
     color: "npm:^4.0.1"
     d3-force: "npm:^3.0.0"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
+    react: "npm:^18.0.0"
+    react-dom: "npm:^18.0.0"
+    react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.2.4"
     zod: "npm:^4.0.0"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+    react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
 
@@ -27623,7 +27623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react-dom@npm:^18.0.2":
+"react-dom@npm:^18.0.0, react-dom@npm:^18.0.2":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -27921,7 +27921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.0.0-beta.0 || ^6.3.0, react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.3.0":
   version: 6.26.2
   resolution: "react-router-dom@npm:6.26.2"
   dependencies:
@@ -28120,7 +28120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.0.2":
+"react@npm:^18.0.0, react@npm:^18.0.2":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:

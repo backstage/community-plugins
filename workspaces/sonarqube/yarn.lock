@@ -1830,15 +1830,15 @@ __metadata:
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
-    "@types/react": "npm:^16.13.1 || ^17.0.0"
+    "@types/react": "npm:^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
+    react: "npm:^18.0.0"
+    react-dom: "npm:^18.0.0"
+    react-router-dom: "npm:^6.3.0"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+    react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
 
@@ -1866,20 +1866,20 @@ __metadata:
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
-    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    "@types/react": "npm:^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
     cross-fetch: "npm:^4.0.0"
     luxon: "npm:^3.0.0"
     msw: "npm:^1.0.0"
     rc-progress: "npm:4.0.0"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
+    react: "npm:^18.0.0"
+    react-dom: "npm:^18.0.0"
+    react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.2.4"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+    react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
 
@@ -24684,7 +24684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react-dom@npm:^18.0.2":
+"react-dom@npm:^18.0.0, react-dom@npm:^18.0.2":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -24934,7 +24934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.0.0-beta.0 || ^6.3.0, react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.3.0":
   version: 6.30.6
   resolution: "react-router-dom@npm:6.30.6"
   dependencies:
@@ -25117,7 +25117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.0.2":
+"react@npm:^18.0.0, react@npm:^18.0.2":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
