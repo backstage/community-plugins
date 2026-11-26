@@ -1,5 +1,22 @@
 # @backstage-community/plugin-fairwinds-insights-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 813822c: Backstage version bump to v1.54.5
+- 4ae65eb: Backstage version bump to v1.55.1
+- 5b4dbf7: Backstage version bump to v1.56.2
+- 9f1ae77: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- Updated dependencies [813822c]
+- Updated dependencies [4ae65eb]
+- Updated dependencies [5b4dbf7]
+- Updated dependencies [9f1ae77]
+  - @backstage-community/plugin-fairwinds-insights-common@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes
