@@ -50,18 +50,14 @@ const _default: OverridableFrontendPlugin<
     }>;
     'page:tech-radar': OverridableExtensionDefinition<{
       config: {
-        subtitle: string;
         pageTitle: string;
-        width: number | undefined;
-        height: number | undefined;
+        id: string | undefined;
         path: string | undefined;
         title: string | undefined;
       };
       configInput: {
-        subtitle?: string | undefined;
         pageTitle?: string | undefined;
-        width?: number | undefined;
-        height?: number | undefined;
+        id?: string | undefined;
         path?: string | undefined | undefined;
         title?: string | undefined | undefined;
       };
@@ -180,18 +176,14 @@ export const techRadarApi: OverridableExtensionDefinition<{
 // @alpha (undocumented)
 export const techRadarPage: OverridableExtensionDefinition<{
   config: {
-    subtitle: string;
     pageTitle: string;
-    width: number | undefined;
-    height: number | undefined;
+    id: string | undefined;
     path: string | undefined;
     title: string | undefined;
   };
   configInput: {
-    subtitle?: string | undefined;
     pageTitle?: string | undefined;
-    width?: number | undefined;
-    height?: number | undefined;
+    id?: string | undefined;
     path?: string | undefined | undefined;
     title?: string | undefined | undefined;
   };

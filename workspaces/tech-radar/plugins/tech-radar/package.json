@@ -24,7 +24,9 @@
     "directory": "workspaces/tech-radar/plugins/tech-radar"
   },
   "license": "Apache-2.0",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.tsx",
@@ -61,11 +63,13 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@material-ui/core": "^4.12.2",
-    "@material-ui/icons": "^4.9.1",
+    "@remixicon/react": "^4.6.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "clsx": "^2.1.1",
     "color": "^4.0.1",
     "d3-force": "^3.0.0",
+    "react-aria": "^3.46.0",
+    "react-aria-components": "^1.13.0",
     "react-use": "^17.2.4",
     "zod": "^4.0.0"
   },
