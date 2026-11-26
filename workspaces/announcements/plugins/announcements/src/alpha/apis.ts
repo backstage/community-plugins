@@ -16,9 +16,9 @@
 import {
   ApiBlueprint,
   discoveryApiRef,
-  errorApiRef,
   fetchApiRef,
   identityApiRef,
+  storageApiRef,
 } from '@backstage/frontend-plugin-api';
 import {
   announcementsApiRef,
@@ -42,14 +42,14 @@ export const announcementsApiExtension = ApiBlueprint.make({
         discoveryApi: discoveryApiRef,
         identityApi: identityApiRef,
         fetchApi: fetchApiRef,
-        errorApi: errorApiRef,
+        storageApi: storageApiRef,
       },
-      factory: ({ discoveryApi, identityApi, fetchApi, errorApi }) =>
+      factory: ({ discoveryApi, identityApi, fetchApi, storageApi }) =>
         new AnnouncementsClient({
           discoveryApi,
           identityApi,
           fetchApi,
-          errorApi,
+          storageApi,
         }),
     }),
 });
