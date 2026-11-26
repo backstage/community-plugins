@@ -115,6 +115,21 @@ export const buildFileStructure = (row: CoverageTableRow) => {
   return row;
 };
 
+// Leading `..` segments are kept so the explorer shows what the report contains.
+export const normalizePath = (path: string) =>
+  path
+    .split('/')
+    .reduce<string[]>((segments, segment) => {
+      if (segment === '' || segment === '.') return segments;
+      if (segment === '..' && segments.length && segments.at(-1) !== '..') {
+        segments.pop();
+      } else {
+        segments.push(segment);
+      }
+      return segments;
+    }, [])
+    .join('/');
+
 export const formatInitialData = (value: any) => {
   return buildFileStructure({
     path: '',
@@ -124,7 +139,7 @@ export const formatInitialData = (value: any) => {
     files: value.files.map((fc: FileEntry) => {
       return {
         path: '',
-        filename: fc.filename,
+        filename: normalizePath(fc.filename),
         coverage:
           Object.values(fc.lineHits).length > 0
             ? (Object.values(fc.lineHits).filter((hits: number) => hits > 0)
@@ -148,6 +163,12 @@ export const getObjectsAtPath = (
     data = data?.find(d => d.path === fragment)?.files;
   }
   return data;
+};
+
+// Exact match: an endsWith lookup would let `main.go` resolve to `bar/main.go`.
+export const findFileCoverage = (files: FileEntry[], path: string) => {
+  const target = normalizePath(path);
+  return files.find(f => normalizePath(f.filename) === target);
 };
 
 export const FileExplorer = () => {
@@ -221,7 +242,7 @@ export const FileExplorer = () => {
               setCurPath(`${curPath}/${row.path}`);
               moveDownIntoPath(row.path);
             } else {
-              setCurFile(`${curPath.slice(1)}/${row.path}`);
+              setCurFile(normalizePath(`${curPath}/${row.path}`));
               setModalOpen(true);
             }
           }}
@@ -256,13 +277,9 @@ export const FileExplorer = () => {
 
   const pathArray = curPath.split('/');
   const lastPathElementIndex = pathArray.length - 1;
-  const fileCoverage = value.files.find((f: FileEntry) =>
-    f.filename.endsWith(curFile),
-  );
-
-  if (!fileCoverage) {
-    return null;
-  }
+  const fileCoverage = curFile
+    ? findFileCoverage(value.files, curFile)
+    : undefined;
 
   return (
     <Box className={styles.container}>
@@ -301,14 +318,16 @@ export const FileExplorer = () => {
           </>
         }
       />
-      <Modal
-        open={modalOpen}
-        onClick={event => event.stopPropagation()}
-        onClose={() => setModalOpen(false)}
-        style={{ overflow: 'scroll' }}
-      >
-        <FileContent filename={curFile} coverage={fileCoverage} />
-      </Modal>
+      {fileCoverage && (
+        <Modal
+          open={modalOpen}
+          onClick={event => event.stopPropagation()}
+          onClose={() => setModalOpen(false)}
+          style={{ overflow: 'scroll' }}
+        >
+          <FileContent filename={curFile} coverage={fileCoverage} />
+        </Modal>
+      )}
     </Box>
   );
 };
