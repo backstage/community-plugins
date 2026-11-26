@@ -527,7 +527,7 @@ function handleRequest(req, res) {
 }
 
 const server = http.createServer(handleRequest);
-server.listen(PORT, '127.0.0.1', () => {
+server.listen(PORT, '0.0.0.0', () => {
   // eslint-disable-next-line no-console
   console.log(
     `Kiali e2e mock listening at http://127.0.0.1:${PORT}${PREFIX} (fixtures: ${FIXTURES_ROOT})`,

@@ -19,6 +19,8 @@ import { generateProjects } from '@backstage/e2e-test-utils/playwright';
 
 // Override when the dev app listens on another port (e.g. PLAYWRIGHT_URL=http://localhost:3001).
 const appUrl = process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000';
+// Readiness is 200 only when plugins initialized (catalog returns 401 without a session).
+const backendReadyUrl = 'http://127.0.0.1:7007/.backstage/health/v1/readiness';
 
 const kialiMockEnv = {
   ...process.env,
@@ -35,6 +37,7 @@ const kialiMockEnv = {
  */
 export default defineConfig({
   timeout: 120_000,
+  workers: process.env.CI ? 1 : undefined,
 
   expect: {
     timeout: 10_000,
@@ -46,7 +49,7 @@ export default defineConfig({
         {
           name: 'Kiali mock',
           command: 'node scripts/kiali-e2e-mock-server.mjs',
-          port: 20001,
+          wait: { stdout: /Kiali e2e mock listening/ },
           reuseExistingServer: !process.env.CI,
           timeout: 30_000,
           env: kialiMockEnv,
@@ -54,16 +57,16 @@ export default defineConfig({
         {
           name: 'Backend',
           command: 'yarn workspace backend start',
-          port: 7007,
+          url: backendReadyUrl,
           reuseExistingServer: !process.env.CI,
-          timeout: 180_000,
+          timeout: 240_000,
         },
         {
           name: 'Frontend',
           command: 'yarn workspace app start',
           url: appUrl,
           reuseExistingServer: !process.env.CI,
-          timeout: 180_000,
+          timeout: 240_000,
         },
       ],
 

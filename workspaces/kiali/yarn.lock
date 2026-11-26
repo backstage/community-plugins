@@ -6011,6 +6011,8 @@ __metadata:
     prettier-plugin-sort-imports: "npm:^1.8.8"
     typescript: "npm:~5.8.0"
   dependenciesMeta:
+    better-sqlite3:
+      built: true
     canvas:
       built: true
   languageName: unknown

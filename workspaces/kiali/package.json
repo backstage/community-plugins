@@ -64,6 +64,9 @@
     "@types/react-dom": "^18"
   },
   "dependenciesMeta": {
+    "better-sqlite3": {
+      "built": true
+    },
     "canvas": {
       "built": true
     }

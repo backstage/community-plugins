@@ -275,7 +275,7 @@ git diff
 yarn start
 ```
 
-Verify e2e tests pass with the following commands (Playwright starts the Kiali mock on port 20001, the Backstage backend on 7007, and the frontend on 3000 — see `playwright.config.ts`):
+Verify e2e tests pass with the following commands (Playwright waits for the Kiali mock, a healthy backend (`/api/catalog/entities`), then the frontend — see `playwright.config.ts`). The workspace `package.json` must list `better-sqlite3` under `dependenciesMeta.built` so CI runs native builds (same as other Backstage workspaces).
 
 ```bash
 yarn install
