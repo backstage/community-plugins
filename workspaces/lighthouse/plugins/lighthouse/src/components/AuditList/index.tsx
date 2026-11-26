@@ -57,7 +57,7 @@ const AuditList = () => {
 
   const pageSize = value?.limit || LIMIT;
   const totalCount = value?.total ?? 0;
-  const pageCount = Math.ceil(totalCount / pageSize);
+  const offset = value?.offset ?? (page - 1) * LIMIT;
 
   const navigate = useNavigate();
 
@@ -66,14 +66,14 @@ const AuditList = () => {
     content = (
       <>
         <AuditListTable items={value?.items || []} />
-        {pageCount > 1 && (
+        {totalCount > pageSize && (
           <TablePagination
             pageSize={pageSize}
             pageSizeOptions={[pageSize]}
-            offset={(page - 1) * pageSize}
+            offset={offset}
             totalCount={totalCount}
-            hasPreviousPage={page > 1}
-            hasNextPage={page < pageCount}
+            hasPreviousPage={offset > 0}
+            hasNextPage={offset + pageSize < totalCount}
             onPreviousPage={() => navigate(`?page=${page - 1}`)}
             onNextPage={() => navigate(`?page=${page + 1}`)}
             showPageSizeOptions={false}

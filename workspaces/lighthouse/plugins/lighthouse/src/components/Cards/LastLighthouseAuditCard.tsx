@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { ReactNode } from 'react';
-import { Text } from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
 import {
   Audit,
   AuditCompleted,
@@ -39,24 +39,24 @@ const LighthouseCategoryScoreStatus = (props: { score: number }) => {
   switch (true) {
     case scoreAsPercentage >= 90:
       return (
-        <>
+        <Flex align="center" gap="1">
           <StatusOK />
-          {scoreAsPercentage}%
-        </>
+          <Text as="span">{scoreAsPercentage}%</Text>
+        </Flex>
       );
     case scoreAsPercentage >= 50 && scoreAsPercentage < 90:
       return (
-        <>
+        <Flex align="center" gap="1">
           <StatusWarning />
-          {scoreAsPercentage}%
-        </>
+          <Text as="span">{scoreAsPercentage}%</Text>
+        </Flex>
       );
     case scoreAsPercentage < 50:
       return (
-        <>
+        <Flex align="center" gap="1">
           <StatusError />
-          {scoreAsPercentage}%
-        </>
+          <Text as="span">{scoreAsPercentage}%</Text>
+        </Flex>
       );
     default:
       return <Text as="span">N/A</Text>;
@@ -64,10 +64,10 @@ const LighthouseCategoryScoreStatus = (props: { score: number }) => {
 };
 
 const LighthouseAuditStatus = (props: { audit: Audit }) => (
-  <>
+  <Flex align="center" gap="1">
     <AuditStatusIcon audit={props.audit} />
-    {props.audit.status.toLocaleUpperCase('en-US')}
-  </>
+    <Text as="span">{props.audit.status.toLocaleUpperCase('en-US')}</Text>
+  </Flex>
 );
 
 const LighthouseAuditSummary = (props: { audit: Audit; dense?: boolean }) => {

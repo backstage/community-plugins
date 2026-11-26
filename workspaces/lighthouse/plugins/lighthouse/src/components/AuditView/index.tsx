@@ -32,10 +32,12 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Grid,
   Header,
   List,
   ListRow,
+  Text,
 } from '@backstage/ui';
 import styles from './AuditView.module.css';
 
@@ -52,28 +54,31 @@ interface AuditLinkListProps {
 }
 const AuditLinkList = ({ audits = [], selectedId }: AuditLinkListProps) => {
   const fromPath = useRouteRef(rootRouteRef)?.() ?? '../';
+  const navigate = useNavigate();
   return (
     <List
       data-testid="audit-sidebar"
       aria-label="lighthouse audit history"
       items={audits}
       selectionMode="single"
-      selectionBehavior="replace"
       disallowEmptySelection
       selectedKeys={[selectedId]}
+      onSelectionChange={keys => {
+        const [id] = keys === 'all' ? [] : Array.from(keys);
+        if (id === undefined || id === selectedId) return;
+        navigate(
+          resolvePath(generatePath('audit/:id', { id: String(id) }), fromPath)
+            .pathname,
+          { replace: true },
+        );
+      }}
     >
       {audit => (
-        <ListRow
-          id={audit.id}
-          textValue={formatTime(audit.timeCreated)}
-          icon={<AuditStatusIcon audit={audit} />}
-          href={
-            resolvePath(generatePath('audit/:id', { id: audit.id }), fromPath)
-              .pathname
-          }
-          routerOptions={{ replace: true }}
-        >
-          {formatTime(audit.timeCreated)}
+        <ListRow id={audit.id} textValue={formatTime(audit.timeCreated)}>
+          <Flex align="center" gap="2">
+            <AuditStatusIcon audit={audit} />
+            <Text>{formatTime(audit.timeCreated)}</Text>
+          </Flex>
         </ListRow>
       )}
     </List>

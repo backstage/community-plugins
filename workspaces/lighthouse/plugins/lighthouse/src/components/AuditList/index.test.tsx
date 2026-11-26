@@ -110,6 +110,26 @@ describe('AuditList', () => {
       });
     });
 
+    describe('when the server returns a different offset', () => {
+      beforeEach(() => {
+        const response = { ...websiteListResponse };
+        response.limit = 7;
+        response.offset = 10;
+        response.total = 17;
+        server.use(rest.get('*', (_req, res, ctx) => res(ctx.json(response))));
+      });
+
+      it('labels the range of the rows actually returned', async () => {
+        await renderInTestApp(
+          <ApiProvider apis={apis}>
+            <AuditList />
+          </ApiProvider>,
+          { routeEntries: ['?page=2'] },
+        );
+        expect(await screen.findByText('11 - 17 of 17')).toBeInTheDocument();
+      });
+    });
+
     describe('when multiple pages are needed', () => {
       beforeEach(() => {
         const response = { ...websiteListResponse };

@@ -38,6 +38,9 @@ export const lighthousePage = PageBlueprint.make({
     title: 'Lighthouse',
     icon: <RiFlashlightLine />,
     routeRef: convertLegacyRouteRef(rootRouteRef),
+    // The plugin pages render their own BUI Header, so opt out of the
+    // default page header to avoid showing two headers.
+    noHeader: true,
     loader: async () =>
       import('../Router').then(m => compatWrapper(<m.Router />)),
   },

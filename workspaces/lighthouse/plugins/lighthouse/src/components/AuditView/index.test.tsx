@@ -34,7 +34,7 @@ import {
   TestApiRegistry,
   renderInTestApp,
 } from '@backstage/test-utils';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import {
@@ -49,7 +49,10 @@ import AuditView from './index';
 import { ApiProvider, ConfigReader } from '@backstage/core-app-api';
 import { rootRouteRef } from '../../plugin';
 
-const { useParams }: { useParams: jest.Mock } =
+const {
+  useParams,
+  useNavigate,
+}: { useParams: jest.Mock; useNavigate: jest.Mock } =
   jest.requireMock('react-router-dom');
 const websiteResponse = data as Website;
 
@@ -143,10 +146,14 @@ describe('AuditView', () => {
 
       await screen.findByTestId('audit-sidebar');
 
-      websiteResponse.audits.forEach(a => {
-        expect(
-          screen.getByRole('row', { name: formatTime(a.timeCreated) }),
-        ).toHaveAttribute('data-href', `/audit/${a.id}`);
+      const next = websiteResponse.audits.find(a => a.id !== id) as Audit;
+      useNavigate().mockClear();
+      fireEvent.click(
+        screen.getByRole('row', { name: formatTime(next.timeCreated) }),
+      );
+
+      expect(useNavigate()).toHaveBeenCalledWith(`/audit/${next.id}`, {
+        replace: true,
       });
     });
 
@@ -170,11 +177,18 @@ describe('AuditView', () => {
 
       await screen.findByTestId('audit-sidebar');
 
-      websiteResponse.audits.forEach(a => {
-        expect(
-          screen.getByRole('row', { name: formatTime(a.timeCreated) }),
-        ).toHaveAttribute('data-href', `/example/lighthouse/audit/${a.id}`);
-      });
+      const next = websiteResponse.audits.find(a => a.id !== id) as Audit;
+      useNavigate().mockClear();
+      fireEvent.click(
+        screen.getByRole('row', { name: formatTime(next.timeCreated) }),
+      );
+
+      expect(useNavigate()).toHaveBeenCalledWith(
+        `/example/lighthouse/audit/${next.id}`,
+        {
+          replace: true,
+        },
+      );
     });
   });
 
