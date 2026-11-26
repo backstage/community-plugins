@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Progress, TableColumn, Table, Link } from '@backstage/core-components';
+import { Progress, TableColumn, Table } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
 import {
   MissingAnnotationEmptyState,
@@ -23,7 +23,14 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import { Alert, Focusable, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
+import {
+  Alert,
+  Focusable,
+  Link,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import { Dashboard, DashboardCardOpts } from '../../types';
 import {
   dashboardSelectorFromEntity,
@@ -46,7 +53,7 @@ export const DashboardsTable = ({
       title: 'Title',
       field: 'title',
       render: (row: Dashboard) => (
-        <Link to={row.url} target="_blank" rel="noopener">
+        <Link href={row.url} target="_blank" rel="noopener noreferrer">
           {row.title}
         </Link>
       ),
@@ -55,7 +62,7 @@ export const DashboardsTable = ({
       title: 'Folder',
       field: 'folderTitle',
       render: (row: Dashboard) => (
-        <Link to={row.folderUrl} target="_blank" rel="noopener">
+        <Link href={row.folderUrl} target="_blank" rel="noopener noreferrer">
           {row.folderTitle}
         </Link>
       ),

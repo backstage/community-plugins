@@ -15,7 +15,7 @@
  */
 
 import { CodeClimateData } from '../../api';
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -122,7 +122,11 @@ export const CodeClimateTable = ({
             >
               {maintainabilityLetter}
             </Typography>
-            <Link to={`https://codeclimate.com/repos/${repoID}`}>
+            <Link
+              href={`https://codeclimate.com/repos/${repoID}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Typography
                 className={classes.letterDetails}
                 variant="body2"
@@ -145,7 +149,11 @@ export const CodeClimateTable = ({
             >
               {testCoverageLetter}
             </Typography>
-            <Link to={`https://codeclimate.com/repos/${repoID}`}>
+            <Link
+              href={`https://codeclimate.com/repos/${repoID}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Typography
                 className={classes.letterDetails}
                 variant="body2"
@@ -163,7 +171,9 @@ export const CodeClimateTable = ({
             Code Smells:
           </Typography>
           <Link
-            to={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=complexity&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
+            href={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=complexity&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <Typography
               className={classes.fontSize}
@@ -179,7 +189,9 @@ export const CodeClimateTable = ({
             Duplication:
           </Typography>
           <Link
-            to={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=duplication&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
+            href={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=duplication&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <Typography
               className={classes.fontSize}
@@ -195,7 +207,9 @@ export const CodeClimateTable = ({
             Other Issues:
           </Typography>
           <Link
-            to={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=bugrisk&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
+            href={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=bugrisk&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <Typography
               className={classes.fontSize}

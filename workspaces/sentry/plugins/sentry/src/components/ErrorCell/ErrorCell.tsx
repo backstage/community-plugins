@@ -17,7 +17,7 @@
 import { SentryIssue } from '../../api';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 function stripText(text: string, maxLength: number) {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
@@ -53,7 +53,11 @@ export const ErrorCell = ({ sentryIssue }: { sentryIssue: SentryIssue }) => {
 
   return (
     <div className={classes.root}>
-      <Link to={sentryIssue.permalink}>
+      <Link
+        href={sentryIssue.permalink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <Typography variant="body1" gutterBottom className={classes.text}>
           {stripText(issueType, 28)}
         </Typography>

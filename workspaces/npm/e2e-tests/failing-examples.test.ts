@@ -43,7 +43,7 @@ test('failing-examples', async ({ page }) => {
           page.getByText(`NPM package ${packageName}`),
         ).not.toBeVisible();
       } else {
-        await expect(page.getByText('Missing Annotation')).toHaveCount(3);
+        await expect(page.getByText('Missing Annotation')).toHaveCount(4);
       }
     } else if (name === 'npm-package-not-found') {
       await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();

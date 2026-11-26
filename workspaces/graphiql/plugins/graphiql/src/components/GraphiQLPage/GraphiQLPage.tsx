@@ -19,14 +19,8 @@ import useAsync from 'react-use/esm/useAsync';
 import 'graphiql/graphiql.css';
 import { graphQlBrowseApiRef } from '../../lib/api';
 import { GraphiQLBrowser } from '../GraphiQLBrowser';
-import { Text } from '@backstage/ui';
-import {
-  Content,
-  Header,
-  HeaderLabel,
-  Page,
-  Progress,
-} from '@backstage/core-components';
+import { Container, Header, Text } from '@backstage/ui';
+import { Progress } from '@backstage/core-components';
 
 /** @public */
 export const GraphiQLPage = () => {
@@ -37,34 +31,33 @@ export const GraphiQLPage = () => {
 
   if (endpoints.loading) {
     content = (
-      <Content>
+      <Container>
         <Progress />
-      </Content>
+      </Container>
     );
   } else if (endpoints.error) {
     content = (
-      <Content>
+      <Container>
         <Text as="h4" variant="title-large" color="danger">
           {/* TODO: provide a proper error component */}
           Failed to load GraphQL endpoints, {String(endpoints.error)}
         </Text>
-      </Content>
+      </Container>
     );
   } else {
-    content = (
-      <Content noPadding>
-        <GraphiQLBrowser endpoints={endpoints.value!} />
-      </Content>
-    );
+    content = <GraphiQLBrowser endpoints={endpoints.value!} />;
   }
 
   return (
-    <Page themeId="tool">
-      <Header title="GraphiQL">
-        <HeaderLabel label="Owner" value="Spotify" />
-        <HeaderLabel label="Lifecycle" value="Alpha" />
-      </Header>
+    <>
+      <Header
+        title="GraphiQL"
+        metadata={[
+          { label: 'Owner', value: 'Spotify' },
+          { label: 'Lifecycle', value: 'Alpha' },
+        ]}
+      />
       {content}
-    </Page>
+    </>
   );
 };

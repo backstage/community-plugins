@@ -16,15 +16,21 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2MetricsByModelFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { formatDay, DATE_TICK_LABEL_STYLE, fillDateRange } from './chartUtils';
+import { formatDay, DATE_TICK_LABEL_STYLE, getChartDays } from './chartUtils';
 
 interface Props {
   data: V2MetricsByModelFeatureRow[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
-export function ModelUsagePerDayChart({ data, from, to }: Props) {
+export function ModelUsagePerDayChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
   if (data.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -33,7 +39,7 @@ export function ModelUsagePerDayChart({ data, from, to }: Props) {
     );
   }
 
-  const days = fillDateRange(from, to);
+  const days = getChartDays(data, from, to, fillMissingDays);
   const allModels = [...new Set(data.map(d => d.model_id))];
 
   // Sort models by overall total descending for a sensible legend order

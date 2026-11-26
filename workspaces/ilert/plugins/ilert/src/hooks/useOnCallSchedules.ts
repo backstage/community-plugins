@@ -18,11 +18,12 @@ import { ilertApiRef } from '../api';
 import { AuthenticationError } from '@backstage/errors';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { Schedule } from '../types';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const useOnCallSchedules = () => {
   const ilertApi = useApi(ilertApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const [onCallSchedulesList, setOnCallSchedulesList] = useState<Schedule[]>(
     [],

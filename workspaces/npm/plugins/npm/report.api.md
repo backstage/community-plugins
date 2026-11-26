@@ -47,6 +47,7 @@ export const npmTranslationRef: TranslationRef<
     readonly 'infoCard.codeRepository': 'Code repository';
     readonly 'infoCard.issueTracker': 'Issue tracker';
     readonly 'infoCard.homepage': 'Homepage';
+    readonly 'releaseTab.title': 'Npm Releases';
     readonly 'releaseOverviewCard.title': 'Current Tags';
     readonly 'releaseOverviewCard.toolbar.searchPlaceholder': 'Search';
     readonly 'releaseOverviewCard.columns.tag': 'Tag';

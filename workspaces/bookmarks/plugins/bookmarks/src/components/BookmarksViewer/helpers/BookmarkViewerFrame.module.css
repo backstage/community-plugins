@@ -1,0 +1,24 @@
+@layer components {
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .skeleton {
+    width: 100%;
+    height: 100%;
+  }
+
+  .devWarning {
+    margin-top: var(--bui-space-4);
+  }
+
+  .frame {
+    flex-grow: 1;
+    border: none;
+    background: white;
+    width: 100%;
+    height: 100%;
+  }
+}

@@ -16,6 +16,8 @@
 
 import { createBackend } from '@backstage/backend-defaults';
 
+import { tektonFixtureKubernetesModule } from './fixtures/module';
+
 const backend = createBackend();
 
 backend.add(import('@backstage/plugin-auth-backend'));
@@ -29,5 +31,6 @@ backend.add(
 );
 
 backend.add(import('@backstage/plugin-kubernetes-backend'));
+backend.add(tektonFixtureKubernetesModule);
 
 backend.start();

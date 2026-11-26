@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.2.1
+
+### Patch Changes
+
+- 37044ed: Fixed role updates that only change the owner being silently ignored.
+
 ## 8.2.0
 
 ### Minor Changes

@@ -80,6 +80,9 @@ describe('router v2 endpoints', () => {
       getIngestionLog: jest.fn(),
       getBackfillStatus: jest.fn(),
       getDashboardData: jest.fn(),
+      getEnterpriseOrganizationDirectory: jest.fn(),
+      getAccessibleOrganizationTeams: jest.fn(),
+      getCurrentAccessibleEnterpriseOrganizationLogin: jest.fn(),
       hasUsersWithoutCostCenterOnDashboard: jest.fn(),
       getUserDashboardData: jest.fn(),
       hasUserMetrics: jest.fn(),
@@ -88,6 +91,7 @@ describe('router v2 endpoints', () => {
     mockTaskV2 = {
       runAsync: jest.fn(),
       runBackfill: jest.fn(),
+      runOrganizationBackfill: jest.fn(),
     };
 
     mockScheduler = {
@@ -105,7 +109,9 @@ describe('router v2 endpoints', () => {
       costCenters: [],
       hasUsersWithoutCostCenter: false,
     });
-    mockDbV2.getTeams.mockResolvedValue([]);
+    mockDbV2.getTeams.mockImplementation(async (type: string) =>
+      type === 'organization' ? ['platform'] : [],
+    );
     mockDbV2.getPeriodRange.mockResolvedValue({
       minDate: '2025-10-10',
       maxDate: '2026-05-20',
@@ -128,6 +134,18 @@ describe('router v2 endpoints', () => {
       ],
       customizationSummaries: [{ category: 'skill', distinct_item_count: 1 }],
     });
+    mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
+      complete: true,
+      hasPendingOrganizations: false,
+      organizations: ['org-1', 'org-2'],
+    });
+    mockDbV2.getAccessibleOrganizationTeams.mockImplementation(
+      async (organizations: string[]) =>
+        organizations.map(organization => ({ organization, team: 'platform' })),
+    );
+    mockDbV2.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+      'org-1',
+    );
     mockDbV2.hasUsersWithoutCostCenterOnDashboard.mockResolvedValue(false);
     mockDbV2.getUserDashboardData.mockResolvedValue({
       userLogin: 'octocat',
@@ -141,6 +159,7 @@ describe('router v2 endpoints', () => {
     mockDbV2.hasUserMetrics.mockResolvedValue(true);
     mockTaskV2.runAsync.mockResolvedValue(undefined);
     mockTaskV2.runBackfill.mockResolvedValue(undefined);
+    mockTaskV2.runOrganizationBackfill.mockResolvedValue(undefined);
     mockScheduler.scheduleTask.mockResolvedValue(undefined);
   });
 
@@ -149,7 +168,14 @@ describe('router v2 endpoints', () => {
       logger: mockServices.logger.mock(),
       database: {} as any,
       scheduler: mockScheduler as any,
-      config: mockServices.rootConfig({ data: {} }),
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            organization: 'org-1',
+          },
+        },
+      }),
       ...overrides,
     });
 
@@ -781,7 +807,11 @@ describe('router v2 endpoints', () => {
   it('POST /v2/backfill returns 202 and starts backfill', async () => {
     const expectedYesterday = DateTime.utc().minus({ days: 1 }).toISODate();
 
-    const app = await createTestApp();
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: { copilot: { enterprise: 'ent-1' } },
+      }),
+    });
     const response = await request(app).post('/v2/backfill').send({
       type: 'enterprise',
       entityId: 'ent-1',
@@ -801,6 +831,75 @@ describe('router v2 endpoints', () => {
       'ent-1',
     );
   });
+
+  it.each([
+    {
+      inputOrganization: 'oRG-a',
+      canonicalOrganization: 'Org-A',
+      configuredOrganization: 'org-a',
+      expectedEntityId: 'org-a',
+      expectedMethod: 'runBackfill',
+    },
+    {
+      inputOrganization: 'oRG-b',
+      canonicalOrganization: 'Org-B',
+      configuredOrganization: 'Org-A',
+      expectedEntityId: 'Org-B',
+      expectedMethod: 'runOrganizationBackfill',
+    },
+  ])(
+    'canonicalizes $inputOrganization before choosing the backfill owner',
+    async ({
+      inputOrganization,
+      canonicalOrganization,
+      configuredOrganization,
+      expectedEntityId,
+      expectedMethod,
+    }) => {
+      const yesterday = DateTime.utc().minus({ days: 1 }).toISODate()!;
+      mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
+        complete: true,
+        hasPendingOrganizations: false,
+        organizations: ['Org-A', 'Org-B'],
+      });
+      mockDbV2.getCurrentAccessibleEnterpriseOrganizationLogin.mockResolvedValue(
+        canonicalOrganization,
+      );
+      const app = await createTestApp({
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              enterprise: 'ent-1',
+              organization: configuredOrganization,
+              ingestOrganizationTeamReports: true,
+            },
+          },
+        }),
+      });
+
+      const response = await request(app).post('/v2/backfill').send({
+        type: 'organization',
+        entityId: inputOrganization,
+        fromDate: yesterday,
+        toDate: yesterday,
+      });
+
+      expect(response.status).toBe(202);
+      expect(
+        mockDbV2.getCurrentAccessibleEnterpriseOrganizationLogin,
+      ).toHaveBeenCalledWith('ent-1', inputOrganization);
+      expect(mockTaskV2.runBackfill.mock.calls).toEqual(
+        expectedMethod === 'runBackfill'
+          ? [[yesterday, yesterday, 'organization', expectedEntityId]]
+          : [],
+      );
+      expect(mockTaskV2.runOrganizationBackfill.mock.calls).toEqual(
+        expectedMethod === 'runOrganizationBackfill'
+          ? [[expectedEntityId, yesterday, yesterday]]
+          : [],
+      );
+    },
+  );
 
   it('POST /v2/backfill returns 400 for fromDate before minimum', async () => {
     const app = await createTestApp();
@@ -847,6 +946,82 @@ describe('router v2 endpoints', () => {
     );
 
     expect(response.status).not.toBe(200);
+  });
+
+  it.each([true, false])(
+    'keeps configured organization reads and backfill available without an enterprise when multi-org ingestion is %s',
+    async ingestOrganizationTeamReports => {
+      const app = await createTestApp({
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              organization: 'org-1',
+              ingestOrganizationTeamReports,
+            },
+          },
+        }),
+      });
+
+      const dashboard = await request(app).get(
+        '/v2/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+      );
+      expect(dashboard.status).toBe(200);
+      expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-20',
+        undefined,
+        undefined,
+      );
+
+      const daily = await request(app).get(
+        '/v2/metrics/daily?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+      );
+      expect(daily.status).toBe(200);
+      expect(mockDbV2.getDailyTotals).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-20',
+        undefined,
+        undefined,
+      );
+
+      const backfill = await request(app).post('/v2/backfill').send({
+        type: 'organization',
+        entityId: 'org-1',
+        fromDate: '2025-10-10',
+        toDate: '2025-10-10',
+      });
+      expect(backfill.status).toBe(202);
+      expect(mockTaskV2.runBackfill).toHaveBeenCalledWith(
+        '2025-10-10',
+        '2025-10-10',
+        'organization',
+        'org-1',
+      );
+      expect(mockTaskV2.runOrganizationBackfill).not.toHaveBeenCalled();
+    },
+  );
+
+  it('keeps the legacy organization metrics route available with the multi-org flag and no enterprise', async () => {
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            organization: 'org-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+    const response = await request(app).get(
+      '/legacy/metrics?type=organization&startDate=2026-05-01&endDate=2026-05-20',
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
   });
 
   it('GET /v2/dashboard returns aggregated dashboard data', async () => {
@@ -897,10 +1072,19 @@ describe('router v2 endpoints', () => {
     );
   });
 
-  it('GET /v2/dashboard passes team when provided', async () => {
-    const app = await createTestApp();
+  it('GET /v2/dashboard serves eligible organization-team data with partial report coverage', async () => {
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
     const response = await request(app).get(
-      '/v2/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20&team=my-team',
+      '/v2/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20&team=platform',
     );
 
     expect(response.status).toBe(200);
@@ -909,8 +1093,421 @@ describe('router v2 endpoints', () => {
       'org-1',
       '2026-05-01',
       '2026-05-20',
-      'my-team',
+      'platform',
       undefined,
+    );
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      '2026-05-01',
+      '2026-05-20',
+    );
+  });
+
+  it('GET /v2/metrics/daily serves eligible organization-team data with partial report coverage', async () => {
+    mockDbV2.getDailyTotals.mockResolvedValue([
+      { day: '2026-05-20', metrics_type: 'organization', entity_id: 'org-1' },
+    ]);
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const response = await request(app).get(
+      '/v2/metrics/daily?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20&team=platform',
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      { day: '2026-05-20', metrics_type: 'organization', entity_id: 'org-1' },
+    ]);
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      '2026-05-01',
+      '2026-05-20',
+    );
+    expect(mockDbV2.getDailyTotals).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      '2026-05-01',
+      '2026-05-20',
+      'platform',
+      undefined,
+    );
+  });
+
+  it.each([
+    {
+      path: '/v2/metrics/daily?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getDailyTotals',
+    },
+    {
+      path: '/v2/metrics/pull-requests?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getPrMetrics',
+    },
+    {
+      path: '/v2/metrics/by-feature?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getByFeature',
+    },
+    {
+      path: '/v2/metrics/by-ide?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getByIde',
+    },
+    {
+      path: '/v2/metrics/by-language?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getByLanguageFeature',
+    },
+    {
+      path: '/v2/metrics/by-model-feature?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getByModelFeature',
+    },
+    {
+      path: '/v2/metrics/by-language-model?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getByLanguageModel',
+    },
+    {
+      path: '/v2/dashboard?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getDashboardData',
+    },
+    {
+      path: '/v2/no-cost-center/dashboard?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getDashboardData',
+    },
+    {
+      path: '/v2/teams?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getTeams',
+    },
+    {
+      path: '/v2/cost-centers?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+      reader: 'getCostCenters',
+    },
+    {
+      path: '/v2/metrics/period-range?type=organization&entityId=removed-org',
+      reader: 'getPeriodRange',
+    },
+    {
+      path: '/v2/backfill/status?type=organization&entityId=removed-org',
+      reader: 'getBackfillStatus',
+    },
+  ])(
+    '$path hides retained data for organizations outside the current directory',
+    async ({ path, reader }) => {
+      const app = await createTestApp({
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              enterprise: 'ent-1',
+              organization: 'org-1',
+              ingestOrganizationTeamReports: true,
+            },
+          },
+        }),
+      });
+
+      const response = await request(app).get(path);
+
+      expect(response.status).toBe(404);
+      expect(mockDbV2[reader]).not.toHaveBeenCalled();
+    },
+  );
+
+  it('hides retained configured-organization data after access is revoked', async () => {
+    mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
+      complete: true,
+      hasPendingOrganizations: false,
+      organizations: ['org-2'],
+    });
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            organization: 'org-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const response = await request(app).get(
+      '/v2/metrics/daily?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+    );
+
+    expect(response.status).toBe(404);
+    expect(mockDbV2.getDailyTotals).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      ingestOrganizationTeamReports: true,
+      ingestTeams: false,
+    },
+    {
+      ingestOrganizationTeamReports: false,
+      ingestTeams: true,
+    },
+  ])(
+    'rejects organization teams below the distinct-user threshold (multi-org: $ingestOrganizationTeamReports)',
+    async ({ ingestOrganizationTeamReports, ingestTeams }) => {
+      const app = await createTestApp({
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              enterprise: 'ent-1',
+              organization: 'org-1',
+              ingestOrganizationTeamReports,
+              ingestTeams,
+            },
+          },
+        }),
+      });
+
+      for (const { path, reader } of [
+        {
+          path: '/v2/dashboard?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=hidden-team',
+          reader: 'getDashboardData',
+        },
+        {
+          path: '/v2/metrics/daily?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=hidden-team',
+          reader: 'getDailyTotals',
+        },
+      ] as const) {
+        const response = await request(app).get(path);
+
+        expect(response.status).toBe(400);
+        expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+          'organization',
+          'org-1',
+          '2026-05-01',
+          '2026-05-20',
+        );
+        expect(mockDbV2[reader]).not.toHaveBeenCalled();
+      }
+    },
+  );
+
+  it('canonicalizes accessible organization logins for generic reads', async () => {
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            organization: 'org-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const response = await request(app).get(
+      '/v2/dashboard?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20&team=platform',
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockDbV2.getDashboardData).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      '2026-05-01',
+      '2026-05-20',
+      'platform',
+      undefined,
+    );
+  });
+
+  it('lists threshold-qualified teams for a discovered organization with partial report coverage', async () => {
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const response = await request(app).get(
+      '/v2/teams?type=organization&entityId=ORG-1&from=2026-05-01&to=2026-05-20',
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(['platform']);
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      '2026-05-01',
+      '2026-05-20',
+    );
+    expect(mockDbV2.getAccessibleOrganizationTeams).not.toHaveBeenCalled();
+  });
+
+  it('GET /v2/organization-team/options preserves the configured organization when multi-org ingestion is off', async () => {
+    mockDbV2.getTeams.mockResolvedValue(['octo-team']);
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            organization: 'org-1',
+            ingestTeams: true,
+          },
+        },
+      }),
+    });
+
+    const options = await request(app).get(
+      '/v2/organization-team/options?from=2026-05-01&to=2026-05-20',
+    );
+    expect(options.status).toBe(200);
+    expect(options.body).toEqual({
+      organizations: ['org-1'],
+      teams: [{ organization: 'org-1', team: 'octo-team' }],
+      hasPendingOrganizations: false,
+    });
+    expect(mockDbV2.getTeams).toHaveBeenCalledWith(
+      'organization',
+      'org-1',
+      '2026-05-01',
+      '2026-05-20',
+    );
+    expect(mockDbV2.getEnterpriseOrganizationDirectory).not.toHaveBeenCalled();
+  });
+
+  it('lists date-eligible teams by owning organization while organizations are pending', async () => {
+    mockDbV2.getEnterpriseOrganizationDirectory.mockResolvedValue({
+      complete: true,
+      hasPendingOrganizations: true,
+      organizations: ['org-1', 'org-2'],
+    });
+    mockDbV2.getAccessibleOrganizationTeams.mockResolvedValue([
+      { organization: 'org-1', team: 'platform' },
+      { organization: 'org-2', team: 'platform' },
+    ]);
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const response = await request(app).get(
+      '/v2/organization-team/options?from=2026-05-01&to=2026-05-20',
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      organizations: ['org-1', 'org-2'],
+      teams: [
+        { organization: 'org-1', team: 'platform' },
+        { organization: 'org-2', team: 'platform' },
+      ],
+      hasPendingOrganizations: true,
+    });
+    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenCalledWith(
+      ['org-1', 'org-2'],
+      '2026-05-01',
+      '2026-05-20',
+    );
+  });
+
+  it('uses the organization-view date range and eligibility for enterprise organization-team options', async () => {
+    const from = '2026-05-01';
+    const to = '2026-05-20';
+    const memberships = [
+      {
+        organization: 'org-1',
+        team: 'eligible-team',
+        day: '2026-05-10',
+        members: ['user-1', 'user-2', 'user-3', 'user-4', 'user-5'],
+      },
+      {
+        organization: 'org-1',
+        team: 'below-threshold-team',
+        day: '2026-05-10',
+        members: ['user-1', 'user-2', 'user-3', 'user-4'],
+      },
+      {
+        organization: 'org-1',
+        team: 'outside-range-team',
+        day: '2026-04-30',
+        members: ['user-1', 'user-2', 'user-3', 'user-4', 'user-5'],
+      },
+    ];
+    mockDbV2.getAccessibleOrganizationTeams.mockImplementation(
+      async (
+        organizations: string[],
+        start: string,
+        end: string,
+        minMembers = 5,
+      ) =>
+        memberships
+          .filter(
+            team =>
+              organizations.includes(team.organization) &&
+              team.day >= start &&
+              team.day <= end &&
+              team.members.length >= minMembers,
+          )
+          .map(({ organization, team }) => ({ organization, team })),
+    );
+    mockDbV2.getTeams.mockImplementation(
+      async (_type: string, organization: string, start: string, end: string) =>
+        (
+          await mockDbV2.getAccessibleOrganizationTeams(
+            [organization],
+            start,
+            end,
+          )
+        ).map(({ team }: { team: string }) => team),
+    );
+    const app = await createTestApp({
+      config: mockServices.rootConfig({
+        data: {
+          copilot: {
+            enterprise: 'ent-1',
+            ingestOrganizationTeamReports: true,
+          },
+        },
+      }),
+    });
+
+    const options = await request(app).get(
+      `/v2/organization-team/options?organization=ORG-1&from=${from}&to=${to}`,
+    );
+    const organizationTeams = await request(app).get(
+      `/v2/teams?type=organization&entityId=ORG-1&from=${from}&to=${to}`,
+    );
+
+    expect(options.status).toBe(200);
+    expect(organizationTeams.status).toBe(200);
+    expect(options.body.teams).toEqual([
+      { organization: 'org-1', team: 'eligible-team' },
+    ]);
+    expect(organizationTeams.body).toEqual(
+      options.body.teams.map(({ team }: { team: string }) => team),
+    );
+    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenNthCalledWith(
+      1,
+      ['org-1'],
+      from,
+      to,
+    );
+    expect(mockDbV2.getAccessibleOrganizationTeams).toHaveBeenNthCalledWith(
+      2,
+      ['org-1'],
+      from,
+      to,
     );
   });
 
@@ -941,6 +1538,28 @@ describe('router v2 endpoints', () => {
       );
 
       expect(response.status).toBe(501);
+    });
+
+    it('hides retained personal metrics for organizations outside the current directory', async () => {
+      const app = await createMeTestApp(undefined, {
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              enterprise: 'ent-1',
+              ingestOrganizationTeamReports: true,
+            },
+          },
+        }),
+      });
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=removed-org&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(404);
+      expect(mockDbV2.hasUserMetrics).not.toHaveBeenCalled();
+      expect(mockDbV2.getUserDashboardData).not.toHaveBeenCalled();
     });
 
     it('resolves the caller from their own entity ref and returns their data', async () => {
@@ -976,6 +1595,33 @@ describe('router v2 endpoints', () => {
         customizationMetrics: [],
         customizationSummaries: [],
       });
+      expect(mockDbV2.getUserDashboardData).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        'mock',
+        '2026-05-01',
+        '2026-05-20',
+      );
+    });
+
+    it('serves configured-organization personal metrics without an enterprise when multi-org ingestion is enabled', async () => {
+      const app = await createMeTestApp(undefined, {
+        config: mockServices.rootConfig({
+          data: {
+            copilot: {
+              organization: 'org-1',
+              ingestOrganizationTeamReports: true,
+            },
+          },
+        }),
+      });
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(200);
       expect(mockDbV2.getUserDashboardData).toHaveBeenCalledWith(
         'organization',
         'org-1',

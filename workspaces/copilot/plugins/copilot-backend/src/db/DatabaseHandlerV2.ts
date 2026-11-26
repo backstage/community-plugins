@@ -42,6 +42,7 @@ import {
   V2UserTeamRow,
   MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
+import { randomUUID } from 'node:crypto';
 import { DateTime } from 'luxon';
 import { Knex } from 'knex';
 import { migrationsDir } from './DatabaseHandler';
@@ -64,6 +65,8 @@ type TeamActivityRow = {
   user_id: number;
   used_agent: boolean | number | null;
   used_chat: boolean | number | null;
+  used_cli?: boolean | number | null;
+  used_vscode_agent?: boolean | number | null;
 };
 
 export function parseComponentsLoaded(value: unknown): string[] {
@@ -89,6 +92,25 @@ export function parseComponentsLoaded(value: unknown): string[] {
   }
 }
 
+function isDatabaseBoolean(value: unknown): boolean {
+  return value === true || value === 1 || value === '1' || value === 'true';
+}
+
+function formatDirectoryGeneration(value: unknown): string {
+  let generation: string | undefined;
+  if (typeof value === 'string') {
+    generation = value;
+  } else if (typeof value === 'number' && Number.isSafeInteger(value)) {
+    generation = String(value);
+  } else if (typeof value === 'bigint') {
+    generation = value.toString();
+  }
+  if (!generation || !/^(0|[1-9]\d*)$/.test(generation)) {
+    throw new Error('Enterprise organization directory generation is invalid.');
+  }
+  return generation;
+}
+
 type CostCenterScopedRow = {
   cost_center_id?: string;
   without_cost_center?: boolean;
@@ -108,6 +130,50 @@ export type CostCenterDashboardScope =
   | { kind: 'noCostCenter' };
 
 type CostCenterFilter = string | { kind: 'noCostCenter' };
+
+export type EnterpriseOrganizationAccessState =
+  | 'pending'
+  | 'accessible'
+  | 'inaccessible';
+
+export type EnterpriseOrganizationDirectoryGeneration = string;
+
+export type EnterpriseOrganizationDirectorySyncResult =
+  | 'synced'
+  | 'superseded'
+  | {
+      configuredOrganizationLogin?: string;
+      configuredOrganizationAmbiguous: boolean;
+    };
+
+export type EnterpriseOrganizationDirectoryFailureResult =
+  | 'marked'
+  | 'superseded';
+
+export type EnterpriseOrganizationDirectoryMutationResult =
+  | 'updated'
+  | 'not-current'
+  | 'superseded';
+
+export type OrganizationIngestionLease = {
+  enterpriseId: string;
+  organization: string;
+  owner: string;
+  directoryGeneration?: EnterpriseOrganizationDirectoryGeneration;
+};
+
+export type EnterpriseOrganizationDirectory = {
+  complete: boolean;
+  hasPendingOrganizations: boolean;
+  organizations: string[];
+};
+
+export class OrganizationIngestionLeaseLostError extends Error {
+  constructor() {
+    super('Organization-team ingestion no longer owns its work lease.');
+    this.name = 'OrganizationIngestionLeaseLostError';
+  }
+}
 
 export type CostCenterAggregateRows = {
   dailyTotals: V2DailyTotal[];
@@ -178,6 +244,676 @@ export class DatabaseHandlerV2 {
   }
 
   private constructor(private readonly db: Knex) {}
+
+  private async lockDirectoryGeneration(
+    transaction: Knex.Transaction,
+    enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<boolean> {
+    await transaction('copilot_enterprise_organization_directory')
+      .where({ enterprise_id: enterpriseId, sync_generation: generation })
+      .update({
+        sync_generation: transaction.raw('??', ['sync_generation']),
+      });
+
+    const row = await transaction('copilot_enterprise_organization_directory')
+      .where({ enterprise_id: enterpriseId })
+      .first('sync_generation');
+    return (
+      row !== undefined &&
+      formatDirectoryGeneration(row.sync_generation) === generation
+    );
+  }
+
+  async beginEnterpriseOrganizationDirectorySync(
+    enterpriseId: string,
+  ): Promise<EnterpriseOrganizationDirectoryGeneration> {
+    return this.db.transaction(async transaction => {
+      await transaction('copilot_enterprise_organization_directory')
+        .insert({
+          enterprise_id: enterpriseId,
+          is_complete: false,
+          sync_generation: 1,
+          updated_at: transaction.fn.now(),
+        })
+        .onConflict('enterprise_id')
+        .merge({
+          sync_generation: transaction.raw('??.?? + 1', [
+            'copilot_enterprise_organization_directory',
+            'sync_generation',
+          ]),
+          updated_at: transaction.fn.now(),
+        });
+
+      const row = await transaction('copilot_enterprise_organization_directory')
+        .where({ enterprise_id: enterpriseId })
+        .first('sync_generation');
+      if (!row) {
+        throw new Error(
+          'Enterprise organization directory generation was not reserved.',
+        );
+      }
+      return formatDirectoryGeneration(row.sync_generation);
+    });
+  }
+
+  async isEnterpriseOrganizationDirectoryGenerationCurrent(
+    enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<boolean> {
+    const row = await this.db('copilot_enterprise_organization_directory')
+      .where({ enterprise_id: enterpriseId })
+      .first('sync_generation');
+    return (
+      row !== undefined &&
+      formatDirectoryGeneration(row.sync_generation) === generation
+    );
+  }
+
+  async syncEnterpriseOrganizations(
+    enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
+    organizations: string[],
+    now: Date,
+    configuredOrganization?: string,
+  ): Promise<EnterpriseOrganizationDirectorySyncResult> {
+    const uniqueOrganizations = new Map<string, string>();
+    for (const login of organizations) {
+      const trimmed = login.trim();
+      if (trimmed && !uniqueOrganizations.has(trimmed.toLowerCase())) {
+        uniqueOrganizations.set(trimmed.toLowerCase(), trimmed);
+      }
+    }
+
+    const configuredKey = configuredOrganization?.trim().toLowerCase();
+    let configuredOrganizationLogin: string | undefined;
+    let configuredOrganizationAmbiguous = false;
+
+    return this.db.transaction(async transaction => {
+      if (
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return 'superseded';
+      }
+
+      const currentRows = await transaction('copilot_enterprise_organizations')
+        .where({ enterprise_id: enterpriseId })
+        .select('organization_key', 'organization_login', 'is_current');
+      const previouslyCurrent = new Set(
+        currentRows
+          .filter(row => isDatabaseBoolean(row.is_current))
+          .map(row => row.organization_key),
+      );
+      const knownLogins = new Map(
+        currentRows.map(row => [row.organization_key, row.organization_login]),
+      );
+
+      const historicalLogins = new Set<string>();
+      if (configuredKey) {
+        for (const table of [
+          'copilot_daily_totals',
+          'copilot_user_metrics',
+          'copilot_user_teams',
+        ]) {
+          const rows = await transaction(table)
+            .where({ metrics_type: 'organization' })
+            .whereRaw('LOWER(entity_id) = ?', [configuredKey])
+            .distinct('entity_id')
+            .select('entity_id');
+          for (const row of rows) {
+            if (typeof row.entity_id === 'string') {
+              historicalLogins.add(row.entity_id);
+            }
+          }
+        }
+      }
+
+      await transaction('copilot_enterprise_organizations')
+        .where({ enterprise_id: enterpriseId })
+        .update({ is_current: false, updated_at: now });
+
+      for (const [organizationKey, organizationLogin] of uniqueOrganizations) {
+        const wasCurrent = previouslyCurrent.has(organizationKey);
+        const ambiguousHistory =
+          organizationKey === configuredKey && historicalLogins.size > 1;
+        const canonicalLogin = ambiguousHistory
+          ? knownLogins.get(organizationKey) ?? organizationLogin
+          : (organizationKey === configuredKey
+              ? historicalLogins.values().next().value
+              : undefined) ??
+            knownLogins.get(organizationKey) ??
+            organizationLogin;
+
+        if (organizationKey === configuredKey) {
+          configuredOrganizationAmbiguous = ambiguousHistory;
+          if (!ambiguousHistory) {
+            configuredOrganizationLogin = canonicalLogin;
+          }
+        }
+
+        const resetOrganizationState = ambiguousHistory || !wasCurrent;
+        await transaction('copilot_enterprise_organizations')
+          .insert({
+            enterprise_id: enterpriseId,
+            organization_key: organizationKey,
+            organization_login: canonicalLogin,
+            is_current: true,
+            access_state: 'pending',
+            reports_ready: false,
+            updated_at: now,
+          })
+          .onConflict(['enterprise_id', 'organization_key'])
+          .merge({
+            organization_login: canonicalLogin,
+            is_current: true,
+            updated_at: now,
+            ...(resetOrganizationState
+              ? {
+                  access_state: 'pending',
+                  reports_ready: false,
+                  last_attempted_at: null,
+                  next_attempt_at: null,
+                  lease_owner: null,
+                  lease_expires_at: null,
+                }
+              : {}),
+          });
+      }
+
+      await transaction('copilot_enterprise_organization_directory')
+        .where({ enterprise_id: enterpriseId, sync_generation: generation })
+        .update({
+          is_complete: true,
+          last_synced_at: now,
+          updated_at: now,
+        });
+      return configuredKey
+        ? {
+            configuredOrganizationLogin,
+            configuredOrganizationAmbiguous,
+          }
+        : 'synced';
+    });
+  }
+
+  async markEnterpriseOrganizationDirectoryFailed(
+    enterpriseId: string,
+    generation: EnterpriseOrganizationDirectoryGeneration,
+    now: Date,
+  ): Promise<EnterpriseOrganizationDirectoryFailureResult> {
+    return this.db.transaction(async transaction => {
+      if (
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return 'superseded';
+      }
+      await transaction('copilot_enterprise_organization_directory')
+        .where({ enterprise_id: enterpriseId, sync_generation: generation })
+        .update({ is_complete: false, updated_at: now });
+      return 'marked';
+    });
+  }
+
+  async markLegacyConfiguredOrganization(
+    enterpriseId: string,
+    organization: string,
+    now: Date,
+    nextAttemptAt: Date,
+    lease?: OrganizationIngestionLease,
+    generation?: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<EnterpriseOrganizationDirectoryMutationResult> {
+    const key = organization.trim().toLowerCase();
+    const directoryGeneration = generation ?? lease?.directoryGeneration;
+    return this.db.transaction(async transaction => {
+      if (
+        directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          directoryGeneration,
+        ))
+      ) {
+        return 'superseded';
+      }
+
+      const query = transaction('copilot_enterprise_organizations').where({
+        enterprise_id: enterpriseId,
+        organization_key: key,
+        is_current: true,
+      });
+      if (lease) {
+        query
+          .where({ lease_owner: lease.owner })
+          .andWhere('lease_expires_at', '>', now);
+      } else {
+        query.andWhere(function leaseIsUnavailable() {
+          this.whereNull('lease_owner').orWhere('lease_expires_at', '<=', now);
+        });
+      }
+
+      const currentOrganization = await query
+        .clone()
+        .forUpdate()
+        .first('organization_key');
+      if (!currentOrganization) {
+        if (lease) {
+          throw new OrganizationIngestionLeaseLostError();
+        }
+        return 'not-current';
+      }
+
+      const existingReport = await transaction('copilot_daily_totals')
+        .where({
+          metrics_type: 'organization',
+          team_slug: '',
+          cost_center_id: '',
+          without_cost_center: false,
+        })
+        .whereRaw('LOWER(entity_id) = ?', [key])
+        .first('day');
+      await query.update({
+        access_state: 'accessible',
+        reports_ready: Boolean(existingReport),
+        last_attempted_at: now,
+        next_attempt_at: nextAttemptAt,
+        updated_at: now,
+      });
+      return 'updated';
+    });
+  }
+
+  async markEnterpriseOrganizationInaccessible(
+    enterpriseId: string,
+    organization: string,
+    now: Date,
+    nextAttemptAt: Date,
+    generation?: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<EnterpriseOrganizationDirectoryMutationResult> {
+    return this.db.transaction(async transaction => {
+      let generationToLock = generation;
+      if (!generationToLock) {
+        const directory = await transaction(
+          'copilot_enterprise_organization_directory',
+        )
+          .where({ enterprise_id: enterpriseId })
+          .first('sync_generation');
+        if (!directory) {
+          return 'not-current';
+        }
+        generationToLock = formatDirectoryGeneration(directory.sync_generation);
+      }
+      if (
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generationToLock,
+        ))
+      ) {
+        return 'superseded';
+      }
+
+      const query = transaction('copilot_enterprise_organizations').where({
+        enterprise_id: enterpriseId,
+        organization_key: organization.trim().toLowerCase(),
+        is_current: true,
+      });
+      if (generation === undefined) {
+        query
+          .whereNot('access_state', 'accessible')
+          .andWhere(function leaseIsUnavailable() {
+            this.whereNull('lease_owner').orWhere(
+              'lease_expires_at',
+              '<=',
+              now,
+            );
+          });
+      }
+      const currentOrganization = await query
+        .clone()
+        .forUpdate()
+        .first('organization_key');
+      if (!currentOrganization) {
+        return 'not-current';
+      }
+      await query.update({
+        access_state: 'inaccessible',
+        reports_ready: false,
+        last_attempted_at: now,
+        next_attempt_at: nextAttemptAt,
+        lease_owner: null,
+        lease_expires_at: null,
+        updated_at: now,
+      });
+      return 'updated';
+    });
+  }
+
+  async getEnterpriseOrganizationDirectory(
+    enterpriseId: string,
+  ): Promise<EnterpriseOrganizationDirectory> {
+    const [directory, rows] = await Promise.all([
+      this.db('copilot_enterprise_organization_directory')
+        .where({ enterprise_id: enterpriseId })
+        .first('is_complete'),
+      this.db('copilot_enterprise_organizations')
+        .where({ enterprise_id: enterpriseId, is_current: true })
+        .orderBy('organization_login', 'asc')
+        .select('organization_login', 'access_state', 'reports_ready'),
+    ]);
+
+    const complete = isDatabaseBoolean(directory?.is_complete);
+    if (!complete) {
+      return {
+        complete: false,
+        hasPendingOrganizations: false,
+        organizations: [],
+      };
+    }
+
+    return {
+      complete: true,
+      hasPendingOrganizations: rows.some(
+        row =>
+          row.access_state === 'pending' ||
+          (row.access_state === 'accessible' &&
+            !isDatabaseBoolean(row.reports_ready)),
+      ),
+      organizations: rows
+        .filter(
+          row =>
+            row.access_state === 'accessible' &&
+            isDatabaseBoolean(row.reports_ready),
+        )
+        .map(row => row.organization_login),
+    };
+  }
+
+  async getCurrentAccessibleEnterpriseOrganizationLogin(
+    enterpriseId: string,
+    organization: string,
+  ): Promise<string | undefined> {
+    const row = await this.db('copilot_enterprise_organizations as org')
+      .join(
+        'copilot_enterprise_organization_directory as directory',
+        'directory.enterprise_id',
+        'org.enterprise_id',
+      )
+      .where({
+        'org.enterprise_id': enterpriseId,
+        'org.organization_key': organization.trim().toLowerCase(),
+        'org.is_current': true,
+        'org.access_state': 'accessible',
+        'directory.is_complete': true,
+      })
+      .first('org.organization_login');
+    return typeof row?.organization_login === 'string'
+      ? row.organization_login
+      : undefined;
+  }
+
+  async getEnterpriseOrganizationsToIngest(
+    enterpriseId: string,
+    now: Date,
+    limit: number,
+    inaccessibleLimit: number,
+    excludedOrganization?: string,
+    generation?: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<string[]> {
+    if (
+      generation &&
+      !(await this.isEnterpriseOrganizationDirectoryGenerationCurrent(
+        enterpriseId,
+        generation,
+      ))
+    ) {
+      return [];
+    }
+
+    const dueRows = () => {
+      let query = this.db('copilot_enterprise_organizations').where({
+        enterprise_id: enterpriseId,
+        is_current: true,
+      });
+      const excludedKey = excludedOrganization?.trim().toLowerCase();
+      if (excludedKey) {
+        query = query.whereNot('organization_key', excludedKey);
+      }
+      return query
+        .andWhere(function leaseIsAvailable() {
+          this.whereNull('lease_expires_at').orWhere(
+            'lease_expires_at',
+            '<=',
+            now,
+          );
+        })
+        .where(function dueForAttempt() {
+          this.whereNull('next_attempt_at').orWhere(
+            'next_attempt_at',
+            '<=',
+            now,
+          );
+        })
+        .orderByRaw('CASE WHEN last_attempted_at IS NULL THEN 0 ELSE 1 END ASC')
+        .orderBy('last_attempted_at', 'asc')
+        .orderBy('organization_key', 'asc');
+    };
+
+    const recheckCount = Math.min(limit, Math.max(0, inaccessibleLimit));
+    const inaccessibleRows =
+      recheckCount > 0
+        ? await dueRows()
+            .where('access_state', 'inaccessible')
+            .limit(recheckCount)
+            .select('organization_login')
+        : [];
+    const activeLimit = Math.max(0, limit - inaccessibleRows.length);
+    const activeRows =
+      activeLimit > 0
+        ? await dueRows()
+            .whereNot('access_state', 'inaccessible')
+            .limit(activeLimit)
+            .select('organization_login')
+        : [];
+
+    return [...activeRows, ...inaccessibleRows].map(
+      row => row.organization_login,
+    );
+  }
+
+  async claimEnterpriseOrganizationLease(
+    enterpriseId: string,
+    organization: string,
+    now: Date,
+    leaseExpiresAt: Date,
+    ignoreNextAttempt = false,
+    generation?: EnterpriseOrganizationDirectoryGeneration,
+  ): Promise<OrganizationIngestionLease | undefined> {
+    const key = organization.trim().toLowerCase();
+    const owner = randomUUID();
+    return this.db.transaction(async transaction => {
+      if (
+        generation &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          enterpriseId,
+          generation,
+        ))
+      ) {
+        return undefined;
+      }
+
+      const query = transaction('copilot_enterprise_organizations').where({
+        enterprise_id: enterpriseId,
+        organization_key: key,
+        is_current: true,
+      });
+      if (!ignoreNextAttempt) {
+        query.andWhere(function dueForAttempt() {
+          this.whereNull('next_attempt_at').orWhere(
+            'next_attempt_at',
+            '<=',
+            now,
+          );
+        });
+      }
+      const changed = await query
+        .andWhere(function leaseIsAvailable() {
+          this.whereNull('lease_expires_at').orWhere(
+            'lease_expires_at',
+            '<=',
+            now,
+          );
+        })
+        .update({
+          lease_owner: owner,
+          lease_expires_at: leaseExpiresAt,
+          last_attempted_at: now,
+          updated_at: now,
+        });
+      if (changed !== 1) {
+        return undefined;
+      }
+
+      return {
+        enterpriseId,
+        organization: key,
+        owner,
+        ...(generation ? { directoryGeneration: generation } : {}),
+      };
+    });
+  }
+
+  async renewEnterpriseOrganizationLease(
+    lease: OrganizationIngestionLease,
+    now: Date,
+    leaseExpiresAt: Date,
+  ): Promise<boolean> {
+    return this.db.transaction(async transaction => {
+      if (
+        lease.directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          lease.enterpriseId,
+          lease.directoryGeneration,
+        ))
+      ) {
+        return false;
+      }
+      const changed = await transaction('copilot_enterprise_organizations')
+        .where({
+          enterprise_id: lease.enterpriseId,
+          organization_key: lease.organization,
+          is_current: true,
+          lease_owner: lease.owner,
+        })
+        .andWhere('lease_expires_at', '>', now)
+        .update({ lease_expires_at: leaseExpiresAt, updated_at: now });
+      return changed === 1;
+    });
+  }
+
+  async releaseEnterpriseOrganizationLease(
+    lease: OrganizationIngestionLease,
+  ): Promise<void> {
+    await this.db('copilot_enterprise_organizations')
+      .where({
+        enterprise_id: lease.enterpriseId,
+        organization_key: lease.organization,
+        lease_owner: lease.owner,
+      })
+      .update({ lease_owner: null, lease_expires_at: null });
+  }
+
+  async withOrganizationIngestionLease<T>(
+    lease: OrganizationIngestionLease,
+    operation: (database: DatabaseHandlerV2) => Promise<T>,
+  ): Promise<T> {
+    return this.db.transaction(async transaction => {
+      if (
+        lease.directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          lease.enterpriseId,
+          lease.directoryGeneration,
+        ))
+      ) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
+      const now = new Date();
+      const row = await transaction('copilot_enterprise_organizations')
+        .where({
+          enterprise_id: lease.enterpriseId,
+          organization_key: lease.organization,
+          is_current: true,
+          lease_owner: lease.owner,
+        })
+        .andWhere('lease_expires_at', '>', now)
+        .forUpdate()
+        .first('lease_owner');
+      if (!row) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
+      return operation(new DatabaseHandlerV2(transaction));
+    });
+  }
+
+  async updateEnterpriseOrganizationState(
+    lease: OrganizationIngestionLease,
+    state: {
+      accessState?: EnterpriseOrganizationAccessState;
+      reportsReady?: boolean;
+      lastAttemptedAt: Date;
+      nextAttemptAt?: Date | null;
+    },
+  ): Promise<void> {
+    const update: Record<string, unknown> = {
+      last_attempted_at: state.lastAttemptedAt,
+      updated_at: state.lastAttemptedAt,
+    };
+    if (state.accessState !== undefined) {
+      update.access_state = state.accessState;
+    }
+    if (state.reportsReady !== undefined) {
+      update.reports_ready = state.reportsReady;
+    }
+    if (state.nextAttemptAt !== undefined) {
+      update.next_attempt_at = state.nextAttemptAt;
+    }
+
+    await this.db.transaction(async transaction => {
+      if (
+        lease.directoryGeneration &&
+        !(await this.lockDirectoryGeneration(
+          transaction,
+          lease.enterpriseId,
+          lease.directoryGeneration,
+        ))
+      ) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
+      const query = transaction('copilot_enterprise_organizations')
+        .where({
+          enterprise_id: lease.enterpriseId,
+          organization_key: lease.organization,
+          is_current: true,
+          lease_owner: lease.owner,
+        })
+        .andWhere('lease_expires_at', '>', state.lastAttemptedAt);
+      const row = await query.clone().forUpdate().first('lease_owner');
+      if (!row) {
+        throw new OrganizationIngestionLeaseLostError();
+      }
+      await query.update(update);
+    });
+  }
 
   private addCostCenterFilter(
     query: Knex.QueryBuilder,
@@ -1178,6 +1914,28 @@ export class DatabaseHandlerV2 {
 
     const { activeByDay, agentByDay, chatByDay } =
       this.collectRollingUsersByDay(activityRows as TeamActivityRow[]);
+    let completeTeamDays: Set<string> | undefined;
+    if (teamSlug) {
+      const lowerBound = DateTime.fromISO(from, { zone: 'utc' })
+        .minus({ days: MONTHLY_ACTIVE_USERS_WINDOW_DAYS - 1 })
+        .toFormat('yyyy-MM-dd');
+      const coverageRows = await this.db('copilot_ingestion_log')
+        .where({ metrics_type: metricsType, entity_id: entityId })
+        .whereBetween('day', [lowerBound, to])
+        .select('day', 'components_loaded');
+      completeTeamDays = new Set(
+        coverageRows
+          .filter(row =>
+            this.hasRequiredComponents(row.components_loaded, [
+              'users',
+              'teams',
+            ]),
+          )
+          .map(row => this.normalizeDay(row.day))
+          .filter((day): day is string => Boolean(day)),
+      );
+    }
+
     let completeUnassignedDays: Set<string> | undefined;
     if (typeof costCenter !== 'string' && costCenter?.kind === 'noCostCenter') {
       const lowerBound = DateTime.fromISO(from)
@@ -1207,6 +1965,7 @@ export class DatabaseHandlerV2 {
         chatByDay,
         weeklyWindowDays: WEEKLY_ACTIVE_USERS_WINDOW_DAYS,
         monthlyWindowDays: MONTHLY_ACTIVE_USERS_WINDOW_DAYS,
+        completeTeamDays,
         completeUnassignedDays,
       }),
     );
@@ -1300,6 +2059,7 @@ export class DatabaseHandlerV2 {
       chatByDay: Map<string, Set<number>>;
       weeklyWindowDays: number;
       monthlyWindowDays: number;
+      completeTeamDays?: Set<string>;
       completeUnassignedDays?: Set<string>;
     },
   ): V2DailyTotal {
@@ -1309,19 +2069,31 @@ export class DatabaseHandlerV2 {
     }
 
     const weeklyWindowComplete =
-      !params.completeUnassignedDays ||
-      this.isRollingWindowComplete(
-        params.completeUnassignedDays,
-        day,
-        params.weeklyWindowDays,
-      );
+      (!params.completeTeamDays ||
+        this.isRollingWindowComplete(
+          params.completeTeamDays,
+          day,
+          params.weeklyWindowDays,
+        )) &&
+      (!params.completeUnassignedDays ||
+        this.isRollingWindowComplete(
+          params.completeUnassignedDays,
+          day,
+          params.weeklyWindowDays,
+        ));
     const monthlyWindowComplete =
-      !params.completeUnassignedDays ||
-      this.isRollingWindowComplete(
-        params.completeUnassignedDays,
-        day,
-        params.monthlyWindowDays,
-      );
+      (!params.completeTeamDays ||
+        this.isRollingWindowComplete(
+          params.completeTeamDays,
+          day,
+          params.monthlyWindowDays,
+        )) &&
+      (!params.completeUnassignedDays ||
+        this.isRollingWindowComplete(
+          params.completeUnassignedDays,
+          day,
+          params.monthlyWindowDays,
+        ));
 
     return {
       ...row,
@@ -1380,10 +2152,14 @@ export class DatabaseHandlerV2 {
     activeByDay: Map<string, Set<number>>;
     agentByDay: Map<string, Set<number>>;
     chatByDay: Map<string, Set<number>>;
+    cliByDay: Map<string, Set<number>>;
+    vscodeAgentByDay: Map<string, Set<number>>;
   } {
     const activeByDay = new Map<string, Set<number>>();
     const agentByDay = new Map<string, Set<number>>();
     const chatByDay = new Map<string, Set<number>>();
+    const cliByDay = new Map<string, Set<number>>();
+    const vscodeAgentByDay = new Map<string, Set<number>>();
 
     for (const row of activityRows) {
       const day = this.normalizeDay(row.day);
@@ -1401,9 +2177,21 @@ export class DatabaseHandlerV2 {
       if (row.used_chat) {
         this.addUserToDayMap(chatByDay, day, userId);
       }
+      if (row.used_cli) {
+        this.addUserToDayMap(cliByDay, day, userId);
+      }
+      if (row.used_vscode_agent) {
+        this.addUserToDayMap(vscodeAgentByDay, day, userId);
+      }
     }
 
-    return { activeByDay, agentByDay, chatByDay };
+    return {
+      activeByDay,
+      agentByDay,
+      chatByDay,
+      cliByDay,
+      vscodeAgentByDay,
+    };
   }
 
   private countDistinctUsersOverWindow(
@@ -2381,6 +3169,60 @@ export class DatabaseHandlerV2 {
     return Number(unassignedCount?.member_count ?? 0) >= minMembers;
   }
 
+  private async getTeamsForEntities(
+    metricsType: MetricsScope,
+    entityIds: string[],
+    from?: string,
+    to?: string,
+    minMembers: number = 5,
+  ): Promise<Array<{ entityId: string; team: string }>> {
+    if (entityIds.length === 0) {
+      return [];
+    }
+
+    const query = this.db('copilot_user_teams')
+      .where('metrics_type', metricsType)
+      .whereIn('entity_id', entityIds)
+      .whereNot('team_slug', '');
+    if (from && to) {
+      query.whereBetween('day', [from, to]);
+    } else if (from) {
+      query.where('day', '>=', from);
+    } else if (to) {
+      query.where('day', '<=', to);
+    }
+
+    const rows = await query
+      .groupBy('entity_id', 'team_slug')
+      .havingRaw('COUNT(DISTINCT ??) >= ?', ['user_id', minMembers])
+      .orderBy('entity_id', 'asc')
+      .orderBy('team_slug', 'asc')
+      .select('entity_id', 'team_slug');
+    return rows.map(row => ({
+      entityId: row.entity_id,
+      team: row.team_slug,
+    }));
+  }
+
+  async getAccessibleOrganizationTeams(
+    organizations: string[],
+    from?: string,
+    to?: string,
+    minMembers: number = 5,
+  ): Promise<Array<{ organization: string; team: string }>> {
+    const teams = await this.getTeamsForEntities(
+      'organization',
+      organizations,
+      from,
+      to,
+      minMembers,
+    );
+    return teams.map(({ entityId, team }) => ({
+      organization: entityId,
+      team,
+    }));
+  }
+
   async getTeams(
     metricsType: MetricsScope,
     entityId: string,
@@ -2388,26 +3230,14 @@ export class DatabaseHandlerV2 {
     to?: string,
     minMembers: number = 5,
   ): Promise<string[]> {
-    const query = this.db('copilot_user_teams as t')
-      .where('t.metrics_type', metricsType)
-      .where('t.entity_id', entityId)
-      .whereNot('t.team_slug', '');
-
-    if (from && to) {
-      query.whereBetween('t.day', [from, to]);
-    } else if (from) {
-      query.where('t.day', '>=', from);
-    } else if (to) {
-      query.where('t.day', '<=', to);
-    }
-
-    const rows = await query
-      .groupBy('t.team_slug')
-      .havingRaw('COUNT(DISTINCT ??) >= ?', ['t.user_id', minMembers])
-      .orderBy('t.team_slug', 'asc')
-      .select('t.team_slug');
-
-    return rows.map(row => row.team_slug);
+    const teams = await this.getTeamsForEntities(
+      metricsType,
+      [entityId],
+      from,
+      to,
+      minMembers,
+    );
+    return teams.map(({ team }) => team);
   }
 
   /**

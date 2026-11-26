@@ -21,7 +21,8 @@ import {
   SearchResult,
   SearchPagination,
 } from '@backstage/plugin-search-react';
-import { CatalogIcon, Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import CatalogIcon from '@material-ui/icons/MenuBook';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -41,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 const SearchPage = () => {
   const classes = useStyles();
   return (
-    <Page themeId="home">
+    <>
       <Header title="Search" />
-      <Content>
+      <Container>
         <Grid container direction="row">
           <Grid item xs={12}>
             <Paper className={classes.bar}>
@@ -57,8 +58,8 @@ const SearchPage = () => {
             </SearchResult>
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

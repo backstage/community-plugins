@@ -16,6 +16,7 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Octokit } from '@octokit/rest';
+import { z } from 'zod';
 import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import {
   MetricsScope,
@@ -33,6 +34,115 @@ import {
   getCopilotConfig,
   getGithubCredentials,
 } from '../utils/GithubUtils';
+
+const enterpriseOrganizationsResponseSchema = z.object({
+  errors: z.array(z.unknown()).max(0).optional(),
+  data: z.object({
+    enterprise: z.object({
+      organizations: z.object({
+        nodes: z.array(z.object({ login: z.string() })),
+        pageInfo: z.object({
+          hasNextPage: z.boolean(),
+          endCursor: z.string().nullish(),
+        }),
+      }),
+    }),
+  }),
+});
+
+const positiveSafeIntegerSchema = z.int().positive();
+const safeIntegerSchema = z.int();
+
+const githubUserIdSchema = z
+  .union([z.number(), z.string().transform(Number)])
+  .pipe(positiveSafeIntegerSchema);
+
+const githubUserSchema = z.object({
+  id: githubUserIdSchema,
+  login: z.string(),
+});
+
+const githubInstallationResponseSchema = z.object({
+  id: positiveSafeIntegerSchema,
+});
+
+const costCenterApiResourceSchema = z.object({
+  type: z.string(),
+  name: z.string(),
+});
+const costCenterApiResourcesSchema = z.array(costCenterApiResourceSchema);
+type CostCenterApiResource = z.infer<typeof costCenterApiResourceSchema>;
+
+const costCenterListEntrySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+const costCenterDetailObjectSchema = z.object({
+  resources: z.unknown().optional(),
+  has_next_page: z.unknown().optional(),
+  hasNextPage: z.unknown().optional(),
+});
+const optionalCostCenterDetailObjectSchema = costCenterDetailObjectSchema
+  .optional()
+  .catch(undefined);
+const costCenterDetailPageSchema = z.object({
+  resources: z.unknown().optional(),
+  costCenter: optionalCostCenterDetailObjectSchema,
+  cost_center: optionalCostCenterDetailObjectSchema,
+  has_next_page: z.unknown().optional(),
+  hasNextPage: z.unknown().optional(),
+});
+
+const costCenterOrganizationInstallationSchema = z.object({
+  permissions: z
+    .object({ members: z.string().optional().catch(undefined) })
+    .optional()
+    .catch(undefined),
+});
+
+const githubAuthenticationSchema = z.object({ token: z.string() });
+
+const enterpriseTeamIdSchema = z
+  .union([z.number(), z.string().transform(Number)])
+  .pipe(safeIntegerSchema);
+
+const optionalErrorStringSchema = z.string().optional().catch(undefined);
+const optionalGithubStatusSchema = z
+  .union([z.number(), z.nan(), z.literal(Infinity), z.literal(-Infinity)])
+  .optional()
+  .catch(undefined);
+
+// Preserve property reads from array-shaped errors at every metadata level.
+const normalizeErrorArray = (value: unknown) =>
+  Array.isArray(value) ? Object.create(value) : value;
+
+const githubErrorMetadataSchema = z.preprocess(
+  normalizeErrorArray,
+  z.object({
+    message: optionalErrorStringSchema,
+    status: optionalGithubStatusSchema,
+    response: z
+      .preprocess(
+        normalizeErrorArray,
+        z.object({
+          status: optionalGithubStatusSchema,
+          headers: z
+            .preprocess(
+              normalizeErrorArray,
+              z.object({
+                'retry-after': optionalErrorStringSchema,
+                'x-ratelimit-remaining': optionalErrorStringSchema,
+              }),
+            )
+            .optional()
+            .catch(undefined),
+        }),
+      )
+      .optional()
+      .catch(undefined),
+  }),
+);
 
 // GitHub serves user content from this domain on both github.com and GHE.com.
 const GITHUB_USER_CONTENT_DOMAIN = 'githubusercontent.com';
@@ -52,17 +162,6 @@ const MAX_DOWNLOAD_REDIRECTS = 5;
 // GHE.com serves the API from api.SUBDOMAIN.ghe.com and the reports from
 // copilot-reports.SUBDOMAIN.ghe.com.
 const GHE_COM_API_HOST = /^api\.([a-z0-9-]+\.ghe\.com)$/;
-
-interface CostCenterApiResource {
-  type: string;
-  name: string;
-}
-
-interface CostCenterApiItem {
-  id: string;
-  name: string;
-  resources?: CostCenterApiResource[];
-}
 
 type OctokitResponseHeaders = Awaited<
   ReturnType<Octokit['request']>
@@ -90,6 +189,13 @@ class MissingCostCenterOrganizationInstallationError extends Error {
   constructor() {
     super('The GitHub App is not installed for this organization.');
     this.name = 'MissingCostCenterOrganizationInstallationError';
+  }
+}
+
+export class InaccessibleEnterpriseOrganizationError extends Error {
+  constructor(readonly status = 403) {
+    super('Organization access is unavailable.');
+    this.name = 'InaccessibleEnterpriseOrganizationError';
   }
 }
 
@@ -128,19 +234,58 @@ function hasNextLink(headers: { link?: string; Link?: string }): boolean {
   return /rel="?next"?/i.test(headers.link ?? headers.Link ?? '');
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
 function getHttpStatus(error: unknown): number | undefined {
-  if (!isRecord(error)) {
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success) {
     return undefined;
   }
-  if (typeof error.status === 'number') {
-    return error.status;
+  return parsedError.data.status ?? parsedError.data.response?.status;
+}
+
+function isRateLimitError(error: unknown): boolean {
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success) {
+    return false;
   }
-  const response = isRecord(error.response) ? error.response : undefined;
-  return typeof response?.status === 'number' ? response.status : undefined;
+
+  const headers = parsedError.data.response?.headers;
+  const retryAfter = headers?.['retry-after'];
+  const remaining = headers?.['x-ratelimit-remaining'];
+  const message = parsedError.data.message ?? '';
+  return (
+    (retryAfter !== undefined && Number(retryAfter) > 0) ||
+    remaining === '0' ||
+    /secondary rate limit|api rate limit exceeded/i.test(message)
+  );
+}
+
+export function isOrganizationReportNotFoundError(error: unknown): boolean {
+  return (
+    !(error instanceof InaccessibleEnterpriseOrganizationError) &&
+    getHttpStatus(error) === 404 &&
+    !isRateLimitError(error) &&
+    !isOrganizationReportPermissionError(error)
+  );
+}
+
+export function isOrganizationReportPermissionError(error: unknown): boolean {
+  if (error instanceof InaccessibleEnterpriseOrganizationError) {
+    return true;
+  }
+
+  const parsedError = githubErrorMetadataSchema.safeParse(error);
+  if (!parsedError.success || isRateLimitError(error)) {
+    return false;
+  }
+
+  const status = parsedError.data.status ?? parsedError.data.response?.status;
+  return (
+    status === 403 ||
+    (status === 404 &&
+      /resource not accessible by integration|permission denied|not authorized/i.test(
+        parsedError.data.message ?? '',
+      ))
+  );
 }
 
 function getResponseHeader(
@@ -169,31 +314,16 @@ function hasMembersReadPermission(permission?: string): boolean {
 }
 
 function getInstallationId(data: unknown): number {
-  const id = isRecord(data) ? data.id : undefined;
-  if (typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0) {
+  const parsedResponse = githubInstallationResponseSchema.safeParse(data);
+  if (!parsedResponse.success) {
     throw new Error('Unexpected GitHub App installation response.');
   }
-  return id;
+  return parsedResponse.data.id;
 }
 
 function toGithubUser(value: unknown): GithubUser | undefined {
-  if (!isRecord(value) || typeof value.login !== 'string') {
-    return undefined;
-  }
-
-  let id: number;
-  if (typeof value.id === 'number') {
-    id = value.id;
-  } else if (typeof value.id === 'string') {
-    id = Number(value.id);
-  } else {
-    return undefined;
-  }
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    return undefined;
-  }
-
-  return { id, login: value.login };
+  const parsedUser = githubUserSchema.safeParse(value);
+  return parsedUser.success ? parsedUser.data : undefined;
 }
 
 function toGithubUsers(values: readonly unknown[]): GithubUser[] {
@@ -210,40 +340,28 @@ function getCostCenterDetailPage(data: unknown): {
   resources: CostCenterApiResource[];
   hasNextPage: boolean;
 } {
-  if (!isRecord(data)) {
+  const parsedPage = costCenterDetailPageSchema.safeParse(data);
+  if (!parsedPage.success) {
     throw new Error('Unexpected GitHub cost center response.');
   }
 
-  let nestedCenter = data;
-  if (isRecord(data.costCenter)) {
-    nestedCenter = data.costCenter;
-  } else if (isRecord(data.cost_center)) {
-    nestedCenter = data.cost_center;
-  }
-  const resources = Array.isArray(data.resources)
-    ? data.resources
+  const page = parsedPage.data;
+  const nestedCenter = page.costCenter ?? page.cost_center ?? page;
+  const resources = Array.isArray(page.resources)
+    ? page.resources
     : nestedCenter.resources;
-
-  if (
-    !Array.isArray(resources) ||
-    !resources.every(
-      (resource): resource is CostCenterApiResource =>
-        isRecord(resource) &&
-        typeof resource.type === 'string' &&
-        typeof resource.name === 'string',
-    )
-  ) {
+  const parsedResources = costCenterApiResourcesSchema.safeParse(resources);
+  if (!parsedResources.success) {
     throw new Error('Unexpected GitHub cost center resources response.');
   }
 
   const hasNextPage =
-    data.has_next_page ??
-    data.hasNextPage ??
+    page.has_next_page ??
+    page.hasNextPage ??
     nestedCenter.has_next_page ??
     nestedCenter.hasNextPage;
-
   return {
-    resources,
+    resources: parsedResources.data,
     hasNextPage: hasNextPage === true,
   };
 }
@@ -294,9 +412,14 @@ export class GithubClientV2 {
   private enterpriseOctokit?: Octokit;
   private organizationOctokit?: Octokit;
   private enterpriseAuthStrategy?: string | StrategyOptions;
+  private organizationAuthStrategy?: string | StrategyOptions;
   private readonly costCenterOrganizationOctokits = new Map<
     string,
     Promise<CostCenterOrganizationClient>
+  >();
+  private readonly enterpriseOrganizationOctokits = new Map<
+    string,
+    Promise<Octokit>
   >();
 
   constructor(
@@ -376,6 +499,8 @@ export class GithubClientV2 {
     if (typeof authStrategy === 'string') {
       if (type === 'enterprise') {
         this.enterpriseAuthStrategy = authStrategy;
+      } else {
+        this.organizationAuthStrategy = authStrategy;
       }
       return this.createOctokit({
         auth: authStrategy,
@@ -384,6 +509,8 @@ export class GithubClientV2 {
 
     if (type === 'enterprise') {
       this.enterpriseAuthStrategy = authStrategy;
+    } else {
+      this.organizationAuthStrategy = authStrategy;
     }
 
     const orgName =
@@ -419,10 +546,18 @@ export class GithubClientV2 {
           privateKey: authStrategy.privateKey,
         },
       });
-      const { data } = await appOctokit.rest.apps.getOrgInstallation({
-        org: orgName,
-      });
-      installationId = getInstallationId(data);
+      try {
+        const { data } = await appOctokit.rest.apps.getOrgInstallation({
+          org: orgName,
+        });
+        installationId = getInstallationId(data);
+      } catch (error) {
+        const status = getHttpStatus(error);
+        if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+        throw error;
+      }
     }
 
     return this.createInstallationOctokit(authStrategy, installationId);
@@ -442,6 +577,18 @@ export class GithubClientV2 {
     return this.organizationOctokit;
   }
 
+  private async getOrganizationInstallation(
+    appJwtOctokit: Octokit,
+    organization: string,
+  ): Promise<unknown> {
+    const url = buildApiUrl(
+      this.copilotConfig.apiBaseUrl,
+      `/orgs/${encodeURIComponent(organization)}/installation`,
+    );
+    const { data } = await appJwtOctokit.request(`GET ${url}`);
+    return data;
+  }
+
   private async getCostCenterOrganizationOctokit(
     organization: string,
     enterpriseOctokit: Octokit,
@@ -459,13 +606,12 @@ export class GithubClientV2 {
     if (!octokitPromise) {
       octokitPromise = (async () => {
         const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
-        const installationUrl = buildApiUrl(
-          this.copilotConfig.apiBaseUrl,
-          `/orgs/${encodeURIComponent(organization)}/installation`,
-        );
         let data: unknown;
         try {
-          ({ data } = await appJwtOctokit.request(`GET ${installationUrl}`));
+          data = await this.getOrganizationInstallation(
+            appJwtOctokit,
+            organization,
+          );
         } catch (error) {
           if (getHttpStatus(error) === 404) {
             throw new MissingCostCenterOrganizationInstallationError();
@@ -473,16 +619,11 @@ export class GithubClientV2 {
           throw error;
         }
         const installationId = getInstallationId(data);
-        const permissions =
-          isRecord(data) && isRecord(data.permissions)
-            ? data.permissions
-            : undefined;
         return {
           octokit: this.createInstallationOctokit(authStrategy, installationId),
-          membersPermission:
-            typeof permissions?.members === 'string'
-              ? permissions.members.toLowerCase()
-              : undefined,
+          membersPermission: costCenterOrganizationInstallationSchema
+            .parse(data)
+            .permissions?.members?.toLowerCase(),
         };
       })();
       this.costCenterOrganizationOctokits.set(cacheKey, octokitPromise);
@@ -504,6 +645,84 @@ export class GithubClientV2 {
         this.costCenterOrganizationOctokits.delete(cacheKey);
       }
       throw error;
+    }
+  }
+
+  private async getEnterpriseOrganizationOctokit(
+    organization: string,
+  ): Promise<Octokit> {
+    const enterpriseOctokit = await this.getEnterpriseOctokit();
+    const authStrategy = this.enterpriseAuthStrategy;
+    if (!authStrategy || typeof authStrategy === 'string') {
+      return enterpriseOctokit;
+    }
+
+    const cacheKey = organization.toLowerCase();
+    let octokitPromise = this.enterpriseOrganizationOctokits.get(cacheKey);
+    if (!octokitPromise) {
+      octokitPromise = (async () => {
+        const appJwtOctokit = await this.getAppJwtOctokit(authStrategy);
+        let data: unknown;
+        try {
+          data = await this.getOrganizationInstallation(
+            appJwtOctokit,
+            organization,
+          );
+        } catch (error) {
+          const status = getHttpStatus(error);
+          if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+            throw new InaccessibleEnterpriseOrganizationError(status);
+          }
+          throw error;
+        }
+        return this.createInstallationOctokit(
+          authStrategy,
+          getInstallationId(data),
+        );
+      })();
+      this.enterpriseOrganizationOctokits.set(cacheKey, octokitPromise);
+    }
+
+    try {
+      return await octokitPromise;
+    } catch (error) {
+      if (
+        this.enterpriseOrganizationOctokits.get(cacheKey) === octokitPromise
+      ) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+      throw error;
+    }
+  }
+
+  private async invalidateEnterpriseOrganizationOctokit(
+    organization: string,
+    staleClient: Octokit,
+  ): Promise<void> {
+    const cacheKey = organization.toLowerCase();
+    const cachedPromise = this.enterpriseOrganizationOctokits.get(cacheKey);
+    if (!cachedPromise) {
+      return;
+    }
+
+    try {
+      const cachedClient = await cachedPromise;
+      if (
+        cachedClient === staleClient &&
+        this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise
+      ) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+    } catch {
+      if (this.enterpriseOrganizationOctokits.get(cacheKey) === cachedPromise) {
+        this.enterpriseOrganizationOctokits.delete(cacheKey);
+      }
+    }
+  }
+
+  private invalidateOrganizationOctokit(staleClient: Octokit): void {
+    if (this.organizationOctokit === staleClient) {
+      this.organizationOctokit = undefined;
     }
   }
 
@@ -614,7 +833,9 @@ export class GithubClientV2 {
       typeof this.enterpriseAuthStrategy === 'string'
         ? await octokit.auth()
         : await octokit.auth({ type: 'installation' });
-    if (!isRecord(authentication) || typeof authentication.token !== 'string') {
+    const parsedAuthentication =
+      githubAuthenticationSchema.safeParse(authentication);
+    if (!parsedAuthentication.success) {
       throw new Error('Could not resolve GitHub credentials for team members.');
     }
 
@@ -639,7 +860,7 @@ export class GithubClientV2 {
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2026-03-10',
           'User-Agent': 'backstage-community-copilot',
-          authorization: `Bearer ${authentication.token}`,
+          authorization: `Bearer ${parsedAuthentication.data.token}`,
         },
       });
       if (!response.ok) {
@@ -685,21 +906,21 @@ export class GithubClientV2 {
       { state: 'active' },
     );
     const listResponse = await enterpriseOctokit.request(`GET ${listUrl}`);
-    const listData = listResponse.data as {
-      costCenters?: CostCenterApiItem[];
-    };
-    if (!Array.isArray(listData?.costCenters)) {
+    const listData = listResponse.data as
+      | { costCenters?: unknown }
+      | null
+      | undefined;
+    const costCentersFromResponse = listData?.costCenters;
+    if (!Array.isArray(costCentersFromResponse)) {
       throw new Error('Unexpected GitHub cost center list response.');
     }
 
-    const listedCostCenters = listData.costCenters.map(costCenter => {
-      if (
-        typeof costCenter.id !== 'string' ||
-        typeof costCenter.name !== 'string'
-      ) {
+    const listedCostCenters = costCentersFromResponse.map(costCenter => {
+      const parsedCostCenter = costCenterListEntrySchema.safeParse(costCenter);
+      if (!parsedCostCenter.success) {
         throw new Error('Unexpected GitHub cost center entry.');
       }
-      return { id: costCenter.id, name: costCenter.name };
+      return parsedCostCenter.data;
     });
 
     const warnings: string[] = [];
@@ -814,17 +1035,8 @@ export class GithubClientV2 {
         continue;
       }
 
-      if (typeof team.id === 'number') {
-        resource.teamId = team.id;
-      } else if (typeof team.id === 'string') {
-        resource.teamId = Number(team.id);
-      }
-      if (
-        resource.teamId !== undefined &&
-        !Number.isSafeInteger(resource.teamId)
-      ) {
-        resource.teamId = undefined;
-      }
+      const parsedTeamId = enterpriseTeamIdSchema.safeParse(team.id);
+      resource.teamId = parsedTeamId.success ? parsedTeamId.data : undefined;
       resource.teamCreatedAt = team.created_at;
     }
 
@@ -1041,6 +1253,213 @@ export class GithubClientV2 {
     }
 
     return envelope;
+  }
+
+  async fetchEnterpriseOrganizations(): Promise<string[]> {
+    const enterprise = this.copilotConfig.enterprise;
+    if (!enterprise) {
+      return [];
+    }
+
+    const octokit = await this.getEnterpriseOctokit();
+    const organizations: string[] = [];
+    const seenCursors = new Set<string>();
+    let cursor: string | null = null;
+    for (let page = 1; ; page += 1) {
+      if (page > 100) {
+        throw new Error(
+          'Enterprise organization discovery exceeded its safe GraphQL pagination limit.',
+        );
+      }
+      const response: { data: unknown } = await octokit.request(
+        'POST /graphql',
+        {
+          query: `
+            query EnterpriseOrganizations(
+              $slug: String!
+              $first: Int!
+              $after: String
+            ) {
+              enterprise(slug: $slug) {
+                organizations(first: $first, after: $after) {
+                  nodes {
+                    login
+                  }
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            slug: enterprise,
+            first: 100,
+            after: cursor,
+          },
+        },
+      );
+      const parsed = enterpriseOrganizationsResponseSchema.safeParse(
+        response.data,
+      );
+      if (!parsed.success) {
+        throw new Error(
+          'GitHub returned an error while listing enterprise organizations.',
+        );
+      }
+
+      const { nodes, pageInfo } = parsed.data.data.enterprise.organizations;
+
+      for (const value of nodes) {
+        const login = value.login.trim();
+        if (login) {
+          organizations.push(login);
+        }
+      }
+
+      if (!pageInfo.hasNextPage) {
+        break;
+      }
+      const nextCursor = pageInfo.endCursor;
+      if (
+        typeof nextCursor !== 'string' ||
+        nextCursor.length === 0 ||
+        seenCursors.has(nextCursor)
+      ) {
+        throw new Error(
+          'Unexpected pagination cursor while listing enterprise organizations.',
+        );
+      }
+      seenCursors.add(nextCursor);
+      cursor = nextCursor;
+    }
+
+    const uniqueOrganizations = new Map<string, string>();
+    for (const login of organizations) {
+      const key = login.toLowerCase();
+      if (!uniqueOrganizations.has(key)) {
+        uniqueOrganizations.set(key, login);
+      }
+    }
+
+    return [...uniqueOrganizations.values()].sort((left, right) =>
+      left.localeCompare(right),
+    );
+  }
+
+  private async fetchOrganizationReportLinksFor(
+    organization: string,
+    reportType: 'organization-1-day' | 'users-1-day' | 'user-teams-1-day',
+    day: string,
+  ): Promise<ReportEnvelope> {
+    const isConfiguredOrganization =
+      this.copilotConfig.organization?.toLowerCase() ===
+      organization.toLowerCase();
+    const octokit = isConfiguredOrganization
+      ? await this.getOrganizationOctokit()
+      : await this.getEnterpriseOrganizationOctokit(organization);
+    const hasCachedInstallationClient = isConfiguredOrganization
+      ? this.organizationAuthStrategy !== undefined &&
+        typeof this.organizationAuthStrategy !== 'string'
+      : this.enterpriseOrganizationOctokits.has(organization.toLowerCase());
+    const invalidateClient = async (staleClient: Octokit) => {
+      if (isConfiguredOrganization) {
+        this.invalidateOrganizationOctokit(staleClient);
+      } else {
+        await this.invalidateEnterpriseOrganizationOctokit(
+          organization,
+          staleClient,
+        );
+      }
+    };
+    const path = `/orgs/${encodeURIComponent(
+      organization,
+    )}/copilot/metrics/reports/${reportType}?day=${encodeURIComponent(day)}`;
+    try {
+      return await this.fetchReportLinks(octokit, path);
+    } catch (error) {
+      const status = getHttpStatus(error);
+      if ((status === 403 || status === 404) && !isRateLimitError(error)) {
+        if (hasCachedInstallationClient) {
+          await invalidateClient(octokit);
+          const refreshedOctokit = isConfiguredOrganization
+            ? await this.getOrganizationOctokit()
+            : await this.getEnterpriseOrganizationOctokit(organization);
+          try {
+            return await this.fetchReportLinks(refreshedOctokit, path);
+          } catch (retryError) {
+            const retryStatus = getHttpStatus(retryError);
+            if (retryStatus === 403 && !isRateLimitError(retryError)) {
+              await invalidateClient(refreshedOctokit);
+              throw new InaccessibleEnterpriseOrganizationError(retryStatus);
+            }
+            if (retryStatus === 404 && !isRateLimitError(retryError)) {
+              await invalidateClient(refreshedOctokit);
+              if (isOrganizationReportPermissionError(retryError)) {
+                throw new InaccessibleEnterpriseOrganizationError(retryStatus);
+              }
+            }
+            throw retryError;
+          }
+        }
+        if (status === 403) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+        if (status === 404 && isOrganizationReportPermissionError(error)) {
+          throw new InaccessibleEnterpriseOrganizationError(status);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async fetchEnterpriseOrganizationReportLinks(
+    organization: string,
+    day: string,
+  ): Promise<ReportEnvelope> {
+    return this.fetchOrganizationReportLinksFor(
+      organization,
+      'organization-1-day',
+      day,
+    );
+  }
+
+  async verifyEnterpriseOrganizationAccess(
+    organization: string,
+    day: string,
+  ): Promise<boolean> {
+    try {
+      await this.fetchEnterpriseOrganizationReportLinks(organization, day);
+      return true;
+    } catch (error) {
+      if (isOrganizationReportNotFoundError(error)) {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  async fetchEnterpriseOrganizationUserReportLinks(
+    organization: string,
+    day: string,
+  ): Promise<ReportEnvelope> {
+    return this.fetchOrganizationReportLinksFor(
+      organization,
+      'users-1-day',
+      day,
+    );
+  }
+
+  async fetchEnterpriseOrganizationUserTeamsLinks(
+    organization: string,
+    day: string,
+  ): Promise<ReportEnvelope> {
+    return this.fetchOrganizationReportLinksFor(
+      organization,
+      'user-teams-1-day',
+      day,
+    );
   }
 
   async fetchEnterpriseReportLinks(day: string): Promise<ReportEnvelope> {

@@ -2781,6 +2781,55 @@ describe('REST policies API', () => {
       );
     });
 
+    it('should update an owner-only change, but not an unchanged or omitted owner', async () => {
+      enforcerDelegateMock.hasGroupingPolicy = jest
+        .fn()
+        .mockImplementation(async (..._param: string[]): Promise<boolean> => {
+          return true;
+        });
+      roleMetadataStorageMock.findRoleMetadata = jest.fn().mockImplementation(
+        async (roleEntityRef: string): Promise<RoleMetadataDao> => ({
+          source: 'rest',
+          roleEntityRef,
+          modifiedBy: 'user:default/some-user',
+          owner: 'user:default/old-owner',
+        }),
+      );
+      const sendRole = (metadata: Record<string, string>) =>
+        request(app)
+          .put('/roles/role/default/rbac_admin')
+          .send({
+            oldRole: { memberReferences: ['user:default/permission_admin'] },
+            newRole: {
+              memberReferences: ['user:default/permission_admin'],
+              name: 'role:default/rbac_admin',
+              metadata: { source: 'rest', ...metadata },
+            },
+          });
+
+      expect((await sendRole({})).statusCode).toEqual(204);
+      expect(
+        (await sendRole({ owner: 'user:default/old-owner' })).statusCode,
+      ).toEqual(204);
+      expect(
+        enforcerDelegateMock.updateGroupingPolicies,
+      ).not.toHaveBeenCalled();
+
+      const result = await sendRole({ owner: 'user:default/new-owner' });
+
+      expect(result.statusCode).toEqual(200);
+      expect(enforcerDelegateMock.updateGroupingPolicies).toHaveBeenCalledWith(
+        [['user:default/permission_admin', 'role:default/rbac_admin']],
+        [['user:default/permission_admin', 'role:default/rbac_admin']],
+        {
+          modifiedBy: 'user:default/mock',
+          roleEntityRef: 'role:default/rbac_admin',
+          source: 'rest',
+          owner: 'user:default/new-owner',
+        },
+      );
+    });
+
     it('should update role and role description', async () => {
       enforcerDelegateMock.hasGroupingPolicy = jest
         .fn()

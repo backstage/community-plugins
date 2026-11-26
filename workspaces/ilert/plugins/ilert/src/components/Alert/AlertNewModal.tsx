@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { DEFAULT_NAMESPACE, parseEntityRef } from '@backstage/catalog-model';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -75,8 +75,8 @@ export const AlertNewModal = ({
     { setAlertSource, setSummary, setDetails, setIsLoading },
   ] = useNewAlert(isModalOpened, initialAlertSource);
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(toastApiRef);
-  const identityApi = useApi(identityApiRef);
+  const alertApi = useApi(coreApis.toast);
+  const identityApi = useApi(coreApis.identity);
   const source = window.location.toString();
   const classes = useStyles();
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

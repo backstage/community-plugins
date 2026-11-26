@@ -20,13 +20,14 @@ import {
   compactNumber,
   formatDay,
   DATE_TICK_LABEL_STYLE,
-  fillDateRange,
+  getChartDays,
 } from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
 interface DayTotal {
@@ -52,9 +53,14 @@ function aggregateCodeCompletionByDay(
   return byDay;
 }
 
-export function CodeCompletionsChart({ data, from, to }: Props) {
+export function CodeCompletionsChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
   const byDay = aggregateCodeCompletionByDay(data);
-  const days = fillDateRange(from, to);
+  const days = getChartDays([...byDay.values()], from, to, fillMissingDays);
 
   if (days.length === 0 && byDay.size === 0) {
     return (

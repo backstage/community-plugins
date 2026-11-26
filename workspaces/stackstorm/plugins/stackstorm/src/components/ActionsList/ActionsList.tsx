@@ -15,7 +15,7 @@
  */
 import { useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
-import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -70,11 +70,11 @@ export const ActionItems = ({ pack }: ActionItemsProps) => {
         return (
           <ListItem
             key={a.ref}
-            component={Link}
-            to={st2.getActionUrl(a.ref)}
+            component="a"
+            href={st2.getActionUrl(a.ref)}
+            target="_blank"
+            rel="noopener noreferrer"
             className={classes.nested}
-            underline="none"
-            color="inherit"
             button
           >
             <ListItemText primary={a.name} secondary={a.description} />

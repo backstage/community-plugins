@@ -18,6 +18,7 @@ import {
   Button,
   Flex,
   Grid,
+  Link,
   Tabs,
   TabList,
   Tab,
@@ -26,12 +27,8 @@ import {
 import { RiCloseLine } from '@remixicon/react';
 import useLocalStorage from 'react-use/esm/useLocalStorage';
 import LighthouseSupportButton from '../SupportButton';
-import {
-  ContentHeader,
-  InfoCard,
-  Link,
-  MarkdownContent,
-} from '@backstage/core-components';
+import { InfoCard, MarkdownContent } from '@backstage/core-components';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 import styles from './Intro.module.css';
 
 // TODO(freben): move all of this out of index
@@ -91,7 +88,11 @@ function GettingStartedCard() {
       divider
       actions={
         <Flex justify="end">
-          <Link to="https://github.com/spotify/lighthouse-audit-service">
+          <Link
+            href="https://github.com/spotify/lighthouse-audit-service"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Check out the README
           </Link>
         </Flex>
@@ -127,9 +128,9 @@ export default function LighthouseIntro({ onDismiss = () => {} }: Props) {
 
   return (
     <>
-      <ContentHeader title="Welcome to Lighthouse in Backstage!">
+      <SectionHeader title="Welcome to Lighthouse in Backstage!">
         <LighthouseSupportButton />
-      </ContentHeader>
+      </SectionHeader>
       <Grid.Root columns="12" gap="6" mb="4">
         <Grid.Item colSpan={{ initial: '12', sm: '6', md: '4' }}>
           <GettingStartedCard />

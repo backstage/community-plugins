@@ -37,6 +37,7 @@ import {
   CopilotApiV2,
   V2DashboardParams,
   V2MetricsParams,
+  V2OrganizationTeamOptions,
 } from './CopilotApiV2';
 
 export class CopilotClientV2 implements CopilotApiV2 {
@@ -169,6 +170,22 @@ export class CopilotClientV2 implements CopilotApiV2 {
   ): Promise<V2DashboardData> {
     return this.get<V2DashboardData>(
       `v2/dashboard?${this.buildMetricsQuery(params)}`,
+    );
+  }
+
+  public async getOrganizationTeamOptions(
+    params: Pick<V2MetricsParams, 'from' | 'to'> & {
+      organization?: string;
+    },
+  ): Promise<V2OrganizationTeamOptions> {
+    const queryString = new URLSearchParams();
+    if (params.organization) {
+      queryString.append('organization', params.organization);
+    }
+    queryString.append('from', params.from);
+    queryString.append('to', params.to);
+    return this.get<V2OrganizationTeamOptions>(
+      `v2/organization-team/options?${queryString}`,
     );
   }
 

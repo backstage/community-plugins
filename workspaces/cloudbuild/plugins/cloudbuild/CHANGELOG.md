@@ -1,5 +1,15 @@
 # @backstage-community/plugin-cloudbuild
 
+## 1.3.0
+
+### Minor Changes
+
+- 460b905: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 460b905: Replaced deprecated Backstage core links with Backstage UI links.
+
 ## 1.2.0
 
 ### Minor Changes

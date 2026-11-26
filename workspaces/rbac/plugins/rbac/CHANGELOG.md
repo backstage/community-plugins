@@ -1,5 +1,20 @@
 # @backstage-community/plugin-rbac
 
+## 2.5.0
+
+### Minor Changes
+
+- 37044ed: When editing a role, the review step now summarizes what will change compared to the saved role: updated name, description, or owner; added and removed users and groups; added and removed permission policies; and added, removed, or changed conditional access policies. If nothing was changed, the review step says so.
+
+### Patch Changes
+
+- 3c732bd: Added spacing between the Back, Reset, and Create buttons on the role form review step.
+- 3c6c1bc: Updated dependency `@testing-library/user-event` to `14.6.13`.
+- 5773754: Updated dependency `@testing-library/user-event` to `14.6.9`.
+- 7f6e499: Updated dependency `@testing-library/user-event` to `14.6.12`.
+- 6bb4cc2: Updated dependency `@playwright/test` to `1.65.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.10`.
+
 ## 2.4.0
 
 ### Minor Changes

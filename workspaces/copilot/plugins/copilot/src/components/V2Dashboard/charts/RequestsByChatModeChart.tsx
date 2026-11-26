@@ -22,16 +22,22 @@ import {
   compactNumber,
   formatDay,
   DATE_TICK_LABEL_STYLE,
-  fillDateRange,
+  getChartDays,
 } from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
-export function RequestsByChatModeChart({ data, from, to }: Readonly<Props>) {
+export function RequestsByChatModeChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Readonly<Props>) {
   if (data.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -42,10 +48,10 @@ export function RequestsByChatModeChart({ data, from, to }: Readonly<Props>) {
 
   const filtered = filterChatRows(data);
 
-  const days = fillDateRange(from, to);
   const features = [...new Set(filtered.map(d => d.feature))].sort((a, b) =>
     a.localeCompare(b),
   );
+  const days = getChartDays(filtered, from, to, fillMissingDays);
 
   const series = features.map(feature => ({
     data: days.map(day => {

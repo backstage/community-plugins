@@ -1,5 +1,21 @@
 # @backstage-community/plugin-graphiql
 
+## 0.23.0
+
+### Minor Changes
+
+- b541698: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- b541698: Replaced deprecated Backstage core components on the GraphiQL page with their Backstage UI equivalents. The page header, labels and layout now use Backstage UI styling.
+
+## 0.22.1
+
+### Patch Changes
+
+- 4d0b2cc: Declare the GraphiQL React dependency used by the plugin’s public types and remove the redundant CodeMirror types dependency.
+
 ## 0.22.0
 
 ### Minor Changes

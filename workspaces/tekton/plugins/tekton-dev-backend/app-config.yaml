@@ -1,0 +1,63 @@
+# Self-contained config for the Tekton backend dev / Playwright harness.
+# Usage: yarn workspace @internal/plugin-tekton-dev-backend start
+#
+# PipelineRuns / logs come from fixtures (see src/fixtures), not a live cluster.
+
+app:
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Tekton Dev
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  environment: development
+  providers:
+    guest: {}
+
+catalog:
+  rules:
+    - allow: [Component, System, API, Resource, Location, User, Group]
+  locations:
+    - type: file
+      target: ../../examples/entities.yaml
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+permission:
+  enabled: true
+
+kubernetes:
+  # Fixture module overrides fetch/proxy; cluster entry is still required so
+  # kubernetes-backend initializes. URL is never contacted.
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - name: mock-cluster
+          authProvider: serviceAccount
+          url: http://127.0.0.1:1
+          serviceAccountToken: tekton-e2e-fixture-token
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          customResources:
+            - group: tekton.dev
+              apiVersion: v1
+              plural: pipelineruns
+            - group: tekton.dev
+              apiVersion: v1
+              plural: taskruns

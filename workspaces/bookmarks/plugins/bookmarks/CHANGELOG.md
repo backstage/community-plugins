@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bookmarks
 
+## 1.0.0
+
+### Major Changes
+
+- 36c3747: Migrated from Material UI to Backstage UI. Thanks [@souvik-biswas-dev](https://github.com/souvik-biswas-dev)!
+- c3c7e79: Dropped support for React 16 and React 17
+- c3c7e79: Removed support for the legacy frontend system and removed the `/alpha` entrypoint.
+
+### Minor Changes
+
+- c3c7e79: Backstage version bump to v1.57.1
+
 ## 0.16.0
 
 ### Minor Changes

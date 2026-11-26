@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-vault-backend",
-  "version": "0.28.0",
+  "version": "0.29.0",
   "description": "A Backstage backend plugin that integrates towards Vault",
   "backstage": {
     "role": "backend-plugin",
@@ -49,15 +49,10 @@
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@types/express": "*",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
-    "helmet": "^7.0.0",
     "node-fetch": "^2.6.7",
-    "p-limit": "^3.1.0",
-    "winston": "^3.2.1",
-    "yn": "^5.0.0"
+    "p-limit": "^3.1.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "backstage:^",
@@ -66,7 +61,6 @@
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
-    "@types/compression": "^1.7.2",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^7.0.0",
     "msw": "^1.0.0",

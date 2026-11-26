@@ -17,19 +17,14 @@ import { ReactNode } from 'react';
 import { AuditListTable } from './AuditListTable';
 import { useWebsiteForEntity } from '../../hooks/useWebsiteForEntity';
 import { LIGHTHOUSE_WEBSITE_URL_ANNOTATION } from '../../../constants';
-import {
-  Content,
-  ContentHeader,
-  InfoCard,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
+import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import { Button } from '@backstage/ui';
 import { resolvePath, useNavigate } from 'react-router-dom';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { rootRouteRef } from '../../plugin';
 import LighthouseSupportButton from '../SupportButton';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 
 export const AuditListForEntity = () => {
   const { value, loading, error } = useWebsiteForEntity();
@@ -46,8 +41,8 @@ export const AuditListForEntity = () => {
 
   let content: ReactNode = null;
   content = (
-    <Content>
-      <ContentHeader title="Latest Audit">
+    <>
+      <SectionHeader title="Latest Audit">
         <Button
           variant="primary"
           onPress={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
@@ -55,9 +50,9 @@ export const AuditListForEntity = () => {
           Create New Audit
         </Button>
         <LighthouseSupportButton />
-      </ContentHeader>
+      </SectionHeader>
       <AuditListTable items={value ? [value] : []} />
-    </Content>
+    </>
   );
 
   if (loading) {

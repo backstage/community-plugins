@@ -23,7 +23,7 @@ import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { StatusPage } from '../../types';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 export const StatusPageActionsMenu = ({
@@ -65,14 +65,22 @@ export const StatusPageActionsMenu = ({
       >
         <MenuItem key="details" onClick={handleCloseMenu}>
           <Typography variant="inherit" noWrap>
-            <Link to={ilertApi.getStatusPageDetailsURL(statusPage)}>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={ilertApi.getStatusPageDetailsURL(statusPage)}
+            >
               View in ilert
             </Link>
           </Typography>
         </MenuItem>
         <MenuItem>
           <Typography variant="inherit" noWrap>
-            <Link to={`https://${ilertApi.getStatusPageURL(statusPage)}`}>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://${ilertApi.getStatusPageURL(statusPage)}`}
+            >
               View status page
             </Link>
           </Typography>

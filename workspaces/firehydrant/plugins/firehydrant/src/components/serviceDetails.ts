@@ -15,7 +15,8 @@
  */
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { fireHydrantApiRef } from '../api';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const useServiceDetails = ({
   serviceName,
@@ -25,7 +26,7 @@ export const useServiceDetails = ({
   lookupByName: boolean;
 }) => {
   const api = useApi(fireHydrantApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const { loading, value, error, retry } = useAsyncRetry(async () => {
     try {

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-npm
 
+## 1.30.0
+
+### Minor Changes
+
+- aa1848f: Migrated all components to the latest Front-end system 1.0 and Backstage UI
+- aa1848f: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- Updated dependencies [aa1848f]
+  - @backstage-community/plugin-npm-common@1.30.0
+
 ## 1.29.0
 
 ### Patch Changes

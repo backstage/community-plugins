@@ -1,5 +1,15 @@
 # @backstage-community/plugin-grafana
 
+## 1.3.0
+
+### Minor Changes
+
+- a05d090: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- a05d090: The dashboard and alert links now use the Backstage UI `Link` component.
+
 ## 1.2.0
 
 ### Minor Changes

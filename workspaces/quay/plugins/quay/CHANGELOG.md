@@ -1,5 +1,21 @@
 # @backstage-community/plugin-quay
 
+## 1.39.0
+
+### Minor Changes
+
+- c5dc2b0: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- 37d664e: Updated dependency `@playwright/test` to `1.65.0`.
+- 028bee3: Updated dependency `@playwright/test` to `1.64.0`.
+  Updated dependency `start-server-and-test` to `3.0.13`.
+- 5ad0a7c: Updated dependency `@playwright/test` to `1.65.1`.
+- 86762ee: Updated dependency `@playwright/test` to `1.64.1`.
+- Updated dependencies [c5dc2b0]
+  - @backstage-community/plugin-quay-common@1.24.0
+
 ## 1.38.3
 
 ### Patch Changes

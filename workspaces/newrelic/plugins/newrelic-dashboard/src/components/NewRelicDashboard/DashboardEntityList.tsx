@@ -19,12 +19,8 @@ import Typography from '@material-ui/core/Typography';
 import { newRelicDashboardApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import {
-  Progress,
-  InfoCard,
-  Link,
-  ErrorPanel,
-} from '@backstage/core-components';
+import { Progress, InfoCard, ErrorPanel } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import DesktopMac from '@material-ui/icons/DesktopMac';
 import { DashboardEntitySummary } from '../../api/NewRelicDashboardApi';
 import { ResultEntity } from '../../types/DashboardEntity';
@@ -79,7 +75,13 @@ export const DashboardEntityList = () => {
                 </Typography>
               </Box>
               <Box flexGrow="1">
-                <Link to={entityResult.permalink}>{entityResult.name}</Link>
+                <Link
+                  href={entityResult.permalink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {entityResult.name}
+                </Link>
               </Box>
             </Box>
           );

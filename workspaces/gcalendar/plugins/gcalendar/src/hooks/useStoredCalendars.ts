@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useApi, storageApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import useObservable from 'react-use/esm/useObservable';
 
 import { gcalendarPlugin } from '../plugin';
@@ -27,7 +28,7 @@ export function useStoredCalendars(
 ): [string[], (value: string[]) => void] {
   const storageBucket = gcalendarPlugin.getId();
   const storageKey = LocalStorageKeys.selectedCalendars;
-  const storageApi = useApi(storageApiRef).forBucket(storageBucket);
+  const storageApi = useApi(coreApis.storage).forBucket(storageBucket);
   const setValue = (value: string[]) => {
     storageApi.set(storageKey, value);
   };

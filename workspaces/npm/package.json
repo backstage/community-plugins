@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "22 || 24"
+    "node": "^24.15.0 || ^26.13.0"
   },
   "scripts": {
     "start": "yarn workspaces foreach -A --include @backstage-community/plugin-npm --include @backstage-community/plugin-npm-backend --parallel -v -i run start",
@@ -45,7 +45,7 @@
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30.3.0",
-    "@playwright/test": "^1.32.3",
+    "@playwright/test": "^1.65.1",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
     "jest": "^30.3.0",

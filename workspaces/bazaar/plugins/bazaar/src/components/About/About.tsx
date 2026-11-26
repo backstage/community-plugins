@@ -17,7 +17,8 @@
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { InfoCard, Link } from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 const useStyles = makeStyles({
   subheader: {
@@ -39,8 +40,9 @@ export const About = () => {
             cross-functional team development. Essentially a marketplace for
             internal projects suitable for{' '}
             <Link
+              href="https://en.wikipedia.org/wiki/Inner_source"
               target="_blank"
-              to="https://en.wikipedia.org/wiki/Inner_source"
+              rel="noopener noreferrer"
             >
               Inner Sourcing
             </Link>

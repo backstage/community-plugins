@@ -17,7 +17,8 @@
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { useState } from 'react';
-import { Progress, Select } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { Select } from '@backstage/ui';
 import { Trend } from '../Trend';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
@@ -45,10 +46,10 @@ const useStyles = makeStyles({
 });
 
 const DAYS_SELECT_ITEMS = [
-  { label: '7 days', value: 7 },
-  { label: '14 days', value: 14 },
-  { label: '30 days', value: 30 },
-  { label: '60 days', value: 60 },
+  { label: '7 days', value: '7' },
+  { label: '14 days', value: '14' },
+  { label: '30 days', value: '30' },
+  { label: '60 days', value: '60' },
 ];
 
 export const OverviewTrends = () => {
@@ -86,10 +87,10 @@ export const OverviewTrends = () => {
   return (
     <>
       <Select
-        selected={days}
-        items={DAYS_SELECT_ITEMS}
+        value={String(days)}
+        options={DAYS_SELECT_ITEMS}
         label="Trends for"
-        onChange={selection => setDays(selection as number)}
+        onChange={key => key !== null && setDays(Number(key))}
       />
       {buildCountsResult.error && (
         <Alert severity="error" className={classes.spacingVertical}>

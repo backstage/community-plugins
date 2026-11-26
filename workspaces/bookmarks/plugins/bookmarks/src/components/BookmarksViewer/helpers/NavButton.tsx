@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { Button, Text } from '@backstage/ui';
+import { RiArrowLeftLine, RiArrowRightLine } from '@remixicon/react';
 import { PATH_SEPARATOR } from '../../../consts/consts';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { TEST_IDS } from '../../../consts/testids';
+
+import styles from './NavButton.module.css';
 
 /** Button component for navigating between bookmarks */
 export const NavButton = ({
@@ -42,50 +41,23 @@ export const NavButton = ({
 
   return (
     <Button
-      aria-label={`${buttonText}: ${bookmarkName}`}
-      color="inherit"
+      variant="tertiary"
+      size="medium"
       data-testid={TEST_IDS.NavButton[direction]}
-      onClick={onClick}
-      startIcon={
-        !isNext ? (
-          <ArrowBackIcon sx={{ color: theme => theme.palette.text.primary }} />
-        ) : undefined
-      }
-      endIcon={
-        isNext ? (
-          <ArrowForwardIcon
-            sx={{ color: theme => theme.palette.text.primary }}
-          />
-        ) : undefined
-      }
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: isNext ? 'flex-end' : 'flex-start',
-      }}
+      onPress={onClick}
+      iconStart={!isNext ? <RiArrowLeftLine /> : undefined}
+      iconEnd={isNext ? <RiArrowRightLine /> : undefined}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          textAlign: isNext ? 'right' : 'left',
-        }}
+      <span
+        className={`${styles.label} ${isNext ? styles.next : styles.previous}`}
       >
-        <Typography
-          component="small"
-          sx={{ color: theme => theme.palette.text.secondary }}
-          variant="body2"
-        >
+        <Text as="small" variant="body-small" color="secondary">
           {buttonText}
-        </Typography>
-        <Typography
-          component="span"
-          variant="body1"
-          sx={{ color: theme => theme.palette.text.primary }}
-        >
+        </Text>{' '}
+        <Text as="span" variant="body-medium" color="primary">
           {bookmarkName}
-        </Typography>
-      </Box>
+        </Text>
+      </span>
     </Button>
   );
 };

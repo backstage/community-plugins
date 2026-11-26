@@ -105,6 +105,16 @@ const rbacTranslationJa = createTranslationMessages({
     'roleForm.review.reviewAndSave': '確認および保存',
     'roleForm.review.nameDescriptionOwner': 'ロールの名前、説明、および所有者',
     'roleForm.review.permissionPoliciesWithCount': '権限ポリシー ({{count}})',
+    'roleForm.review.changes.title': 'このロールへの変更',
+    'roleForm.review.changes.noChanges':
+      'このロールには変更が加えられていません。',
+    'roleForm.review.changes.added': '追加',
+    'roleForm.review.changes.removed': '削除',
+    'roleForm.review.changes.changed': '変更',
+    'roleForm.review.changes.valueChanged':
+      '{{field}}: 「{{previous}}」から「{{current}}」に変更',
+    'roleForm.review.changes.permissionPolicies': '権限ポリシー',
+    'roleForm.review.changes.conditionalPolicies': '条件付きアクセスポリシー',
     'roleForm.steps.next': '次へ',
     'roleForm.steps.back': '戻る',
     'roleForm.steps.cancel': 'キャンセル',
@@ -256,6 +266,31 @@ const rbacTranslationJa = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'デフォルトでは、選択したリソースタイプが、追加されたすべてのユーザーに表示されます。特定のプラグインルールに対する権限を制限または付与する場合は、そのルールを選択してパラメーターを追加してください。',
     'common.tableAction': 'テーブルアクション',
+    'permissionsMatrix.tabs.label': 'RBAC ビュー',
+    'permissionsMatrix.tabs.roles': 'ロール',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'プラグイン別の権限',
+    'permissionsMatrix.title': 'プラグイン別の権限',
+    'permissionsMatrix.description':
+      '各ロールに付与された権限をプラグインごとにまとめた読み取り専用の概要です。',
+    'permissionsMatrix.roleColumn': 'ロール',
+    'permissionsMatrix.filterRoles': 'ロールをフィルター',
+    'permissionsMatrix.roles': 'ロール',
+    'permissionsMatrix.plugin': 'プラグイン',
+    'permissionsMatrix.allPlugins': 'すべてのプラグイン',
+    'permissionsMatrix.policy': 'ポリシー',
+    'permissionsMatrix.allPolicies': 'すべてのポリシー',
+    'permissionsMatrix.legend': '凡例',
+    'permissionsMatrix.viewOnlyRole': '表示専用ロール',
+    'permissionsMatrix.conditionalRules': '条件付きアクセスのルール',
+    'permissionsMatrix.emptyRoles': 'ロールが見つかりません',
+    'permissionsMatrix.noMatches': '現在のフィルターに一致する権限はありません',
+    'permissionsMatrix.emptyPermissions': 'プラグインの権限が見つかりません',
+    'permissionsMatrix.decisions.allow': '許可',
+    'permissionsMatrix.decisions.deny': '拒否',
+    'permissionsMatrix.decisions.conditional': '条件付き',
+    'permissionsMatrix.decisions.none': '未設定',
+    'permissionsMatrix.errors.fetchPermissions':
+      'プラグインの権限の取得中に問題が発生しました',
   },
 });
 

@@ -19,7 +19,7 @@ import {
   ScmAuth,
 } from '@backstage/integration-react';
 import {
-  AnyApiFactory,
+  ApiFactory,
   configApiRef,
   createApiFactory,
 } from '@backstage/core-plugin-api';
@@ -47,7 +47,7 @@ class SampleTechRadarApi implements TechRadarApi {
   }
 }
 
-export const apis: AnyApiFactory[] = [
+export const apis: ApiFactory[] = [
   createApiFactory({
     api: scmIntegrationsApiRef,
     deps: { configApi: configApiRef },

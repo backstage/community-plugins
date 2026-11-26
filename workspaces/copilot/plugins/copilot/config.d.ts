@@ -46,9 +46,12 @@ export interface Config {
      */
     defaultView?: 'enterprise' | 'organization';
     /**
-     * Whether backend ingestion enables team filtering on the V2 dashboard.
-     * When cost-center filtering is also enabled, the dashboard shows a
-     * Cost center | Team toggle button group.
+     * Whether backend ingestion enables Enterprise team filtering and team
+     * filtering for the configured organization. Organization-team filtering
+     * across enterprise organizations is enabled by the separate
+     * ingestOrganizationTeamReports option. When cost-center filtering is also
+     * enabled, the applicable team targets appear alongside Cost center in
+     * the dashboard's Filter by group.
      * @visibility frontend
      */
     ingestTeams?: boolean;
@@ -56,10 +59,17 @@ export interface Config {
      * Whether backend ingestion enables cost-center filtering and the
      * separately scoped No cost center dashboard option. The latter is shown
      * only when enough users without a cost-center membership have data.
-     * When team filtering is also enabled, the dashboard shows a Cost center |
-     * Team toggle button group.
+     * When team filtering is also enabled, the applicable team targets appear
+     * alongside Cost center in the dashboard's Filter by group.
      * @visibility frontend
      */
     ingestCostCenters?: boolean;
+    /**
+     * Whether backend ingestion enables organization-team filtering across
+     * organizations in copilot.enterprise. The configured organization stays
+     * on its existing ingestion path. Disabled by default.
+     * @visibility frontend
+     */
+    ingestOrganizationTeamReports?: boolean;
   };
 }

@@ -26,9 +26,10 @@ import { Alert, AlertAction } from '../../types';
 import { AlertAssignModal } from './AlertAssignModal';
 
 import { DEFAULT_NAMESPACE, parseEntityRef } from '@backstage/catalog-model';
-import { Link, Progress } from '@backstage/core-components';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { Progress } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const AlertActionsMenu = ({
   alert,
@@ -40,8 +41,8 @@ export const AlertActionsMenu = ({
   setIsLoading?: (isLoading: boolean) => void;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(toastApiRef);
-  const identityApi = useApi(identityApiRef);
+  const alertApi = useApi(coreApis.toast);
+  const identityApi = useApi(coreApis.identity);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const callback = onAlertChanged || ((_: Alert): void => {});
   const setProcessing = setIsLoading || ((_: boolean): void => {});
@@ -196,7 +197,13 @@ export const AlertActionsMenu = ({
 
         <MenuItem key="details" onClick={handleCloseMenu}>
           <Typography variant="inherit" noWrap>
-            <Link to={ilertApi.getAlertDetailsURL(alert)}>View in ilert</Link>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={ilertApi.getAlertDetailsURL(alert)}
+            >
+              View in ilert
+            </Link>
           </Typography>
         </MenuItem>
       </Menu>

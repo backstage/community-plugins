@@ -17,7 +17,6 @@
 import { Entity } from '@backstage/catalog-model';
 import {
   Breadcrumbs,
-  Link,
   Progress,
   StructuredMetadataTable,
 } from '@backstage/core-components';
@@ -28,6 +27,7 @@ import {
   CardBody,
   CardHeader,
   Flex,
+  Link,
   Text,
 } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
@@ -37,12 +37,14 @@ import { useProjectName } from '../useProjectName';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import styles from './WorkflowRunDetails.module.css';
 import { useWorkflowRunsDetails } from './useWorkflowRunsDetails';
+import { useResolvedPath } from 'react-router-dom';
 
 export const WorkflowRunDetails = (props: { entity: Entity }) => {
   const { value: projectName, loading, error } = useProjectName(props.entity);
   const [projectId] = (projectName ?? '/').split('/');
   const location = getLocation(props.entity);
   const details = useWorkflowRunsDetails(projectId, location);
+  const buildHistoryPath = useResolvedPath('..').pathname;
 
   if (error) {
     return (
@@ -63,7 +65,7 @@ export const WorkflowRunDetails = (props: { entity: Entity }) => {
     <Box className={styles.root}>
       <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
-          <Link to="..">Build history</Link>
+          <Link href={buildHistoryPath}>Build history</Link>
           <Text>Build details</Text>
         </Breadcrumbs>
       </div>
@@ -84,7 +86,11 @@ export const WorkflowRunDetails = (props: { entity: Entity }) => {
               ),
               'service account': `${serviceAccount}@cloudbuild.gserviceaccount.com`,
               links: (
-                <Link to={details.value.logUrl}>
+                <Link
+                  href={details.value.logUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Workflow runs on Google{' '}
                   <RiExternalLinkLine
                     size={14}

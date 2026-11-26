@@ -16,12 +16,13 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2MetricsByFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { formatDay, DATE_TICK_LABEL_STYLE, fillDateRange } from './chartUtils';
+import { formatDay, DATE_TICK_LABEL_STYLE, getChartDays } from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 }
 
 interface DayTotal {
@@ -47,7 +48,12 @@ function aggregateCodeCompletionByDay(
   return byDay;
 }
 
-export function CodeCompletionsAcceptanceChart({ data, from, to }: Props) {
+export function CodeCompletionsAcceptanceChart({
+  data,
+  from,
+  to,
+  fillMissingDays = true,
+}: Props) {
   const byDay = aggregateCodeCompletionByDay(data);
 
   if (byDay.size === 0) {
@@ -58,7 +64,7 @@ export function CodeCompletionsAcceptanceChart({ data, from, to }: Props) {
     );
   }
 
-  const days = fillDateRange(from, to);
+  const days = getChartDays([...byDay.values()], from, to, fillMissingDays);
   const values = days.map(day => {
     const d = byDay.get(day);
     return d && d.suggested > 0

@@ -17,7 +17,7 @@
 import { renderHook } from '@testing-library/react';
 import { useCustomProtocol } from './useCustomProtocol';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 /** Produce an AppConfig wrapper for some given config */
 const getMockAppConfig =
@@ -25,7 +25,7 @@ const getMockAppConfig =
   ({ children }: { children: React.ReactNode }) => {
     const mockConfig = mockApis.config({ data: config });
     return (
-      <TestApiProvider apis={[[configApiRef, mockConfig]]}>
+      <TestApiProvider apis={[[coreApis.config, mockConfig]]}>
         {children}
       </TestApiProvider>
     );

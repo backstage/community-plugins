@@ -112,6 +112,17 @@ const rbacTranslationIt = createTranslationMessages({
       'Nome, descrizione e proprietario del ruolo',
     'roleForm.review.permissionPoliciesWithCount':
       'Politiche di autorizzazione ({{count}})',
+    'roleForm.review.changes.title': 'Modifiche a questo ruolo',
+    'roleForm.review.changes.noChanges':
+      'Non sono state apportate modifiche a questo ruolo.',
+    'roleForm.review.changes.added': 'Aggiunto',
+    'roleForm.review.changes.removed': 'Rimosso',
+    'roleForm.review.changes.changed': 'Modificato',
+    'roleForm.review.changes.valueChanged':
+      '{{field}}: da "{{previous}}" a "{{current}}"',
+    'roleForm.review.changes.permissionPolicies': 'Politiche di autorizzazione',
+    'roleForm.review.changes.conditionalPolicies':
+      'Politiche di accesso condizionale',
     'roleForm.steps.next': 'Successivo',
     'roleForm.steps.back': 'Indietro',
     'roleForm.steps.cancel': 'Cancella',
@@ -267,6 +278,33 @@ const rbacTranslationIt = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'Per impostazione predefinita, il tipo di risorsa selezionato è visibile a tutti gli utenti aggiunti. Per limitare o concedere autorizzazioni a regole specifiche del plugin, selezionarle e aggiungere i parametri.',
     'common.tableAction': 'Azione tabella',
+    'permissionsMatrix.tabs.label': 'Viste RBAC',
+    'permissionsMatrix.tabs.roles': 'Ruoli',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'Autorizzazioni per plugin',
+    'permissionsMatrix.title': 'Autorizzazioni per plugin',
+    'permissionsMatrix.description':
+      'Panoramica in sola lettura delle autorizzazioni concesse a ciascun ruolo, raggruppate per plugin.',
+    'permissionsMatrix.roleColumn': 'Ruolo',
+    'permissionsMatrix.filterRoles': 'Filtra ruoli',
+    'permissionsMatrix.roles': 'Ruoli',
+    'permissionsMatrix.plugin': 'Plugin',
+    'permissionsMatrix.allPlugins': 'Tutti i plugin',
+    'permissionsMatrix.policy': 'Politica',
+    'permissionsMatrix.allPolicies': 'Tutte le politiche',
+    'permissionsMatrix.legend': 'Legenda',
+    'permissionsMatrix.viewOnlyRole': 'Ruolo in sola lettura',
+    'permissionsMatrix.conditionalRules': 'Regole di accesso condizionale',
+    'permissionsMatrix.emptyRoles': 'Nessun ruolo trovato',
+    'permissionsMatrix.noMatches':
+      'Nessuna autorizzazione corrisponde ai filtri attuali',
+    'permissionsMatrix.emptyPermissions':
+      'Nessuna autorizzazione dei plugin trovata',
+    'permissionsMatrix.decisions.allow': 'Consenti',
+    'permissionsMatrix.decisions.deny': 'Nega',
+    'permissionsMatrix.decisions.conditional': 'Condizionale',
+    'permissionsMatrix.decisions.none': 'Non impostato',
+    'permissionsMatrix.errors.fetchPermissions':
+      'Si è verificato un errore durante il recupero delle autorizzazioni dei plugin',
   },
 });
 

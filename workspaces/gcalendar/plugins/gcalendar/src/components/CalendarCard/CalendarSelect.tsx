@@ -15,31 +15,10 @@
  */
 import { sortBy } from 'lodash';
 
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Select } from '@backstage/ui';
 
 import { GCalendar } from '../../api';
-
-const useStyles = makeStyles(
-  {
-    formControl: {
-      width: 120,
-    },
-    selectedCalendars: {
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-    },
-  },
-  {
-    name: 'GCalendarSelect',
-  },
-);
+import styles from './CalendarSelect.module.css';
 
 type CalendarSelectProps = {
   disabled: boolean;
@@ -54,39 +33,23 @@ export const CalendarSelect = ({
   setSelectedCalendars,
   calendars,
 }: CalendarSelectProps) => {
-  const classes = useStyles();
+  const options = sortBy(calendars, 'summary')
+    .filter((calendar): calendar is GCalendar & { id: string } => !!calendar.id)
+    .map(calendar => ({
+      id: calendar.id,
+      label: calendar.summary ?? calendar.id,
+    }));
+
   return (
-    <FormControl className={classes.formControl}>
-      <Select
-        labelId="calendars-label"
-        disabled={disabled || calendars.length === 0}
-        multiple
-        value={selectedCalendars}
-        onChange={async e => setSelectedCalendars(e.target.value as string[])}
-        input={<Input />}
-        renderValue={selected => (
-          <Typography className={classes.selectedCalendars} variant="body2">
-            {calendars
-              .filter(c => c.id && (selected as string[]).includes(c.id))
-              .map(c => c.summary)
-              .join(', ')}
-          </Typography>
-        )}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              width: 350,
-            },
-          },
-        }}
-      >
-        {sortBy(calendars, 'summary').map(c => (
-          <MenuItem key={c.id} value={c.id}>
-            <Checkbox checked={selectedCalendars.includes(c.id!)} />
-            <ListItemText primary={c.summary} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Select
+      aria-label="Calendars"
+      data-testid="calendars-select"
+      className={styles.select}
+      selectionMode="multiple"
+      isDisabled={disabled || calendars.length === 0}
+      options={options}
+      value={selectedCalendars}
+      onChange={value => setSelectedCalendars(value as string[])}
+    />
   );
 };

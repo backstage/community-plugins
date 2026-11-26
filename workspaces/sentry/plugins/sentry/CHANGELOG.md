@@ -1,5 +1,15 @@
 # @backstage-community/plugin-sentry
 
+## 1.24.0
+
+### Minor Changes
+
+- 3ad4866: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 3ad4866: The Sentry issue links now use the Backstage UI `Link` component and open in a new tab.
+
 ## 1.23.0
 
 ### Minor Changes

@@ -22,10 +22,10 @@ import {
   SearchResult,
   SearchPagination,
 } from '@backstage/plugin-search-react';
-import { CatalogIcon, Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 
 import { GithubDiscussionsSearchResultListItem } from '@backstage-community/plugin-github-discussions';
-import { RiDiscussLine } from '@remixicon/react';
+import { RiBookOpenLine, RiDiscussLine } from '@remixicon/react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -46,9 +46,9 @@ const SearchPage = () => {
   const classes = useStyles();
 
   return (
-    <Page themeId="home">
+    <>
       <Header title="Search" />
-      <Content>
+      <Container>
         <Grid container direction="row">
           <Grid item xs={12}>
             <SearchBar />
@@ -60,7 +60,7 @@ const SearchPage = () => {
                 {
                   value: 'software-catalog',
                   name: 'Software Catalog',
-                  icon: <CatalogIcon />,
+                  icon: <RiBookOpenLine />,
                 },
                 {
                   value: 'github-discussions',
@@ -91,8 +91,8 @@ const SearchPage = () => {
             </SearchResult>
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

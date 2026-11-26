@@ -29,7 +29,7 @@ import {
   SENTRY_PROJECT_SLUG_ANNOTATION,
   getProjectSlug,
 } from '../src/api/annotations';
-import { Content, Header, Page } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 
 const entity = (name?: string) =>
   ({
@@ -69,22 +69,22 @@ createDevApp()
   .addPage({
     title: 'Entity Content',
     element: (
-      <Page themeId="home">
+      <>
         <Header title="Sentry" />
-        <Content>
+        <Container>
           <EntityProvider entity={entity('with-values')}>
             <EntitySentryContent />
           </EntityProvider>
-        </Content>
-      </Page>
+        </Container>
+      </>
     ),
   })
   .addPage({
     title: 'Cards',
     element: (
-      <Page themeId="home">
+      <>
         <Header title="Sentry" />
-        <Content>
+        <Container>
           <Grid container>
             <EntityGridItem xs={12} md={6} entity={entity('error')}>
               <EntitySentryCard />
@@ -102,8 +102,8 @@ createDevApp()
               <EntitySentryCard />
             </EntityGridItem>
           </Grid>
-        </Content>
-      </Page>
+        </Container>
+      </>
     ),
   })
   .render();

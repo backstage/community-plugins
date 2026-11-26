@@ -24,7 +24,6 @@ import {
   StatusWarning,
   StatusError,
   StatusAborted,
-  Link,
 } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
 import {
@@ -34,7 +33,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef, GrafanaApi } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import { Alert, Text } from '@backstage/ui';
+import { Alert, Link, Text } from '@backstage/ui';
 import { AlertsCardOpts, Alert as GrafanaAlert } from '../../types';
 import {
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
@@ -88,7 +87,7 @@ export const AlertsTable = ({
       field: 'name',
       cellStyle: { width: '90%' },
       render: (row: GrafanaAlert): ReactNode => (
-        <Link to={row.url} target="_blank" rel="noopener">
+        <Link href={row.url} target="_blank" rel="noopener noreferrer">
           {row.name}
         </Link>
       ),

@@ -17,14 +17,17 @@ import { SyntheticsCard } from './SyntheticsCard';
 import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
 import { dynatraceApiRef } from '../../../api';
 import { ApiProvider, ConfigReader } from '@backstage/core-app-api';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 const mockDynatraceApi = {
   getDynatraceSyntheticFailures: jest.fn(),
 };
 const apis = TestApiRegistry.from(
   [dynatraceApiRef, mockDynatraceApi],
-  [configApiRef, new ConfigReader({ dynatrace: { baseUrl: '__dynatrace__' } })],
+  [
+    coreApis.config,
+    new ConfigReader({ dynatrace: { baseUrl: '__dynatrace__' } }),
+  ],
 );
 
 describe('SyntheticsCard', () => {

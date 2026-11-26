@@ -1,5 +1,17 @@
 # @backstage-community/plugin-jaeger
 
+## 0.21.0
+
+### Minor Changes
+
+- 1125929: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 1125929: The Jaeger traces tab now uses the Backstage UI layout instead of the deprecated `Content` component.
+- Updated dependencies [1125929]
+  - @backstage-community/plugin-jaeger-common@0.21.0
+
 ## 0.20.0
 
 ### Minor Changes

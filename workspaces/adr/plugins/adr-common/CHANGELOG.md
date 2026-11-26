@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-common
 
+## 0.26.1
+
+### Patch Changes
+
+- fac6af8: Fixed ADRs failing to load from Bitbucket Server when the entity source location points at the repository without a `/browse/` path.
+
 ## 0.26.0
 
 ### Minor Changes

@@ -35,6 +35,7 @@ const de = createTranslationMessages({
     'infoCard.codeRepository': 'Code-Repository',
     'infoCard.issueTracker': 'Problemverfolgung',
     'infoCard.homepage': 'Startseite',
+    'releaseTab.title': 'Npm Releases',
     'releaseOverviewCard.title': 'Aktuelle Tags',
     'releaseOverviewCard.toolbar.searchPlaceholder': 'Suchen',
     'releaseOverviewCard.columns.tag': 'Tag',

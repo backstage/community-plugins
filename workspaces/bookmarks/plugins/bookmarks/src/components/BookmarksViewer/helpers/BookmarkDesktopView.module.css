@@ -1,0 +1,14 @@
+@layer components {
+  .root {
+    height: 100%;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+}

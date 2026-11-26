@@ -57,7 +57,10 @@ describe('EntityAdrContent', () => {
             [discoveryApiRef, mockApis.discovery()],
             [
               scmIntegrationsApiRef,
-              { resolveUrl: ({ url, base }) => new URL(url, base).href },
+              {
+                byUrl: () => undefined,
+                resolveUrl: ({ url, base }) => new URL(url, base).href,
+              },
             ],
           ]}
         >

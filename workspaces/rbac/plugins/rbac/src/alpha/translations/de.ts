@@ -110,6 +110,17 @@ const rbacTranslationDe = createTranslationMessages({
       'Name, Beschreibung und Eigentümer der Rolle',
     'roleForm.review.permissionPoliciesWithCount':
       'Berechtigungsrichtlinien ({{count}})',
+    'roleForm.review.changes.title': 'Änderungen an dieser Rolle',
+    'roleForm.review.changes.noChanges':
+      'An dieser Rolle wurden keine Änderungen vorgenommen.',
+    'roleForm.review.changes.added': 'Hinzugefügt',
+    'roleForm.review.changes.removed': 'Entfernt',
+    'roleForm.review.changes.changed': 'Geändert',
+    'roleForm.review.changes.valueChanged':
+      '{{field}}: von „{{previous}}“ zu „{{current}}“',
+    'roleForm.review.changes.permissionPolicies': 'Berechtigungsrichtlinien',
+    'roleForm.review.changes.conditionalPolicies':
+      'Richtlinien für bedingten Zugriff',
     'roleForm.steps.next': 'Weiter',
     'roleForm.steps.back': 'Zurück',
     'roleForm.steps.cancel': 'Abbrechen',
@@ -273,6 +284,33 @@ const rbacTranslationDe = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'Standardmäßig ist der ausgewählte Ressourcentyp für alle hinzugefügten Benutzer sichtbar. Wenn Sie bestimmte Plugin-Regeln einschränken oder Berechtigungen dafür erteilen möchten, wählen Sie diese aus, und fügen Sie die Parameter hinzu.',
     'common.tableAction': 'Tabellenaktion',
+    'permissionsMatrix.tabs.label': 'RBAC-Ansichten',
+    'permissionsMatrix.tabs.roles': 'Rollen',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'Berechtigungen nach Plugin',
+    'permissionsMatrix.title': 'Berechtigungen nach Plugin',
+    'permissionsMatrix.description':
+      'Schreibgeschützte Übersicht der Berechtigungen jeder Rolle, gruppiert nach Plugin.',
+    'permissionsMatrix.roleColumn': 'Rolle',
+    'permissionsMatrix.filterRoles': 'Rollen filtern',
+    'permissionsMatrix.roles': 'Rollen',
+    'permissionsMatrix.plugin': 'Plugin',
+    'permissionsMatrix.allPlugins': 'Alle Plugins',
+    'permissionsMatrix.policy': 'Richtlinie',
+    'permissionsMatrix.allPolicies': 'Alle Richtlinien',
+    'permissionsMatrix.legend': 'Legende',
+    'permissionsMatrix.viewOnlyRole': 'Schreibgeschützte Rolle',
+    'permissionsMatrix.conditionalRules': 'Regeln für bedingten Zugriff',
+    'permissionsMatrix.emptyRoles': 'Keine Rollen gefunden',
+    'permissionsMatrix.noMatches':
+      'Keine Berechtigungen entsprechen den aktuellen Filtern',
+    'permissionsMatrix.emptyPermissions':
+      'Keine Plugin-Berechtigungen gefunden',
+    'permissionsMatrix.decisions.allow': 'Erlauben',
+    'permissionsMatrix.decisions.deny': 'Verweigern',
+    'permissionsMatrix.decisions.conditional': 'Bedingt',
+    'permissionsMatrix.decisions.none': 'Nicht festgelegt',
+    'permissionsMatrix.errors.fetchPermissions':
+      'Beim Abrufen der Plugin-Berechtigungen ist ein Fehler aufgetreten',
   },
 });
 

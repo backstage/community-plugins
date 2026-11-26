@@ -24,11 +24,11 @@ import {
   SidebarGroup,
   SidebarPage,
   useSidebarOpenState,
-  Link,
   SidebarDivider,
   SidebarItem,
   SidebarSpace,
 } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
@@ -59,7 +59,7 @@ const SidebarLogo = () => {
 
   return (
     <div className={classes.root}>
-      <Link to="/" underline="none" className={classes.link} aria-label="Home">
+      <Link href="/" className={classes.link} aria-label="Home">
         {isOpen ? <LogoFull /> : <LogoIcon />}
       </Link>
     </div>

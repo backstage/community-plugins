@@ -15,9 +15,8 @@
  */
 
 import { ReactNode } from 'react';
-import { Text, Tag, TagGroup } from '@backstage/ui';
+import { Link, Text, Tag, TagGroup } from '@backstage/ui';
 import { RiDiscussLine, RiGithubLine } from '@remixicon/react';
-import { Link } from '@backstage/core-components';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { type GithubDiscussionsSearchDocument } from '@backstage-community/plugin-github-discussions-common';
@@ -55,7 +54,7 @@ export function GithubDiscussionsSearchResultListItem(
       <div className={styles.flexContainer}>
         <div className={styles.itemText}>
           <Text variant="title-small">
-            <Link noTrack to={result.location}>
+            <Link noTrack href={result.location}>
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
                   text={highlight.fields.title}
