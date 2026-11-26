@@ -25,6 +25,18 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const execAsync = promisify(exec);
 
+// Workspaces excluded from the issue templates that should still get PR labels.
+// These are owned by the maintainers team (see CODEOWNERS).
+const PR_ONLY_WORKSPACES = ['repo-tools'];
+
+// Root tooling files owned by the maintainers team (see CODEOWNERS)
+const MAINTAINER_ROOT_GLOBS = [
+  'yarn.lock',
+  'package.json',
+  '.yarnrc.yml',
+  '.yarn/**',
+];
+
 async function getMaintainerWorkspaces() {
   try {
     const { stdout } = await execAsync(
@@ -43,28 +55,38 @@ async function main() {
   const githubPrLabelerConfigPath = resolve(rootPath, '.github/pr-labeler.yml');
   const workspaces = await listWorkspaces();
   const maintainerWorkspaces = await getMaintainerWorkspaces();
+  const prWorkspaces = [...workspaces, ...PR_ONLY_WORKSPACES].sort();
 
-  // Generate issue labeler configuration (based on issue template selection)
+  // Generate issue labeler configuration (based on issue template selection).
+  // The negative lookahead stops a workspace from also matching longer names
+  // that start with it (e.g. `scaffolder` vs `scaffolder-relation-processor`).
   const issueLabelMappings = [
-    ...workspaces.map(w => `workspace/${w}:\n  - "Workspace\\\\s*${w}"`),
+    ...workspaces.map(
+      w => `workspace/${w}:\n  - "Workspace\\\\s*${w}(?![\\\\w-])"`,
+    ),
     `needs-triaging:\n  - "Workspace\\\\s*Select a workspace..."`,
   ].join('\n\n');
 
   // Generate PR labeler configuration (based on file changes)
   const prLabelMappings = [
     // Workspace labels for all workspaces
-    ...workspaces.map(
+    ...prWorkspaces.map(
       w =>
         `workspace/${w}:\n- changed-files:\n  - any-glob-to-any-file: ['workspaces/${w}/**']`,
     ),
-    // Owner/area-maintainers label for maintainer workspaces only
-    `owner/area-maintainers:\n- changed-files:\n  - any-glob-to-any-file: [${maintainerWorkspaces
-      .map(w => `'workspaces/${w}/**'`)
+    // Owner/area-maintainers label for root files and maintainer workspaces
+    `owner/area-maintainers:\n- changed-files:\n  - any-glob-to-any-file: [${[
+      ...MAINTAINER_ROOT_GLOBS,
+      ...[...maintainerWorkspaces, ...PR_ONLY_WORKSPACES]
+        .sort()
+        .map(w => `workspaces/${w}/**`),
+    ]
+      .map(g => `'${g}'`)
       .join(', ')}]`,
   ].join('\n\n');
 
-  await fs.writeFile(githubIssueLabelerConfigPath, issueLabelMappings);
-  await fs.writeFile(githubPrLabelerConfigPath, prLabelMappings);
+  await fs.writeFile(githubIssueLabelerConfigPath, `${issueLabelMappings}\n`);
+  await fs.writeFile(githubPrLabelerConfigPath, `${prLabelMappings}\n`);
 
   console.log(
     `Generated issue labeler configuration for ${workspaces.length} workspaces`,
