@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { DateTime } from 'luxon';
 import {
+  Alert,
   Card,
   CardBody,
   CardHeader,
@@ -37,7 +38,6 @@ import {
   useRouteRefParams,
   useAnalytics,
 } from '@backstage/core-plugin-api';
-import { Alert } from '@material-ui/lab';
 import { RiHashtag, RiPriceTag3Line } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
@@ -189,9 +189,11 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
   if (loading) {
     return <Skeleton />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" icon title={error.message} />;
   } else if (!announcement) {
-    return <Alert severity="error">{t('viewAnnouncementPage.notFound')}</Alert>;
+    return (
+      <Alert status="danger" icon title={t('viewAnnouncementPage.notFound')} />
+    );
   }
 
   return (

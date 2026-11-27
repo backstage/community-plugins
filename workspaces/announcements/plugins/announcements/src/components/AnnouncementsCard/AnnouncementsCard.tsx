@@ -121,90 +121,89 @@ export const AnnouncementsCard = ({
             : undefined
         }
       >
-        {announcement => (
-          <ListRow
-            id={announcement.id}
-            textValue={announcement.title}
-            icon={
-              <Box
-                style={{
-                  visibility:
-                    !announcementsApi.isAnnouncementDismissed(
-                      announcement.id,
-                    ) && lastSeen < DateTime.fromISO(announcement.created_at)
-                      ? 'visible'
-                      : 'hidden',
-                }}
-                title={t('announcementsCard.new')}
-              >
-                <RiMegaphoneLine size={20} />
-              </Box>
-            }
-          >
-            <Flex direction="column" gap="1">
-              <Link
-                href={viewAnnouncementLink({ id: announcement.id })}
-                onClick={() =>
-                  analytics.captureEvent('click', announcement.title, {
-                    attributes: {
-                      announcementId: announcement.id,
-                      location: 'AnnouncementsCard',
-                    },
-                  })
-                }
-              >
-                {announcement.title}
-              </Link>
+        {announcement => {
+          const isNew =
+            !announcementsApi.isAnnouncementDismissed(announcement.id) &&
+            lastSeen < DateTime.fromISO(announcement.created_at);
 
-              <Text variant="body-small" color="secondary" as="span">
-                {DateTime.fromISO(announcement.created_at).toRelative()}
-                {announcement.category && (
-                  <>
-                    {` ${t('announcementsCard.in')} `}
-                    <Link
-                      href={`${announcementsLink()}?category=${
-                        announcement.category.slug
-                      }`}
-                    >
-                      {announcement.category.title}
-                    </Link>
-                  </>
-                )}
-              </Text>
-
-              <Text variant="body-small" color="secondary">
-                {announcement.excerpt}
-              </Text>
-
-              {announcement.tags && announcement.tags.length > 0 && (
-                <Box mt="2">
-                  <TagGroup>
-                    {announcement.tags.map(tag => (
-                      <Tag
-                        key={tag.slug}
-                        size="small"
-                        href={`${announcementsLink()}?tags=${tag.slug}`}
-                      >
-                        {tag.title}
-                      </Tag>
-                    ))}
-                  </TagGroup>
+          return (
+            <ListRow
+              id={announcement.id}
+              textValue={announcement.title}
+              icon={
+                <Box
+                  style={{ opacity: isNew ? 1 : 0.4 }}
+                  title={isNew ? t('announcementsCard.new') : undefined}
+                >
+                  <RiMegaphoneLine size={20} />
                 </Box>
-              )}
+              }
+            >
+              <Flex direction="column" gap="1">
+                <Link
+                  href={viewAnnouncementLink({ id: announcement.id })}
+                  onClick={() =>
+                    analytics.captureEvent('click', announcement.title, {
+                      attributes: {
+                        announcementId: announcement.id,
+                        location: 'AnnouncementsCard',
+                      },
+                    })
+                  }
+                >
+                  {announcement.title}
+                </Link>
 
-              {!hideStartAt && (
-                <Text variant="body-x-small" color="secondary">
-                  {formatAnnouncementStartTime(
-                    announcement.start_at,
-                    t('announcementsCard.occurred'),
-                    t('announcementsCard.scheduled'),
-                    t('announcementsCard.today'),
+                <Text variant="body-small" color="secondary" as="span">
+                  {DateTime.fromISO(announcement.created_at).toRelative()}
+                  {announcement.category && (
+                    <>
+                      {` ${t('announcementsCard.in')} `}
+                      <Link
+                        href={`${announcementsLink()}?category=${
+                          announcement.category.slug
+                        }`}
+                      >
+                        {announcement.category.title}
+                      </Link>
+                    </>
                   )}
                 </Text>
-              )}
-            </Flex>
-          </ListRow>
-        )}
+
+                <Text variant="body-small" color="secondary">
+                  {announcement.excerpt}
+                </Text>
+
+                {announcement.tags && announcement.tags.length > 0 && (
+                  <Box mt="2">
+                    <TagGroup>
+                      {announcement.tags.map(tag => (
+                        <Tag
+                          key={tag.slug}
+                          size="small"
+                          href={`${announcementsLink()}?tags=${tag.slug}`}
+                        >
+                          {tag.title}
+                        </Tag>
+                      ))}
+                    </TagGroup>
+                  </Box>
+                )}
+
+                {!hideStartAt && (
+                  <Text variant="body-x-small" color="secondary">
+                    {formatAnnouncementStartTime(
+                      announcement.start_at,
+                      t('announcementsCard.occurred'),
+                      t('announcementsCard.scheduled'),
+                      t('announcementsCard.today'),
+                    )}
+                  </Text>
+                )}
+              </Flex>
+            </ListRow>
+          );
+        }}
       </List>
     </InfoCard>
   );

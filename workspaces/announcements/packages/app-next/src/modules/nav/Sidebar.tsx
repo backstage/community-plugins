@@ -14,58 +14,65 @@
  * limitations under the License.
  */
 import {
+  Sidebar,
   SidebarDivider,
   SidebarGroup,
   SidebarItem,
   SidebarScrollWrapper,
   SidebarSpace,
 } from '@backstage/core-components';
-import { compatWrapper } from '@backstage/core-compat-api';
-import { Sidebar } from '@backstage/core-components';
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import { SidebarSearchModal } from '@backstage/plugin-search';
+import { UserSettingsSignInAvatar } from '@backstage/plugin-user-settings';
 import { SidebarLogo } from './SidebarLogo';
-import HomeIcon from '@material-ui/icons/Home';
-import MenuIcon from '@material-ui/icons/Menu';
-import AdminPanelSettingsIcon from '@material-ui/icons/SupervisorAccount';
-import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
-import {
-  UserSettingsSignInAvatar,
-  Settings as SidebarSettings,
-} from '@backstage/plugin-user-settings';
+import { RiAdminLine, RiMenuLine, RiSearchLine } from '@remixicon/react';
 
-export const SidebarContent = NavContentBlueprint.make({
+const AdminIcon = () => <RiAdminLine size={20} />;
+
+export const SidebarContent: ExtensionDefinition = NavContentBlueprint.make({
   params: {
-    component: ({ items }) =>
-      compatWrapper(
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+
+      nav.take('page:search'); // Using search modal instead
+
+      return (
         <Sidebar>
           <SidebarLogo />
+          <SidebarGroup label="Search" icon={<RiSearchLine />} to="/search">
+            <SidebarSearchModal />
+          </SidebarGroup>
           <SidebarDivider />
-          <SidebarItem icon={HomeIcon} to="/" text="Home" />
-
-          <SidebarGroup label="Menu" icon={<MenuIcon />}>
+          <SidebarGroup label="Menu" icon={<RiMenuLine />}>
+            {nav.take('page:app')}
+            {nav.take('page:catalog')}
+            <SidebarDivider />
             <SidebarScrollWrapper>
-              {/* Items in this group will be scrollable if they run out of space */}
-              {items.map((item, index) => (
-                <SidebarItem {...item} key={index} />
-              ))}
+              <SidebarItem
+                icon={AdminIcon}
+                to="/announcements/admin"
+                text="Announcements Admin"
+              />
+              {nav.rest({ sortBy: 'title' })}
             </SidebarScrollWrapper>
           </SidebarGroup>
           <SidebarSpace />
           <SidebarDivider />
-          <SidebarItem
-            icon={AdminPanelSettingsIcon}
-            to="announcements/admin"
-            text="AnnouncementsAdmin"
-          />
-          <NotificationsSidebarItem />
+          {nav.take('page:notifications')}
+          <SidebarDivider />
           <SidebarGroup
             label="Settings"
             icon={<UserSettingsSignInAvatar />}
             to="/settings"
           >
-            <SidebarSettings />
+            {nav.take('page:user-settings')}
+            {nav.take('page:app-visualizer')}
           </SidebarGroup>
-        </Sidebar>,
-      ),
+        </Sidebar>
+      );
+    },
   },
 });

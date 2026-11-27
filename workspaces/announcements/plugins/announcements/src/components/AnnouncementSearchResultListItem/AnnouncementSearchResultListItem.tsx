@@ -14,35 +14,15 @@
  * limitations under the License.
  */
 import { DateTime } from 'luxon';
-import { Link } from '@backstage/core-components';
 import {
   IndexableDocument,
   ResultHighlight,
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  makeStyles,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from '@material-ui/core';
+import { Flex, Link, List, ListRow, Text } from '@backstage/ui';
 import { RiMegaphoneLine } from '@remixicon/react';
-
-const useStyles = makeStyles({
-  createdAt: {
-    display: 'block',
-    marginTop: '0.2rem',
-    marginBottom: '0.8rem',
-  },
-  excerpt: {
-    lineHeight: '1.55',
-  },
-  itemText: {
-    wordBreak: 'break-all',
-  },
-});
+import styles from './AnnouncementSearchResultListItem.module.css';
 
 type IndexableAnnouncement = IndexableDocument & {
   createdAt: string;
@@ -59,7 +39,6 @@ export const AnnouncementSearchResultListItem = ({
   result,
   highlight,
 }: AnnouncementSearchResultProps) => {
-  const classes = useStyles();
   const { t } = useAnnouncementsTranslation();
 
   if (!result) {
@@ -68,53 +47,52 @@ export const AnnouncementSearchResultListItem = ({
 
   const document = result as IndexableAnnouncement;
 
-  const title = (
-    <Link noTrack to={result.location}>
-      {highlight?.fields.title ? (
-        <HighlightedSearchResultText
-          text={highlight.fields.title}
-          preTag={highlight.preTag}
-          postTag={highlight.postTag}
-        />
-      ) : (
-        result.title
-      )}
-    </Link>
-  );
-
-  const excerpt = (
-    <>
-      <Typography component="span" className={classes.createdAt}>
-        {`${t('announcementSearchResultListItem.published')} `}
-        <Typography component="span" title={document.createdAt}>
-          {DateTime.fromISO(document.createdAt).toRelative()}
-        </Typography>
-      </Typography>
-      <>
-        {highlight?.fields.text ? (
-          <HighlightedSearchResultText
-            text={highlight.fields.text}
-            preTag={highlight.preTag}
-            postTag={highlight.postTag}
-          />
-        ) : (
-          result.text
-        )}
-      </>
-    </>
-  );
-
   return (
-    <ListItem alignItems="center">
-      <ListItemIcon title={t('announcementSearchResultListItem.announcement')}>
-        <RiMegaphoneLine />
-      </ListItemIcon>
-      <ListItemText
-        primary={title}
-        secondary={excerpt}
-        className={classes.itemText}
-        primaryTypographyProps={{ variant: 'h6' }}
-      />
-    </ListItem>
+    <List aria-label={t('announcementSearchResultListItem.announcement')}>
+      <ListRow
+        id={result.location}
+        textValue={result.title}
+        icon={<RiMegaphoneLine />}
+      >
+        <Flex direction="column" gap="0" className={styles.itemText}>
+          <Link noTrack href={result.location} variant="title-x-small">
+            {highlight?.fields.title ? (
+              <HighlightedSearchResultText
+                text={highlight.fields.title}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              result.title
+            )}
+          </Link>
+          <Text
+            variant="body-small"
+            color="secondary"
+            className={styles.createdAt}
+          >
+            {`${t('announcementSearchResultListItem.published')} `}
+            <Text as="span" variant="body-small" title={document.createdAt}>
+              {DateTime.fromISO(document.createdAt).toRelative()}
+            </Text>
+          </Text>
+          <Text
+            variant="body-small"
+            color="secondary"
+            className={styles.excerpt}
+          >
+            {highlight?.fields.text ? (
+              <HighlightedSearchResultText
+                text={highlight.fields.text}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              result.text
+            )}
+          </Text>
+        </Flex>
+      </ListRow>
+    </List>
   );
 };

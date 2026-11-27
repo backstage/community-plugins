@@ -18,8 +18,15 @@ import {
   useAnnouncements,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import { Pagination } from '@material-ui/lab';
-import { Flex, Grid, Skeleton, Text, Card, CardBody } from '@backstage/ui';
+import {
+  Flex,
+  Grid,
+  Skeleton,
+  Text,
+  Card,
+  CardBody,
+  TablePagination,
+} from '@backstage/ui';
 import { AnnouncementCard } from './AnnouncementCard';
 
 type AnnouncementsGridProps = {
@@ -44,9 +51,6 @@ export const AnnouncementsGrid = ({
   const { t } = useAnnouncementsTranslation();
 
   const [page, setPage] = useState(1);
-  const handleChange = (_event: any, value: number) => {
-    setPage(value);
-  };
 
   const { announcements, loading, error } = useAnnouncements({
     max: maxPerPage,
@@ -108,10 +112,15 @@ export const AnnouncementsGrid = ({
 
       {announcements.count > 0 && (
         <Flex justify="center" my="10">
-          <Pagination
-            count={Math.ceil(announcements.count / maxPerPage)}
-            page={page}
-            onChange={handleChange}
+          <TablePagination
+            pageSize={maxPerPage}
+            offset={(page - 1) * maxPerPage}
+            totalCount={announcements.count}
+            hasPreviousPage={page > 1}
+            hasNextPage={page * maxPerPage < announcements.count}
+            onPreviousPage={() => setPage(page - 1)}
+            onNextPage={() => setPage(page + 1)}
+            showPageSizeOptions={false}
           />
         </Flex>
       )}

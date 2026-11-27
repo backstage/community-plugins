@@ -138,6 +138,40 @@ describe('AnnouncementsCard', () => {
     });
   });
 
+  it('marks only unseen announcements as new', async () => {
+    const base = {
+      excerpt: 'Excerpt',
+      body: 'Body',
+      publisher: 'Publisher',
+      active: true,
+      start_at: '2025-01-01',
+      until_date: '2025-02-01',
+      updated_at: '2025-01-01',
+    };
+
+    await renderAnnouncementsCard({
+      count: 2,
+      results: [
+        {
+          ...base,
+          id: 'new',
+          title: 'Fresh Announcement',
+          created_at: DateTime.now().toISO()!,
+        },
+        {
+          ...base,
+          id: 'seen',
+          title: 'Old Announcement',
+          created_at: '2025-01-01',
+        },
+      ],
+    });
+
+    expect(screen.getByText('Fresh Announcement')).toBeInTheDocument();
+    expect(screen.getByText('Old Announcement')).toBeInTheDocument();
+    expect(screen.getAllByTitle('New')).toHaveLength(1);
+  });
+
   it('captures analytics click event for announcements', async () => {
     const clickableAnnouncements: AnnouncementsList = {
       count: 1,

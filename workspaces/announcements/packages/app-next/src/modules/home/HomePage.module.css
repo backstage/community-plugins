@@ -1,0 +1,11 @@
+@layer components {
+  .code {
+    font-family: var(--bui-font-monospace);
+  }
+
+  .pre {
+    font-family: var(--bui-font-monospace);
+    white-space: pre;
+    overflow-x: auto;
+  }
+}
