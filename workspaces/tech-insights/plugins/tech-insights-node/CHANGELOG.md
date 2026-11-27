@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.10.0
+
+### Minor Changes
+
+- e9ea781: Added an optional `signal` to `FactRetrieverContext`. It is an `AbortSignal` that aborts when a fact retriever run times out or the backend shuts down, so retrievers can stop early instead of running on after the scheduler has released the task.
+
+### Patch Changes
+
+- Updated dependencies [0a312fd]
+  - @backstage-community/plugin-tech-insights-common@0.11.1
+
 ## 2.9.0
 
 ### Minor Changes

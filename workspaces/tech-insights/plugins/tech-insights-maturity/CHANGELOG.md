@@ -1,5 +1,15 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.10.2
+
+### Patch Changes
+
+- 2127527: `MaturityPage` now mounts `MaturityChartCard` once its Component list has loaded. The card requests check results once, on mount, so it used to send an empty entity list, which the backend reads as every entity with facts, and the chart counted all of them as services. The page shows a progress bar until the list arrives, and the catalog error if the list fails to load.
+- Updated dependencies [0a312fd]
+  - @backstage-community/plugin-tech-insights-common@0.11.1
+  - @backstage-community/plugin-tech-insights-maturity-common@0.7.1
+  - @backstage-community/plugin-tech-insights-react@1.7.1
+
 ## 0.10.1
 
 ### Patch Changes

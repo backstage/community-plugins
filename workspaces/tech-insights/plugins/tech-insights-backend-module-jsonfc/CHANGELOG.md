@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [0a312fd]
+- Updated dependencies [e9ea781]
+  - @backstage-community/plugin-tech-insights-common@0.11.1
+  - @backstage-community/plugin-tech-insights-node@2.10.0
+
 ## 0.10.0
 
 ### Minor Changes
