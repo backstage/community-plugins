@@ -6,7 +6,7 @@ This document describes how Renovate is configured for the community-plugins rep
 
 Renovate automatically creates pull requests to keep dependencies up to date. Because this repository contains ~107 independent workspaces under `/workspaces/`, the configuration is designed to scope updates per workspace and enforce version constraints for packages that are not compatible with the Backstage framework.
 
-The [Dependency Dashboard][dependency-dashboard] issue tracks all pending and open Renovate PRs and is the place where maintainers approve gated updates (such as major version bumps).
+The [Dependency Dashboard][dependency-dashboard] issue tracks all pending and open Renovate PRs.
 
 ## Package Rule Ordering
 
@@ -15,7 +15,7 @@ Renovate evaluates `packageRules` in order. When multiple rules match the same p
 1. **General rules** — broad disabling or grouping rules (e.g., disable `@backstage/*`, disable `@material-ui/*` replacements)
 2. **Workspace grouping rules** — group updates per workspace, then override grouping for maintainer-owned workspaces
 3. **Version pin rules** — restrict specific packages to allowed version ranges (e.g., `node-fetch <3`, `typescript ~5.3`, `react-router <7`, `@remixicon/react <4.9`)
-4. **Update type rules** — control behavior for categories of updates (e.g., require dashboard approval for major updates)
+4. **Update type rules** — control behavior for categories of updates (e.g., disable major updates)
 
 Version pin rules come after workspace grouping rules so that version constraints take precedence over grouping behavior. This is especially important for packages like `react-router` where the `vulnerabilityAlerts.enabled: false` setting must not be overridden by a later grouping rule.
 
@@ -49,7 +49,7 @@ Several packages are pinned to specific version ranges because newer major versi
 
 ### Major Version Updates
 
-Major version updates require manual approval on the [Dependency Dashboard][dependency-dashboard] before Renovate creates a PR. This prevents a flood of major version PRs and lets maintainers opt in to specific upgrades on their own schedule.
+Major version updates are disabled. Because updates are grouped per workspace, a major PR bundles many unrelated breaking upgrades together and is not realistic to land without breakage. Major upgrades should be done manually, one dependency at a time.
 
 ### Lock File Maintenance
 
