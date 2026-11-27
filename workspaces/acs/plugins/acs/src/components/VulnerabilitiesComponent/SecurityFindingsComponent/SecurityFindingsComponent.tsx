@@ -18,11 +18,20 @@ import { useCallback, useEffect, useState } from 'react';
 import * as React from 'react';
 import DataTable from 'react-data-table-component';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import { Link } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
-import '@patternfly/react-core/dist/styles/base.css';
-import '@patternfly/react-styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
+
+const tableStyles = {
+  expanderRow: {
+    style: {
+      position: 'sticky',
+      left: 0,
+      maxWidth: '100cqw',
+    },
+  },
+} as const;
 
 interface SecurityFindingsProps {
   data: any;
@@ -52,9 +61,15 @@ export const SecurityFindingsComponent = ({
       wrap: true,
       width: '140px',
       cell: (row: any) => (
-        <a href={row.rowData.link} target="_blank" rel="noopener noreferrer">
+        <Link
+          color="inherit"
+          underline="always"
+          href={row.rowData.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {row.rowData.cve}
-        </a>
+        </Link>
       ),
     },
     {
@@ -288,10 +303,11 @@ export const SecurityFindingsComponent = ({
   }, [organizeData]);
 
   return (
-    <div>
+    <div style={{ containerType: 'inline-size' }}>
       <DataTable
         data={dataRows}
         columns={columns}
+        customStyles={tableStyles}
         expandableRows
         expandableRowsComponent={CVEEntityDetailsComponent}
         expandableRowsComponentProps={{

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Typography, useTheme } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { VulnerabilitiesComponent } from '../VulnerabilitiesComponent';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
 export const ACSComponent = () => {
+  const theme = useTheme();
   const config = useApi(configApiRef);
 
   const title: string = 'Security findings';
@@ -41,21 +42,26 @@ export const ACSComponent = () => {
 
   return (
     <div>
-      <Grid container spacing={3}>
-        <Grid item xs={8}>
-          <Typography variant="h5" gutterBottom>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent="space-between"
+        gridGap={theme.spacing(2)}
+        mb={2}
+      >
+        <div>
+          <Typography variant="h5" color="textPrimary" gutterBottom>
             {title}
           </Typography>
-          <Typography variant="subtitle2" gutterBottom>
+          <Typography variant="subtitle2" color="textPrimary">
             {subheader}
           </Typography>
-        </Grid>
-        <Grid item>
-          <Button href={`${acsUrl}`} target="_blank" variant="outlined">
-            View in Advanced Cluster Security
-          </Button>
-        </Grid>
-      </Grid>
+        </div>
+        <Button href={`${acsUrl}`} target="_blank" variant="outlined">
+          View in Advanced Cluster Security
+        </Button>
+      </Box>
 
       <InfoCard>
         <VulnerabilitiesComponent
