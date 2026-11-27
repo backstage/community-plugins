@@ -725,19 +725,7 @@ export const V2DashboardPage = () => {
         <Flex direction="column" style={{ gap: 'var(--bui-space-6, 24px)' }}>
           {/* Filters row */}
 
-          <Flex direction="column" gap="4">
-            <Flex direction="row">
-              <ButtonLink
-                variant="tertiary"
-                href={DOCS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                iconEnd={<RiExternalLinkLine />}
-                style={{ alignSelf: 'flex-start', marginLeft: 'auto' }}
-              >
-                How do I interpret these metrics?
-              </ButtonLink>
-            </Flex>
+          <Flex direction="row" gap="4" style={{ flexWrap: 'wrap' }}>
             <Flex
               direction={{ initial: 'column', lg: 'row' }}
               gap="4"
@@ -884,6 +872,16 @@ export const V2DashboardPage = () => {
                 </Flex>
               )}
             </Flex>
+            <ButtonLink
+              variant="tertiary"
+              href={DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              iconEnd={<RiExternalLinkLine />}
+              style={{ alignSelf: 'flex-start', marginInlineStart: 'auto' }}
+            >
+              How do I interpret these metrics?
+            </ButtonLink>
           </Flex>
           {filterTarget === 'organizationTeam' &&
             (organizationTeamOptions.error || dashboard.error) && (

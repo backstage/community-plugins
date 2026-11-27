@@ -248,21 +248,28 @@ const getOrganizationSelectTrigger = () => {
 };
 
 describe('V2DashboardPage filter targets', () => {
-  it('places the metrics help link before the filters and aligns it right', async () => {
+  it('places the metrics help link after the filters in tab order and aligns it top-right', async () => {
     await renderDashboard(createApi());
 
     const helpLink = await screen.findByRole('link', {
       name: 'How do I interpret these metrics?',
     });
     const dateRangeLabel = await screen.findByText('Date range');
+    const teamSelector = await screen.findByRole('button', {
+      name: /team/i,
+    });
 
     expect(
-      helpLink.compareDocumentPosition(dateRangeLabel) &
+      dateRangeLabel.compareDocumentPosition(helpLink) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      teamSelector.compareDocumentPosition(helpLink) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(helpLink).toHaveStyle({
       alignSelf: 'flex-start',
-      marginLeft: 'auto',
+      marginInlineStart: 'auto',
     });
   });
 
