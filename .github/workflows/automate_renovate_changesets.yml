@@ -1,39 +1,183 @@
 name: Automate Renovate and Dependabot changeset
+# Adds changesets (and, for Dependabot, deduped lockfiles) to dependency PRs.
+#
+# This runs as two jobs so code from the PR never runs on the same machine as
+# the service account token:
+# - `generate` has no secrets. It dedupes lockfiles and generates changesets,
+#   then uploads the result as a patch.
+# - `push` runs on a fresh runner. It only accepts a patch that touches
+#   workspace yarn.lock and .changeset files, then commits and pushes it.
 on:
   pull_request_target:
     paths:
       - '**/package.json'
+      - '**/yarn.lock'
+
+permissions: {}
+
+concurrency:
+  group: changeset-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
-  generate-changeset:
+  generate:
     runs-on: ubuntu-latest
     if: |
-      (github.actor == 'backstage-goalie[bot]' || github.actor == 'dependabot[bot]')
+      (
+        (github.actor == 'backstage-goalie[bot]' && startsWith(github.head_ref, 'renovate/'))
+        || (github.actor == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/'))
+      )
       && github.repository == 'backstage/community-plugins'
       && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.patch.outputs.changed }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
         with:
           egress-policy: audit
 
-      - name: Checkout
+      # Tooling and the bcp.json opt-in come from the base branch
+      - name: Checkout base
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          path: base
+          persist-credentials: false
+
+      - name: Checkout PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: pr
           fetch-depth: 2
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
-          registry-url: https://registry.npmjs.org/ # Needed for auth
 
-      - name: Configure Git
+      # Dependabot doesn't dedupe lockfiles, which fails the duplicate check in
+      # CI. update-lockfile mode only rewrites yarn.lock, it doesn't fetch
+      # packages or run their install scripts. Yarn reads config and plugins
+      # from every directory up to the root, so this runs the base branch's
+      # Yarn and only when the PR's Yarn config matches the base branch.
+      - name: Dedupe lockfiles
+        if: github.actor == 'dependabot[bot]'
+        working-directory: pr
         run: |
-          git config --global user.email noreply@backstage.io
-          git config --global user.name 'Github changeset workflow'
+          yarn_bin="$GITHUB_WORKSPACE/base/$(sed -n 's/^yarnPath: *//p' ../base/.yarnrc.yml)"
+          same() { diff -rq "../base/$1" "$1" > /dev/null 2>&1 || { [ ! -e "../base/$1" ] && [ ! -e "$1" ]; }; }
+          same_config() {
+            for d in . workspaces "$1"; do
+              for f in .yarnrc .yarnrc.yml .yarn; do
+                same "$d/$f" || return 1
+              done
+            done
+            same package.json
+          }
+
+          for lockfile in $(git diff --name-only HEAD~1 -- 'workspaces/*/yarn.lock'); do
+            dir=$(dirname "$lockfile")
+            if ! same_config "$dir"; then
+              echo "::warning::Yarn config differs from the base branch, skipping dedupe for $lockfile"
+              continue
+            fi
+            echo "Deduping $lockfile"
+            (cd "$dir" && node "$yarn_bin" dedupe --mode=update-lockfile)
+            git add "$lockfile"
+          done
 
       - name: Generate changesets
-        run: node ./scripts/ci/generate-bump-changesets.js
+        working-directory: pr
+        env:
+          BCP_ROOT: ${{ github.workspace }}/base
+        run: node ../base/scripts/ci/generate-bump-changesets.js
+
+      - name: Create patch
+        id: patch
+        working-directory: pr
+        run: |
+          git diff --cached --binary > ../changes.patch
+          if [ -s ../changes.patch ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Nothing to push"
+          fi
+
+      - name: Upload patch
+        if: steps.patch.outputs.changed == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: changes
+          path: changes.patch
+          retention-days: 1
+
+  push:
+    needs: generate
+    if: needs.generate.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Download patch
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: changes
+          path: ${{ runner.temp }}/changes
+
+      # The patch was produced on a runner that read PR content, so treat it as
+      # untrusted: only plain edits to workspace lockfiles and changesets.
+      - name: Validate and apply patch
+        env:
+          PATCH: ${{ runner.temp }}/changes/changes.patch
+        run: |
+          if grep -qE '^(old mode|new mode|deleted file mode|rename from|rename to|copy from|copy to|similarity index|GIT binary patch)' "$PATCH"; then
+            echo "::error::Patch contains mode changes, renames, deletions or binary data"
+            exit 1
+          fi
+          if [ -n "$(grep -E '^new file mode ' "$PATCH" | grep -v '^new file mode 100644$')" ]; then
+            echo "::error::Patch adds a file that isn't a regular file"
+            exit 1
+          fi
+          allowed='^workspaces/[A-Za-z0-9._-]+/(yarn\.lock|\.changeset/[A-Za-z0-9._-]+\.md)$'
+          git apply --numstat "$PATCH" | cut -f3- > "$RUNNER_TEMP/paths"
+          if grep -qvE "$allowed" "$RUNNER_TEMP/paths"; then
+            echo "::error::Patch touches files other than workspace lockfiles and changesets:"
+            grep -vE "$allowed" "$RUNNER_TEMP/paths"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/paths"
+          git apply --index "$PATCH"
+
+      - name: Commit and push
+        env:
+          TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          BRANCH: ${{ github.head_ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git config user.email noreply@backstage.io
+          git config user.name 'Github changeset workflow'
+          git commit --amend --no-edit --no-verify
+
+          # Pass the token through environment-based git config rather than
+          # the command line, and only push if the branch hasn't moved
+          auth=$(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          GIT_CONFIG_COUNT=1 \
+          GIT_CONFIG_KEY_0="http.https://github.com/.extraheader" \
+          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth" \
+            git push --force-with-lease="refs/heads/${BRANCH}:${HEAD_SHA}" origin "HEAD:refs/heads/${BRANCH}"

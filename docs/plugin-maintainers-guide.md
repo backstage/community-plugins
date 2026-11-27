@@ -17,6 +17,7 @@
   - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
   - [Opt-in to Playwright UI Check](#opt-in-to-playwright-ui-check)
   - [Opt-in to Code Coverage](#opt-in-to-code-coverage)
+  - [Configure Dependency Update Changesets](#configure-dependency-update-changesets)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
   - [FAQ](#faq)
@@ -181,6 +182,20 @@ When enabled:
 - Coverage status checks are **informational only** — they will never block a PR from merging
 
 No changes to your test configuration are needed. The existing `backstage-cli repo test --coverage` command already produces the coverage data that Codecov consumes.
+
+## Configure Dependency Update Changesets
+
+When Renovate or Dependabot opens a PR that changes dependencies in one of your published plugins, a workflow adds a `patch` changeset for each affected workspace so the update gets released. You can control this with the `dependencyChangesets` field in your `bcp.json` file in the root of your workspace (`workspaces/${WORKSPACE}/bcp.json`):
+
+- `"all"` adds a changeset for any dependency change, including `devDependencies`. This is the default when the field is not set.
+- `"production"` only adds a changeset when `dependencies`, `peerDependencies` or `optionalDependencies` change. Updates to `devDependencies` (test frameworks, build tools, linters) don't affect people installing your plugin, so they won't trigger a release.
+- `false` never adds a changeset. You'll need to add one yourself if you want a dependency update released.
+
+```json
+{
+  "dependencyChangesets": "production"
+}
+```
 
 ## Maintaining and patching an older release line
 

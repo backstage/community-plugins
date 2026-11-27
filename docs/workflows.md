@@ -30,7 +30,7 @@ The `renovate.yml` workflow runs every 60 minutes to update dependencies using t
 
 ### [automate_renovate_changesets.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/automate_renovate_changesets.yml)
 
-Automates the generation of changesets for Renovate pull requests.
+Automates the generation of changesets for Renovate and Dependabot pull requests. Each workspace controls this with the `dependencyChangesets` field in its `bcp.json` (see the [Plugin Maintainer Guide](./plugin-maintainers-guide.md#configure-dependency-update-changesets)). For Dependabot pull requests it also dedupes any changed `yarn.lock` files.
 
 ## Misc Automation Workflows
 
