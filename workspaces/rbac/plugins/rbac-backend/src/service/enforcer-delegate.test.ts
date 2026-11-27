@@ -73,9 +73,16 @@ const secondPolicy = [
   'create',
   'allow',
 ];
+const thirdPolicy = [
+  'role:default/ops-team',
+  'catalog-entity',
+  'delete',
+  'allow',
+];
 
 const groupingPolicy = ['user:default/tom', 'role:default/dev-team'];
 const secondGroupingPolicy = ['user:default/tim', 'role:default/qa-team'];
+const thirdGroupingPolicy = ['user:default/sam', 'role:default/ops-team'];
 
 describe('EnforcerDelegate', () => {
   let enfRemovePolicySpy: jest.SpyInstance<Promise<boolean>, string[], any>;
@@ -338,6 +345,24 @@ describe('EnforcerDelegate', () => {
       expect(policies[0]).toEqual(policy);
     });
 
+    it('should return policies matching any of the role filters', async () => {
+      const enfDelegate = await createEnfDelegate([
+        policy,
+        secondPolicy,
+        thirdPolicy,
+      ]);
+
+      const policies = await enfDelegate.getFilteredPolicy(
+        0,
+        [policy[0]],
+        [secondPolicy[0]],
+      );
+
+      expect(policies).toEqual(expect.arrayContaining([policy, secondPolicy]));
+      expect(policies).toHaveLength(2);
+      expect(policies).not.toContainEqual(thirdPolicy);
+    });
+
     it('should return filtered policy by policy effect', async () => {
       const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
 
@@ -353,6 +378,72 @@ describe('EnforcerDelegate', () => {
       expect(policies.length).toEqual(2);
       expect(policies[0]).toEqual(policy);
       expect(policies[1]).toEqual(secondPolicy);
+    });
+
+    it('should return policies for many filters sent in batches', async () => {
+      const policiesPerBatch: string[][] = [];
+      const filters: string[][] = [];
+      for (let i = 0; i < 250; i++) {
+        const roleEntityRef = `role:default/batch-role-${i}`;
+        policiesPerBatch.push([
+          roleEntityRef,
+          'catalog-entity',
+          'read',
+          'allow',
+        ]);
+        filters.push([roleEntityRef]);
+      }
+
+      const enfDelegate = await createEnfDelegate(policiesPerBatch);
+      adapterLoaderFilterGroupingPolicySpy.mockClear();
+
+      const policies = await enfDelegate.getFilteredPolicy(0, ...filters);
+
+      expect(policies).toHaveLength(250);
+      expect(policies).toEqual(expect.arrayContaining(policiesPerBatch));
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(3);
+      expect(
+        adapterLoaderFilterGroupingPolicySpy.mock.calls[0][1],
+      ).toHaveLength(100);
+      expect(
+        adapterLoaderFilterGroupingPolicySpy.mock.calls[1][1],
+      ).toHaveLength(100);
+      expect(
+        adapterLoaderFilterGroupingPolicySpy.mock.calls[2][1],
+      ).toHaveLength(50);
+    });
+
+    it('should return each policy once when batched filters overlap', async () => {
+      const filters: string[][] = [];
+      for (let i = 0; i < 250; i++) {
+        filters.push(i % 2 === 0 ? [policy[0]] : [secondPolicy[0]]);
+      }
+
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+      adapterLoaderFilterGroupingPolicySpy.mockClear();
+
+      const policies = await enfDelegate.getFilteredPolicy(0, ...filters);
+
+      expect(policies).toEqual([policy, secondPolicy]);
+    });
+
+    it('should handle ~1000 role filters on SQLite adapter without exceeding expression limit', async () => {
+      const policiesCount = 1000;
+      const policiesList: string[][] = [];
+      const filters: string[][] = [];
+      for (let i = 0; i < policiesCount; i++) {
+        const roleEntityRef = `role:default/stress-role-${i}`;
+        policiesList.push([roleEntityRef, 'catalog-entity', 'read', 'allow']);
+        filters.push([roleEntityRef]);
+      }
+
+      const enfDelegate = await createEnfDelegate(policiesList);
+      adapterLoaderFilterGroupingPolicySpy.mockClear();
+
+      const policies = await enfDelegate.getFilteredPolicy(0, ...filters);
+
+      expect(policies).toHaveLength(policiesCount);
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(10);
     });
   });
 
@@ -401,6 +492,25 @@ describe('EnforcerDelegate', () => {
       expect(policies[0]).toEqual(secondGroupingPolicy);
     });
 
+    it('should return grouping policies matching any of the role filters', async () => {
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy, thirdGroupingPolicy],
+      );
+
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        1,
+        [groupingPolicy[1]],
+        [secondGroupingPolicy[1]],
+      );
+
+      expect(policies).toEqual(
+        expect.arrayContaining([groupingPolicy, secondGroupingPolicy]),
+      );
+      expect(policies).toHaveLength(2);
+      expect(policies).not.toContainEqual(thirdGroupingPolicy);
+    });
+
     it('should return filtered grouping policy by role name with index offset', async () => {
       const enfDelegate = await createEnfDelegate(
         [],
@@ -415,6 +525,59 @@ describe('EnforcerDelegate', () => {
 
       expect(policies.length).toEqual(1);
       expect(policies[0]).toEqual(secondGroupingPolicy);
+    });
+
+    it('should return grouping policies for many filters sent in batches', async () => {
+      const groupingPolicies: string[][] = [];
+      const filters: string[][] = [];
+      for (let i = 0; i < 250; i++) {
+        const roleEntityRef = `role:default/batch-role-${i}`;
+        groupingPolicies.push([`user:default/batch-user-${i}`, roleEntityRef]);
+        filters.push([roleEntityRef]);
+      }
+
+      const enfDelegate = await createEnfDelegate([], groupingPolicies);
+      adapterLoaderFilterGroupingPolicySpy.mockClear();
+
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        1,
+        ...filters,
+      );
+
+      expect(policies).toHaveLength(250);
+      expect(policies).toEqual(expect.arrayContaining(groupingPolicies));
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(3);
+      expect(
+        adapterLoaderFilterGroupingPolicySpy.mock.calls[0][1],
+      ).toHaveLength(100);
+      expect(
+        adapterLoaderFilterGroupingPolicySpy.mock.calls[1][1],
+      ).toHaveLength(100);
+      expect(
+        adapterLoaderFilterGroupingPolicySpy.mock.calls[2][1],
+      ).toHaveLength(50);
+    });
+
+    it('should return each grouping policy once when batched filters overlap', async () => {
+      const filters: string[][] = [];
+      for (let i = 0; i < 250; i++) {
+        filters.push(
+          i % 2 === 0 ? [groupingPolicy[1]] : [secondGroupingPolicy[1]],
+        );
+      }
+
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy],
+      );
+      adapterLoaderFilterGroupingPolicySpy.mockClear();
+
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        1,
+        ...filters,
+      );
+
+      expect(policies).toEqual([groupingPolicy, secondGroupingPolicy]);
     });
   });
 
