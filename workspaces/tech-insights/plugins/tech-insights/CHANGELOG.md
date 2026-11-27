@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.5.1
+
+### Patch Changes
+
+- 43d0342: `EntityTechInsightsScorecardCard` no longer needs the Tech Insights page to be mounted. It was a routable extension on the page's route, so it threw on entity pages when `page:tech-insights` was disabled or the page was not installed.
+- Updated dependencies [0a312fd]
+  - @backstage-community/plugin-tech-insights-common@0.11.1
+  - @backstage-community/plugin-tech-insights-react@1.7.1
+
 ## 1.5.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.11.1
+
+### Patch Changes
+
+- 0a312fd: `TechInsightsClient.runBulkChecks` no longer sends a trailing empty chunk when the number of entities is a multiple of the chunk size (750). The backend reads an empty list as every entity with facts, so a request for exactly 750 entities also evaluated, and returned, the whole catalog.
+
 ## 0.11.0
 
 ### Minor Changes
