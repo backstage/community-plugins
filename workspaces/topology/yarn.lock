@@ -1161,7 +1161,6 @@ __metadata:
     "@backstage/plugin-permission-react": "backstage:^"
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
-    "@backstage/theme": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@kubernetes/client-node": "npm:2.0.2"
     "@patternfly/patternfly": "npm:^6.1.0"
@@ -1183,6 +1182,7 @@ __metadata:
     glob: "npm:^14.0.0"
     js-yaml: "npm:^5.4.2"
     lodash: "npm:^4.17.21"
+    mobx: "npm:^6.9.0"
     mobx-react: "npm:^7.6.0"
     react: "npm:^18.3.1"
     react-aria-components: "npm:~1.21.0"
@@ -3152,7 +3152,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/theme@backstage:^::backstage=1.56.2&npm=0.7.3, @backstage/theme@npm:^0.7.3":
+"@backstage/theme@npm:^0.7.3":
   version: 0.7.3
   resolution: "@backstage/theme@npm:0.7.3"
   dependencies:
