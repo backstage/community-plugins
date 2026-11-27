@@ -50,15 +50,17 @@
     "@backstage/cli": "^0.36.5",
     "@backstage/dev-utils": "^1.1.26",
     "@backstage/test-utils": "^1.7.21",
+    "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^16.0.0",
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.0.0"
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.6"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^17.0.2 || ^18.0.0",
+    "react-dom": "^17.0.2 || ^18.0.0"
   },
   "files": [
     "dist",

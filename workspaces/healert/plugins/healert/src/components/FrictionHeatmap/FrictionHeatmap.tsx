@@ -161,16 +161,11 @@ function useFrictionMatrix() {
           const count = evts.length;
           const score = Math.min(100, count * 15);
 
-          const sev: FrictionCell['severity'] =
-            count === 0
-              ? 'none'
-              : score < 20
-              ? 'low'
-              : score < 50
-              ? 'medium'
-              : score < 80
-              ? 'high'
-              : 'critical';
+          let sev: FrictionCell['severity'] = 'critical';
+          if (count === 0) sev = 'none';
+          else if (score < 20) sev = 'low';
+          else if (score < 50) sev = 'medium';
+          else if (score < 80) sev = 'high';
 
           // Unique actors for this cell
           const actors = [
@@ -222,7 +217,7 @@ function useFrictionMatrix() {
       });
       setLoading(false);
     }
-  }, [entityRef]);
+  }, [entityRef, healertApi]);
 
   useEffect(() => {
     buildMatrix();
@@ -944,9 +939,18 @@ export function FrictionHeatmap() {
                     >
                       <div
                         className={classes.cell}
+                        role="button"
+                        tabIndex={0}
+                        aria-pressed={isSelected}
                         onClick={() =>
                           setSelectedCell(isSelected ? null : cell)
                         }
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setSelectedCell(isSelected ? null : cell);
+                          }
+                        }}
                         style={{
                           background: pal.bg,
                           color: pal.text,
