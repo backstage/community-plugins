@@ -307,7 +307,7 @@ The CI workflow runs your tests automatically with all versions configured in yo
 
 ```json
   "engines": {
-    "node": "22 || 24"
+    "node": "24 || 26"
   },
 ```
 
