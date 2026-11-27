@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { waitFor } from '@testing-library/react';
 
 import { MaturityPage } from './MaturityPage';
 import { MaturityApi, maturityApiRef } from '../../api';
@@ -43,5 +45,57 @@ describe('<MaturityPage />', () => {
     );
 
     expect(getAllByText(/Maturity/)).toHaveLength(1);
+  });
+
+  it('requests check results once, for the Components it loaded', async () => {
+    const components: Entity[] = ['a', 'b'].map(name => ({
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: { name, namespace: 'default' },
+    }));
+    const getBulkMaturityCheckResults = jest.fn().mockResolvedValue([]);
+
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            catalogApiRef,
+            { getEntities: jest.fn().mockResolvedValue({ items: components }) },
+          ],
+          [maturityApiRef, { getBulkMaturityCheckResults }],
+        ]}
+      >
+        <MaturityPage />
+      </TestApiProvider>,
+    );
+
+    await waitFor(() => expect(getBulkMaturityCheckResults).toHaveBeenCalled());
+    expect(getBulkMaturityCheckResults).toHaveBeenCalledTimes(1);
+    expect(getBulkMaturityCheckResults).toHaveBeenCalledWith(components);
+  });
+
+  it('shows the catalog error instead of requesting check results', async () => {
+    const getBulkMaturityCheckResults = jest.fn().mockResolvedValue([]);
+
+    const { findAllByText } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            catalogApiRef,
+            {
+              getEntities: jest
+                .fn()
+                .mockRejectedValue(new Error('catalog is down')),
+            },
+          ],
+          [maturityApiRef, { getBulkMaturityCheckResults }],
+        ]}
+      >
+        <MaturityPage />
+      </TestApiProvider>,
+    );
+
+    expect((await findAllByText(/catalog is down/)).length).toBeGreaterThan(0);
+    expect(getBulkMaturityCheckResults).not.toHaveBeenCalled();
   });
 });

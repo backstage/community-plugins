@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, Header, Page } from '@backstage/core-components';
+import {
+  Content,
+  ErrorPanel,
+  Header,
+  Page,
+  Progress,
+} from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
@@ -23,22 +29,33 @@ import { MaturityChartCard } from '../MaturityChartCard';
 export const MaturityPage = () => {
   const catalogApi = useApi(catalogApiRef);
 
-  const { value: entities } = useAsyncRetry(async () => {
+  const { value: entities, error } = useAsyncRetry(async () => {
     const entitiesList = await catalogApi.getEntities({
       filter: { kind: ['Component'] },
     });
     return entitiesList.items;
   }, [catalogApi]);
 
+  // MaturityChartCard requests check results once, on mount. Mounting it
+  // before the Components arrive would request them for an empty list, which
+  // the backend reads as every entity with facts.
   return (
     <Page themeId="home">
       <Header title="Maturity" />
       <Content>
-        <Grid container>
-          <Grid item md={4}>
-            <MaturityChartCard entities={entities ?? []} />
+        {error ? (
+          <ErrorPanel error={error} />
+        ) : (
+          <Grid container>
+            <Grid item md={4}>
+              {entities ? (
+                <MaturityChartCard entities={entities} />
+              ) : (
+                <Progress />
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Content>
     </Page>
   );
