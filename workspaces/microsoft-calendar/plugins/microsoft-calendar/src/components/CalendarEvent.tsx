@@ -21,7 +21,7 @@ import {
 } from 'material-ui-popup-state/hooks';
 import { useState } from 'react';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
@@ -127,7 +127,9 @@ export const CalendarEvent = ({ event }: { event: MicrosoftCalendarEvent }) => {
             <Link
               data-testid="calendar-event-online-meeting-link"
               className={classes.link}
-              to={onlineMeetingLink}
+              href={onlineMeetingLink}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={e => {
                 e.stopPropagation();
               }}

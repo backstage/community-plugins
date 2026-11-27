@@ -19,40 +19,20 @@ import {
   ScmAuth,
 } from '@backstage/integration-react';
 import {
-  AnyApiFactory,
+  ApiFactory,
   configApiRef,
   createApiFactory,
 } from '@backstage/core-plugin-api';
-import {
-  TechRadarApi,
-  // @ts-ignore
-  techRadarApiRef,
-} from '@backstage-community/plugin-tech-radar';
-import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
+import { techRadarApiRef } from '@backstage-community/plugin-tech-radar';
+import { SampleTechRadarApi } from './sampleTechRadarApi';
 
-// overriding the api is one way to change the radar content
-// @ts-ignore
-class SampleTechRadarApi implements TechRadarApi {
-  async load(): Promise<TechRadarLoaderResponse> {
-    return {
-      entries: [],
-      quadrants: [
-        { id: 'infrastructure', name: 'Infrastructure' },
-        { id: 'frameworks', name: 'Frameworks' },
-        { id: 'languages', name: 'Languages' },
-        { id: 'process', name: 'Process' },
-      ],
-      rings: [],
-    };
-  }
-}
-
-export const apis: AnyApiFactory[] = [
+export const apis: ApiFactory[] = [
   createApiFactory({
     api: scmIntegrationsApiRef,
     deps: { configApi: configApiRef },
     factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
   }),
   ScmAuth.createDefaultApiFactory(),
-  // createApiFactory(techRadarApiRef, new SampleTechRadarApi()), // comment out to use a custom api
+  // Uses local mock data. Comment out to load the data configured in app-config.yaml instead.
+  createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
 ];

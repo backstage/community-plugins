@@ -18,14 +18,11 @@ import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { useApi, storageApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import {
-  InfoCard,
-  Progress,
-  ErrorPanel,
-  Link,
-} from '@backstage/core-components';
+import { InfoCard, Progress, ErrorPanel } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { newRelicDashboardApiRef } from '../../../api';
 import { DashboardSnapshotSummary } from '../../../api/NewRelicDashboardApi';
 import useObservable from 'react-use/esm/useObservable';
@@ -55,7 +52,7 @@ export const DashboardSnapshot = (props: {
   const classes = useStyles();
   const { guid, name, permalink } = props;
   const newRelicDashboardAPI = useApi(newRelicDashboardApiRef);
-  const storageApi = useApi(storageApiRef).forBucket('newrelic-dashboard');
+  const storageApi = useApi(coreApis.storage).forBucket('newrelic-dashboard');
   const setStorageValue = (value: number) => {
     storageApi.set(guid, value);
   };
@@ -110,7 +107,7 @@ export const DashboardSnapshot = (props: {
     >
       <Box display="flex">
         <Box flexGrow="1">
-          <Link to={permalink}>
+          <Link href={permalink} target="_blank" rel="noopener noreferrer">
             {url ? (
               <img
                 alt={`${name} Dashboard`}

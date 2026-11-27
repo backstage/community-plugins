@@ -79,9 +79,7 @@ describe('ExecutionsTable', () => {
     getExecutions: jest.fn().mockResolvedValue(executions),
     getExecutionHistoryUrl: jest
       .fn()
-      .mockResolvedValue(
-        'http://stackstorm.example.com:8080/?#/history/123abc',
-      ),
+      .mockReturnValue('http://stackstorm.example.com:8080/?#/history/123abc'),
   } as any;
 
   it('should render all executions', async () => {

@@ -35,6 +35,7 @@ import {
   getRoleData,
   getRulesNumber,
   getUpdatedConditionalPolicies,
+  updatePolicyEffect,
 } from './create-role-utils';
 
 describe('getRoleData', () => {
@@ -552,6 +553,75 @@ describe('getUpdatedConditionalPolicies', () => {
     const result = getUpdatedConditionalPolicies(values, initialValues);
 
     expect(result).toEqual([]);
+  });
+
+  it('merges the rows of one stored conditional policy into a single update', () => {
+    const conditions = {
+      condition: {
+        rule: 'HAS_LABEL',
+        params: { label: 'temp' },
+        resourceType: 'catalog-entity',
+      },
+    };
+    const row = (permission: string, policy: string) => ({
+      id: 9,
+      permission,
+      resourceType: 'catalog-entity',
+      policies: [{ policy, effect: 'allow' }],
+      isResourced: true,
+      plugin: 'catalog',
+      conditions,
+    });
+    const values = {
+      kind: 'user',
+      name: 'div',
+      namespace: 'default',
+      selectedMembers: [],
+      selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
+      permissionPoliciesRows: [
+        row('catalog.entity.read', 'read'),
+        row('catalog.entity.delete', 'delete'),
+      ],
+    };
+
+    const result = getUpdatedConditionalPolicies(values, values);
+
+    expect(result).toEqual([
+      {
+        id: 9,
+        updateCondition: expect.objectContaining({
+          permissionMapping: [
+            { name: 'catalog.entity.read', action: 'read' },
+            { name: 'catalog.entity.delete', action: 'delete' },
+          ],
+        }),
+      },
+    ]);
+  });
+});
+
+describe('updatePolicyEffect', () => {
+  it('replaces one effect without mutating the given rows', () => {
+    const rows = [
+      {
+        plugin: 'catalog',
+        permission: 'catalog.entity.read',
+        policies: [
+          { policy: 'read', effect: 'allow' },
+          { policy: 'delete', effect: 'allow' },
+        ],
+      },
+    ];
+
+    const result = updatePolicyEffect(rows, 0, 1, 'deny');
+
+    expect(result[0].policies).toEqual([
+      { policy: 'read', effect: 'allow' },
+      { policy: 'delete', effect: 'deny' },
+    ]);
+    // The rows may be shared with the form's initial values, so the
+    // original objects must stay untouched.
+    expect(rows[0].policies[1]).toEqual({ policy: 'delete', effect: 'allow' });
   });
 });
 

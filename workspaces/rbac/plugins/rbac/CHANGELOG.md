@@ -1,5 +1,47 @@
 # @backstage-community/plugin-rbac
 
+## 2.5.0
+
+### Minor Changes
+
+- 37044ed: When editing a role, the review step now summarizes what will change compared to the saved role: updated name, description, or owner; added and removed users and groups; added and removed permission policies; and added, removed, or changed conditional access policies. If nothing was changed, the review step says so.
+
+### Patch Changes
+
+- 3c732bd: Added spacing between the Back, Reset, and Create buttons on the role form review step.
+- 3c6c1bc: Updated dependency `@testing-library/user-event` to `14.6.13`.
+- 5773754: Updated dependency `@testing-library/user-event` to `14.6.9`.
+- 7f6e499: Updated dependency `@testing-library/user-event` to `14.6.12`.
+- 6bb4cc2: Updated dependency `@playwright/test` to `1.65.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.10`.
+
+## 2.4.0
+
+### Minor Changes
+
+- b9b3444: Add a scalable members and groups selection modal for large catalogs (more than 100 users/groups), with search, kind/namespace filters, server-side pagination, and sortable Name/Type/Namespace columns. The existing dropdown remains for smaller catalogs. Reopening the modal keeps the current role members checked, and unchecking members updates the role form. The `searchMembers` API now accepts pagination/filter/sort options and returns `{ items, totalItems }`.
+- 0551e54: Show each role's source in the Roles list and disable Edit/Delete for roles not created via the REST API or UI
+
+  Roles now display a Source column (App Config, CSV, or Form). Edit and Delete are disabled for App Config and CSV roles, with a tooltip explaining that changes must be made in the corresponding source.
+
+  Also fix success toasts reappearing on page refresh after creating or updating a role.
+
+- 18e546f: Backstage version bump to v1.56.5
+
+### Patch Changes
+
+- f418ee8: Updated dependency `@playwright/test` to `1.65.0`.
+- Updated dependencies [18e546f]
+  - @backstage-community/plugin-rbac-common@2.2.0
+
+## 2.3.7
+
+### Patch Changes
+
+- 1095c45: Updated dependency `qs` to `6.16.1`.
+  Updated dependency `@playwright/test` to `1.64.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.8`.
+
 ## 2.3.6
 
 ### Patch Changes

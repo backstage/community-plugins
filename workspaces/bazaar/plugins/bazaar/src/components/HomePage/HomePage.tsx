@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Header, RoutedTabs } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { SortView } from '../SortView';
 import { About } from '../About';
 
@@ -28,27 +29,27 @@ export type HomePageProps = {
 
 export const HomePage = (props: HomePageProps) => {
   const { title, subtitle, fullWidth, fullHeight } = props;
-
-  const tabContent = [
-    {
-      path: '/',
-      title: 'Home',
-      children: <SortView fullWidth={fullWidth} fullHeight={fullHeight} />,
-    },
-    {
-      path: '/about',
-      title: 'About',
-      children: <About />,
-    },
-  ];
+  const basePath = useResolvedPath('.').pathname.replace(/\/$/, '');
 
   return (
-    <div>
+    <>
       <Header
         title={title || 'Bazaar'}
-        subtitle={subtitle || 'Marketplace for inner source projects'}
+        description={subtitle || 'Marketplace for inner source projects'}
+        tabs={[
+          { id: 'home', label: 'Home', href: basePath || '/' },
+          { id: 'about', label: 'About', href: `${basePath}/about` },
+        ]}
       />
-      <RoutedTabs routes={tabContent} />
-    </div>
+      <Container>
+        <Routes>
+          <Route
+            path="/"
+            element={<SortView fullWidth={fullWidth} fullHeight={fullHeight} />}
+          />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Container>
+    </>
   );
 };

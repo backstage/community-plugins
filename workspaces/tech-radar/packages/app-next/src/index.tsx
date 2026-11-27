@@ -16,5 +16,6 @@
 import '@backstage/cli/asset-types';
 import { createRoot } from 'react-dom/client';
 import app from './App';
+import '@backstage/ui/css/styles.css';
 
 createRoot(document.getElementById('root')!).render(app);

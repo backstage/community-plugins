@@ -20,12 +20,15 @@ const backend = createBackend();
 
 backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
 backend.add(import('@backstage/plugin-auth-backend-module-oidc-provider'));
 
 backend.add(import('@backstage/plugin-catalog-backend'));
 backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
+// Allow runtime file locations for RHIDP-19025 large-catalog e2e injection.
+backend.add(import('./catalogAllowFileLocations'));
 
 backend.add(import('@backstage/plugin-permission-backend'));
 backend.add(import('../src'));

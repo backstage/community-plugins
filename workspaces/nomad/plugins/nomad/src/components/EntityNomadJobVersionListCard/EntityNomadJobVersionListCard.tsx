@@ -22,7 +22,8 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Version, nomadApiRef } from '../../api';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import {
   NOMAD_JOB_ID_ANNOTATION,
   NOMAD_NAMESPACE_ANNOTATION,
@@ -53,7 +54,7 @@ export const EntityNomadJobVersionListCard = () => {
   const { entity } = useEntity();
 
   // Get ref to the backend API
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const nomadApi = useApi(nomadApiRef);
   const nomadAddr = configApi.getString('nomad.addr');
 

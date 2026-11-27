@@ -1,5 +1,21 @@
 # @backstage-community/plugin-xcmetrics
 
+## 0.23.0
+
+### Minor Changes
+
+- 7d43159: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 7d43159: The XCMetrics header, tabs, dashboard heading and filter pickers now use Backstage UI components.
+
+## 0.22.0
+
+### Minor Changes
+
+- 24f94d0: Backstage version bump to v1.56.2
+
 ## 0.21.0
 
 ### Minor Changes

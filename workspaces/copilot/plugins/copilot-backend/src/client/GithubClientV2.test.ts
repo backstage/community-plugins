@@ -14,22 +14,71 @@
  * limitations under the License.
  */
 
-import { GithubClientV2 } from './GithubClientV2';
+import {
+  GithubClientV2,
+  InaccessibleEnterpriseOrganizationError,
+  isOrganizationReportNotFoundError,
+  isOrganizationReportPermissionError,
+} from './GithubClientV2';
 import { Octokit } from '@octokit/rest';
 
 const mockRequest = jest.fn();
+const mockGetOrgInstallation = jest.fn();
+const mockHookBefore = jest.fn();
+const mockOutgoingHeaders: Array<Record<string, string>> = [];
+const mockAppAuthentication = jest
+  .fn()
+  .mockResolvedValue({ token: 'fake-app-jwt' });
+const mockCreateAppAuth = jest.fn((_options: unknown) => mockAppAuthentication);
 
 // Mock Octokit
 jest.mock('@octokit/rest', () => ({
-  Octokit: jest.fn().mockImplementation(() => ({
-    request: mockRequest,
-    rest: {
-      apps: {
-        getOrgInstallation: jest.fn().mockResolvedValue({ data: { id: 999 } }),
+  Octokit: jest.fn().mockImplementation((options: any) => {
+    const requestHooks: Array<
+      (requestOptions: { headers: Record<string, string> }) => void
+    > = [];
+    return {
+      request: (...args: any[]) => {
+        const requestOptions = {
+          headers: {
+            accept: 'application/vnd.github.v3+json',
+          } as Record<string, string>,
+        };
+        requestHooks.forEach(requestHook => requestHook(requestOptions));
+        mockOutgoingHeaders.push({ ...requestOptions.headers });
+        return mockRequest(...args);
       },
-    },
-    graphql: jest.fn(),
-  })),
+      auth: jest.fn().mockResolvedValue({
+        type: 'token',
+        token:
+          typeof options?.auth === 'string'
+            ? options.auth
+            : 'fake-installation-token',
+      }),
+      rest: {
+        apps: {
+          getOrgInstallation: mockGetOrgInstallation,
+        },
+      },
+      hook: {
+        before: (
+          name: string,
+          requestHook: (requestOptions: {
+            headers: Record<string, string>;
+          }) => void,
+        ) => {
+          mockHookBefore(name, requestHook);
+          if (name === 'request') {
+            requestHooks.push(requestHook);
+          }
+        },
+      },
+    };
+  }),
+}));
+
+jest.mock('@octokit/auth-app', () => ({
+  createAppAuth: (options: unknown) => mockCreateAppAuth(options),
 }));
 
 // Mock GithubUtils
@@ -46,13 +95,195 @@ jest.mock('../utils/GithubUtils', () => ({
   }),
 }));
 
+function parseMockRequestUrl(route: string): URL {
+  return new URL(route.replace(/^GET\s+/, ''), 'https://api.github.com');
+}
+
+function githubResponse(
+  data: unknown,
+  link?: string,
+  headers: Record<string, string> = {},
+) {
+  return { data, headers: { ...headers, ...(link ? { link } : {}) } };
+}
+
+function rawFetchResponse(data: unknown, link?: string) {
+  return {
+    ok: true,
+    status: 200,
+    headers: {
+      get: (name: string) =>
+        name.toLowerCase() === 'link' ? link ?? null : null,
+    },
+    json: jest.fn().mockResolvedValue(data),
+  };
+}
+
+function httpError(status: number): Error & { status: number } {
+  return Object.assign(new Error(`HTTP ${status}`), { status });
+}
+
+function githubError(
+  fields: Record<string, unknown>,
+  message = 'request failed',
+) {
+  return Object.assign(new Error(message), fields);
+}
+
+type GithubErrorBoundaryCase = [
+  name: string,
+  createError: () => unknown,
+  shouldRetry: boolean,
+];
+
+const githubErrorBoundaryCases: GithubErrorBoundaryCase[] = [
+  [
+    'Error instances with non-enumerable response and inherited retry-after',
+    () => {
+      const error = githubError({ status: 403 });
+      const headers = Object.create({ 'retry-after': '0.5' });
+      Object.defineProperty(error, 'response', {
+        value: Object.create({ headers }),
+      });
+      return error;
+    },
+    false,
+  ],
+  [
+    'arrays with assigned status and remaining-zero headers',
+    () =>
+      Object.assign([], {
+        status: 403,
+        response: { headers: { 'x-ratelimit-remaining': '0' } },
+      }),
+    false,
+  ],
+  [
+    'array response preserves nested status',
+    () => githubError({ response: Object.assign([], { status: 403 }) }),
+    true,
+  ],
+  [
+    'array headers preserve retry-after',
+    () =>
+      githubError({
+        status: 403,
+        response: { headers: Object.assign([], { 'retry-after': '0.5' }) },
+      }),
+    false,
+  ],
+  [
+    'non-number own status fallback',
+    () => githubError({ status: '500', response: { status: 403 } }),
+    true,
+  ],
+  [
+    'NaN status precedence over nested response.status',
+    () => githubError({ status: NaN, response: { status: 403 } }),
+    false,
+  ],
+  [
+    'Infinity status precedence over nested response.status',
+    () => githubError({ status: Infinity, response: { status: 403 } }),
+    false,
+  ],
+  [
+    'secondary-rate-limit message survives malformed headers',
+    () =>
+      githubError(
+        {
+          status: 403,
+          response: {
+            headers: {
+              'retry-after': 1,
+              'x-ratelimit-remaining': { malformed: true },
+            },
+          },
+        },
+        'SECONDARY RATE LIMIT',
+      ),
+    false,
+  ],
+  [
+    'API-rate-limit-exceeded message is case-insensitive',
+    () => githubError({ status: 403 }, 'API RATE LIMIT EXCEEDED'),
+    false,
+  ],
+  [
+    'upper-case header names, zero retry-after and non-exact remaining are ignored',
+    () =>
+      githubError(
+        {
+          status: 403,
+          response: {
+            headers: {
+              'Retry-After': '1',
+              'retry-after': '0',
+              'x-ratelimit-remaining': '00',
+            },
+          },
+        },
+        'GitHub rate limit',
+      ),
+    true,
+  ],
+];
+
 describe('GithubClientV2', () => {
+  it.each([
+    ['generic report 404', httpError(404), true, false],
+    [
+      'permission-indicating report 404',
+      Object.assign(new Error('Resource not accessible by integration'), {
+        status: 404,
+      }),
+      false,
+      true,
+    ],
+    ['explicit 403', httpError(403), false, true],
+    [
+      'rate-limited 403',
+      Object.assign(new Error('API rate limit exceeded'), {
+        status: 403,
+        response: { headers: { 'x-ratelimit-remaining': '0' } },
+      }),
+      false,
+      false,
+    ],
+    ['transient 500', httpError(500), false, false],
+    [
+      'already-classified access denial',
+      new InaccessibleEnterpriseOrganizationError(403),
+      false,
+      true,
+    ],
+  ])(
+    'classifies organization report errors: %s',
+    (_description, error, isReportGap, isAccessDenial) => {
+      expect(isOrganizationReportNotFoundError(error)).toBe(isReportGap);
+      expect(isOrganizationReportPermissionError(error)).toBe(isAccessDenial);
+    },
+  );
+
   let mockConfig: any;
   let mockLogger: any;
   let originalFetch: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRequest.mockReset();
+    mockGetOrgInstallation.mockReset().mockResolvedValue({ data: { id: 999 } });
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockReset().mockResolvedValue({
+      enterprise: 'fake-token',
+      organization: 'fake-token',
+    });
+    mockHookBefore.mockReset();
+    mockOutgoingHeaders.length = 0;
+    mockAppAuthentication
+      .mockReset()
+      .mockResolvedValue({ token: 'fake-app-jwt' });
+    mockCreateAppAuth.mockReset().mockReturnValue(mockAppAuthentication);
     mockConfig = {} as any;
     mockLogger = {
       debug: jest.fn(),
@@ -359,7 +590,9 @@ describe('GithubClientV2', () => {
     getGithubCredentials.mockResolvedValueOnce({
       enterprise: { appId: 123, privateKey: 'private-key' },
     });
-    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+    mockRequest
+      .mockResolvedValueOnce({ data: { id: 999 } })
+      .mockResolvedValueOnce({ data: { download_links: [] } });
 
     const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
     await client.fetchEnterpriseReportLinks('2026-01-01');
@@ -467,11 +700,10 @@ describe('GithubClientV2', () => {
       `GET /enterprises/my-enterprise/copilot/metrics/reports/enterprise-1-day?day=2026-01-01`,
     );
 
-    // Check Octokit construction included the API version header
-    const MockedOctokit = Octokit as unknown as jest.Mock;
-    const firstCallArgs = MockedOctokit.mock.calls[0][0] as any;
-    expect(firstCallArgs.headers['X-GitHub-Api-Version']).toBe('2026-03-10');
-    expect(firstCallArgs.baseUrl).toBe('https://api.github.com');
+    expect(mockOutgoingHeaders[0]).toEqual({
+      accept: 'application/vnd.github+json',
+      'x-github-api-version': '2026-03-10',
+    });
 
     expect(res.download_links[0]).toContain('s3.amazonaws.com');
   });
@@ -508,6 +740,54 @@ describe('GithubClientV2', () => {
     expect(res.download_links[0]).toContain('raw.githubusercontent.com');
   });
 
+  it('uses enterprise credentials for cost centers and organization credentials for org reports', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    const credentials = {
+      enterprise: 'enterprise-pat',
+      organization: 'organization-pat',
+    };
+    getGithubCredentials
+      .mockResolvedValueOnce(credentials)
+      .mockResolvedValueOnce(credentials);
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers' &&
+        url.searchParams.get('state') === 'active'
+      ) {
+        return githubResponse({ costCenters: [] });
+      }
+      if (
+        url.pathname === '/orgs/my-org/copilot/metrics/reports/users-1-day' &&
+        url.searchParams.get('day') === '2026-01-03'
+      ) {
+        return githubResponse({ download_links: [] });
+      }
+      throw new Error(`Unexpected GitHub request: ${route}`);
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchCostCenterMemberships();
+    await client.fetchOrganizationUserReportLinks('2026-01-03');
+
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.map(([options]) => options.auth)).toEqual([
+      'enterprise-pat',
+      'organization-pat',
+    ]);
+    expect(mockRequest).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining(
+        '/enterprises/my-enterprise/settings/billing/cost-centers',
+      ),
+    );
+    expect(mockRequest).toHaveBeenNthCalledWith(
+      2,
+      'GET /orgs/my-org/copilot/metrics/reports/users-1-day?day=2026-01-03',
+    );
+  });
+
   it('fetchEnterpriseUserTeamsLinks calls correct user-teams path', async () => {
     mockRequest.mockResolvedValueOnce({
       data: {
@@ -524,5 +804,1946 @@ describe('GithubClientV2', () => {
       `GET /enterprises/my-enterprise/copilot/metrics/reports/user-teams-1-day?day=2026-01-04`,
     );
     expect(res.download_links[0]).toContain('raw.githubusercontent.com');
+  });
+
+  it('fetchOrganizationUserTeamsLinks calls the org user-teams path', async () => {
+    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await client.fetchOrganizationUserTeamsLinks('2026-01-04');
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      'GET /orgs/my-org/copilot/metrics/reports/user-teams-1-day?day=2026-01-04',
+    );
+  });
+
+  it('discovers and deduplicates enterprise organizations across GraphQL pages', async () => {
+    mockRequest
+      .mockResolvedValueOnce(
+        githubResponse({
+          data: {
+            enterprise: {
+              organizations: {
+                nodes: [{ login: 'Org-A' }, { login: 'org-a' }],
+                pageInfo: { hasNextPage: true, endCursor: 'cursor-1' },
+              },
+            },
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        githubResponse({
+          data: {
+            enterprise: {
+              organizations: {
+                nodes: [{ login: 'Org-B' }],
+                pageInfo: { hasNextPage: false, endCursor: null },
+              },
+            },
+          },
+        }),
+      );
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).resolves.toEqual([
+      'Org-A',
+      'Org-B',
+    ]);
+
+    expect(mockRequest).toHaveBeenCalledTimes(2);
+    expect(mockRequest.mock.calls.map(([route]) => route)).toEqual([
+      'POST /graphql',
+      'POST /graphql',
+    ]);
+    expect(
+      mockRequest.mock.calls.map(([, options]) => options.variables),
+    ).toEqual([
+      { slug: 'my-enterprise', first: 100, after: null },
+      { slug: 'my-enterprise', first: 100, after: 'cursor-1' },
+    ]);
+  });
+
+  it('fails discovery when a later GraphQL page fails instead of returning partial organizations', async () => {
+    const failure = httpError(503);
+    mockRequest
+      .mockResolvedValueOnce(
+        githubResponse({
+          data: {
+            enterprise: {
+              organizations: {
+                nodes: [{ login: 'Org-A' }],
+                pageInfo: { hasNextPage: true, endCursor: 'cursor-1' },
+              },
+            },
+          },
+        }),
+      )
+      .mockRejectedValueOnce(failure);
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).rejects.toBe(failure);
+    expect(mockRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('fails discovery on GraphQL errors rather than treating them as an empty directory', async () => {
+    mockRequest.mockResolvedValueOnce(
+      githubResponse({
+        data: {
+          enterprise: {
+            organizations: {
+              nodes: [],
+              pageInfo: { hasNextPage: false, endCursor: null },
+            },
+          },
+        },
+        errors: [{ message: 'Enterprise organization access denied.' }],
+      }),
+    );
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).rejects.toThrow(
+      'GitHub returned an error while listing enterprise organizations.',
+    );
+  });
+
+  it.each([
+    { enterprise: null },
+    {
+      enterprise: {
+        organizations: { nodes: null, pageInfo: { hasNextPage: false } },
+      },
+    },
+    {
+      enterprise: {
+        organizations: {
+          nodes: [{ login: 42 }],
+          pageInfo: { hasNextPage: false },
+        },
+      },
+    },
+    {
+      enterprise: {
+        organizations: { nodes: [], pageInfo: { hasNextPage: 'false' } },
+      },
+    },
+  ])('rejects malformed organization discovery data: %j', async data => {
+    mockRequest.mockResolvedValueOnce(githubResponse({ data }));
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).rejects.toThrow(
+      'GitHub returned an error while listing enterprise organizations.',
+    );
+  });
+
+  it('rejects repeated organization discovery cursors instead of returning partial results', async () => {
+    mockRequest.mockResolvedValue(
+      githubResponse({
+        data: {
+          enterprise: {
+            organizations: {
+              nodes: [{ login: 'Org-A' }],
+              pageInfo: { hasNextPage: true, endCursor: 'same-cursor' },
+            },
+          },
+        },
+      }),
+    );
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(client.fetchEnterpriseOrganizations()).rejects.toThrow(
+      'Unexpected pagination cursor while listing enterprise organizations.',
+    );
+    expect(mockRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('refreshes a stale organization installation after a report 403', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    let installationLookups = 0;
+    let reportRequests = 0;
+    mockRequest.mockImplementation(async (route: string) => {
+      if (route === 'GET /enterprises/my-enterprise/installation') {
+        return { data: { id: 100 } };
+      }
+      if (
+        route === 'GET https://api.github.com/orgs/private-org/installation'
+      ) {
+        installationLookups += 1;
+        return { data: { id: 200 + installationLookups } };
+      }
+      if (
+        route ===
+        'GET /orgs/private-org/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+      ) {
+        reportRequests += 1;
+        if (reportRequests === 1) {
+          throw httpError(403);
+        }
+        return { data: { download_links: [] } };
+      }
+      throw new Error(`Unexpected GitHub request: ${route}`);
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      ),
+    ).resolves.toEqual({ download_links: [] });
+
+    expect(installationLookups).toBe(2);
+    expect(reportRequests).toBe(2);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.at(-1)?.[0].auth.installationId).toBe(202);
+  });
+
+  it('re-resolves an organization installation but does not classify an unavailable report day as inaccessible', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    const unavailableDayError = httpError(404);
+    let installationLookups = 0;
+    let reportRequests = 0;
+    mockRequest.mockImplementation(async (route: string) => {
+      if (route === 'GET /enterprises/my-enterprise/installation') {
+        return { data: { id: 100 } };
+      }
+      if (
+        route === 'GET https://api.github.com/orgs/private-org/installation'
+      ) {
+        installationLookups += 1;
+        return { data: { id: 200 + installationLookups } };
+      }
+      if (
+        route ===
+        'GET /orgs/private-org/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+      ) {
+        reportRequests += 1;
+        throw reportRequests === 1 ? httpError(404) : unavailableDayError;
+      }
+      throw new Error(`Unexpected GitHub request: ${route}`);
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      ),
+    ).rejects.toBe(unavailableDayError);
+
+    expect(installationLookups).toBe(2);
+    expect(reportRequests).toBe(2);
+  });
+
+  it('does not retry transient organization report failures', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    const transientError = httpError(500);
+    let installationLookups = 0;
+    mockRequest.mockImplementation(async (route: string) => {
+      if (route === 'GET /enterprises/my-enterprise/installation') {
+        return { data: { id: 100 } };
+      }
+      if (
+        route === 'GET https://api.github.com/orgs/private-org/installation'
+      ) {
+        installationLookups += 1;
+        return { data: { id: 200 } };
+      }
+      if (
+        route ===
+        'GET /orgs/private-org/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+      ) {
+        throw transientError;
+      }
+      throw new Error(`Unexpected GitHub request: ${route}`);
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      ),
+    ).rejects.toBe(transientError);
+
+    expect(installationLookups).toBe(1);
+  });
+
+  it.each(githubErrorBoundaryCases)(
+    'preserves GitHub error boundary behavior: %s',
+    async (_name, createError, shouldRetry) => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: { appId: 123, privateKey: 'private-key' },
+      });
+      const failure = createError();
+      let installationLookups = 0;
+      let reportRequests = 0;
+      const successEnvelope = { download_links: [] };
+      mockRequest.mockImplementation(async (route: string) => {
+        if (route === 'GET /enterprises/my-enterprise/installation') {
+          return { data: { id: 100 } };
+        }
+        if (
+          route === 'GET https://api.github.com/orgs/private-org/installation'
+        ) {
+          installationLookups += 1;
+          return { data: { id: 200 + installationLookups } };
+        }
+        if (
+          route ===
+          'GET /orgs/private-org/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+        ) {
+          reportRequests += 1;
+          if (reportRequests === 1) {
+            throw failure;
+          }
+          return { data: successEnvelope };
+        }
+        throw new Error(`Unexpected GitHub request: ${route}`);
+      });
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+      const request = client.fetchEnterpriseOrganizationReportLinks(
+        'private-org',
+        '2026-01-01',
+      );
+      const outcome = await request.then(
+        result => ({ status: 'resolved' as const, value: result }),
+        error => ({ status: 'rejected' as const, value: error }),
+      );
+
+      expect(outcome.status).toBe(shouldRetry ? 'resolved' : 'rejected');
+      expect(outcome.value).toBe(shouldRetry ? successEnvelope : failure);
+      expect(reportRequests).toBe(shouldRetry ? 2 : 1);
+      expect(installationLookups).toBe(shouldRetry ? 2 : 1);
+    },
+  );
+
+  it('uses configured organization App credentials for enterprise organization reports case-insensitively', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 456, privateKey: 'enterprise-private-key' },
+      organization: { appId: 123, privateKey: 'organization-private-key' },
+    });
+    mockGetOrgInstallation.mockResolvedValueOnce({ data: { id: 200 } });
+    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchEnterpriseOrganizationReportLinks('MY-ORG', '2026-01-01');
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledWith({ org: 'my-org' });
+    expect(mockRequest).toHaveBeenCalledWith(
+      'GET /orgs/MY-ORG/copilot/metrics/reports/organization-1-day?day=2026-01-01',
+    );
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    const options = MockedOctokit.mock.calls.map(
+      ([octokitOptions]) => octokitOptions,
+    );
+    expect(options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          auth: { appId: 123, privateKey: 'organization-private-key' },
+        }),
+        expect.objectContaining({
+          auth: {
+            appId: 123,
+            privateKey: 'organization-private-key',
+            installationId: 200,
+          },
+        }),
+      ]),
+    );
+    expect(options).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          auth: expect.objectContaining({ appId: 456 }),
+        }),
+      ]),
+    );
+  });
+
+  it.each([403, 404])(
+    'classifies a configured organization App installation HTTP %i as inaccessible',
+    async status => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: { appId: 456, privateKey: 'enterprise-private-key' },
+        organization: { appId: 123, privateKey: 'organization-private-key' },
+      });
+      const installationError = httpError(status);
+      mockGetOrgInstallation.mockRejectedValueOnce(installationError);
+      mockRequest.mockImplementation(async (route: string) => {
+        if (route === 'GET /enterprises/my-enterprise/installation') {
+          return { data: { id: 300 } };
+        }
+        if (route === 'GET https://api.github.com/orgs/my-org/installation') {
+          throw installationError;
+        }
+        throw new Error(`Unexpected GitHub request: ${route}`);
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      await expect(
+        client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+      ).rejects.toMatchObject({
+        name: InaccessibleEnterpriseOrganizationError.name,
+        status,
+      });
+
+      expect(mockGetOrgInstallation).toHaveBeenCalledTimes(1);
+      expect(mockRequest).not.toHaveBeenCalled();
+    },
+  );
+
+  it('uses the configured organization PAT instead of the enterprise PAT', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+      organization: 'organization-pat',
+    });
+    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchEnterpriseOrganizationReportLinks('my-org', '2026-01-01');
+
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.map(([options]) => options.auth)).toEqual([
+      'organization-pat',
+    ]);
+  });
+
+  it('treats an unavailable report day as unverified without swallowing access or rate-limit errors', async () => {
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    mockRequest.mockRejectedValueOnce(httpError(404));
+
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).resolves.toBe(false);
+
+    mockRequest.mockRejectedValueOnce(
+      Object.assign(new Error('Resource not accessible by integration'), {
+        status: 404,
+      }),
+    );
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).rejects.toMatchObject({
+      name: InaccessibleEnterpriseOrganizationError.name,
+      status: 404,
+    });
+
+    mockRequest.mockRejectedValueOnce(httpError(403));
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).rejects.toBeInstanceOf(InaccessibleEnterpriseOrganizationError);
+
+    const rateLimitError = githubError({
+      status: 404,
+      response: { headers: { 'x-ratelimit-remaining': '0' } },
+    });
+    mockRequest.mockRejectedValueOnce(rateLimitError);
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).rejects.toBe(rateLimitError);
+
+    mockRequest.mockResolvedValueOnce({ data: { download_links: [] } });
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).resolves.toBe(true);
+  });
+
+  it('uses the configured GitHub Enterprise API when a report day is unavailable', async () => {
+    const { getCopilotConfig } = jest.requireMock('../utils/GithubUtils');
+    getCopilotConfig.mockReturnValueOnce({
+      host: 'octocorp.ghe.com',
+      enterprise: 'octocorp',
+      organization: 'my-org',
+      apiBaseUrl: 'https://api.octocorp.ghe.com',
+    });
+    mockRequest.mockRejectedValueOnce(httpError(404));
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(
+      client.verifyEnterpriseOrganizationAccess('my-org', '2026-01-01'),
+    ).resolves.toBe(false);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.at(-1)?.[0].baseUrl).toBe(
+      'https://api.octocorp.ghe.com',
+    );
+  });
+
+  it.each([403, 404])(
+    'refreshes the configured organization App and preserves report %i classification',
+    async status => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      const credentials = {
+        organization: { appId: 123, privateKey: 'organization-private-key' },
+      };
+      getGithubCredentials
+        .mockResolvedValueOnce(credentials)
+        .mockResolvedValueOnce(credentials);
+      mockGetOrgInstallation
+        .mockResolvedValueOnce({ data: { id: 200 } })
+        .mockResolvedValueOnce({ data: { id: 201 } });
+      const unavailableDayError = httpError(404);
+      let reportRequests = 0;
+      const reportPath =
+        'GET /orgs/my-org/copilot/metrics/reports/organization-1-day?day=2026-01-01';
+      mockRequest.mockImplementation(async (route: string) => {
+        if (route !== reportPath) {
+          throw new Error(`Unexpected GitHub request: ${route}`);
+        }
+        reportRequests += 1;
+        if (reportRequests === 1) {
+          throw httpError(status);
+        }
+        throw status === 403 ? httpError(status) : unavailableDayError;
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      const request = client.fetchEnterpriseOrganizationReportLinks(
+        'my-org',
+        '2026-01-01',
+      );
+
+      const expectedError =
+        status === 403
+          ? InaccessibleEnterpriseOrganizationError
+          : unavailableDayError;
+      await expect(request).rejects.toThrow(expectedError);
+
+      expect(mockGetOrgInstallation).toHaveBeenCalledTimes(2);
+      expect(reportRequests).toBe(2);
+    },
+  );
+
+  it.each([403, 404])(
+    'classifies a configured organization App refresh installation HTTP %i as inaccessible',
+    async status => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      const credentials = {
+        enterprise: { appId: 456, privateKey: 'enterprise-private-key' },
+        organization: { appId: 123, privateKey: 'organization-private-key' },
+      };
+      getGithubCredentials
+        .mockResolvedValueOnce(credentials)
+        .mockResolvedValueOnce(credentials);
+      const installationError = httpError(status);
+      mockGetOrgInstallation
+        .mockResolvedValueOnce({ data: { id: 200 } })
+        .mockRejectedValueOnce(installationError);
+      const reportError = httpError(403);
+      const reportPath =
+        'GET /orgs/my-org/copilot/metrics/reports/organization-1-day?day=2026-01-01';
+      let reportRequests = 0;
+      mockRequest.mockImplementation(async (route: string) => {
+        if (route !== reportPath) {
+          throw new Error(`Unexpected GitHub request: ${route}`);
+        }
+        reportRequests += 1;
+        throw reportError;
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      await expect(
+        client.fetchEnterpriseOrganizationReportLinks('my-org', '2026-01-01'),
+      ).rejects.toBeInstanceOf(InaccessibleEnterpriseOrganizationError);
+
+      expect(mockGetOrgInstallation).toHaveBeenCalledTimes(2);
+      expect(reportRequests).toBe(1);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it.each([
+    { kind: 'rate-limited', status: 403 },
+    { kind: 'transient', status: 500 },
+  ])(
+    'preserves a $kind configured organization App refresh installation error',
+    async ({ kind, status }) => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      const credentials = {
+        enterprise: { appId: 456, privateKey: 'enterprise-private-key' },
+        organization: { appId: 123, privateKey: 'organization-private-key' },
+      };
+      getGithubCredentials
+        .mockResolvedValueOnce(credentials)
+        .mockResolvedValueOnce(credentials);
+      const installationError =
+        kind === 'rate-limited'
+          ? githubError({
+              status,
+              response: { headers: { 'x-ratelimit-remaining': '0' } },
+            })
+          : httpError(status);
+      mockGetOrgInstallation
+        .mockResolvedValueOnce({ data: { id: 200 } })
+        .mockRejectedValueOnce(installationError);
+      const reportPath =
+        'GET /orgs/my-org/copilot/metrics/reports/organization-1-day?day=2026-01-01';
+      mockRequest.mockImplementation(async (route: string) => {
+        if (route !== reportPath) {
+          throw new Error(`Unexpected GitHub request: ${route}`);
+        }
+        throw httpError(403);
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      await expect(
+        client.fetchEnterpriseOrganizationReportLinks('my-org', '2026-01-01'),
+      ).rejects.toBe(installationError);
+
+      expect(mockGetOrgInstallation).toHaveBeenCalledTimes(2);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('preserves transient configured organization report errors', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      organization: { appId: 123, privateKey: 'organization-private-key' },
+    });
+    mockGetOrgInstallation.mockResolvedValueOnce({ data: { id: 200 } });
+    const reportError = httpError(500);
+    mockRequest.mockRejectedValueOnce(reportError);
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks('my-org', '2026-01-01'),
+    ).rejects.toBe(reportError);
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledTimes(1);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not refresh the configured organization App for a rate-limited report 403', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      organization: { appId: 123, privateKey: 'organization-private-key' },
+    });
+    mockGetOrgInstallation.mockResolvedValueOnce({ data: { id: 200 } });
+    const rateLimitError = githubError({
+      status: 403,
+      response: { headers: { 'x-ratelimit-remaining': '0' } },
+    });
+    mockRequest.mockRejectedValueOnce(rateLimitError);
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks('my-org', '2026-01-01'),
+    ).rejects.toBe(rateLimitError);
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledTimes(1);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not evict a refreshed configured organization App client after an earlier failure', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    const credentials = {
+      enterprise: { appId: 456, privateKey: 'enterprise-private-key' },
+      organization: { appId: 123, privateKey: 'organization-private-key' },
+    };
+    getGithubCredentials
+      .mockResolvedValueOnce(credentials)
+      .mockResolvedValueOnce(credentials);
+    mockGetOrgInstallation
+      .mockResolvedValueOnce({ data: { id: 200 } })
+      .mockResolvedValueOnce({ data: { id: 201 } });
+
+    let signalFirstRequest = () => {};
+    const firstRequestStarted = new Promise<void>(resolve => {
+      signalFirstRequest = () => resolve();
+    });
+    let rejectFirstRequest = () => {};
+    const firstReportResponse = new Promise<never>((_resolve, reject) => {
+      rejectFirstRequest = () => reject(httpError(403));
+    });
+    let reportRequests = 0;
+    const reportPath =
+      'GET /orgs/my-org/copilot/metrics/reports/organization-1-day?day=2026-01-01';
+    mockRequest.mockImplementation(async (route: string) => {
+      if (
+        route === 'GET /enterprises/my-enterprise/installation' ||
+        route === 'GET https://api.github.com/orgs/my-org/installation'
+      ) {
+        return { data: { id: 300 } };
+      }
+      if (route !== reportPath) {
+        throw new Error(`Unexpected GitHub request: ${route}`);
+      }
+      reportRequests += 1;
+      if (reportRequests === 1) {
+        signalFirstRequest();
+        return firstReportResponse;
+      }
+      if (reportRequests === 2) {
+        throw httpError(403);
+      }
+      return { data: { download_links: [] } };
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const firstRequest = client.fetchEnterpriseOrganizationReportLinks(
+      'my-org',
+      '2026-01-01',
+    );
+    await firstRequestStarted;
+
+    await expect(
+      client.fetchEnterpriseOrganizationReportLinks('my-org', '2026-01-01'),
+    ).resolves.toEqual({ download_links: [] });
+    rejectFirstRequest();
+    await expect(firstRequest).resolves.toEqual({ download_links: [] });
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledTimes(2);
+    expect(reportRequests).toBe(4);
+  });
+
+  it('resolves a per-organization installation before fetching its report', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+      organization: { appId: 456, privateKey: 'other-organization-key' },
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      if (route === 'GET /enterprises/my-enterprise/installation') {
+        return { data: { id: 100 } };
+      }
+      if (route === 'GET https://api.github.com/orgs/org-a/installation') {
+        return { data: { id: 200 } };
+      }
+      if (
+        route ===
+        'GET /orgs/org-a/copilot/metrics/reports/organization-1-day?day=2026-01-01'
+      ) {
+        return { data: { download_links: [] } };
+      }
+      throw new Error(`Unexpected GitHub request: ${route}`);
+    });
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+    await client.fetchEnterpriseOrganizationReportLinks('org-a', '2026-01-01');
+
+    expect(mockRequest.mock.calls.map(([route]) => route)).toEqual([
+      'GET /enterprises/my-enterprise/installation',
+      'GET https://api.github.com/orgs/org-a/installation',
+      'GET /orgs/org-a/copilot/metrics/reports/organization-1-day?day=2026-01-01',
+    ]);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls.at(-1)?.[0].auth.installationId).toBe(200);
+  });
+
+  it('discovers an enterprise GitHub App installation with the App-JWT endpoint', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest
+      .mockResolvedValueOnce({ data: { id: 174085427 } })
+      .mockResolvedValueOnce({ data: { download_links: [] } });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchEnterpriseReportLinks('2026-01-01');
+
+    expect(mockRequest).toHaveBeenNthCalledWith(
+      1,
+      'GET /enterprises/my-enterprise/installation',
+    );
+    expect(mockGetOrgInstallation).not.toHaveBeenCalled();
+
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    const baseHeadersHook = mockHookBefore.mock.calls[0][1] as (options: {
+      headers: Record<string, string>;
+    }) => void;
+    const appJwtHook = mockHookBefore.mock.calls[1][1] as (options: {
+      headers: Record<string, string>;
+    }) => void;
+    const requestOptions = { headers: {} as Record<string, string> };
+    baseHeadersHook(requestOptions);
+    appJwtHook(requestOptions);
+    expect(requestOptions.headers).toEqual({
+      accept: 'application/vnd.github+json',
+      'x-github-api-version': '2026-03-10',
+      authorization: 'Bearer fake-app-jwt',
+    });
+    expect(MockedOctokit.mock.calls[1][0].auth).toEqual({
+      appId: 123,
+      privateKey: 'private-key',
+      installationId: 174085427,
+    });
+  });
+
+  it('falls back to the existing org-installation endpoint when enterprise lookup returns 404', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest
+      .mockRejectedValueOnce(httpError(404))
+      .mockResolvedValueOnce({ data: { download_links: [] } });
+    mockGetOrgInstallation.mockResolvedValueOnce({ data: { id: 321 } });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchEnterpriseReportLinks('2026-01-01');
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledWith({
+      org: 'my-enterprise',
+    });
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls[1][0].auth.installationId).toBe(321);
+  });
+
+  it.each([0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, NaN, Infinity, '123'])(
+    'rejects a GitHub App installation ID that is not a positive safe integer number (%p)',
+    async id => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: { appId: 123, privateKey: 'private-key' },
+      });
+      mockRequest.mockResolvedValueOnce({ data: { id } });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+      await expect(
+        client.fetchEnterpriseReportLinks('2026-01-01'),
+      ).rejects.toThrow('Unexpected GitHub App installation response.');
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('lists complete cost-center resources and accepts admin org membership permission', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    const mockFetch = global.fetch as jest.MockedFunction<any>;
+    mockFetch.mockImplementation(async (input: string) => {
+      const url = new URL(input);
+      const page = Number(url.searchParams.get('page') ?? '1');
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/teams/ent:backend-guild/memberships'
+      ) {
+        return page === 1
+          ? rawFetchResponse(
+              [{ id: 1, login: 'octocat-user-1' }],
+              '<https://api.github.com/enterprises/my-enterprise/teams/ent:backend-guild/memberships?page=2>; rel="next"',
+            )
+          : rawFetchResponse([{ id: 2, login: 'octocat-user-2' }]);
+      }
+      throw new Error(`Unexpected fetch request: ${url.pathname}${url.search}`);
+    });
+
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      const { pathname } = url;
+      const page = Number(url.searchParams.get('page') ?? '1');
+
+      if (pathname === '/enterprises/my-enterprise/installation') {
+        return githubResponse({ id: 174085427 });
+      }
+      if (
+        pathname === '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [
+            {
+              id: 'cc-engineering',
+              name: 'cc-engineering',
+              resources: [],
+            },
+          ],
+        });
+      }
+      if (
+        pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-engineering'
+      ) {
+        return page === 1
+          ? githubResponse({
+              id: 'cc-engineering',
+              name: 'cc-engineering',
+              resources: [{ type: 'Team', name: 'ent:backend-guild' }],
+              has_next_page: true,
+            })
+          : githubResponse({
+              id: 'cc-engineering',
+              name: 'cc-engineering',
+              resources: [
+                { type: 'Org', name: 'product-org' },
+                { type: 'Repo', name: 'ignored-repo' },
+              ],
+              has_next_page: false,
+            });
+      }
+      if (pathname === '/enterprises/my-enterprise/teams') {
+        return page === 1
+          ? githubResponse(
+              [{ id: 1, slug: 'ent:another-team' }],
+              '<https://api.github.com/enterprises/my-enterprise/teams?page=2>; rel="next"',
+            )
+          : githubResponse([
+              {
+                id: 20258074,
+                slug: 'ent:backend-guild',
+                created_at: '2020-01-01T00:00:00Z',
+              },
+            ]);
+      }
+      if (pathname === '/orgs/product-org/installation') {
+        return githubResponse({
+          id: 174085514,
+          permissions: { members: 'admin' },
+        });
+      }
+      if (pathname === '/orgs/product-org/members') {
+        return page === 1
+          ? githubResponse(
+              [{ id: 3, login: 'octocat-user-3' }],
+              '<https://api.github.com/orgs/product-org/members?page=2>; rel="next"',
+            )
+          : githubResponse([{ id: 4, login: 'octocat-user-4' }]);
+      }
+
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.costCenters).toEqual([
+      { id: 'cc-engineering', name: 'cc-engineering' },
+    ]);
+    expect(result.members).toEqual(
+      new Map([
+        [1, { costCenterId: 'cc-engineering', login: 'octocat-user-1' }],
+        [2, { costCenterId: 'cc-engineering', login: 'octocat-user-2' }],
+        [3, { costCenterId: 'cc-engineering', login: 'octocat-user-3' }],
+        [4, { costCenterId: 'cc-engineering', login: 'octocat-user-4' }],
+      ]),
+    );
+    expect(result.complete).toBe(true);
+    expect(result.warnings).toEqual([]);
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      expect.stringContaining('Ignoring cost center resource type "Repo"'),
+    );
+
+    const urls = mockRequest.mock.calls.map(([route]) =>
+      parseMockRequestUrl(route),
+    );
+    const teamFetchCalls = mockFetch.mock.calls as Array<
+      [string, { headers: { authorization: string } }]
+    >;
+    const teamMembershipPages = teamFetchCalls.map(([input]) => new URL(input));
+    const listUrl = urls.find(
+      url =>
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers',
+    );
+    expect(listUrl?.searchParams.get('state')).toBe('active');
+
+    const detailPages = urls
+      .filter(url =>
+        url.pathname.endsWith('/settings/billing/cost-centers/cc-engineering'),
+      )
+      .map(url => ({
+        page: url.searchParams.get('page'),
+        perPage: url.searchParams.get('per_page'),
+      }));
+    expect(detailPages).toEqual([
+      { page: '1', perPage: '100' },
+      { page: '2', perPage: '100' },
+    ]);
+
+    const teamListPages = urls.filter(
+      url => url.pathname === '/enterprises/my-enterprise/teams',
+    );
+    expect(teamListPages.map(url => url.searchParams.get('page'))).toEqual([
+      '1',
+      '2',
+    ]);
+    expect(
+      teamListPages.every(url => url.searchParams.get('per_page') === '100'),
+    ).toBe(true);
+
+    expect(
+      teamMembershipPages.map(url => url.searchParams.get('page')),
+    ).toEqual(['1', '2']);
+    expect(
+      teamMembershipPages.every(
+        url => url.searchParams.get('per_page') === '100',
+      ),
+    ).toBe(true);
+    expect(teamMembershipPages[0].pathname).toContain(
+      '/teams/ent:backend-guild/memberships',
+    );
+    expect(teamMembershipPages[0].pathname).not.toContain('%3A');
+    expect(
+      teamFetchCalls.every(
+        ([, options]) =>
+          options.headers.authorization === 'Bearer fake-installation-token',
+      ),
+    ).toBe(true);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.results[1].value.auth).toHaveBeenCalledWith({
+      type: 'installation',
+    });
+
+    const orgMemberPages = urls.filter(
+      url => url.pathname === '/orgs/product-org/members',
+    );
+    expect(orgMemberPages.map(url => url.searchParams.get('page'))).toEqual([
+      '1',
+      '2',
+    ]);
+    expect(
+      orgMemberPages.every(url => url.searchParams.get('per_page') === '100'),
+    ).toBe(true);
+
+    expect(
+      MockedOctokit.mock.calls.some(
+        call => call[0].auth?.installationId === 174085514,
+      ),
+    ).toBe(true);
+  });
+
+  it('preserves cost-center resource aliases and pagination precedence', async () => {
+    const detailPages: string[] = [];
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-alias', name: 'cc-alias' }],
+        });
+      }
+      if (url.pathname.endsWith('/settings/billing/cost-centers/cc-alias')) {
+        const page = url.searchParams.get('page') ?? '';
+        detailPages.push(page);
+        if (page === '1') {
+          return githubResponse({
+            resources: 'not-an-array',
+            costCenter: {
+              resources: [{ type: 'Repo', name: 'camel-case-resource' }],
+              hasNextPage: true,
+            },
+            cost_center: {
+              resources: [{ type: 'Repo', name: 'shadowed-by-camel-case' }],
+              hasNextPage: false,
+            },
+          });
+        }
+        if (page === '2') {
+          return githubResponse({
+            resources: [],
+            has_next_page: true,
+            cost_center: {
+              resources: [
+                { type: 'Repo', name: 'shadowed-by-top-level-array' },
+              ],
+              hasNextPage: true,
+            },
+          });
+        }
+        return githubResponse({
+          resources: 'not-an-array',
+          hasNextPage: 'true',
+          cost_center: {
+            resources: [{ type: 'Repo', name: 'snake-case-resource' }],
+            has_next_page: true,
+          },
+        });
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(detailPages).toEqual(['1', '2', '3']);
+    expect(result.complete).toBe(true);
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      '[GithubClientV2] Ignoring cost center resource type "Repo" (camel-case-resource).',
+    );
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      '[GithubClientV2] Ignoring cost center resource type "Repo" (snake-case-resource).',
+    );
+    expect(mockLogger.debug).not.toHaveBeenCalledWith(
+      expect.stringContaining('shadowed'),
+    );
+  });
+
+  it.each([
+    [{ costCenters: null }, 'Unexpected GitHub cost center list response.'],
+    [
+      { costCenters: [{ id: 'cc-invalid', name: 42 }] },
+      'Unexpected GitHub cost center entry.',
+    ],
+  ])(
+    'preserves cost-center list validation errors for %j',
+    async (data, message) => {
+      mockRequest.mockResolvedValueOnce(githubResponse(data));
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+
+      await expect(client.fetchCostCenterMemberships()).rejects.toThrow(
+        message,
+      );
+    },
+  );
+
+  it('skips an organization without an App installation without blocking other cost centers', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const { pathname } = parseMockRequestUrl(route);
+      if (pathname === '/enterprises/my-enterprise/installation') {
+        return githubResponse({ id: 10 });
+      }
+      if (
+        pathname === '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [
+            { id: 'cc-missing', name: 'Demo center' },
+            { id: 'cc-valid', name: 'Known center' },
+          ],
+        });
+      }
+      if (
+        pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers/cc-missing' ||
+        pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers/cc-valid'
+      ) {
+        const costCenterId = pathname.endsWith('cc-missing')
+          ? 'cc-missing'
+          : 'cc-valid';
+        return githubResponse({
+          id: costCenterId,
+          name: costCenterId,
+          resources: [
+            {
+              type: 'Org',
+              name: costCenterId === 'cc-missing' ? 'demo-org' : 'known-org',
+            },
+          ],
+          has_next_page: false,
+        });
+      }
+      if (pathname === '/orgs/demo-org/installation') {
+        throw httpError(404);
+      }
+      if (pathname === '/orgs/known-org/installation') {
+        return githubResponse({
+          id: 20,
+          permissions: { members: 'read' },
+        });
+      }
+      if (pathname === '/orgs/known-org/members') {
+        return githubResponse([{ id: 7, login: 'octocat-user-5' }]);
+      }
+
+      throw new Error(
+        `Unexpected GitHub request: ${pathname}${
+          parseMockRequestUrl(route).search
+        }`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.complete).toBe(true);
+    expect(result.unassignedComplete).toBe(false);
+    expect(result.members).toEqual(
+      new Map([[7, { costCenterId: 'cc-valid', login: 'octocat-user-5' }]]),
+    );
+    expect(result.warnings).toEqual([expect.stringContaining('Demo center')]);
+    expect(result.warnings[0]).toContain('demo-org');
+    expect(result.warnings[0]).toContain(
+      'will not be counted in the no-cost-center bucket',
+    );
+  });
+
+  it('warns and skips unavailable or empty App-backed org rosters while continuing with other orgs', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    const orgsById: Record<string, string> = {
+      'cc-missing': 'missing-org',
+      'cc-error': 'error-org',
+      'cc-empty': 'empty-org',
+      'cc-valid': 'valid-org',
+    };
+
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (url.pathname === '/enterprises/my-enterprise/installation') {
+        return githubResponse({ id: 10 });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: Object.entries(orgsById).map(([id, org]) => ({
+            id,
+            name: id,
+            resources: [{ type: 'Org', name: org }],
+          })),
+        });
+      }
+      const centerId = url.pathname.split('/').pop() ?? '';
+      if (centerId in orgsById) {
+        return githubResponse({
+          id: centerId,
+          name: centerId,
+          resources: [{ type: 'Org', name: orgsById[centerId] }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/missing-org/installation') {
+        throw httpError(404);
+      }
+      if (url.pathname === '/orgs/error-org/installation') {
+        return githubResponse({ id: 20, permissions: { members: 'read' } });
+      }
+      if (url.pathname === '/orgs/empty-org/installation') {
+        return githubResponse({ id: 30, permissions: { members: 'read' } });
+      }
+      if (url.pathname === '/orgs/valid-org/installation') {
+        return githubResponse({ id: 40, permissions: { members: 'read' } });
+      }
+      if (url.pathname === '/orgs/error-org/members') {
+        throw httpError(500);
+      }
+      if (url.pathname === '/orgs/empty-org/members') {
+        return githubResponse([]);
+      }
+      if (url.pathname === '/orgs/valid-org/members') {
+        return githubResponse([{ id: 7, login: 'octocat-user-6' }]);
+      }
+
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.warnings).toHaveLength(3);
+    expect(result.warnings.join(' ')).toContain('missing-org');
+    expect(result.warnings.join(' ')).toContain('error-org');
+    expect(result.warnings.join(' ')).toContain('empty-org');
+    expect(result.members).toEqual(
+      new Map([[7, { costCenterId: 'cc-valid', login: 'octocat-user-6' }]]),
+    );
+    expect(result.complete).toBe(false);
+    expect(mockLogger.warn).toHaveBeenCalledTimes(3);
+  });
+
+  it('refreshes App installations with missing members permission on the next snapshot', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+
+    let orgInstallationLookups = 0;
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (url.pathname === '/enterprises/my-enterprise/installation') {
+        return githubResponse({ id: 10 });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [
+            {
+              id: 'cc-public',
+              name: 'cc-public',
+              resources: [{ type: 'Org', name: 'public-only-org' }],
+            },
+          ],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-public'
+      ) {
+        return githubResponse({
+          id: 'cc-public',
+          name: 'cc-public',
+          resources: [{ type: 'Org', name: 'public-only-org' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/public-only-org/installation') {
+        orgInstallationLookups += 1;
+        return githubResponse({
+          id: 20,
+          permissions: {
+            members: orgInstallationLookups === 1 ? 'none' : 'read',
+          },
+        });
+      }
+      if (url.pathname === '/orgs/public-only-org/members') {
+        return githubResponse([{ id: 88, login: 'octocat-user-7' }]);
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.members).toEqual(new Map());
+    expect(result.complete).toBe(false);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0]).toContain('public-only-org');
+    expect(result.warnings[0]).toContain('members: read');
+    expect(
+      mockRequest.mock.calls.some(([route]) =>
+        parseMockRequestUrl(route).pathname.endsWith(
+          '/public-only-org/members',
+        ),
+      ),
+    ).toBe(false);
+
+    const refreshedResult = await client.fetchCostCenterMemberships();
+    expect(refreshedResult.complete).toBe(true);
+    expect(refreshedResult.members).toEqual(
+      new Map([[88, { costCenterId: 'cc-public', login: 'octocat-user-7' }]]),
+    );
+    expect(refreshedResult.warnings).toEqual([]);
+    await client.fetchCostCenterMemberships();
+    expect(orgInstallationLookups).toBe(2);
+  });
+
+  it('marks an organization roster incomplete when a member entry cannot be resolved', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({ costCenters: [{ id: 'cc-org', name: 'Org' }] });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-org'
+      ) {
+        return githubResponse({
+          id: 'cc-org',
+          name: 'Org',
+          resources: [{ type: 'Org', name: 'roster-org' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/roster-org/members') {
+        return githubResponse(
+          [
+            { id: 1, login: 'octocat-user-8' },
+            { id: 2 },
+            { id: 0, login: 'invalid-user' },
+          ],
+          undefined,
+          { 'x-oauth-scopes': 'read:org' },
+        );
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.complete).toBe(false);
+    expect(result.members).toEqual(new Map());
+    expect(result.warnings.join(' ')).toContain('roster-org');
+  });
+
+  it('caches per-org App installation clients across membership snapshots', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: { appId: 123, privateKey: 'private-key' },
+    });
+    let orgInstallationLookups = 0;
+    let orgRosterRequests = 0;
+
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (url.pathname === '/enterprises/my-enterprise/installation') {
+        return githubResponse({ id: 10 });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-org', name: 'cc-org', resources: [] }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-org'
+      ) {
+        return githubResponse({
+          id: 'cc-org',
+          name: 'cc-org',
+          resources: [{ type: 'Org', name: 'cached-org' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/cached-org/installation') {
+        orgInstallationLookups += 1;
+        return githubResponse({ id: 20, permissions: { members: 'read' } });
+      }
+      if (url.pathname === '/orgs/cached-org/members') {
+        orgRosterRequests += 1;
+        return githubResponse([{ id: 1, login: 'octocat-user-9' }]);
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchCostCenterMemberships();
+    await client.fetchCostCenterMemberships();
+
+    expect(orgInstallationLookups).toBe(1);
+    expect(orgRosterRequests).toBe(2);
+  });
+
+  it('uses the same PAT Octokit for cost-center org rosters', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-pat', name: 'cc-pat', resources: [] }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-pat'
+      ) {
+        return githubResponse({
+          id: 'cc-pat',
+          name: 'cc-pat',
+          resources: [{ type: 'Org', name: 'pat-org' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/pat-org/members') {
+        return githubResponse(
+          [{ id: 11, login: 'octocat-user-10' }],
+          undefined,
+          {
+            'x-oauth-scopes': 'read:org, read:enterprise',
+          },
+        );
+      }
+      if (url.pathname === '/user/memberships/orgs/pat-org') {
+        return githubResponse({ state: 'active' });
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.complete).toBe(true);
+    expect(result.members).toEqual(
+      new Map([[11, { costCenterId: 'cc-pat', login: 'octocat-user-10' }]]),
+    );
+    expect(mockCreateAppAuth).not.toHaveBeenCalled();
+    const requestUrls = mockRequest.mock.calls.map(([route]) =>
+      parseMockRequestUrl(route),
+    );
+    expect(
+      requestUrls.some(url => url.pathname === '/orgs/pat-org/installation'),
+    ).toBe(false);
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit).toHaveBeenCalledTimes(1);
+    expect(MockedOctokit.mock.calls[0][0].auth).toBe('enterprise-pat');
+  });
+
+  it.each(['pending', 'missing', 403, 404, 500])(
+    'rejects a public PAT roster when active organization membership cannot be verified (%s)',
+    async membershipState => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: 'enterprise-pat',
+      });
+      mockRequest.mockImplementation(async (route: string) => {
+        const url = parseMockRequestUrl(route);
+        if (
+          url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers'
+        ) {
+          return githubResponse({
+            costCenters: [{ id: 'cc-org', name: 'Org' }],
+          });
+        }
+        if (
+          url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers/cc-org'
+        ) {
+          return githubResponse({
+            id: 'cc-org',
+            name: 'Org',
+            resources: [{ type: 'Org', name: 'public-only-org' }],
+            has_next_page: false,
+          });
+        }
+        if (url.pathname === '/orgs/public-only-org/members') {
+          return githubResponse(
+            [{ id: 88, login: 'octocat-user-7' }],
+            undefined,
+            { 'x-oauth-scopes': 'read:org' },
+          );
+        }
+        if (url.pathname === '/user/memberships/orgs/public-only-org') {
+          if (typeof membershipState === 'number') {
+            throw Object.assign(new Error('Membership lookup failed'), {
+              status: membershipState,
+            });
+          }
+          return githubResponse(
+            membershipState === 'missing' ? {} : { state: membershipState },
+          );
+        }
+        throw new Error(`Unexpected GitHub request: ${url.pathname}`);
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      const result = await client.fetchCostCenterMemberships();
+
+      expect(result.complete).toBe(false);
+      expect(result.members).toEqual(new Map());
+      expect(result.warnings).toHaveLength(1);
+      expect(result.warnings[0]).toContain('public-only-org');
+    },
+  );
+
+  it('skips non-empty PAT org rosters when the classic token lacks an org scope', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-public', name: 'cc-public', resources: [] }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-public'
+      ) {
+        return githubResponse({
+          id: 'cc-public',
+          name: 'cc-public',
+          resources: [{ type: 'Org', name: 'public-only-org' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/public-only-org/members') {
+        return githubResponse(
+          [{ id: 88, login: 'octocat-user-7' }],
+          undefined,
+          {
+            'x-oauth-scopes': 'repo, read:enterprise',
+          },
+        );
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.members).toEqual(new Map());
+    expect(result.complete).toBe(false);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0]).toContain('public-only-org');
+    expect(result.warnings[0]).toContain('read:org');
+    expect(result.warnings[0]).not.toContain('completeness cannot be verified');
+  });
+
+  it('uses fine-grained PAT rosters and warns once when scope headers are absent', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-fine-grained', name: 'cc-fine-grained' }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-fine-grained'
+      ) {
+        return githubResponse({
+          id: 'cc-fine-grained',
+          name: 'cc-fine-grained',
+          resources: [
+            { type: 'Org', name: 'first-org' },
+            { type: 'Org', name: 'second-org' },
+          ],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/orgs/first-org/members') {
+        return githubResponse([{ id: 101, login: 'octocat-user-11' }]);
+      }
+      if (url.pathname === '/orgs/second-org/members') {
+        return githubResponse([{ id: 202, login: 'octocat-user-12' }]);
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.members).toEqual(
+      new Map([
+        [101, { costCenterId: 'cc-fine-grained', login: 'octocat-user-11' }],
+        [202, { costCenterId: 'cc-fine-grained', login: 'octocat-user-12' }],
+      ]),
+    );
+    expect(result.complete).toBe(false);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0]).toContain('completeness cannot be verified');
+    expect(mockLogger.warn).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the enterprise PAT on raw-colon team membership requests', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-team', name: 'cc-team', resources: [] }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-team'
+      ) {
+        return githubResponse({
+          id: 'cc-team',
+          name: 'cc-team',
+          resources: [{ type: 'Team', name: 'ent:backend-guild' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/enterprises/my-enterprise/teams') {
+        return githubResponse([
+          {
+            id: 20258074,
+            slug: 'ent:backend-guild',
+            created_at: '2020-01-01T00:00:00Z',
+          },
+        ]);
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+    const mockFetch = global.fetch as jest.MockedFunction<any>;
+    mockFetch.mockImplementation(async () =>
+      rawFetchResponse([{ id: '1', login: 'octocat-user-10' }]),
+    );
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.members).toEqual(
+      new Map([[1, { costCenterId: 'cc-team', login: 'octocat-user-10' }]]),
+    );
+    expect(result.complete).toBe(true);
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '/teams/ent:backend-guild/memberships?per_page=100&page=1',
+      ),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          authorization: 'Bearer enterprise-pat',
+        }),
+      }),
+    );
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.results[0].value.auth).toHaveBeenCalledWith();
+    expect(mockCreateAppAuth).not.toHaveBeenCalled();
+  });
+
+  it('marks a cost-center snapshot incomplete when enterprise teams cannot be listed', async () => {
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-team', name: 'Team' }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-team'
+      ) {
+        return githubResponse({
+          id: 'cc-team',
+          name: 'Team',
+          resources: [{ type: 'Team', name: 'platform' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/enterprises/my-enterprise/teams') {
+        throw httpError(503);
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.complete).toBe(false);
+    expect(result.members).toEqual(new Map());
+    expect(result.warnings.join(' ')).toContain(
+      'Could not list enterprise teams',
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('marks a cost-center snapshot incomplete when team membership lookup fails', async () => {
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-team', name: 'Team' }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-team'
+      ) {
+        return githubResponse({
+          id: 'cc-team',
+          name: 'Team',
+          resources: [{ type: 'Team', name: 'platform' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/enterprises/my-enterprise/teams') {
+        return githubResponse([{ id: 42, slug: 'platform' }]);
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+    const mockFetch = global.fetch as jest.MockedFunction<any>;
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 500,
+      headers: { get: () => null },
+      json: jest.fn(),
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.complete).toBe(false);
+    expect(result.members).toEqual(new Map());
+    expect(result.warnings.join(' ')).toContain('Could not load members');
+  });
+
+  it('resolves direct User resources with the users endpoint when no expanded roster contains them', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      enterprise: 'enterprise-pat',
+    });
+    mockRequest.mockImplementation(async (route: string) => {
+      const url = parseMockRequestUrl(route);
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers'
+      ) {
+        return githubResponse({
+          costCenters: [{ id: 'cc-direct', name: 'cc-direct', resources: [] }],
+        });
+      }
+      if (
+        url.pathname ===
+        '/enterprises/my-enterprise/settings/billing/cost-centers/cc-direct'
+      ) {
+        return githubResponse({
+          id: 'cc-direct',
+          name: 'cc-direct',
+          resources: [{ type: 'User', name: 'octocat-user' }],
+          has_next_page: false,
+        });
+      }
+      if (url.pathname === '/users/octocat-user') {
+        return githubResponse({ id: 12345, login: 'octocat-user' });
+      }
+      throw new Error(
+        `Unexpected GitHub request: ${url.pathname}${url.search}`,
+      );
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    const result = await client.fetchCostCenterMemberships();
+
+    expect(result.members).toEqual(
+      new Map([[12345, { costCenterId: 'cc-direct', login: 'octocat-user' }]]),
+    );
+    expect(result.complete).toBe(true);
+    expect(
+      mockRequest.mock.calls.some(([route]) =>
+        parseMockRequestUrl(route).pathname.endsWith('/users/octocat-user'),
+      ),
+    ).toBe(true);
+  });
+
+  it.each([
+    { status: 404, complete: true },
+    { status: 403, complete: false },
+    { status: 500, complete: false },
+  ])(
+    'treats a direct User lookup failure with HTTP $status as complete=$complete',
+    async ({ status, complete }) => {
+      const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+      getGithubCredentials.mockResolvedValueOnce({
+        enterprise: 'enterprise-pat',
+      });
+      mockRequest.mockImplementation(async (route: string) => {
+        const url = parseMockRequestUrl(route);
+        if (
+          url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers'
+        ) {
+          return githubResponse({
+            costCenters: [{ id: 'cc-direct', name: 'Direct users' }],
+          });
+        }
+        if (
+          url.pathname ===
+          '/enterprises/my-enterprise/settings/billing/cost-centers/cc-direct'
+        ) {
+          return githubResponse({
+            id: 'cc-direct',
+            name: 'Direct users',
+            resources: [{ type: 'User', name: 'octocat-user-14' }],
+            has_next_page: false,
+          });
+        }
+        if (url.pathname === '/users/octocat-user-14') {
+          throw httpError(status);
+        }
+        throw new Error(
+          `Unexpected GitHub request: ${url.pathname}${url.search}`,
+        );
+      });
+
+      const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+      const result = await client.fetchCostCenterMemberships();
+
+      expect(result.complete).toBe(complete);
+      expect(result.members).toEqual(new Map());
+      expect(result.warnings.join(' ')).toContain('octocat-user-14');
+    },
+  );
+
+  it('keeps using the org-installation lookup for organization-scoped App clients', async () => {
+    const { getGithubCredentials } = jest.requireMock('../utils/GithubUtils');
+    getGithubCredentials.mockResolvedValueOnce({
+      organization: { appId: 123, privateKey: 'private-key' },
+    });
+    mockRequest.mockResolvedValueOnce({
+      data: { download_links: [] },
+    });
+
+    const client = await GithubClientV2.fromConfig(mockConfig, mockLogger);
+    await client.fetchOrganizationReportLinks('2026-01-02');
+
+    expect(mockGetOrgInstallation).toHaveBeenCalledWith({ org: 'my-org' });
+    const MockedOctokit = Octokit as unknown as jest.Mock;
+    expect(MockedOctokit.mock.calls[0][0].authStrategy).toBeDefined();
+    expect(MockedOctokit.mock.calls[0][0].auth).toEqual({
+      appId: 123,
+      privateKey: 'private-key',
+    });
+    expect(mockRequest).toHaveBeenCalledWith(
+      'GET /orgs/my-org/copilot/metrics/reports/organization-1-day?day=2026-01-02',
+    );
+    expect(mockCreateAppAuth).not.toHaveBeenCalled();
   });
 });

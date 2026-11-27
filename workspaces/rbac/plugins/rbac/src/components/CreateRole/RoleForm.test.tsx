@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 import { forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { errorApiRef } from '@backstage/core-plugin-api';
+import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { mockApis, MockErrorApi, TestApiProvider } from '@backstage/test-utils';
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useFormik } from 'formik';
 
+import { conditionalPolicyRow as conditionalRow } from '../../__fixtures__/mockConditionalPolicyRow';
 import { mockUseLanguage } from '../../test-utils/mockTranslations';
 import { RoleForm } from './RoleForm';
 
@@ -45,7 +47,8 @@ jest.mock('react-router-dom', () => ({
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn().mockReturnValue({
-    searchMembers: jest.fn().mockResolvedValue([]),
+    searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+    getMemberNamespaces: jest.fn().mockResolvedValue([]),
   }),
 }));
 
@@ -473,5 +476,149 @@ describe('Edit RoleForm', () => {
     expect(
       screen.getByText(/unable to edit the role. unexpected error/i),
     ).toBeInTheDocument();
+  });
+
+  // The submit tests replace the lean member API mock; restore it so the
+  // rendering-only tests above keep working whatever the outcome.
+  afterEach(() => {
+    (useApi as jest.Mock).mockReturnValue({
+      searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+      getMemberNamespaces: jest.fn().mockResolvedValue([]),
+    });
+  });
+
+  const editInitialValues = {
+    kind: 'role',
+    namespace: 'default',
+    name: 'admins',
+    description: 'Admin role',
+    selectedMembers: [
+      { ref: 'user:default/alice', label: 'Alice', etag: 'e1', type: 'User' },
+    ],
+    selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
+    permissionPoliciesRows: [
+      {
+        plugin: 'catalog',
+        permission: 'catalog.entity.read',
+        policies: [{ policy: 'Read', effect: 'allow' }],
+      },
+      conditionalRow(1, 'keep'),
+      conditionalRow(2, 'remove-me'),
+    ],
+  };
+
+  /** Renders the edit form, submits `values` and waits for the save to finish. */
+  const submitEditedRole = async (values: typeof editInitialValues) => {
+    const navigateFn = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(navigateFn);
+    const rbacApi = {
+      searchMembers: jest.fn().mockResolvedValue({ items: [], totalItems: 0 }),
+      getMemberNamespaces: jest.fn().mockResolvedValue([]),
+      updateRole: jest.fn().mockResolvedValue({ status: 200 }),
+      deletePolicies: jest.fn().mockResolvedValue({ status: 204 }),
+      createPolicies: jest.fn().mockResolvedValue({ status: 200 }),
+      deleteConditionalPolicies: jest.fn().mockResolvedValue({ status: 200 }),
+      updateConditionalPolicies: jest.fn().mockResolvedValue({ status: 200 }),
+      createConditionalPermission: jest.fn().mockResolvedValue({ status: 200 }),
+    };
+    (useApi as jest.Mock).mockReturnValue(rbacApi);
+    useFormikMock.mockReturnValue({ errors: {}, values: editInitialValues });
+
+    render(
+      <TestApiProvider
+        apis={[
+          [translationApiRef, mockApis.translation()],
+          [errorApiRef, new MockErrorApi()],
+        ]}
+      >
+        <RoleForm
+          membersData={{ members: [], loading: false, error: {} as Error }}
+          roleName="role:default/admins"
+          initialValues={editInitialValues}
+          titles={{
+            formTitle: 'Edit Role',
+            nameAndDescriptionTitle: 'Edit name and description of role ',
+            usersAndGroupsTitle: 'Edit users and groups',
+            permissionPoliciesTitle: 'Edit permission policies',
+          }}
+        />
+      </TestApiProvider>,
+    );
+
+    const { onSubmit } = useFormikMock.mock.calls.at(-1)![0];
+    const setStatus = jest.fn();
+    await onSubmit(values, { setStatus });
+
+    // onSubmit fires the save without awaiting it, so wait for its last step.
+    await waitFor(() => expect(navigateFn).toHaveBeenCalled());
+    expect(setStatus).not.toHaveBeenCalled();
+    return rbacApi;
+  };
+
+  it('saves only the computed changes when submitting an edited role', async () => {
+    const rbacApi = await submitEditedRole({
+      ...editInitialValues,
+      description: 'Updated description',
+      permissionPoliciesRows: [
+        {
+          plugin: 'catalog',
+          permission: 'catalog.entity.create',
+          policies: [{ policy: 'Create', effect: 'allow' }],
+        },
+        conditionalRow(1, 'edited'),
+        conditionalRow(undefined, 'brand-new'),
+      ],
+    });
+
+    expect(rbacApi.updateRole).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'role:default/admins',
+        metadata: expect.objectContaining({ description: 'Admin role' }),
+      }),
+      expect.objectContaining({
+        name: 'role:default/admins',
+        metadata: expect.objectContaining({
+          description: 'Updated description',
+        }),
+      }),
+    );
+    expect(rbacApi.deletePolicies).toHaveBeenCalledWith('role:default/admins', [
+      expect.objectContaining({ permission: 'catalog.entity.read' }),
+    ]);
+    expect(rbacApi.createPolicies).toHaveBeenCalledWith([
+      expect.objectContaining({ permission: 'catalog.entity.create' }),
+    ]);
+    expect(rbacApi.deleteConditionalPolicies).toHaveBeenCalledWith(2);
+    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledTimes(1);
+    expect(rbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({
+        conditions: expect.objectContaining({ params: { label: 'edited' } }),
+      }),
+    );
+    expect(rbacApi.createConditionalPermission).toHaveBeenCalledWith(
+      expect.objectContaining({
+        conditions: expect.objectContaining({ params: { label: 'brand-new' } }),
+      }),
+    );
+  });
+
+  it('leaves unchanged policies alone when the role is only renamed', async () => {
+    const rbacApi = await submitEditedRole({
+      ...editInitialValues,
+      name: 'platform-admins',
+    });
+
+    expect(rbacApi.updateRole).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'role:default/admins' }),
+      expect.objectContaining({ name: 'role:default/platform-admins' }),
+    );
+    expect(rbacApi.deletePolicies).not.toHaveBeenCalled();
+    expect(rbacApi.createPolicies).not.toHaveBeenCalled();
+    expect(rbacApi.deleteConditionalPolicies).not.toHaveBeenCalled();
+    expect(rbacApi.createConditionalPermission).not.toHaveBeenCalled();
+    // The backend moves every policy to the new ref during the role update,
+    // so a pure rename does not re-send the conditional policies either.
+    expect(rbacApi.updateConditionalPolicies).not.toHaveBeenCalled();
   });
 });

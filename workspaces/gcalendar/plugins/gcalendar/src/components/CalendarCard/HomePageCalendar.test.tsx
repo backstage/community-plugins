@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import { googleAuthApiRef, storageApiRef } from '@backstage/core-plugin-api';
+import { within } from '@testing-library/react';
+import { googleAuthApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import {
   mockApis,
   TestApiProvider,
@@ -23,6 +25,14 @@ import {
 import { HomePageCalendar } from './HomePageCalendar';
 import { gcalendarApiRef } from '../../api';
 import { gcalendarPlugin } from '../../plugin';
+
+// The BUI Select renders a visually hidden native <select> (wrapped in an
+// aria-hidden container) for form/autofill support, which duplicates the
+// visible trigger text. Filter those out when asserting on selected values.
+const getVisibleCalendarSelectText = (container: HTMLElement, text: string) =>
+  within(container)
+    .queryAllByText(text)
+    .find(el => !el.closest('[aria-hidden="true"]'));
 
 describe('<HomePageCalendar />', () => {
   const primaryCalendar = {
@@ -105,12 +115,13 @@ describe('<HomePageCalendar />', () => {
       </TestApiProvider>,
     );
 
+    const calendarsSelect = await rendered.findByTestId('calendars-select');
     expect(
-      await rendered.findByText(primaryCalendar.summary),
+      getVisibleCalendarSelectText(calendarsSelect, primaryCalendar.summary),
     ).toBeInTheDocument();
     expect(
-      rendered.queryByText(nonPrimaryCalendar.summary),
-    ).not.toBeInTheDocument();
+      getVisibleCalendarSelectText(calendarsSelect, nonPrimaryCalendar.summary),
+    ).toBeUndefined();
   });
 
   it('should render calendar events', async () => {
@@ -139,18 +150,19 @@ describe('<HomePageCalendar />', () => {
         apis={[
           [gcalendarApiRef, getMockedApi(calendarData, eventData)],
           [googleAuthApiRef, getAuthMockApi()],
-          [storageApiRef, mockStorage],
+          [coreApis.storage, mockStorage],
         ]}
       >
         <HomePageCalendar />
       </TestApiProvider>,
     );
 
+    const calendarsSelect = await rendered.findByTestId('calendars-select');
     expect(
-      await rendered.findByText(nonPrimaryCalendar.summary),
+      getVisibleCalendarSelectText(calendarsSelect, nonPrimaryCalendar.summary),
     ).toBeInTheDocument();
     expect(
-      rendered.queryByText(primaryCalendar.summary),
-    ).not.toBeInTheDocument();
+      getVisibleCalendarSelectText(calendarsSelect, primaryCalendar.summary),
+    ).toBeUndefined();
   });
 });

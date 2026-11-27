@@ -189,6 +189,8 @@ describe('reportParser', () => {
         byLanguageModel: [],
         byCli: [],
         byVscodeAgent: [],
+        customizationMetrics: [],
+        customizationSummaries: [],
       });
     });
 
@@ -204,6 +206,8 @@ describe('reportParser', () => {
         byLanguageModel: [],
         byCli: [],
         byVscodeAgent: [],
+        customizationMetrics: [],
+        customizationSummaries: [],
       });
     });
 
@@ -238,6 +242,48 @@ describe('reportParser', () => {
       expect(result.byFeature).toEqual([]);
       expect(result.byIde).toEqual([]);
       expect(result.byLanguageFeature).toEqual([]);
+    });
+
+    it('parses dynamically named customization categories', () => {
+      const result = parseEnterpriseDocument(
+        {
+          day: '2026-10-23',
+          totals_by_skill: [{ skill: 'release-checks', interaction_count: 7 }],
+          totals_by_future_tool: [
+            { future_tool: 'internal-tool', interaction_count: 3 },
+          ],
+          totals_by_feature: [{ feature: 'chat_panel', interaction_count: 99 }],
+          distinct_skill_use_count: 4,
+          distinct_future_tool_use_count: 2,
+        },
+        'enterprise',
+        'ent-1',
+      );
+
+      expect(result.customizationMetrics).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          item_name: 'release-checks',
+          interaction_count: 7,
+          scope: 'aggregate',
+        }),
+        expect.objectContaining({
+          category: 'future_tool',
+          item_name: 'internal-tool',
+          interaction_count: 3,
+          scope: 'aggregate',
+        }),
+      ]);
+      expect(result.customizationSummaries).toEqual([
+        expect.objectContaining({
+          category: 'skill',
+          distinct_item_count: 4,
+        }),
+        expect.objectContaining({
+          category: 'future_tool',
+          distinct_item_count: 2,
+        }),
+      ]);
     });
     it('parses a flat V2EnterpriseDayTotal object (GitHub 2026-03-10 API shape)', () => {
       // Regression test for: https://github.com/backstage/community-plugins/issues/9458
@@ -524,6 +570,8 @@ describe('reportParser', () => {
         byLanguageModel: [],
         byCli: [],
         byVscodeAgent: [],
+        customizationMetrics: [],
+        customizationSummaries: [],
       });
     });
 
@@ -680,6 +728,8 @@ describe('reportParser', () => {
               loc_deleted_sum: 15,
             },
           ],
+          totals_by_mcp: [{ mcp: 'docs-search', interaction_count: 4 }],
+          distinct_mcp_use_count: 1,
         },
       ];
 
@@ -697,6 +747,20 @@ describe('reportParser', () => {
       expect(bd.byLanguageModel[0].language).toBe('typescript');
       expect(bd.byLanguageModel[0].model_id).toBe('gpt-5');
       expect(bd.byLanguageModel[0].request_count).toBe(9);
+      expect(bd.customizations).toEqual([
+        {
+          category: 'mcp',
+          item_name: 'docs-search',
+          interaction_count: 4,
+        },
+      ]);
+      expect(result.customizationSummaries).toEqual([
+        expect.objectContaining({
+          category: 'mcp',
+          distinct_item_count: 1,
+          scope: 'user',
+        }),
+      ]);
     });
 
     it('returns empty arrays for invalid input', () => {
@@ -704,7 +768,12 @@ describe('reportParser', () => {
         parseUserDocument({ nope: true }, 'enterprise', 'ent-1'),
       ).not.toThrow();
       const result = parseUserDocument({ nope: true }, 'enterprise', 'ent-1');
-      expect(result).toEqual({ userMetrics: [], userBreakdowns: [] });
+      expect(result).toEqual({
+        userMetrics: [],
+        userBreakdowns: [],
+        customizationMetrics: [],
+        customizationSummaries: [],
+      });
     });
   });
 

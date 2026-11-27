@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
 import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
@@ -26,7 +27,7 @@ export const useAlerts = (
   alertSource?: AlertSource | null,
 ) => {
   const ilertApi = useApi(ilertApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
 
   const [tableState, setTableState] = useState<TableState>({
     page: 0,

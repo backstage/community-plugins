@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import useAsync from 'react-use/lib/useAsync';
+import useAsyncRetry from 'react-use/lib/useAsyncRetry';
 import { useApi } from '@backstage/core-plugin-api';
-import { V2DashboardData } from '@backstage-community/plugin-copilot-common';
-import { copilotApiV2Ref, V2MetricsParams } from '../../../api';
+import type { V2DashboardData } from '@backstage-community/plugin-copilot-common';
+import { copilotApiV2Ref } from '../../../api';
+import type { V2MetricsParams } from '../../../api';
 
 const EMPTY_DASHBOARD: V2DashboardData = {
   daily: [],
@@ -26,13 +27,49 @@ const EMPTY_DASHBOARD: V2DashboardData = {
   byModelFeature: [],
   byLanguageModel: [],
   prMetrics: [],
+  customizationMetrics: [],
+  customizationSummaries: [],
 };
 
-export function useV2DashboardData(params: V2MetricsParams) {
+export function useV2DashboardData(
+  params: V2MetricsParams,
+  withoutCostCenter = false,
+) {
   const api = useApi(copilotApiV2Ref);
-  const { value, loading, error } = useAsync(
-    () => api.getDashboardData(params),
-    [api, params.type, params.entityId, params.from, params.to, params.team],
-  );
-  return { data: value ?? EMPTY_DASHBOARD, loading, error };
+  const queryKey = JSON.stringify([
+    params.type,
+    params.entityId,
+    params.from,
+    params.to,
+    params.team,
+    params.costCenter,
+    withoutCostCenter,
+  ]);
+  const { value, loading, retry } = useAsyncRetry(async () => {
+    try {
+      const data = withoutCostCenter
+        ? await api.getNoCostCenterDashboardData({
+            type: params.type,
+            entityId: params.entityId,
+            from: params.from,
+            to: params.to,
+          })
+        : await api.getDashboardData(params);
+      return { queryKey, data, error: undefined };
+    } catch (error) {
+      return {
+        queryKey,
+        data: undefined,
+        error: error instanceof Error ? error : new Error(String(error)),
+      };
+    }
+  }, [api, queryKey]);
+  const hasCurrentResult = value?.queryKey === queryKey;
+
+  return {
+    data: hasCurrentResult ? value.data ?? EMPTY_DASHBOARD : EMPTY_DASHBOARD,
+    loading: loading || !hasCurrentResult,
+    error: hasCurrentResult ? value.error : undefined,
+    retry,
+  };
 }

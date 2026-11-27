@@ -38,7 +38,6 @@ export function readHosts(configApi: ConfigApi): ReadHostsResult {
     })) ?? [];
 
   // Legacy config keys (backward compatibility); see config.d.ts @deprecated
-  // eslint-disable-next-line deprecation/deprecation
   const domain = configApi.getOptionalString('grafana.domain');
 
   if (!domain && hostsConfig.length === 0) {
@@ -53,9 +52,7 @@ export function readHosts(configApi: ConfigApi): ReadHostsResult {
     hostsConfig.push({
       id: 'default',
       domain,
-      // eslint-disable-next-line deprecation/deprecation
       proxyPath: configApi.getOptionalString('grafana.proxyPath'),
-      // eslint-disable-next-line deprecation/deprecation
       unifiedAlerting: configApi.getOptionalBoolean('grafana.unifiedAlerting'),
     });
   } else if (domain && hostsConfig.length > 0) {

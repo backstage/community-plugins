@@ -1,5 +1,35 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.34.0
+
+### Minor Changes
+
+- da9e749: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- Updated dependencies [da9e749]
+  - @backstage-community/plugin-linguist-common@0.27.0
+
+## 0.33.1
+
+### Patch Changes
+
+- 64c5489: Improved error handling when generating entity languages. Temporary directories are now always cleaned up, even when language analysis fails, which prevents disk from filling up over time. Transient failures while fetching an entity's source are retried with backoff, and an entity is only marked as processed once retries are exhausted so a single failing entity no longer blocks the rest of the processing queue.
+- 64c5489: A failed language analysis is no longer recorded as an empty result, so a processing failure is no longer mistaken for a valid empty language breakdown. Entities that have never been analyzed are now processed before previously failed ones, so new entities are not starved by repeatedly failing ones.
+- 64c5489: New catalog entities are now added to the processing queue one at a time instead of all at once, so syncing a large catalog no longer opens many database connections simultaneously and risks exhausting the connection pool.
+
+## 0.33.0
+
+### Minor Changes
+
+- b8de080: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [b8de080]
+  - @backstage-community/plugin-linguist-common@0.26.0
+
 ## 0.32.0
 
 ### Minor Changes

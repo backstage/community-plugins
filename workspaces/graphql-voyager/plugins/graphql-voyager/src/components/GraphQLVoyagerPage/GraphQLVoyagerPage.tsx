@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Header,
-  Page,
-  Content,
-  Progress,
-  ErrorPanel,
-} from '@backstage/core-components';
+import { Progress, ErrorPanel } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import 'graphql-voyager/dist/voyager.css';
 import { graphQlVoyagerApiRef } from '../../lib/api';
@@ -51,11 +46,11 @@ export const GraphQLVoyagerPage = (props: GraphQLVoyagerPageProps) => {
   const { title = 'Welcome to Voyager!' } = props;
 
   return (
-    <Page themeId="tool">
+    <>
       <Header title={title} />
-      <Content>
+      <Container>
         <VoyagerContent />
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };

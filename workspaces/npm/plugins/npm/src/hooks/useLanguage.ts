@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { useApi } from '@backstage/core-plugin-api';
-import { appLanguageApiRef } from '@backstage/core-plugin-api/alpha';
+import { coreApis, useApi } from '@backstage/frontend-plugin-api';
 
 export const useLanguage = () =>
-  useApi(appLanguageApiRef).getLanguage().language;
+  useApi(coreApis.appLanguage).getLanguage().language;

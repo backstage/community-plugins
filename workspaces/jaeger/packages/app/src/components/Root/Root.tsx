@@ -36,8 +36,8 @@ import {
   SidebarScrollWrapper,
   SidebarSpace,
   useSidebarOpenState,
-  Link,
 } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import { MyGroupsSidebarItem } from '@backstage/plugin-org';
@@ -64,7 +64,7 @@ const SidebarLogo = () => {
 
   return (
     <div className={classes.root}>
-      <Link to="/" underline="none" className={classes.link} aria-label="Home">
+      <Link href="/" className={classes.link} aria-label="Home">
         {isOpen ? <LogoFull /> : <LogoIcon />}
       </Link>
     </div>

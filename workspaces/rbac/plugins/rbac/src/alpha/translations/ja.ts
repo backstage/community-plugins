@@ -34,9 +34,32 @@ const rbacTranslationJa = createTranslationMessages({
     'table.title': 'すべてのロール',
     'table.titleWithCount': 'すべてのロール ({{count}})',
     'table.headers.name': '名前',
+    'table.headers.source': 'ソース',
     'table.headers.usersAndGroups': 'ユーザーとグループ',
     'table.headers.accessiblePlugins': 'アクセス可能なプラグイン',
     'table.headers.actions': 'アクション',
+    'table.sources.appConfig': 'アプリ設定',
+    'table.sources.csv': 'CSV',
+    'table.sources.form': 'フォーム',
+    'table.sources.legacy': 'レガシー',
+    'table.sources.tooltips.appConfig':
+      'app-config.yaml の permission.rbac.admin で定義されています。',
+    'table.sources.tooltips.csv':
+      'app-config.yaml の permission.rbac.policies-csv-file で参照される CSV ポリシーファイルで定義されています。',
+    'table.sources.tooltips.form':
+      'UI の RBAC フォームで作成されました。REST API でも管理できます。',
+    'table.sources.tooltips.legacy':
+      'ロールソースが記録される前に作成されました。REST API または CSV ポリシーファイルで管理できます。',
+    'table.sources.tooltips.generic':
+      'このロールはそのソースによって管理されており、UI では変更できません。',
+    'table.sources.actionTooltips.appConfig':
+      'このロールはアプリケーション設定 (app-config.yaml の permission.rbac.admin) で管理されています。変更するには設定を更新して再デプロイしてください。',
+    'table.sources.actionTooltips.csv':
+      'このロールは CSV ポリシーファイルで管理されています。変更するには CSV ファイルを更新して再デプロイしてください。',
+    'table.sources.actionTooltips.legacy':
+      'これはレガシーロールのため、UI では変更できません。REST API または CSV ポリシーファイルから更新してください。',
+    'table.sources.actionTooltips.generic':
+      'このロールはそのソースによって管理されており、UI では変更できません。',
     'table.emptyContent': 'レコードが見つかりません',
     'toolbar.createButton': '作成',
     'toolbar.warning.title': 'ロールを作成できません。',
@@ -82,6 +105,16 @@ const rbacTranslationJa = createTranslationMessages({
     'roleForm.review.reviewAndSave': '確認および保存',
     'roleForm.review.nameDescriptionOwner': 'ロールの名前、説明、および所有者',
     'roleForm.review.permissionPoliciesWithCount': '権限ポリシー ({{count}})',
+    'roleForm.review.changes.title': 'このロールへの変更',
+    'roleForm.review.changes.noChanges':
+      'このロールには変更が加えられていません。',
+    'roleForm.review.changes.added': '追加',
+    'roleForm.review.changes.removed': '削除',
+    'roleForm.review.changes.changed': '変更',
+    'roleForm.review.changes.valueChanged':
+      '{{field}}: 「{{previous}}」から「{{current}}」に変更',
+    'roleForm.review.changes.permissionPolicies': '権限ポリシー',
+    'roleForm.review.changes.conditionalPolicies': '条件付きアクセスポリシー',
     'roleForm.steps.next': '次へ',
     'roleForm.steps.back': '戻る',
     'roleForm.steps.cancel': 'キャンセル',
@@ -162,6 +195,16 @@ const rbacTranslationJa = createTranslationMessages({
     'common.unauthorizedToEdit': '編集権限がありません',
     'common.noRecordsFound': 'レコードが見つかりません',
     'common.selectUsersAndGroups': 'ユーザーとグループの選択',
+    'common.addMembersAndGroups': 'メンバーとグループを追加',
+    'common.searchMembers': '検索',
+    'common.searchByName': '名前で検索',
+    'common.kind': '種別',
+    'common.kindAll': 'すべて',
+    'common.namespace': '名前空間',
+    'common.namespaceAll': 'すべて',
+    'common.allResults': 'すべて ({{count}})',
+    'common.selectedCount': '{{count}} 件選択',
+    'common.add': '追加',
     'common.clearSearch': '検索のクリア',
     'common.closeDrawer': 'ドロワーを閉じる',
     'common.remove': '削除',
@@ -205,7 +248,10 @@ const rbacTranslationJa = createTranslationMessages({
     'common.childGroupsCount': '{{count}} 個の子グループ',
     'common.searchAndSelectUsersGroups':
       '追加するユーザーとグループを検索して選択します。選択したユーザーとグループは下の表に表示されます。',
+    'common.searchAndFilterCatalog':
+      'カタログを検索およびフィルタリングして、ユーザーとグループを追加します。大規模なメンバーリストでは、100件のドロップダウンの代わりに使用されます。',
     'common.noUsersAndGroupsFound': 'ユーザーとグループが見つかりません。',
+    'common.noMembersMatchSearch': '検索に一致するメンバーはありません。',
     'common.errorFetchingUserGroups':
       'ユーザーとグループの取得中にエラーが発生しました: {{error}}',
     'common.nameRequired': '名前は必須です',
@@ -220,6 +266,31 @@ const rbacTranslationJa = createTranslationMessages({
     'common.defaultResourceTypeVisible':
       'デフォルトでは、選択したリソースタイプが、追加されたすべてのユーザーに表示されます。特定のプラグインルールに対する権限を制限または付与する場合は、そのルールを選択してパラメーターを追加してください。',
     'common.tableAction': 'テーブルアクション',
+    'permissionsMatrix.tabs.label': 'RBAC ビュー',
+    'permissionsMatrix.tabs.roles': 'ロール',
+    'permissionsMatrix.tabs.permissionsByPlugin': 'プラグイン別の権限',
+    'permissionsMatrix.title': 'プラグイン別の権限',
+    'permissionsMatrix.description':
+      '各ロールに付与された権限をプラグインごとにまとめた読み取り専用の概要です。',
+    'permissionsMatrix.roleColumn': 'ロール',
+    'permissionsMatrix.filterRoles': 'ロールをフィルター',
+    'permissionsMatrix.roles': 'ロール',
+    'permissionsMatrix.plugin': 'プラグイン',
+    'permissionsMatrix.allPlugins': 'すべてのプラグイン',
+    'permissionsMatrix.policy': 'ポリシー',
+    'permissionsMatrix.allPolicies': 'すべてのポリシー',
+    'permissionsMatrix.legend': '凡例',
+    'permissionsMatrix.viewOnlyRole': '表示専用ロール',
+    'permissionsMatrix.conditionalRules': '条件付きアクセスのルール',
+    'permissionsMatrix.emptyRoles': 'ロールが見つかりません',
+    'permissionsMatrix.noMatches': '現在のフィルターに一致する権限はありません',
+    'permissionsMatrix.emptyPermissions': 'プラグインの権限が見つかりません',
+    'permissionsMatrix.decisions.allow': '許可',
+    'permissionsMatrix.decisions.deny': '拒否',
+    'permissionsMatrix.decisions.conditional': '条件付き',
+    'permissionsMatrix.decisions.none': '未設定',
+    'permissionsMatrix.errors.fetchPermissions':
+      'プラグインの権限の取得中に問題が発生しました',
   },
 });
 

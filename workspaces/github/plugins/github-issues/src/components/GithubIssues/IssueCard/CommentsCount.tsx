@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { ChatIcon } from '@backstage/core-components';
+import { useApiHolder } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { Flex } from '@backstage/ui';
+import { RiChat1Line } from '@remixicon/react';
 import Badge from '@material-ui/core/Badge';
 
 type CommentsCountProps = {
@@ -24,11 +26,14 @@ type CommentsCountProps = {
 
 export const CommentsCount = (props: CommentsCountProps) => {
   const { commentsCount } = props;
+  const chatIcon = useApiHolder().get(coreApis.icons)?.icon('chat') ?? (
+    <RiChat1Line />
+  );
 
   return (
     <Flex mb="2" mr="3" justify="start" style={{ alignSelf: 'flex-end' }}>
       <Badge badgeContent={commentsCount} color="primary">
-        <ChatIcon />
+        {chatIcon}
       </Badge>
     </Flex>
   );

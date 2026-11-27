@@ -38,7 +38,7 @@ import {
   StatusOK,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 const useStyles = makeStyles({
   denseListIcon: {
@@ -145,7 +145,7 @@ export const IncidentListItem = ({
   const createdAt = DateTime.local()
     .minus(Duration.fromMillis(duration))
     .toRelative({ locale: 'en' });
-  const toastApi = useApi(toastApiRef);
+  const toastApi = useApi(coreApis.toast);
   const api = useApi(splunkOnCallApiRef);
 
   const hasBeenManuallyTriggered = incident.monitorName?.includes('vouser-');

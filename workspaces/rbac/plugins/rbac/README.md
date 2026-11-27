@@ -29,6 +29,19 @@ g, user:default/<login-id/user-name>, role:default/team_a
 
 > Note: Even after ingesting users/groups in catalog and applying above permissions if the create/edit button is still disabled then please contact your administrator as you might be conditionally restricted from accessing the create/edit button.
 
+### Role sources and UI editability
+
+Each role in the Roles list shows a **Source** column that indicates where the role was created:
+
+| Source label | Backend source  | Editable in UI |
+| ------------ | --------------- | -------------- |
+| Form         | `rest`          | Yes            |
+| App Config   | `configuration` | No             |
+| CSV          | `csv-file`      | No             |
+| Legacy       | `legacy`        | No             |
+
+**App Config**, **CSV**, and **Legacy** roles are immutable in the UI: Edit and Delete are disabled, and hovering those actions explains that the role is managed by its source. To change those roles, update the corresponding source (for example `app-config.yaml` or the CSV policy file) and redeploy. Only roles created through the REST API or the RBAC UI (**Form**) can be edited or deleted from the Roles list.
+
 - To fetch the permissions from other plugins like `Kubernetes` and `Jenkins` in the Role Form as mentioned in the [RBAC permissions documentation](../rbac-backend/docs/permissions.md), add the following configuration in your `app-config.yaml`:
 
 ```yaml title="app-config.yaml"
@@ -42,6 +55,14 @@ permission:
       users:
         - name: user:default/<user-name>
 ```
+
+### Permissions by plugin
+
+The RBAC page has a second tab, **Permissions by plugin**, with a read-only matrix of every role against every plugin permission. Each cell shows the decision for that role and permission: allow, deny, conditional (hover the cell to see its rules), or no policy. Roles that cannot be edited in the UI carry a lock icon naming their source.
+
+The sidebar filters the matrix: search roles by name, check a few roles to compare only those, narrow the columns to one plugin, or keep only the rows and columns where a policy decision (allow, deny, conditional) appears. Role names link to the role's overview page.
+
+The matrix shows conditional policies as taking precedence over basic policies, which matches the backend's default `policyDecisionPrecedence: conditional` setting. If your backend sets `policyDecisionPrecedence: basic`, the enforced decision for a cell shown as **Conditional** comes from the basic policy instead.
 
 ---
 

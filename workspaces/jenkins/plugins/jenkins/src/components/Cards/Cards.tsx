@@ -23,10 +23,10 @@ import { ErrorType, useBuilds } from '../useBuilds';
 import {
   InfoCard,
   InfoCardVariants,
-  Link,
   StructuredMetadataTable,
   WarningPanel,
 } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { Project } from '../../api/JenkinsApi';
 
 const useStyles = makeStyles({
@@ -68,7 +68,11 @@ const WidgetContent = ({
         'latest run': displayDate,
         duration: displayDuration,
         link: (
-          <Link to={latestRun.lastBuild.url}>
+          <Link
+            href={latestRun.lastBuild.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             See more on Jenkins{' '}
             <ExternalLinkIcon className={classes.externalLinkIcon} />
           </Link>

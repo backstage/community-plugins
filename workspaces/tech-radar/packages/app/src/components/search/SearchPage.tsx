@@ -30,13 +30,9 @@ import {
   SearchPagination,
   useSearch,
 } from '@backstage/plugin-search-react';
-import {
-  CatalogIcon,
-  Content,
-  DocsIcon,
-  Header,
-  Page,
-} from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import CatalogIcon from '@material-ui/icons/MenuBook';
+import DocsIcon from '@material-ui/icons/Description';
 import { useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -60,9 +56,9 @@ const SearchPage = () => {
   const catalogApi = useApi(catalogApiRef);
 
   return (
-    <Page themeId="home">
+    <>
       <Header title="Search" />
-      <Content>
+      <Container>
         <Grid container direction="row">
           <Grid item xs={12}>
             <Paper className={classes.bar}>
@@ -130,8 +126,8 @@ const SearchPage = () => {
             </SearchResult>
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

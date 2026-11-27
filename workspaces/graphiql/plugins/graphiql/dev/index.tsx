@@ -15,7 +15,8 @@
  */
 
 import { createDevApp } from '@backstage/dev-utils';
-import { githubAuthApiRef, errorApiRef } from '@backstage/core-plugin-api';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import {
   graphiqlPlugin,
   GraphiQLIcon,
@@ -29,7 +30,7 @@ createDevApp()
   .registerApi({
     api: graphQlBrowseApiRef,
     deps: {
-      errorApi: errorApiRef,
+      errorApi: coreApis.error,
       githubAuthApi: githubAuthApiRef,
     },
     factory({ errorApi, githubAuthApi }) {

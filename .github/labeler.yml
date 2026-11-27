@@ -16,6 +16,9 @@ workspace/agent-forge:
 workspace/airbrake:
   - "Workspace\\s*airbrake"
 
+workspace/akeyless:
+  - "Workspace\\s*akeyless"
+
 workspace/allure:
   - "Workspace\\s*allure"
 
@@ -36,6 +39,9 @@ workspace/apiiro:
 
 workspace/apollo-explorer:
   - "Workspace\\s*apollo-explorer"
+
+workspace/argo-workflows:
+  - "Workspace\\s*argo-workflows"
 
 workspace/argocd:
   - "Workspace\\s*argocd"
@@ -157,6 +163,9 @@ workspace/graphql-voyager:
 workspace/growthbook-flags:
   - "Workspace\\s*growthbook-flags"
 
+workspace/healert:
+  - "Workspace\\s*healert"
+
 workspace/ilert:
   - "Workspace\\s*ilert"
 
@@ -238,6 +247,9 @@ workspace/pingidentity:
 workspace/playlist:
   - "Workspace\\s*playlist"
 
+workspace/pointing-poker:
+  - "Workspace\\s*pointing-poker"
+
 workspace/puppetdb:
   - "Workspace\\s*puppetdb"
 
@@ -253,20 +265,8 @@ workspace/report-portal:
 workspace/rollbar:
   - "Workspace\\s*rollbar"
 
-workspace/scaffolder-backend-module-annotator:
-  - "Workspace\\s*scaffolder-backend-module-annotator"
-
-workspace/scaffolder-backend-module-kubernetes:
-  - "Workspace\\s*scaffolder-backend-module-kubernetes"
-
-workspace/scaffolder-backend-module-regex:
-  - "Workspace\\s*scaffolder-backend-module-regex"
-
-workspace/scaffolder-backend-module-servicenow:
-  - "Workspace\\s*scaffolder-backend-module-servicenow"
-
-workspace/scaffolder-backend-module-sonarqube:
-  - "Workspace\\s*scaffolder-backend-module-sonarqube"
+workspace/scaffolder:
+  - "Workspace\\s*scaffolder(?![\\w-])"
 
 workspace/scaffolder-relation-processor:
   - "Workspace\\s*scaffolder-relation-processor"

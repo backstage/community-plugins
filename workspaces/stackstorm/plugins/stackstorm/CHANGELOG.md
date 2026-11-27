@@ -1,5 +1,21 @@
 # @backstage-community/plugin-stackstorm
 
+## 0.25.0
+
+### Minor Changes
+
+- 7be4b01: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 7be4b01: The StackStorm page header and tabs now use Backstage UI components, and links to StackStorm executions and actions open in a new tab.
+
+## 0.24.0
+
+### Minor Changes
+
+- 24e8332: Backstage version bump to v1.56.2
+
 ## 0.23.0
 
 ### Minor Changes

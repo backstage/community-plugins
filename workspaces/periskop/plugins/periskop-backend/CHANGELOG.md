@@ -1,5 +1,23 @@
 # @backstage-community/plugin-periskop-backend
 
+## 0.26.0
+
+### Minor Changes
+
+- be32277: Backstage version bump to v1.57.1
+
+## 0.25.1
+
+### Patch Changes
+
+- 5e9aee0: Remove an unused backend dependency and two unused frontend test dependencies.
+
+## 0.25.0
+
+### Minor Changes
+
+- e7e4791: Backstage version bump to v1.56.2
+
 ## 0.24.0
 
 ### Minor Changes

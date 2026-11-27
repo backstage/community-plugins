@@ -1,5 +1,27 @@
 # @backstage-community/plugin-cloudbuild
 
+## 1.3.0
+
+### Minor Changes
+
+- 460b905: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 460b905: Replaced deprecated Backstage core links with Backstage UI links.
+
+## 1.2.0
+
+### Minor Changes
+
+- c5eebc7: Backstage version bump to v1.56.2
+
+## 1.1.1
+
+### Patch Changes
+
+- 97317ec: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 1.1.0
 
 ### Minor Changes

@@ -23,9 +23,16 @@ import { ilertApiRef } from '../../api';
 import { OnCallShiftItem } from './OnCallShiftItem';
 
 import { useApi } from '@backstage/core-plugin-api';
-import { ItemCardGrid, Progress, Link } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 const useStyles = makeStyles(() => ({
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(22em, 1fr))',
+    gridAutoRows: '1fr',
+    gap: '16px',
+  },
   card: {
     margin: 16,
     width: 'calc(100% - 32px)',
@@ -123,7 +130,7 @@ export const OnCallSchedulesGrid = ({
     return <Progress />;
   }
   return (
-    <ItemCardGrid data-testid="docs-explore">
+    <div className={classes.grid} data-testid="docs-explore">
       {!onCallSchedules?.length
         ? null
         : onCallSchedules.map((schedule, index) => (
@@ -132,7 +139,9 @@ export const OnCallSchedulesGrid = ({
                 classes={{ content: classes.cardHeader }}
                 title={
                   <Link
-                    to={ilertApi.getScheduleDetailsURL(schedule)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={ilertApi.getScheduleDetailsURL(schedule)}
                     className={classes.link}
                   >
                     {schedule.name}
@@ -167,6 +176,6 @@ export const OnCallSchedulesGrid = ({
               </CardContent>
             </Card>
           ))}
-    </ItemCardGrid>
+    </div>
   );
 };

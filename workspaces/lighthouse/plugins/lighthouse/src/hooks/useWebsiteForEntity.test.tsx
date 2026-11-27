@@ -22,13 +22,13 @@ import { lighthouseApiRef } from '../api';
 import * as data from '../__fixtures__/website-list-response.json';
 import { useWebsiteForEntity } from './useWebsiteForEntity';
 
-import { errorApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
 
 const websiteListResponse = data as WebsiteListResponse;
 const website = websiteListResponse.items[0];
 
-const mockErrorApi: jest.Mocked<typeof errorApiRef.T> = {
+const mockErrorApi: jest.Mocked<typeof coreApis.error.T> = {
   post: jest.fn(),
   error$: jest.fn(),
 };
@@ -58,7 +58,7 @@ describe('useWebsiteForEntity', () => {
     return (
       <TestApiProvider
         apis={[
-          [errorApiRef, mockErrorApi],
+          [coreApis.error, mockErrorApi],
           [lighthouseApiRef, mockLighthouseApi],
         ]}
       >

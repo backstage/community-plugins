@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Button from '@mui/material/Button';
+import { ButtonLink, FullPage } from '@backstage/ui';
+import { RiArrowRightLine } from '@remixicon/react';
 import { ReactNode, memo, useMemo, useState } from 'react';
 import { UrlTree } from '../../types';
 import { TEST_IDS } from '../../consts/testids';
@@ -29,6 +29,8 @@ import { NavButton } from './helpers/NavButton';
 import { TableOfContents } from './helpers/TableOfContents';
 import { useCustomProtocol } from '../../hooks/useCustomProtocol';
 import { PATH_SEPARATOR } from '../../consts/consts';
+
+import styles from './BookmarksViewer.module.css';
 
 /** Props for layout components */
 export type BookmarkViewerLayoutProps = {
@@ -96,25 +98,28 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
   );
 
   const openInNewTab = (
-    <Button
+    <ButtonLink
       href={href}
       target="_blank"
       rel="noopener"
-      sx={{ mb: 2 }}
-      endIcon={<ArrowForwardIcon />}
+      variant="tertiary"
+      className={styles.newTab}
+      iconEnd={<RiArrowRightLine />}
       data-testid={TEST_IDS.BookmarksViewer.newTab}
     >
       {t('bookmarkViewer.newTab')}
-    </Button>
+    </ButtonLink>
   );
 
   return (
-    <View
-      toc={toc}
-      previousButton={previousButton}
-      viewer={viewer}
-      openInNewTab={openInNewTab}
-      nextButton={nextButton}
-    />
+    <FullPage>
+      <View
+        toc={toc}
+        previousButton={previousButton}
+        viewer={viewer}
+        openInNewTab={openInNewTab}
+        nextButton={nextButton}
+      />
+    </FullPage>
   );
 });

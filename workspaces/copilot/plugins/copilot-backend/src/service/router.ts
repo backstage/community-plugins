@@ -27,7 +27,11 @@ import {
 } from '@backstage/backend-plugin-api';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
-import { InputError, NotFoundError } from '@backstage/errors';
+import {
+  InputError,
+  NotFoundError,
+  ServiceUnavailableError,
+} from '@backstage/errors';
 import {
   Metric,
   PeriodRange,
@@ -36,6 +40,7 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
 import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
+import type { CostCenterDashboardScope } from '../db/DatabaseHandlerV2';
 import { TaskManagementV2 } from '../task/TaskManagementV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
 import {
@@ -51,17 +56,15 @@ import {
   TeamQuery,
   teamQuerySchema,
   v2BackfillBodySchema,
-  V2BackfillStatusQuery,
   v2BackfillStatusQuerySchema,
-  V2FeatureQuery,
   v2FeatureQuerySchema,
-  V2MeDashboardQuery,
   v2MeDashboardQuerySchema,
+  v2CostCentersQuerySchema,
+  v2NoCostCenterDashboardQuerySchema,
+  v2OrganizationTeamOptionsQuerySchema,
   V2MetricsQuery,
   v2MetricsQuerySchema,
-  V2PeriodRangeQuery,
   v2PeriodRangeQuerySchema,
-  V2TeamsQuery,
   v2TeamsQuerySchema,
 } from './validation/schema';
 import { DateTime } from 'luxon';
@@ -339,18 +342,231 @@ async function createRouter(
   // ---------------------------------------------------------------------------
   const v2Router = express.Router();
 
+  const configuredEnterprise = config.getOptionalString('copilot.enterprise');
+  const configuredOrganization = config.getOptionalString(
+    'copilot.organization',
+  );
+  const organizationTeamIngestionEnabled =
+    Boolean(configuredEnterprise) &&
+    (config.getOptionalBoolean('copilot.ingestOrganizationTeamReports') ??
+      false);
+  const configuredOrganizationTeamFilteringEnabled =
+    Boolean(configuredEnterprise && configuredOrganization) &&
+    (config.getOptionalBoolean('copilot.ingestTeams') ?? false);
+  const organizationTeamFilteringEnabled =
+    organizationTeamIngestionEnabled ||
+    configuredOrganizationTeamFilteringEnabled;
+  const costCenterIngestionEnabled =
+    config.getOptionalBoolean('copilot.ingestCostCenters') ?? false;
+  const matchesConfiguredId = (
+    entityId: string,
+    configuredId: string | undefined,
+  ) =>
+    Boolean(
+      configuredId && entityId.toLowerCase() === configuredId.toLowerCase(),
+    );
+  const isCostCenterScopeEnabled = (
+    type: V2MetricsQuery['type'],
+    entityId: string,
+  ) =>
+    (type === 'enterprise' &&
+      matchesConfiguredId(entityId, configuredEnterprise)) ||
+    (costCenterIngestionEnabled &&
+      Boolean(configuredEnterprise && configuredOrganization) &&
+      matchesConfiguredId(entityId, configuredOrganization));
+
+  const validateMetricsReadScope = async (params: {
+    type: V2MetricsQuery['type'];
+    entityId: string;
+    from?: string;
+    to?: string;
+    team?: string;
+    costCenter?: string;
+  }): Promise<string> => {
+    const { type, entityId, from, to, team, costCenter } = params;
+    if (team !== undefined && costCenter !== undefined) {
+      throw new InputError(
+        'Team and costCenter filters cannot be used together',
+      );
+    }
+
+    let validatedEntityId: string;
+    if (type === 'enterprise') {
+      if (!matchesConfiguredId(entityId, configuredEnterprise)) {
+        throw new NotFoundError('Metrics scope is not available.');
+      }
+      validatedEntityId = configuredEnterprise!;
+    } else if (!organizationTeamIngestionEnabled) {
+      if (!matchesConfiguredId(entityId, configuredOrganization)) {
+        throw new NotFoundError('Metrics scope is not available.');
+      }
+      validatedEntityId = configuredOrganization!;
+    } else {
+      if (!configuredEnterprise) {
+        throw new NotFoundError('Metrics scope is not available.');
+      }
+      const directory = await dbV2.getEnterpriseOrganizationDirectory(
+        configuredEnterprise,
+      );
+      if (!directory.complete) {
+        throw new ServiceUnavailableError(
+          'Organization metrics are being refreshed.',
+        );
+      }
+      const organization = directory.organizations.find(
+        item => item.toLowerCase() === entityId.toLowerCase(),
+      );
+      if (!organization) {
+        throw new NotFoundError('Metrics scope is not available.');
+      }
+      validatedEntityId = organization;
+    }
+
+    if (type === 'organization' && team !== undefined) {
+      const teams = await dbV2.getTeams(type, validatedEntityId, from, to);
+      if (!teams.includes(team)) {
+        throw new InputError(
+          'Team is not eligible for the requested organization and period.',
+        );
+      }
+    }
+
+    if (!costCenter) {
+      return validatedEntityId;
+    }
+
+    if (!isCostCenterScopeEnabled(type, validatedEntityId)) {
+      throw new InputError(
+        'Cost centers are only supported for enterprise scope',
+      );
+    }
+
+    const costCenters = await dbV2.getCostCenters(
+      type,
+      validatedEntityId,
+      from,
+      to,
+    );
+    // The threshold counts distinct users across the range, not daily or rolling rows.
+    if (!costCenters.costCenters.some(item => item.id === costCenter)) {
+      throw new InputError(
+        'Cost center is not eligible for the requested scope and date range',
+      );
+    }
+    return validatedEntityId;
+  };
+
+  const validateNoCostCenterSelection = (params: {
+    type: V2MetricsQuery['type'];
+    entityId: string;
+  }) => {
+    const { type, entityId } = params;
+    if (!isCostCenterScopeEnabled(type, entityId)) {
+      throw new InputError(
+        'Cost centers are only supported for enterprise scope',
+      );
+    }
+  };
+
+  const getDashboardData = async (params: {
+    type: V2MetricsQuery['type'];
+    entityId: string;
+    from: string;
+    to: string;
+    team?: string;
+    costCenterScope?: CostCenterDashboardScope;
+  }) => {
+    const { type, entityId, from, to, team, costCenterScope } = params;
+    const validatedEntityId = await validateMetricsReadScope({
+      type,
+      entityId,
+      from,
+      to,
+      team,
+      costCenter:
+        costCenterScope?.kind === 'costCenter' ? costCenterScope.id : undefined,
+    });
+    if (costCenterScope?.kind === 'noCostCenter') {
+      validateNoCostCenterSelection({ type, entityId: validatedEntityId });
+    }
+
+    const dashboard = await dbV2.getDashboardData(
+      type,
+      validatedEntityId,
+      from,
+      to,
+      team,
+      costCenterScope,
+    );
+    if (
+      costCenterScope?.kind === 'noCostCenter' &&
+      !(await dbV2.hasUsersWithoutCostCenterOnDashboard(
+        type,
+        validatedEntityId,
+        dashboard.daily,
+      ))
+    ) {
+      throw new InputError(
+        'No-cost-center scope is not eligible for the requested date range',
+      );
+    }
+
+    return dashboard;
+  };
+
+  v2Router.get(
+    '/cost-centers',
+    validateQuery(v2CostCentersQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+          from,
+          to,
+        });
+        if (!isCostCenterScopeEnabled(type, validatedEntityId)) {
+          return res.json({
+            costCenters: [],
+            hasUsersWithoutCostCenter: false,
+          });
+        }
+
+        const result = await dbV2.getCostCenters(
+          type,
+          validatedEntityId,
+          from,
+          to,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
   v2Router.get(
     '/metrics/daily',
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
-        const result = await dbV2.getDailyTotals(
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
           type,
           entityId,
           from,
           to,
           team,
+          costCenter,
+        });
+        const result = await dbV2.getDailyTotals(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
+          costCenter,
         );
         return res.json(result);
       } catch (err) {
@@ -364,8 +580,23 @@ async function createRouter(
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
-        const result = await dbV2.getPrMetrics(type, entityId, from, to, team);
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+          from,
+          to,
+          team,
+          costCenter,
+        });
+        const result = await dbV2.getPrMetrics(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
+          costCenter,
+        );
         return res.json(result);
       } catch (err) {
         return next(err);
@@ -378,9 +609,24 @@ async function createRouter(
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+          from,
+          to,
+          team,
+          costCenter,
+        });
         // eslint-disable-next-line testing-library/no-await-sync-queries
-        const result = await dbV2.getByFeature(type, entityId, from, to, team);
+        const result = await dbV2.getByFeature(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
+          costCenter,
+        );
         return res.json(result);
       } catch (err) {
         return next(err);
@@ -393,9 +639,24 @@ async function createRouter(
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+          from,
+          to,
+          team,
+          costCenter,
+        });
         // eslint-disable-next-line testing-library/no-await-sync-queries
-        const result = await dbV2.getByIde(type, entityId, from, to, team);
+        const result = await dbV2.getByIde(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
+          costCenter,
+        );
         return res.json(result);
       } catch (err) {
         return next(err);
@@ -408,16 +669,25 @@ async function createRouter(
     validateQuery(v2FeatureQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team, feature } =
-          req.query as V2FeatureQuery;
-        // eslint-disable-next-line testing-library/no-await-sync-queries
-        const result = await dbV2.getByLanguageFeature(
+        const { type, entityId, from, to, team, costCenter, feature } =
+          req.query;
+        const validatedEntityId = await validateMetricsReadScope({
           type,
           entityId,
           from,
           to,
           team,
+          costCenter,
+        });
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByLanguageFeature(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
           feature,
+          costCenter,
         );
         return res.json(result);
       } catch (err) {
@@ -431,14 +701,23 @@ async function createRouter(
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
-        // eslint-disable-next-line testing-library/no-await-sync-queries
-        const result = await dbV2.getByModelFeature(
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
           type,
           entityId,
           from,
           to,
           team,
+          costCenter,
+        });
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByModelFeature(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
+          costCenter,
         );
         return res.json(result);
       } catch (err) {
@@ -452,14 +731,23 @@ async function createRouter(
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
-        // eslint-disable-next-line testing-library/no-await-sync-queries
-        const result = await dbV2.getByLanguageModel(
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
           type,
           entityId,
           from,
           to,
           team,
+          costCenter,
+        });
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByLanguageModel(
+          type,
+          validatedEntityId,
+          from,
+          to,
+          team,
+          costCenter,
         );
         return res.json(result);
       } catch (err) {
@@ -473,9 +761,96 @@ async function createRouter(
     validateQuery(v2TeamsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to } = req.query as V2TeamsQuery;
-        const result = await dbV2.getTeams(type, entityId, from, to);
+        const { type, entityId, from, to } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+          from,
+          to,
+        });
+        const result = await dbV2.getTeams(type, validatedEntityId, from, to);
         return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/organization-team/options',
+    validateQuery(v2OrganizationTeamOptionsQuerySchema),
+    async (req, res, next) => {
+      try {
+        if (!organizationTeamFilteringEnabled || !configuredEnterprise) {
+          return res.status(404).json({
+            error: 'Organization-team filtering is not enabled.',
+          });
+        }
+
+        const { organization, from, to } = req.query;
+        if (!organizationTeamIngestionEnabled) {
+          if (
+            !configuredOrganizationTeamFilteringEnabled ||
+            !configuredOrganization ||
+            (organization &&
+              organization.toLowerCase() !==
+                configuredOrganization.toLowerCase())
+          ) {
+            return res.status(404).json({
+              error: 'Organization is not available for team filtering.',
+            });
+          }
+
+          const teams = await dbV2.getTeams(
+            'organization',
+            configuredOrganization,
+            from,
+            to,
+          );
+          return res.json({
+            organizations: [configuredOrganization],
+            teams: teams.map(team => ({
+              organization: configuredOrganization,
+              team,
+            })),
+            hasPendingOrganizations: false,
+          });
+        }
+
+        const directory = await dbV2.getEnterpriseOrganizationDirectory(
+          configuredEnterprise,
+        );
+        if (!directory.complete) {
+          return res.status(503).json({
+            error: 'Organization-team filters are being refreshed.',
+          });
+        }
+
+        const selectedOrganization = organization
+          ? directory.organizations.find(
+              item => item.toLowerCase() === organization.toLowerCase(),
+            )
+          : undefined;
+        if (organization && !selectedOrganization) {
+          return res.status(404).json({
+            error: 'Organization is not available for team filtering.',
+          });
+        }
+
+        const organizations = selectedOrganization
+          ? [selectedOrganization]
+          : directory.organizations;
+        const teams = await dbV2.getAccessibleOrganizationTeams(
+          organizations,
+          from,
+          to,
+        );
+
+        return res.json({
+          organizations: directory.organizations,
+          teams,
+          hasPendingOrganizations: directory.hasPendingOrganizations,
+        });
       } catch (err) {
         return next(err);
       }
@@ -487,8 +862,12 @@ async function createRouter(
     validateQuery(v2PeriodRangeQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId } = req.query as V2PeriodRangeQuery;
-        const result = await dbV2.getPeriodRange(type, entityId);
+        const { type, entityId } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+        });
+        const result = await dbV2.getPeriodRange(type, validatedEntityId);
         if (!result) {
           return res.status(404).json({ error: 'No data found' });
         }
@@ -504,8 +883,19 @@ async function createRouter(
     validateQuery(v2BackfillStatusQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to } = req.query as V2BackfillStatusQuery;
-        const rows = await dbV2.getIngestionLog(type, entityId, from, to);
+        const { type, entityId, from, to } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
+          type,
+          entityId,
+          from,
+          to,
+        });
+        const rows = await dbV2.getBackfillStatus(
+          type,
+          validatedEntityId,
+          from,
+          to,
+        );
         const result: V2BackfillStatus[] = rows.map(row => ({
           ...row,
           components_loaded: JSON.parse(row.components_loaded || '[]'),
@@ -544,8 +934,92 @@ async function createRouter(
       }
 
       const effectiveToDate = toDate ?? yesterday;
+      if (fromDate > effectiveToDate) {
+        return res.status(400).json({
+          error: 'fromDate must be less than or equal to toDate',
+        });
+      }
+
+      if (type === 'organization' && organizationTeamIngestionEnabled) {
+        if (!configuredEnterprise) {
+          return res.status(400).json({
+            error: 'Organization-team backfill requires copilot.enterprise.',
+          });
+        }
+        const directory = await dbV2.getEnterpriseOrganizationDirectory(
+          configuredEnterprise,
+        );
+        if (!directory.complete) {
+          return res.status(404).json({
+            error: 'Organization is not available for backfill.',
+          });
+        }
+        const canonicalOrganization =
+          await dbV2.getCurrentAccessibleEnterpriseOrganizationLogin(
+            configuredEnterprise,
+            entityId,
+          );
+        if (!canonicalOrganization) {
+          return res.status(404).json({
+            error: 'Organization is not available for backfill.',
+          });
+        }
+        if (
+          matchesConfiguredId(canonicalOrganization, configuredOrganization)
+        ) {
+          void taskV2
+            .runBackfill(
+              fromDate,
+              effectiveToDate,
+              'organization',
+              configuredOrganization!,
+            )
+            .catch(error => logger.error('[router:v2] Backfill failed', error));
+          return res.status(202).json({
+            message: 'Backfill started',
+            from: fromDate,
+            to: effectiveToDate,
+          });
+        }
+
+        void taskV2
+          .runOrganizationBackfill(
+            canonicalOrganization,
+            fromDate,
+            effectiveToDate,
+          )
+          .catch(error =>
+            logger.error(
+              '[router:v2] Organization-team backfill failed',
+              error,
+            ),
+          );
+        return res.status(202).json({
+          message: 'Organization-team backfill started',
+          from: fromDate,
+          to: effectiveToDate,
+        });
+      }
+
+      let validatedEntityId: string;
+      if (
+        type === 'enterprise' &&
+        matchesConfiguredId(entityId, configuredEnterprise)
+      ) {
+        validatedEntityId = configuredEnterprise!;
+      } else if (
+        type === 'organization' &&
+        matchesConfiguredId(entityId, configuredOrganization)
+      ) {
+        validatedEntityId = configuredOrganization!;
+      } else {
+        return res.status(404).json({
+          error: 'Metrics scope is not available for backfill.',
+        });
+      }
+
       void taskV2
-        .runBackfill(fromDate, effectiveToDate, type, entityId)
+        .runBackfill(fromDate, effectiveToDate, type, validatedEntityId)
         .catch(error => logger.error('[router:v2] Backfill failed', error));
 
       return res.status(202).json({
@@ -563,14 +1037,39 @@ async function createRouter(
     validateQuery(v2MetricsQuerySchema),
     async (req, res, next) => {
       try {
-        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
-        const result = await dbV2.getDashboardData(
+        const { type, entityId, from, to, team, costCenter } = req.query;
+        const costCenterScope: CostCenterDashboardScope | undefined =
+          costCenter === undefined
+            ? undefined
+            : { kind: 'costCenter', id: costCenter };
+        const result = await getDashboardData({
           type,
           entityId,
           from,
           to,
           team,
-        );
+          costCenterScope,
+        });
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/no-cost-center/dashboard',
+    validateQuery(v2NoCostCenterDashboardQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to } = req.query;
+        const result = await getDashboardData({
+          type,
+          entityId,
+          from,
+          to,
+          costCenterScope: { kind: 'noCostCenter' },
+        });
         return res.json(result);
       } catch (err) {
         return next(err);
@@ -613,10 +1112,16 @@ async function createRouter(
           return res.json(notMatched);
         }
 
-        const { type, entityId, from, to } = req.query as V2MeDashboardQuery;
-        const hasUserMetrics = await dbV2.hasUserMetrics(
+        const { type, entityId, from, to } = req.query;
+        const validatedEntityId = await validateMetricsReadScope({
           type,
           entityId,
+          from,
+          to,
+        });
+        const hasUserMetrics = await dbV2.hasUserMetrics(
+          type,
+          validatedEntityId,
           userLogin,
         );
         if (!hasUserMetrics) {
@@ -626,7 +1131,7 @@ async function createRouter(
 
         const data = await dbV2.getUserDashboardData(
           type,
-          entityId,
+          validatedEntityId,
           userLogin,
           from,
           to,

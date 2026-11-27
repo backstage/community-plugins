@@ -1,5 +1,21 @@
 # @backstage-community/plugin-newrelic
 
+## 0.28.0
+
+### Minor Changes
+
+- ecafca1: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- ecafca1: The New Relic page header and heading now use Backstage UI components.
+
+## 0.27.0
+
+### Minor Changes
+
+- 5090485: Backstage version bump to v1.56.2
+
 ## 0.26.0
 
 ### Minor Changes

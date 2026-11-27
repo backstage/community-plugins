@@ -1,5 +1,27 @@
 # @backstage-community/plugin-periskop
 
+## 0.24.0
+
+### Minor Changes
+
+- be32277: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- be32277: The Periskop errors card heading, instance picker and error links now use Backstage UI components. Error links open in a new tab.
+
+## 0.23.1
+
+### Patch Changes
+
+- 5e9aee0: Remove an unused backend dependency and two unused frontend test dependencies.
+
+## 0.23.0
+
+### Minor Changes
+
+- e7e4791: Backstage version bump to v1.56.2
+
 ## 0.22.0
 
 ### Minor Changes

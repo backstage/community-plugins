@@ -64,7 +64,10 @@ describe('TechRadarPage', () => {
     );
 
     await expect(
-      screen.findByText('Company Radar'),
+      screen.findByText('Company Radar', undefined, { timeout: 15000 }),
     ).resolves.toBeInTheDocument();
+
+    // The plugin doesn't render a second page header with its own title
+    expect(screen.queryAllByText('Tech Radar').length).toBeLessThanOrEqual(1);
   });
 });

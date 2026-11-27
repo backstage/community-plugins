@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-newrelic",
-  "version": "0.26.0",
+  "version": "0.28.0",
   "description": "A Backstage plugin that integrates towards New Relic",
   "backstage": {
     "role": "frontend-plugin",
@@ -58,6 +58,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",

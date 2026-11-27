@@ -19,7 +19,8 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { DateTime } from 'luxon';
 
 import {
@@ -89,7 +90,7 @@ interface CicdChartsProps {
 function CicdCharts(props: CicdChartsProps) {
   const { cicdConfiguration } = props;
 
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const { entity } = useEntity();
 
   const classes = useStyles();

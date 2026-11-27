@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { FetchApi } from '@backstage/frontend-plugin-api';
 import { NpmRegistryPackageInfo } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApi } from './NpmBackendApi';
 
 export type Options = {
-  discoveryApi: DiscoveryApi;
   fetchApi: FetchApi;
 };
 
 export class NpmBackendClient implements NpmBackendApi {
-  private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
 
   constructor(options: Options) {
-    this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
   }
 
   async getPackageInfo(entityRef: string): Promise<NpmRegistryPackageInfo> {
-    const baseUrl = await this.discoveryApi.getBaseUrl('npm');
-    const url = `${baseUrl}/${encodeURIComponent(entityRef)}/package-info`;
+    const url = `plugin://npm/${encodeURIComponent(entityRef)}/package-info`;
 
     const response = await this.fetchApi.fetch(url);
     if (!response.ok) {

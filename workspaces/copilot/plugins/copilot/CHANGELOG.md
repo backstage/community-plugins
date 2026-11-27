@@ -1,5 +1,80 @@
 # @backstage-community/plugin-copilot
 
+## 1.10.0
+
+### Minor Changes
+
+- 964f3c3: Add opt-in multi-organization Copilot reporting through
+  `copilot.ingestOrganizationTeamReports`. In enterprise dashboards, organization
+  teams can be filtered by organization and team; options use the selected date
+  range and remain available with partial report coverage. Organization-team
+  metrics preserve the five-user privacy threshold and leave unreported days
+  blank. Enterprise totals continue to fill missing days when all organizations
+  are selected. Selecting a team scopes results to its owning organization,
+  keeping same-slug teams distinct.
+  Failed team-option and dashboard requests can be retried.
+  Successful manual backfills no longer postpone the next scheduled organization
+  refresh.
+  Monthly active-user metrics remain unavailable when GitHub does not report
+  them, and selected organizations can still be cleared when team options fail
+  or become empty. Team weekly active-user charts leave unreported values blank.
+  Older organization discovery results can no longer overwrite a newer refresh,
+  and configured-organization dashboards can filter teams when
+  `copilot.ingestOrganizationTeamReports` is enabled without `copilot.ingestTeams`.
+
+### Patch Changes
+
+- f745727: Added a "How do I interpret these metrics?" documentation link to the Copilot plugin header, providing users with easy access to the official GitHub Copilot usage metrics documentation.This helps users better understand the metrics displayed in the plugin, including Agent Adoption, VS Code Agent Users, and Model Usage per Chat Mode.
+
+## 1.9.0
+
+### Minor Changes
+
+- f2b70cf: Enable organization-team filtering in the enterprise dashboard when
+  `copilot.enterprise`, `copilot.organization`, and `copilot.ingestTeams` are
+  configured. The enterprise view's Team filter is now labelled Enterprise team
+  to distinguish it from organization teams.
+
+## 1.8.0
+
+### Minor Changes
+
+- 55359b1: Add opt-in cost-center filtering and a separate **No cost center** dashboard scope. Incomplete GitHub membership snapshots are not applied, preventing partial rosters from skewing cost-center aggregates. Organization team data requires the GitHub App's Copilot metrics: read permission; 403/404 user-team reports are logged as errors and skipped. Backfills preserve existing totals and limit newly required user, team, and cost-center data to GitHub's rolling report window.
+
+### Patch Changes
+
+- d2e695b: Clear team selections when the dashboard scope changes and hide outdated options while teams load.
+- Updated dependencies [55359b1]
+  - @backstage-community/plugin-copilot-common@1.6.0
+
+## 1.7.0
+
+### Minor Changes
+
+- af4e2f3: Updated visualisation of Agent Harness view
+
+## 1.6.0
+
+### Minor Changes
+
+- 7e226cd: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [7e226cd]
+  - @backstage-community/plugin-copilot-common@1.5.0
+
+## 1.5.0
+
+### Minor Changes
+
+- e8a706e: Show named GitHub Copilot customization usage for skills, agents, MCP servers, commands, plugins, and future compatible categories.
+
+### Patch Changes
+
+- Updated dependencies [e8a706e]
+  - @backstage-community/plugin-copilot-common@1.4.0
+
 ## 1.4.1
 
 ### Patch Changes

@@ -1,0 +1,42 @@
+@layer components {
+  .root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--bui-space-4);
+  }
+
+  .group {
+    display: flex;
+    flex-direction: row;
+    gap: var(--bui-space-2);
+  }
+
+  .tocToggle {
+    margin-bottom: var(--bui-space-4);
+  }
+
+  .viewer {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 50vh;
+    height: 100%;
+  }
+
+  /* Pins the dialog to the left edge so it behaves like a side drawer */
+  .drawer.drawer {
+    --bookmarks-plugin-drawer-float-amount: var(--bui-space-1);
+    height: 100vh;
+    max-height: calc(100vh - 2 * var(--bookmarks-plugin-drawer-float-amount));
+    margin: var(--bookmarks-plugin-drawer-float-amount) auto
+      var(--bookmarks-plugin-drawer-float-amount)
+      var(--bookmarks-plugin-drawer-float-amount);
+  }
+}

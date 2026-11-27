@@ -52,9 +52,13 @@ describe('OverviewTrends', () => {
       </TestApiProvider>,
     );
 
-    await userEvent.click(rendered.getByText('14 days'));
-    await userEvent.click(await rendered.findByText('30 days'));
-    expect(await rendered.findByText('30 days')).toBeInTheDocument();
+    await userEvent.click(rendered.getByRole('button', { name: /Trends for/ }));
+    await userEvent.click(
+      await rendered.findByRole('option', { name: '30 days' }),
+    );
+    expect(
+      rendered.getByRole('button', { name: /Trends for/ }),
+    ).toHaveTextContent('30 days');
   });
 
   it('should show errors when API not responding', async () => {

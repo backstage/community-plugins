@@ -32,7 +32,7 @@ yarn --cwd packages/app add @backstage-community/plugin-tech-radar
 
 ### Configuration
 
-Modify your app routes to include the Router component exported from the tech radar, for example:
+Modify your app routes to include the `TechRadarPage` component exported from the tech radar, for example:
 
 ```tsx
 // In packages/app/src/App.tsx
@@ -41,26 +41,33 @@ import { TechRadarPage } from '@backstage-community/plugin-tech-radar';
 const routes = (
   <FlatRoutes>
     {/* ...other routes */}
-    <Route
-      path="/tech-radar"
-      element={<TechRadarPage />}
-    />
+    <Route path="/tech-radar" element={<TechRadarPage />} />
+  </FlatRoutes>
+);
 ```
 
 If you'd like to configure it more, see the `TechRadarPageProps` and `TechRadarComponentProps` types for options:
 
 ```ts
-export type TechRadarPageProps = TechRadarComponentProps & {
+export type TechRadarPageProps = {
   title?: string;
   subtitle?: string;
   pageTitle?: string;
+  id?: string;
 };
 
-export interface TechRadarPageProps {
-  width?: number;
-  height?: number;
-  svgProps?: object;
-}
+export type TechRadarComponentProps = {
+  id?: string;
+} & HTMLAttributes<HTMLDivElement>;
+```
+
+#### Backstage UI styles
+
+The Tech Radar is built with [Backstage UI](https://ui.backstage.io). Your app must import the Backstage UI styles once, or the radar won't be styled. Apps created from a recent Backstage template already do this, but older apps (on either frontend system) may not:
+
+```ts
+// In packages/app/src/index.tsx
+import '@backstage/ui/css/styles.css';
 ```
 
 ### Radar properties
@@ -284,16 +291,10 @@ export const app = createApp({
 
 ### How do I write tests?
 
-You can use the `svgProps` option to pass custom React props to the `<svg>` element we create for the Tech Radar. This complements well with the `data-testid` attribute and the `@testing-library/react` library we use in Backstage.
+The TechRadarComponent accepts any props that a <div /> accepts. This complements well with the `data-testid` attribute and the `@testing-library/react` library we use in Backstage.
 
 ```tsx
-<TechRadarComponent
-  width={1400}
-  height={800}
-  svgProps={{
-    'data-testid': 'tech-radar-svg',
-  }}
-/>
+<TechRadarComponent data-testid={'tech-radar-svg'} />
 
 // Then, in your tests...
 // const { getByTestId } = render(...);

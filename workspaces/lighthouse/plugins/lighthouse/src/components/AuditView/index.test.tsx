@@ -16,7 +16,7 @@
 
 /* eslint-disable jest/no-disabled-tests */
 
-import { configApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -161,7 +161,7 @@ describe('AuditView', () => {
         <TestApiProvider
           apis={[
             [lighthouseApiRef, lighthouseRestApiMock],
-            [configApiRef, configApiMock],
+            [coreApis.config, configApiMock],
           ]}
         >
           <AuditView />

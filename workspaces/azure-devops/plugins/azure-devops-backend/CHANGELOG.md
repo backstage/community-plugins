@@ -1,5 +1,33 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.35.0
+
+### Minor Changes
+
+- b508921: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- Updated dependencies [b508921]
+  - @backstage-community/plugin-azure-devops-common@0.29.0
+
+## 0.34.0
+
+### Minor Changes
+
+- 3e68cd4: Backstage version bump to v1.56.2
+
+### Patch Changes
+
+- Updated dependencies [3e68cd4]
+  - @backstage-community/plugin-azure-devops-common@0.28.0
+
+## 0.33.1
+
+### Patch Changes
+
+- 86b367b: README card feature now properly respect branch version
+
 ## 0.33.0
 
 ### Minor Changes

@@ -30,14 +30,12 @@ import {
   SearchPagination,
   useSearch,
 } from '@backstage/plugin-search-react';
-import {
-  CatalogIcon,
-  Content,
-  DocsIcon,
-  Header,
-  Page,
-} from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import {
+  coreApis,
+  useApi as useFrontendApi,
+} from '@backstage/frontend-plugin-api';
+import { Container, Header } from '@backstage/ui';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -58,11 +56,14 @@ const SearchPage = () => {
   const classes = useStyles();
   const { types } = useSearch();
   const catalogApi = useApi(catalogApiRef);
+  const iconsApi = useFrontendApi(coreApis.icons);
+  const catalogIcon = iconsApi.icon('catalog') ?? <></>;
+  const docsIcon = iconsApi.icon('docs') ?? <></>;
 
   return (
-    <Page themeId="home">
+    <>
       <Header title="Search" />
-      <Content>
+      <Container>
         <Grid container direction="row">
           <Grid item xs={12}>
             <Paper className={classes.bar}>
@@ -77,12 +78,12 @@ const SearchPage = () => {
                 {
                   value: 'software-catalog',
                   name: 'Software Catalog',
-                  icon: <CatalogIcon />,
+                  icon: catalogIcon,
                 },
                 {
                   value: 'techdocs',
                   name: 'Documentation',
-                  icon: <DocsIcon />,
+                  icon: docsIcon,
                 },
               ]}
             />
@@ -125,13 +126,13 @@ const SearchPage = () => {
           <Grid item xs={9}>
             <SearchPagination />
             <SearchResult>
-              <CatalogSearchResultListItem icon={<CatalogIcon />} />
-              <TechDocsSearchResultListItem icon={<DocsIcon />} />
+              <CatalogSearchResultListItem icon={catalogIcon} />
+              <TechDocsSearchResultListItem icon={docsIcon} />
             </SearchResult>
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

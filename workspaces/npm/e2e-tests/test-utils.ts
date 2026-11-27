@@ -16,17 +16,48 @@
 
 import { Page } from '@playwright/test';
 
+/** The sidebar of the new frontend system (alpha) dev app. */
+function sidebar(page: Page) {
+  return page.getByRole('navigation', { name: 'sidebar nav' });
+}
+
 export async function skipLoginIfPresent(page: Page) {
-  if (await page.getByText('Select a sign-in method').isVisible()) {
+  const enterButton = page.getByRole('button', { name: 'Enter' });
+  // Wait until the app has rendered either the sign-in page or the sidebar.
+  await enterButton.or(page.getByRole('link')).first().waitFor();
+  if (await enterButton.isVisible()) {
     page.once('dialog', async dialog => {
       await dialog.accept();
     });
-    await page.getByRole('button', { name: 'Enter' }).click();
+    await enterButton.click();
   }
 }
 
+/** True when the tests run against the new frontend system (alpha) dev app. */
+export async function isNewFrontendSystem(page: Page) {
+  return sidebar(page).getByRole('link', { name: 'Catalog' }).isVisible();
+}
+
 export async function navigateToCatalogIfPresent(page: Page) {
-  if (await page.getByRole('link', { name: 'Catalog' }).isVisible()) {
-    await page.getByRole('link', { name: 'Catalog' }).click();
+  const catalogLink = sidebar(page).getByRole('link', { name: 'Catalog' });
+  if (await catalogLink.isVisible()) {
+    await catalogLink.click();
+  }
+}
+
+/**
+ * The entity page of the new frontend system renders the entity contents
+ * as tabs. Depending on the Backstage version, they are tabs or links.
+ */
+export function npmReleasesTab(page: Page) {
+  return page
+    .getByRole('tab', { name: 'Npm Releases' })
+    .or(page.getByRole('link', { name: 'Npm Releases' }));
+}
+
+export async function openNpmReleasesTabIfPresent(page: Page) {
+  const tab = npmReleasesTab(page);
+  if (await tab.isVisible()) {
+    await tab.click();
   }
 }

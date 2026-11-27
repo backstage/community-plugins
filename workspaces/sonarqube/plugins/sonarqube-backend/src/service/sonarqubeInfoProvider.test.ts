@@ -68,6 +68,23 @@ describe('SonarqubeConfig', () => {
       ]);
     });
 
+    it('Reads top level authType in simple config', async () => {
+      const config = SonarqubeConfig.fromConfig(
+        new ConfigReader({
+          sonarqube: { ...DUMMY_SIMPLE_CONFIG.sonarqube, authType: 'Bearer' },
+        }),
+      );
+
+      expect(config.instances).toEqual([
+        {
+          name: SONARQUBE_DEFAULT_INSTANCE_NAME,
+          baseUrl: DUMMY_SONAR_URL,
+          apiKey: DUMMY_SONAR_APIKEY,
+          authType: 'Bearer',
+        },
+      ]);
+    });
+
     it('Reads named default config and annotation', async () => {
       const config = SonarqubeConfig.fromConfig(
         new ConfigReader(DUMMY_NAMED_CONFIG),

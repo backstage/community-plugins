@@ -37,7 +37,8 @@ import {
   toVerboseTimeRange,
 } from '../../util';
 import { currencyCodes } from '../../constants/currencyCodes';
-import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 const windowOptions = [
   { name: 'Today', value: 'today' },
@@ -178,10 +179,10 @@ export const OpenCostReport = () => {
     setInit(true);
   }
 
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const baseUrl = configApi.getConfig('opencost').getString('baseUrl');
 
-  const fetchApi = useApi(fetchApiRef);
+  const fetchApi = useApi(coreApis.fetch);
 
   async function fetchData() {
     setLoading(true);

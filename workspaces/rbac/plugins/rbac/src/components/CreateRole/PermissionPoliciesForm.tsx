@@ -25,7 +25,10 @@ import { FormikErrors } from 'formik';
 import { rbacApiRef } from '../../api/RBACBackendClient';
 import { useConditionRules } from '../../hooks/useConditionRules';
 import { PermissionsData, SelectedPlugin } from '../../types';
-import { getPluginsPermissionPoliciesData } from '../../utils/create-role-utils';
+import {
+  getPluginsPermissionPoliciesData,
+  updatePolicyEffect,
+} from '../../utils/create-role-utils';
 import { ConditionsData } from '../ConditionalAccess/types';
 import { RoleFormValues } from './types';
 import PermissionPoliciesFormTable from './PermissionPoliciesFormTable';
@@ -108,10 +111,12 @@ export const PermissionPoliciesForm = ({
     policyIndex: number,
     index: number,
   ) => {
-    const updatedRows = [...permissionPoliciesRows];
-    updatedRows[index].policies[policyIndex].effect = isChecked
-      ? 'allow'
-      : 'deny';
+    const updatedRows = updatePolicyEffect(
+      permissionPoliciesRows,
+      index,
+      policyIndex,
+      isChecked ? 'allow' : 'deny',
+    );
 
     // If unchecking and no policies are left with 'allow' effect, remove the entire permission
     if (!isChecked) {
