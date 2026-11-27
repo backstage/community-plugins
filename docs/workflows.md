@@ -34,7 +34,7 @@ Automates the generation of changesets for Renovate pull requests.
 
 ### [automate_dependency_automerge.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/automate_dependency_automerge.yml)
 
-Approves and enables auto-merge on Renovate and Dependabot pull requests that only change `yarn.lock` files, for workspaces with `"autoMergeDependencies": true` in their `bcp.json` (see the [Plugin Maintainer Guide](./plugin-maintainers-guide.md#opt-in-to-dependency-automerge)). The opt-in is read from the base branch, so a pull request can't enable it for itself.
+Approves and enables auto-merge on Renovate and Dependabot pull requests that only change `yarn.lock` files, for workspaces with `"autoMergeDependencies": true` in their `bcp.json` (see the [Plugin Maintainer Guide](./plugin-maintainers-guide.md#opt-in-to-dependency-automerge)). The opt-in is read from the base branch, so a pull request can't enable it for itself. A daily run re-checks open pull requests that were waiting on the `minimumReleaseAge` in `.github/renovate.json`.
 
 ### [verify-codeowners-automerge.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/verify-codeowners-automerge.yml)
 

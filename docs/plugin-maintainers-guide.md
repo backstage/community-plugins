@@ -179,6 +179,8 @@ These PRs only update transitive dependencies within the version ranges your pac
 - The `backstage-service` account approves the PR and turns on auto-merge, and GitHub merges it after CI passes
 - PRs that change anything other than `yarn.lock`, such as a `package.json`, still need a review from you as usual
 - PRs that touch several workspaces are only merged if every one of them has opted in
+- PRs that pull in a package version newer than the `minimumReleaseAge` in `.github/renovate.json` wait, and are rechecked daily until they're old enough to merge
+- PRs that someone other than the bots pushed to get the `automerge-blocked` label and need a review from you as usual. The label is removed if the bot rewrites the branch
 
 After changing the flag, run `node scripts/sync-codeowners-automerge.js` from the repository root and commit the updated `.github/CODEOWNERS`. This adds your workspace's `yarn.lock` to CODEOWNERS with your existing owners plus `@backstage-service`, which is what allows the approval. CI checks that the two stay in sync.
 

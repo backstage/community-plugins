@@ -1,13 +1,17 @@
 name: Automate dependency automerge
 # Approves and enables auto-merge for Renovate and Dependabot PRs that only
 # change yarn.lock in workspaces with "autoMergeDependencies": true in bcp.json.
-# See scripts/ci/automerge-dependency-pr.js.
+# A daily run re-checks open PRs, so ones held back by minimumReleaseAge merge
+# once they're old enough. See scripts/ci/automerge-dependency-pr.js.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
     paths:
       - '**/yarn.lock'
       - '**/package.json'
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
 
 permissions: {}
 
@@ -15,12 +19,17 @@ jobs:
   automerge:
     runs-on: ubuntu-latest
     if: |
-      (
-        (github.event.pull_request.user.login == 'backstage-goalie[bot]' && startsWith(github.head_ref, 'renovate/'))
-        || (github.event.pull_request.user.login == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/'))
+      github.repository == 'backstage/community-plugins'
+      && (
+        github.event_name != 'pull_request_target'
+        || (
+          (
+            (github.event.pull_request.user.login == 'backstage-goalie[bot]' && startsWith(github.head_ref, 'renovate/'))
+            || (github.event.pull_request.user.login == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/'))
+          )
+          && github.event.pull_request.head.repo.full_name == github.repository
+        )
       )
-      && github.repository == 'backstage/community-plugins'
-      && github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
@@ -39,5 +48,6 @@ jobs:
         with:
           github-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
           script: |
-            const { run } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/automerge-dependency-pr.js`);
-            await run({ github, context, core, serviceAccount: 'backstage-service' });
+            const { run, runScheduled } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/automerge-dependency-pr.js`);
+            const entry = context.eventName === 'pull_request_target' ? run : runScheduled;
+            await entry({ github, context, core, serviceAccount: 'backstage-service' });
