@@ -25,7 +25,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import express from 'express';
-import { createOpenApiRouter } from '../schema/openapi.generated';
+import { createOpenApiRouter } from '../schema/openapi';
 import { LinguistBackendApi } from '../api';
 import { LinguistBackendDatabase } from '../db';
 import { HumanDuration, JsonObject } from '@backstage/types';
@@ -194,10 +194,6 @@ export async function createRouter(
   }
 
   const apiRouter = await createOpenApiRouter();
-
-  apiRouter.get('/health', (_, response) => {
-    response.send({ status: 'ok' });
-  });
 
   /**
    * /entity-languages?entityRef=component:default/my-component
