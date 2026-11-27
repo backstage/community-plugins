@@ -312,4 +312,52 @@ describe('<MaturityScorePage />', () => {
 
     expect(menuBookIcons.length).toBe(checksWithLinks);
   });
+
+  it('shows object and array fact values of a failed check as JSON', async () => {
+    const objectFactResult: MaturityScore = {
+      ...result,
+      checks: [
+        {
+          ...result.checks[3],
+          facts: {
+            podsByEnv: {
+              description: 'Number of Pods by env',
+              id: 'podsByEnv',
+              type: 'object',
+              value: { prd: 2, sbx: 1 },
+            } as any,
+            namespacesByEnv: {
+              description: 'Namespaces by env',
+              id: 'namespacesByEnv',
+              type: 'set',
+              value: ['prd', 'sbx'] as any,
+            },
+          },
+        },
+      ],
+    };
+    const objectFactApi: Partial<MaturityApi> = {
+      getMaturityScore: jest.fn().mockResolvedValue(objectFactResult),
+      getFacts: jest.fn().mockResolvedValue(facts),
+    };
+
+    const { getByText, queryByText } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, objectFactApi]]}>
+        <EntityProvider entity={entity}>
+          <MaturityScorePage />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    expect(
+      getByText(/Number of Pods by env: \{"prd":2,"sbx":1\}/),
+    ).toBeInTheDocument();
+    expect(getByText(/Namespaces by env: \["prd","sbx"\]/)).toBeInTheDocument();
+    expect(queryByText(/\[object Object\]/)).not.toBeInTheDocument();
+  });
 });
