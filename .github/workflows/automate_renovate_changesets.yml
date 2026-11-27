@@ -5,6 +5,8 @@ on:
       - '**/package.json'
       - '**/yarn.lock'
 
+permissions: {}
+
 jobs:
   generate-changeset:
     runs-on: ubuntu-latest
@@ -21,45 +23,68 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout
+      # Tooling comes from the base branch. The PR is checked out separately
+      # without credentials, and none of its code is run with the token.
+      - name: Checkout base
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          path: base
+          persist-credentials: false
+
+      - name: Checkout PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: pr
           fetch-depth: 2
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          persist-credentials: false
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
-          registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Configure Git
+        working-directory: pr
         run: |
-          git config --global user.email noreply@backstage.io
-          git config --global user.name 'Github changeset workflow'
+          git config user.email noreply@backstage.io
+          git config user.name 'Github changeset workflow'
 
       # Dependabot doesn't dedupe lockfiles, which fails the duplicate check in CI.
       # update-lockfile mode only rewrites yarn.lock, it doesn't fetch packages or
-      # run their install scripts.
+      # run their install scripts. Yarn loads its binary and plugins from the
+      # checkout, so this only runs when those match the base branch.
       - name: Dedupe lockfiles
         if: github.actor == 'dependabot[bot]'
+        working-directory: pr
         run: |
+          same() { diff -rq "../base/$1" "$1" > /dev/null 2>&1 || { [ ! -e "../base/$1" ] && [ ! -e "$1" ]; }; }
+
           for lockfile in $(git diff --name-only HEAD~1 -- 'workspaces/*/yarn.lock'); do
             dir=$(dirname "$lockfile")
+            if ! { same .yarnrc.yml && same .yarn && same package.json && same "$dir/.yarnrc.yml" && same "$dir/.yarn"; }; then
+              echo "::warning::Yarn config differs from the base branch, skipping dedupe for $lockfile"
+              continue
+            fi
             echo "Deduping $lockfile"
             yarn --cwd "$dir" dedupe --mode=update-lockfile
             git add "$lockfile"
           done
 
       - name: Generate changesets
-        run: node ./scripts/ci/generate-bump-changesets.js
+        working-directory: pr
+        run: node ../base/scripts/ci/generate-bump-changesets.js
 
       - name: Commit and push
+        working-directory: pr
+        env:
+          TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          BRANCH: ${{ github.head_ref }}
+          REPO: ${{ github.repository }}
         run: |
           if git diff --cached --quiet; then
             echo "Nothing to commit"
             exit 0
           fi
           git commit --amend --no-edit --no-verify
-          git push --force
+          git push --force "https://x-access-token:${TOKEN}@github.com/${REPO}.git" "HEAD:refs/heads/${BRANCH}"
