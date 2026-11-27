@@ -1,5 +1,15 @@
 # @backstage-community/plugin-puppetdb
 
+## 0.25.0
+
+### Minor Changes
+
+- 2588d18: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 2588d18: The report links and the reports tab layout now use Backstage UI components.
+
 ## 0.24.0
 
 ### Minor Changes
