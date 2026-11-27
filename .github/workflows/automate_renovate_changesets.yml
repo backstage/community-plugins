@@ -3,12 +3,16 @@ on:
   pull_request_target:
     paths:
       - '**/package.json'
+      - '**/yarn.lock'
 
 jobs:
   generate-changeset:
     runs-on: ubuntu-latest
     if: |
-      (github.actor == 'backstage-goalie[bot]' || github.actor == 'dependabot[bot]')
+      (
+        (github.actor == 'backstage-goalie[bot]' && startsWith(github.head_ref, 'renovate/'))
+        || (github.actor == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/'))
+      )
       && github.repository == 'backstage/community-plugins'
       && github.event.pull_request.head.repo.full_name == github.repository
     steps:
@@ -35,5 +39,27 @@ jobs:
           git config --global user.email noreply@backstage.io
           git config --global user.name 'Github changeset workflow'
 
+      # Dependabot doesn't dedupe lockfiles, which fails the duplicate check in CI.
+      # update-lockfile mode only rewrites yarn.lock, it doesn't fetch packages or
+      # run their install scripts.
+      - name: Dedupe lockfiles
+        if: github.actor == 'dependabot[bot]'
+        run: |
+          for lockfile in $(git diff --name-only HEAD~1 -- 'workspaces/*/yarn.lock'); do
+            dir=$(dirname "$lockfile")
+            echo "Deduping $lockfile"
+            yarn --cwd "$dir" dedupe --mode=update-lockfile
+            git add "$lockfile"
+          done
+
       - name: Generate changesets
         run: node ./scripts/ci/generate-bump-changesets.js
+
+      - name: Commit and push
+        run: |
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit --amend --no-edit --no-verify
+          git push --force
