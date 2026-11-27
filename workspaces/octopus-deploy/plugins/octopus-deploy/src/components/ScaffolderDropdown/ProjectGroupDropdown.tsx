@@ -15,9 +15,7 @@
  */
 
 import { useState } from 'react';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import { Select, SelectItem } from '@backstage/core-components';
+import { Select, TextField } from '@backstage/ui';
 import { useProjectGroups } from '../../hooks/useProjectGroups';
 import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
 import { FieldExtensionComponentProps } from '@backstage/plugin-scaffolder-react';
@@ -34,14 +32,18 @@ export const ProjectGroupDropdown = ({
   const [selectedProjectGroup, setSelectedProjectGroup] = useState<string>('');
   const { projectGroups } = useProjectGroups();
 
-  const projectGroupItems: SelectItem[] = projectGroups
-    ? projectGroups.map(pg => ({ label: pg.Name, value: pg.Name }))
+  const projectGroupOptions = projectGroups
+    ? projectGroups.map(pg => ({ id: pg.Name, label: pg.Name }))
     : [];
 
   const updateProjectGroup = (pg: string) => {
     setSelectedProjectGroup(pg);
     onChange(pg);
   };
+
+  // BUI fields don't read ScaffolderField's form control context, so pass
+  // the field state explicitly.
+  const isInvalid = !!rawErrors?.length;
 
   return (
     <ScaffolderField
@@ -55,24 +57,24 @@ export const ProjectGroupDropdown = ({
       {projectGroups?.length ? (
         <Select
           label="Project Group"
-          onChange={p => {
-            // param p is an array if the select is multi-select,
-            // since this is single-select we can just take the first element
-            updateProjectGroup(String(Array.isArray(p) ? p[0] : p));
-          }}
-          disabled={projectGroups.length === 1}
-          selected={selectedProjectGroup}
-          items={projectGroupItems}
+          selectionMode="single"
+          options={projectGroupOptions}
+          value={selectedProjectGroup || null}
+          onChange={key => updateProjectGroup(key ? String(key) : '')}
+          isDisabled={disabled || projectGroups.length === 1}
+          isRequired={required}
+          isInvalid={isInvalid}
         />
       ) : (
-        <>
-          <InputLabel>Project Group</InputLabel>
-          <Input
-            id="project-group-input"
-            onChange={e => updateProjectGroup(e.target.value)}
-            value={selectedProjectGroup}
-          />
-        </>
+        <TextField
+          id="project-group-input"
+          label="Project Group"
+          value={selectedProjectGroup}
+          onChange={updateProjectGroup}
+          isDisabled={disabled}
+          isRequired={required}
+          isInvalid={isInvalid}
+        />
       )}
     </ScaffolderField>
   );

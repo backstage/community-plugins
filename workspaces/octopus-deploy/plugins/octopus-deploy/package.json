@@ -57,7 +57,7 @@
     "@backstage/plugin-catalog-common": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-scaffolder-react": "backstage:^",
-    "@material-ui/core": "^4.9.13",
+    "@backstage/ui": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-use": "^17.2.4"
   },
