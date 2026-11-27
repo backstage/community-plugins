@@ -38,7 +38,7 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.7.0",
     "@backstage/cli": "^0.33.1",
-    "msw": "^2.7.0"
+    "msw": "^3.0.0"
   },
   "files": [
     "dist"
