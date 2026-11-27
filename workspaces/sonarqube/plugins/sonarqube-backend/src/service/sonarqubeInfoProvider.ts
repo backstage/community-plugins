@@ -49,6 +49,7 @@ export interface SonarqubeInfoProvider {
   getFindings(options: {
     componentKey: string;
     instanceName?: string;
+    branchName?: string;
   }): Promise<SonarqubeFindings | undefined>;
 }
 
@@ -347,8 +348,9 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
   async getFindings(options: {
     componentKey: string;
     instanceName?: string;
+    branchName?: string;
   }): Promise<SonarqubeFindings | undefined> {
-    const { componentKey, instanceName } = options;
+    const { componentKey, instanceName, branchName } = options;
     const { baseUrl, apiKey, authType } = this.config.getInstanceConfig({
       sonarqubeName: instanceName,
     });
@@ -361,6 +363,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       authType ?? 'Basic',
       {
         component: componentKey,
+        ...(branchName && { branch: branchName }),
       },
     );
     if (!component || !component.component) {
@@ -403,6 +406,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       {
         component: componentKey,
         metricKeys: metricsToQuery.join(','),
+        ...(branchName && { branch: branchName }),
       },
     );
     if (!measures) {
