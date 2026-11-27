@@ -15,16 +15,12 @@
  */
 
 import { expect, test } from '@playwright/test';
+import { signInAsGuestIfNeeded } from './test-utils';
 
 test.describe('Kiali Plugin Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-
-    // Click Enter button if present
-    const enterButton = page.getByRole('button', { name: 'Enter' });
-    if (await enterButton.isVisible()) {
-      await enterButton.click();
-    }
+    await signInAsGuestIfNeeded(page);
   });
 
   test('should navigate to Kiali page', async ({ page }) => {

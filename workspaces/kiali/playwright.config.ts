@@ -17,25 +17,56 @@
 import { defineConfig } from '@playwright/test';
 import { generateProjects } from '@backstage/e2e-test-utils/playwright';
 
+// Override when the dev app listens on another port (e.g. PLAYWRIGHT_URL=http://localhost:3001).
+const appUrl = process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000';
+// Readiness is 200 only when plugins initialized (catalog returns 401 without a session).
+const backendReadyUrl = 'http://127.0.0.1:7007/.backstage/health/v1/readiness';
+
+const kialiMockEnv = {
+  ...process.env,
+  KIALI_E2E_NAMESPACES: 'bookinfo,default,istio-system',
+  KIALI_E2E_PATCH_HEALTH: '1',
+};
+
 /**
- * See https://playwright.dev/docs/test-configuration.
+ * Full-stack e2e: mock Kiali API, Backstage backend (Kiali proxy + catalog), then frontend.
+ * Playwright must wait for port 7007 — not only webpack on 3000 — or /api/kiali/* fails and the
+ * plugin never renders the header (see workspaces/npm/playwright.config.ts).
+ *
+ * @see https://playwright.dev/docs/test-webserver
  */
 export default defineConfig({
-  timeout: 60_000,
+  timeout: 120_000,
+  workers: process.env.CI ? 1 : undefined,
 
   expect: {
-    timeout: 5_000,
+    timeout: 10_000,
   },
 
-  // Run your local dev server before starting the tests
-  webServer: process.env.CI
+  webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: 'yarn start',
-          port: 3000,
-          reuseExistingServer: true,
-          timeout: 60000,
+          name: 'Kiali mock',
+          command: 'node scripts/kiali-e2e-mock-server.mjs',
+          wait: { stdout: /Kiali e2e mock listening/ },
+          reuseExistingServer: !process.env.CI,
+          timeout: 30_000,
+          env: kialiMockEnv,
+        },
+        {
+          name: 'Backend',
+          command: 'yarn workspace backend start',
+          url: backendReadyUrl,
+          reuseExistingServer: !process.env.CI,
+          timeout: 240_000,
+        },
+        {
+          name: 'Frontend',
+          command: 'yarn workspace app start',
+          url: appUrl,
+          reuseExistingServer: !process.env.CI,
+          timeout: 240_000,
         },
       ],
 
@@ -47,14 +78,13 @@ export default defineConfig({
 
   use: {
     actionTimeout: 0,
-    baseURL:
-      process.env.PLAYWRIGHT_URL ??
-      (process.env.CI ? 'http://localhost:7007' : 'http://localhost:3000'),
+    baseURL: appUrl,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
+    channel: 'chrome',
   },
 
   outputDir: 'node_modules/.cache/e2e-test-results',
 
-  projects: generateProjects(), // Find all packages with e2e-test folders
+  projects: generateProjects({ channel: 'chrome' }),
 });

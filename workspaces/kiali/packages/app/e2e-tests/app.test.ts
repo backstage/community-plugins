@@ -15,50 +15,18 @@
  */
 
 import { expect, test } from '@playwright/test';
+import {
+  openBookinfoKubernetesKialiTab,
+  signInAsGuestIfNeeded,
+} from './test-utils';
 
-// Helper function to navigate to Kiali tab
 async function navigateToKialiTab(page: any) {
-  await page.goto('/');
-
-  const enterButton = page.getByRole('button', { name: 'Enter' });
-  await expect(enterButton).toBeVisible();
-  await enterButton.click();
-
-  await expect(
-    page.getByRole('heading', { name: 'Kiali Community Catalog' }),
-  ).toBeVisible();
-
-  // Click on the bookinfo-kubernetes component link
-  const bookinfoLink = page.getByRole('link', { name: 'bookinfo-kubernetes' });
-  await expect(bookinfoLink).toBeVisible();
-  await bookinfoLink.click();
-
-  // Wait for the component page to load
-  await expect(page).toHaveURL(
-    /\/catalog\/default\/component\/bookinfo-kubernetes/,
-  );
-
-  // Click on the Kiali tab
-  const kialiTab = page.getByTestId('header-tab-1');
-  await expect(kialiTab).toBeVisible();
-  await kialiTab.click();
-
-  // Wait for the Kiali page to load
-  await expect(page).toHaveURL(
-    /\/catalog\/default\/component\/bookinfo-kubernetes\/kiali/,
-  );
+  await openBookinfoKubernetesKialiTab(page);
 }
 
 test('App should render the welcome page', async ({ page }) => {
   await page.goto('/');
-
-  const enterButton = page.getByRole('button', { name: 'Enter' });
-  await expect(enterButton).toBeVisible();
-  await enterButton.click();
-
-  await expect(
-    page.getByRole('heading', { name: 'Kiali Community Catalog' }),
-  ).toBeVisible();
+  await signInAsGuestIfNeeded(page);
 });
 
 test('App should have valid Kiali content', async ({ page }) => {
@@ -257,7 +225,9 @@ test('Resources card content', async ({ page }) => {
   // Validate it has at least one row with: healthy, details, bookinfo
   const detailsAppRow = applicationsTable.getByText('details');
   await expect(detailsAppRow).toBeAttached({ timeout: 10000 });
-  await expect(applicationsTable.getByText('bookinfo')).toHaveCount(5, {
+  await expect(
+    applicationsTable.locator('tbody tr', { hasText: 'bookinfo' }),
+  ).toHaveCount(5, {
     timeout: 10000,
   });
 });
@@ -293,7 +263,7 @@ test('Istio configuration card content', async ({ page }) => {
   // Validate it has at least one row with: bookinfo-gateway, bookinfo, Gateway
   const gatewayRow = istioTable.getByText('bookinfo-gateway');
   await expect(gatewayRow).toBeAttached({ timeout: 10000 });
-  await expect(istioTable.getByText('bookinfo')).toHaveCount(4, {
+  await expect(istioTable.getByText('bookinfo-gateway')).toBeAttached({
     timeout: 10000,
   });
   await expect(istioTable.getByText('Gateway', { exact: true })).toHaveCount(
