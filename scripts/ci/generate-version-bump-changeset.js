@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @backstage/no-undeclared-imports */
 /*
  * Copyright 2025 The Backstage Authors
  *
