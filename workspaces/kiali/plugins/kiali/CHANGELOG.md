@@ -1,5 +1,15 @@
 # @backstage-community/plugin-kiali
 
+## 1.53.0
+
+### Minor Changes
+
+- c81d89b: Fix istio grouping for the same Istio validations
+
+### Patch Changes
+
+- 1d5784b: Updated dependency `cytoscape` to `3.35.0`.
+
 ## 1.52.0
 
 ### Minor Changes
