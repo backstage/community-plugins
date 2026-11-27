@@ -1,320 +1,320 @@
 workspace/3scale:
-  - "Workspace\\s*3scale"
+  - "Workspace\\s*3scale(?![\\w-])"
 
 workspace/acr:
-  - "Workspace\\s*acr"
+  - "Workspace\\s*acr(?![\\w-])"
 
 workspace/acs:
-  - "Workspace\\s*acs"
+  - "Workspace\\s*acs(?![\\w-])"
 
 workspace/adr:
-  - "Workspace\\s*adr"
+  - "Workspace\\s*adr(?![\\w-])"
 
 workspace/agent-forge:
-  - "Workspace\\s*agent-forge"
+  - "Workspace\\s*agent-forge(?![\\w-])"
 
 workspace/airbrake:
-  - "Workspace\\s*airbrake"
+  - "Workspace\\s*airbrake(?![\\w-])"
 
 workspace/akeyless:
-  - "Workspace\\s*akeyless"
+  - "Workspace\\s*akeyless(?![\\w-])"
 
 workspace/allure:
-  - "Workspace\\s*allure"
+  - "Workspace\\s*allure(?![\\w-])"
 
 workspace/amplication:
-  - "Workspace\\s*amplication"
+  - "Workspace\\s*amplication(?![\\w-])"
 
 workspace/analytics:
-  - "Workspace\\s*analytics"
+  - "Workspace\\s*analytics(?![\\w-])"
 
 workspace/announcements:
-  - "Workspace\\s*announcements"
+  - "Workspace\\s*announcements(?![\\w-])"
 
 workspace/apache-airflow:
-  - "Workspace\\s*apache-airflow"
+  - "Workspace\\s*apache-airflow(?![\\w-])"
 
 workspace/apiiro:
-  - "Workspace\\s*apiiro"
+  - "Workspace\\s*apiiro(?![\\w-])"
 
 workspace/apollo-explorer:
-  - "Workspace\\s*apollo-explorer"
+  - "Workspace\\s*apollo-explorer(?![\\w-])"
 
 workspace/argo-workflows:
-  - "Workspace\\s*argo-workflows"
+  - "Workspace\\s*argo-workflows(?![\\w-])"
 
 workspace/argocd:
-  - "Workspace\\s*argocd"
+  - "Workspace\\s*argocd(?![\\w-])"
 
 workspace/azure-devops:
-  - "Workspace\\s*azure-devops"
+  - "Workspace\\s*azure-devops(?![\\w-])"
 
 workspace/azure-resources:
-  - "Workspace\\s*azure-resources"
+  - "Workspace\\s*azure-resources(?![\\w-])"
 
 workspace/azure-sites:
-  - "Workspace\\s*azure-sites"
+  - "Workspace\\s*azure-sites(?![\\w-])"
 
 workspace/azure-storage-explorer:
-  - "Workspace\\s*azure-storage-explorer"
+  - "Workspace\\s*azure-storage-explorer(?![\\w-])"
 
 workspace/badges:
-  - "Workspace\\s*badges"
+  - "Workspace\\s*badges(?![\\w-])"
 
 workspace/bazaar:
-  - "Workspace\\s*bazaar"
+  - "Workspace\\s*bazaar(?![\\w-])"
 
 workspace/bitbucket-pull-requests:
-  - "Workspace\\s*bitbucket-pull-requests"
+  - "Workspace\\s*bitbucket-pull-requests(?![\\w-])"
 
 workspace/bitrise:
-  - "Workspace\\s*bitrise"
+  - "Workspace\\s*bitrise(?![\\w-])"
 
 workspace/blackduck:
-  - "Workspace\\s*blackduck"
+  - "Workspace\\s*blackduck(?![\\w-])"
 
 workspace/bookmarks:
-  - "Workspace\\s*bookmarks"
+  - "Workspace\\s*bookmarks(?![\\w-])"
 
 workspace/catalog:
-  - "Workspace\\s*catalog"
+  - "Workspace\\s*catalog(?![\\w-])"
 
 workspace/checkmarx:
-  - "Workspace\\s*checkmarx"
+  - "Workspace\\s*checkmarx(?![\\w-])"
 
 workspace/cicd-statistics:
-  - "Workspace\\s*cicd-statistics"
+  - "Workspace\\s*cicd-statistics(?![\\w-])"
 
 workspace/cloudbuild:
-  - "Workspace\\s*cloudbuild"
+  - "Workspace\\s*cloudbuild(?![\\w-])"
 
 workspace/code-climate:
-  - "Workspace\\s*code-climate"
+  - "Workspace\\s*code-climate(?![\\w-])"
 
 workspace/code-coverage:
-  - "Workspace\\s*code-coverage"
+  - "Workspace\\s*code-coverage(?![\\w-])"
 
 workspace/codescene:
-  - "Workspace\\s*codescene"
+  - "Workspace\\s*codescene(?![\\w-])"
 
 workspace/confluence:
-  - "Workspace\\s*confluence"
+  - "Workspace\\s*confluence(?![\\w-])"
 
 workspace/copilot:
-  - "Workspace\\s*copilot"
+  - "Workspace\\s*copilot(?![\\w-])"
 
 workspace/cost-insights:
-  - "Workspace\\s*cost-insights"
+  - "Workspace\\s*cost-insights(?![\\w-])"
 
 workspace/dynatrace:
-  - "Workspace\\s*dynatrace"
+  - "Workspace\\s*dynatrace(?![\\w-])"
 
 workspace/entity-feedback:
-  - "Workspace\\s*entity-feedback"
+  - "Workspace\\s*entity-feedback(?![\\w-])"
 
 workspace/entity-validation:
-  - "Workspace\\s*entity-validation"
+  - "Workspace\\s*entity-validation(?![\\w-])"
 
 workspace/explore:
-  - "Workspace\\s*explore"
+  - "Workspace\\s*explore(?![\\w-])"
 
 workspace/fairwinds-insights:
-  - "Workspace\\s*fairwinds-insights"
+  - "Workspace\\s*fairwinds-insights(?![\\w-])"
 
 workspace/feedback:
-  - "Workspace\\s*feedback"
+  - "Workspace\\s*feedback(?![\\w-])"
 
 workspace/firehydrant:
-  - "Workspace\\s*firehydrant"
+  - "Workspace\\s*firehydrant(?![\\w-])"
 
 workspace/flux:
-  - "Workspace\\s*flux"
+  - "Workspace\\s*flux(?![\\w-])"
 
 workspace/fossa:
-  - "Workspace\\s*fossa"
+  - "Workspace\\s*fossa(?![\\w-])"
 
 workspace/gcalendar:
-  - "Workspace\\s*gcalendar"
+  - "Workspace\\s*gcalendar(?![\\w-])"
 
 workspace/gcp-projects:
-  - "Workspace\\s*gcp-projects"
+  - "Workspace\\s*gcp-projects(?![\\w-])"
 
 workspace/git-release-manager:
-  - "Workspace\\s*git-release-manager"
+  - "Workspace\\s*git-release-manager(?![\\w-])"
 
 workspace/github:
-  - "Workspace\\s*github"
+  - "Workspace\\s*github(?![\\w-])"
 
 workspace/gitops-profiles:
-  - "Workspace\\s*gitops-profiles"
+  - "Workspace\\s*gitops-profiles(?![\\w-])"
 
 workspace/gocd:
-  - "Workspace\\s*gocd"
+  - "Workspace\\s*gocd(?![\\w-])"
 
 workspace/grafana:
-  - "Workspace\\s*grafana"
+  - "Workspace\\s*grafana(?![\\w-])"
 
 workspace/graphiql:
-  - "Workspace\\s*graphiql"
+  - "Workspace\\s*graphiql(?![\\w-])"
 
 workspace/graphql-voyager:
-  - "Workspace\\s*graphql-voyager"
+  - "Workspace\\s*graphql-voyager(?![\\w-])"
 
 workspace/growthbook-flags:
-  - "Workspace\\s*growthbook-flags"
+  - "Workspace\\s*growthbook-flags(?![\\w-])"
 
 workspace/healert:
-  - "Workspace\\s*healert"
+  - "Workspace\\s*healert(?![\\w-])"
 
 workspace/ilert:
-  - "Workspace\\s*ilert"
+  - "Workspace\\s*ilert(?![\\w-])"
 
 workspace/jaeger:
-  - "Workspace\\s*jaeger"
+  - "Workspace\\s*jaeger(?![\\w-])"
 
 workspace/jenkins:
-  - "Workspace\\s*jenkins"
+  - "Workspace\\s*jenkins(?![\\w-])"
 
 workspace/jfrog-artifactory:
-  - "Workspace\\s*jfrog-artifactory"
+  - "Workspace\\s*jfrog-artifactory(?![\\w-])"
 
 workspace/kafka:
-  - "Workspace\\s*kafka"
+  - "Workspace\\s*kafka(?![\\w-])"
 
 workspace/keycloak:
-  - "Workspace\\s*keycloak"
+  - "Workspace\\s*keycloak(?![\\w-])"
 
 workspace/kiali:
-  - "Workspace\\s*kiali"
+  - "Workspace\\s*kiali(?![\\w-])"
 
 workspace/lighthouse:
-  - "Workspace\\s*lighthouse"
+  - "Workspace\\s*lighthouse(?![\\w-])"
 
 workspace/linguist:
-  - "Workspace\\s*linguist"
+  - "Workspace\\s*linguist(?![\\w-])"
 
 workspace/linkerd:
-  - "Workspace\\s*linkerd"
+  - "Workspace\\s*linkerd(?![\\w-])"
 
 workspace/manage:
-  - "Workspace\\s*manage"
+  - "Workspace\\s*manage(?![\\w-])"
 
 workspace/mcp-chat:
-  - "Workspace\\s*mcp-chat"
+  - "Workspace\\s*mcp-chat(?![\\w-])"
 
 workspace/mend:
-  - "Workspace\\s*mend"
+  - "Workspace\\s*mend(?![\\w-])"
 
 workspace/microsoft-calendar:
-  - "Workspace\\s*microsoft-calendar"
+  - "Workspace\\s*microsoft-calendar(?![\\w-])"
 
 workspace/mta:
-  - "Workspace\\s*mta"
+  - "Workspace\\s*mta(?![\\w-])"
 
 workspace/multi-source-security-viewer:
-  - "Workspace\\s*multi-source-security-viewer"
+  - "Workspace\\s*multi-source-security-viewer(?![\\w-])"
 
 workspace/n8n:
-  - "Workspace\\s*n8n"
+  - "Workspace\\s*n8n(?![\\w-])"
 
 workspace/newrelic:
-  - "Workspace\\s*newrelic"
+  - "Workspace\\s*newrelic(?![\\w-])"
 
 workspace/nexus-repository-manager:
-  - "Workspace\\s*nexus-repository-manager"
+  - "Workspace\\s*nexus-repository-manager(?![\\w-])"
 
 workspace/nomad:
-  - "Workspace\\s*nomad"
+  - "Workspace\\s*nomad(?![\\w-])"
 
 workspace/npm:
-  - "Workspace\\s*npm"
+  - "Workspace\\s*npm(?![\\w-])"
 
 workspace/ocm:
-  - "Workspace\\s*ocm"
+  - "Workspace\\s*ocm(?![\\w-])"
 
 workspace/octopus-deploy:
-  - "Workspace\\s*octopus-deploy"
+  - "Workspace\\s*octopus-deploy(?![\\w-])"
 
 workspace/opencost:
-  - "Workspace\\s*opencost"
+  - "Workspace\\s*opencost(?![\\w-])"
 
 workspace/periskop:
-  - "Workspace\\s*periskop"
+  - "Workspace\\s*periskop(?![\\w-])"
 
 workspace/pingidentity:
-  - "Workspace\\s*pingidentity"
+  - "Workspace\\s*pingidentity(?![\\w-])"
 
 workspace/playlist:
-  - "Workspace\\s*playlist"
+  - "Workspace\\s*playlist(?![\\w-])"
 
 workspace/pointing-poker:
-  - "Workspace\\s*pointing-poker"
+  - "Workspace\\s*pointing-poker(?![\\w-])"
 
 workspace/puppetdb:
-  - "Workspace\\s*puppetdb"
+  - "Workspace\\s*puppetdb(?![\\w-])"
 
 workspace/quay:
-  - "Workspace\\s*quay"
+  - "Workspace\\s*quay(?![\\w-])"
 
 workspace/rbac:
-  - "Workspace\\s*rbac"
+  - "Workspace\\s*rbac(?![\\w-])"
 
 workspace/report-portal:
-  - "Workspace\\s*report-portal"
+  - "Workspace\\s*report-portal(?![\\w-])"
 
 workspace/rollbar:
-  - "Workspace\\s*rollbar"
+  - "Workspace\\s*rollbar(?![\\w-])"
 
 workspace/scaffolder:
   - "Workspace\\s*scaffolder(?![\\w-])"
 
 workspace/scaffolder-relation-processor:
-  - "Workspace\\s*scaffolder-relation-processor"
+  - "Workspace\\s*scaffolder-relation-processor(?![\\w-])"
 
 workspace/sentry:
-  - "Workspace\\s*sentry"
+  - "Workspace\\s*sentry(?![\\w-])"
 
 workspace/servicenow:
-  - "Workspace\\s*servicenow"
+  - "Workspace\\s*servicenow(?![\\w-])"
 
 workspace/shortcuts:
-  - "Workspace\\s*shortcuts"
+  - "Workspace\\s*shortcuts(?![\\w-])"
 
 workspace/sonarqube:
-  - "Workspace\\s*sonarqube"
+  - "Workspace\\s*sonarqube(?![\\w-])"
 
 workspace/splunk:
-  - "Workspace\\s*splunk"
+  - "Workspace\\s*splunk(?![\\w-])"
 
 workspace/stack-overflow:
-  - "Workspace\\s*stack-overflow"
+  - "Workspace\\s*stack-overflow(?![\\w-])"
 
 workspace/stackstorm:
-  - "Workspace\\s*stackstorm"
+  - "Workspace\\s*stackstorm(?![\\w-])"
 
 workspace/tech-insights:
-  - "Workspace\\s*tech-insights"
+  - "Workspace\\s*tech-insights(?![\\w-])"
 
 workspace/tech-radar:
-  - "Workspace\\s*tech-radar"
+  - "Workspace\\s*tech-radar(?![\\w-])"
 
 workspace/tekton:
-  - "Workspace\\s*tekton"
+  - "Workspace\\s*tekton(?![\\w-])"
 
 workspace/todo:
-  - "Workspace\\s*todo"
+  - "Workspace\\s*todo(?![\\w-])"
 
 workspace/topology:
-  - "Workspace\\s*topology"
+  - "Workspace\\s*topology(?![\\w-])"
 
 workspace/vault:
-  - "Workspace\\s*vault"
+  - "Workspace\\s*vault(?![\\w-])"
 
 workspace/wheel-of-names:
-  - "Workspace\\s*wheel-of-names"
+  - "Workspace\\s*wheel-of-names(?![\\w-])"
 
 workspace/xcmetrics:
-  - "Workspace\\s*xcmetrics"
+  - "Workspace\\s*xcmetrics(?![\\w-])"
 
 needs-triaging:
   - "Workspace\\s*Select a workspace..."
