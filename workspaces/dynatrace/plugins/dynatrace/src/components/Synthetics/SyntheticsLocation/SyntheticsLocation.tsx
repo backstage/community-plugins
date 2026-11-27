@@ -17,8 +17,9 @@
 import useAsync from 'react-use/esm/useAsync';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import Chip from '@material-ui/core/Chip';
+import { Tag, TagGroup } from '@backstage/ui';
 import { dynatraceApiRef } from '../../../api';
+import styles from './SyntheticsLocation.module.css';
 
 type SyntheticsLocationProps = {
   lastFailedTimestamp: Date;
@@ -32,17 +33,17 @@ const failedInLastXHours = (timestamp: Date, offset: number): boolean => {
   return timestamp > new Date(new Date().getTime() - 1000 * 60 * 60 * offset);
 };
 
-const chipColor = (timestamp: Date): string => {
+const chipClassName = (timestamp: Date): string => {
   if (failedInLastXHours(timestamp, 1)) {
-    return 'salmon';
+    return styles.failedLastHour;
   }
   if (failedInLastXHours(timestamp, 6)) {
-    return 'sandybrown';
+    return styles.failedLast6Hours;
   }
   if (failedInLastXHours(timestamp, 24)) {
-    return 'palegoldenrod';
+    return styles.failedLast24Hours;
   }
-  return 'lightgreen';
+  return styles.healthy;
 };
 
 export const SyntheticsLocation = (props: SyntheticsLocationProps) => {
@@ -61,14 +62,14 @@ export const SyntheticsLocation = (props: SyntheticsLocationProps) => {
   }
 
   return (
-    <Chip
-      label={`${value?.name}${
-        failedInLastXHours(new Date(lastFailedTimestamp), 24)
-          ? `: failed @ ${lastFailedTimestamp.toLocaleTimeString()}`
-          : ''
-      }`}
-      size="medium"
-      style={{ backgroundColor: chipColor(lastFailedTimestamp) }}
-    />
+    <TagGroup aria-label={`Synthetic location ${value?.name}`}>
+      <Tag size="medium" className={chipClassName(lastFailedTimestamp)}>
+        {`${value?.name}${
+          failedInLastXHours(new Date(lastFailedTimestamp), 24)
+            ? `: failed @ ${lastFailedTimestamp.toLocaleTimeString()}`
+            : ''
+        }`}
+      </Tag>
+    </TagGroup>
   );
 };

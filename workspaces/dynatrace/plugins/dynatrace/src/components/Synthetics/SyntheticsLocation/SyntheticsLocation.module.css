@@ -1,0 +1,21 @@
+@layer components {
+  .failedLastHour {
+    background-color: var(--bui-negative-bg);
+    color: var(--bui-fg-solid);
+  }
+
+  .failedLast6Hours {
+    background-color: var(--bui-negative-bg-subdued);
+    color: var(--bui-negative-fg-subdued);
+  }
+
+  .failedLast24Hours {
+    background-color: var(--bui-warning-bg-subdued);
+    color: var(--bui-warning-fg-subdued);
+  }
+
+  .healthy {
+    background-color: var(--bui-positive-bg-subdued);
+    color: var(--bui-positive-fg-subdued);
+  }
+}
