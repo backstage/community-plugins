@@ -630,4 +630,37 @@ describe('Linguist backend API', () => {
     resultsSpy.mockClear();
     fsSpy.mockClear();
   });
+
+  it('should stop processing entities when the signal is aborted', async () => {
+    store.getProcessedEntities.mockResolvedValue([]);
+    store.getUnprocessedEntities.mockResolvedValue([
+      'component:default/service-one',
+      'component:default/service-two',
+      'component:default/service-three',
+    ]);
+
+    catalogApi.getEntityByRef.mockResolvedValue({
+      apiVersion: 'backstage.io/v1beta1',
+      metadata: {
+        name: 'service-one',
+        annotations: {
+          [LINGUIST_ANNOTATION]: 'https://some.fake/service/',
+        },
+      },
+      kind: 'Component',
+    });
+
+    const controller = new AbortController();
+    const generateEntityLanguages = jest
+      .spyOn(api, 'generateEntityLanguages')
+      .mockImplementation(async () => {
+        controller.abort();
+        return 'id';
+      });
+
+    await api.generateEntitiesLanguages(controller.signal);
+
+    expect(generateEntityLanguages).toHaveBeenCalledTimes(1);
+    generateEntityLanguages.mockRestore();
+  });
 });

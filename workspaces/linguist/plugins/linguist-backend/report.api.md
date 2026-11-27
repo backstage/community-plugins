@@ -11,7 +11,7 @@ export interface LinguistBackendApi {
   // (undocumented)
   getEntityLanguages(entityRef: string): Promise<Languages>;
   // (undocumented)
-  processEntities(): Promise<void>;
+  processEntities(options?: { signal?: AbortSignal }): Promise<void>;
 }
 
 // @public
