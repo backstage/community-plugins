@@ -369,6 +369,29 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'permissionsMatrix.decisions.allow': string;
     readonly 'permissionsMatrix.decisions.deny': string;
     readonly 'permissionsMatrix.decisions.none': string;
+    readonly 'accessCheck.source': string;
+    readonly 'accessCheck.errors.checkAccess': string;
+    readonly 'accessCheck.description': string;
+    readonly 'accessCheck.plugin': string;
+    readonly 'accessCheck.permission': string;
+    readonly 'accessCheck.allResults': string;
+    readonly 'accessCheck.noMatches': string;
+    readonly 'accessCheck.tab': string;
+    readonly 'accessCheck.selectUser': string;
+    readonly 'accessCheck.selectUserPrompt': string;
+    readonly 'accessCheck.rolesTitle': string;
+    readonly 'accessCheck.noRoles': string;
+    readonly 'accessCheck.directAssignment': string;
+    readonly 'accessCheck.viaGroup': 'via {{ref}}';
+    readonly 'accessCheck.appliesToEveryUser': string;
+    readonly 'accessCheck.superUser': string;
+    readonly 'accessCheck.permissionsTitle': string;
+    readonly 'accessCheck.conditionalNote': string;
+    readonly 'accessCheck.action': string;
+    readonly 'accessCheck.access': string;
+    readonly 'accessCheck.noMatchingPolicy': string;
+    readonly 'accessCheck.superUserSource': string;
+    readonly 'accessCheck.filterPermissions': string;
   }
 >;
 

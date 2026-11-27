@@ -298,3 +298,12 @@ Failed events contain `error` information.
 for `plugin-ids-write` will be included also:
 
 - ids: string[]
+
+### Access check events
+
+- **`access-check-read`**: Explains the access decisions for one user. (GET `/access-check`)
+
+**Access check Event meta:**
+
+- source: string (source emitting the event, `rest`)
+- query: object (the request query, including `userEntityRef`)

@@ -22,6 +22,7 @@ import {
 } from 'express';
 
 import {
+  AccessCheckEvents,
   ActionType,
   ConditionEvents,
   ListConditionEvents,
@@ -68,6 +69,9 @@ const eventMap: {
     GET: ListPluginIDsEvents.PLUGIN_IDS_READ,
     POST: ListPluginIDsEvents.PLUGIN_IDS_WRITE,
     DELETE: ListPluginIDsEvents.PLUGIN_IDS_WRITE,
+  },
+  '/access-check': {
+    GET: AccessCheckEvents.ACCESS_CHECK_READ,
   },
 };
 
@@ -117,6 +121,9 @@ function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
             }
           : {}),
       };
+      break;
+    case AccessCheckEvents.ACCESS_CHECK_READ:
+      extraMeta = { ...(hasQuery ? { query: req.query } : {}) };
       break;
     case ConditionEvents.CONDITION_READ:
       if (hasParams) {

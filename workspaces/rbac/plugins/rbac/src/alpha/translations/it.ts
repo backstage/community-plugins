@@ -305,6 +305,35 @@ const rbacTranslationIt = createTranslationMessages({
     'permissionsMatrix.decisions.none': 'Non impostato',
     'permissionsMatrix.errors.fetchPermissions':
       'Si è verificato un errore durante il recupero delle autorizzazioni dei plugin',
+    'accessCheck.tab': 'Verifica degli accessi',
+    'accessCheck.description':
+      'Verifica quali autorizzazioni ha un utente e da quale ruolo o gruppo proviene ogni decisione.',
+    'accessCheck.selectUser': 'Utente',
+    'accessCheck.selectUserPrompt':
+      'Seleziona un utente per vedere le sue autorizzazioni.',
+    'accessCheck.rolesTitle': 'Ruoli',
+    'accessCheck.noRoles': "L'utente non ha ruoli.",
+    'accessCheck.directAssignment': 'assegnazione diretta',
+    'accessCheck.viaGroup': 'tramite {{ref}}',
+    'accessCheck.appliesToEveryUser': 'si applica a tutti gli utenti',
+    'accessCheck.superUser':
+      'Questo utente è configurato come super utente: tutte le autorizzazioni sono consentite.',
+    'accessCheck.permissionsTitle': 'Autorizzazioni',
+    'accessCheck.conditionalNote':
+      'I risultati condizionali vengono valutati dal plugin competente rispetto alla risorsa al momento della richiesta; non sono una risposta definitiva.',
+    'accessCheck.plugin': 'Plugin',
+    'accessCheck.permission': 'Autorizzazione',
+    'accessCheck.action': 'Azione',
+    'accessCheck.access': 'Accesso',
+    'accessCheck.source': 'Concesso o negato da',
+    'accessCheck.noMatchingPolicy': 'Nessuna politica corrispondente',
+    'accessCheck.superUserSource': 'Super utente',
+    'accessCheck.filterPermissions': 'Filtra le autorizzazioni',
+    'accessCheck.allResults': 'Tutti i risultati',
+    'accessCheck.noMatches':
+      'Nessuna autorizzazione corrisponde ai filtri attuali',
+    'accessCheck.errors.checkAccess':
+      'Si è verificato un errore durante la verifica degli accessi',
   },
 });
 

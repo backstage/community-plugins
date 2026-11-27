@@ -18,32 +18,36 @@ import { useSearchParams } from 'react-router-dom';
 import { type Key, Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
 
 import { useTranslation } from '../hooks/useTranslation';
+import { AccessCheck } from './AccessCheck/AccessCheck';
 import { PermissionsMatrix } from './PermissionsMatrix/PermissionsMatrix';
 import { RolesList } from './RolesList/RolesList';
 
 const VIEW_PARAM = 'view';
 const ROLES_VIEW = 'roles';
 const PERMISSIONS_VIEW = 'permissions';
+const ACCESS_CHECK_VIEW = 'access-check';
 
 /**
- * Switches between the roles list and the read-only permissions matrix. The
- * selected view lives in the URL so it survives navigating to a role and back.
+ * Switches between the roles list, the read-only permissions matrix and the
+ * access checker. The selected view lives in the URL so it survives
+ * navigating to a role and back.
  */
 export const RbacPageContent = () => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const viewParam = searchParams.get(VIEW_PARAM);
   const selectedView =
-    searchParams.get(VIEW_PARAM) === PERMISSIONS_VIEW
-      ? PERMISSIONS_VIEW
+    viewParam === PERMISSIONS_VIEW || viewParam === ACCESS_CHECK_VIEW
+      ? viewParam
       : ROLES_VIEW;
 
   const handleSelectionChange = (key: Key) => {
     setSearchParams(
       params => {
-        if (key === PERMISSIONS_VIEW) {
-          params.set(VIEW_PARAM, PERMISSIONS_VIEW);
-        } else {
+        if (key === ROLES_VIEW) {
           params.delete(VIEW_PARAM);
+        } else {
+          params.set(VIEW_PARAM, String(key));
         }
         return params;
       },
@@ -58,12 +62,16 @@ export const RbacPageContent = () => {
         <Tab id={PERMISSIONS_VIEW}>
           {t('permissionsMatrix.tabs.permissionsByPlugin')}
         </Tab>
+        <Tab id={ACCESS_CHECK_VIEW}>{t('accessCheck.tab')}</Tab>
       </TabList>
       <TabPanel id={ROLES_VIEW}>
         <RolesList />
       </TabPanel>
       <TabPanel id={PERMISSIONS_VIEW}>
         <PermissionsMatrix />
+      </TabPanel>
+      <TabPanel id={ACCESS_CHECK_VIEW}>
+        <AccessCheck />
       </TabPanel>
     </Tabs>
   );

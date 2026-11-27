@@ -15,6 +15,10 @@
  */
 
 import {
+  AccessCheckResponse,
+  isResourcedPolicy,
+  PermissionAction,
+  permissionMappingAction,
   PluginPermissionMetaData,
   Role,
   RoleBasedPolicy,
@@ -235,6 +239,75 @@ class MockRBACApi implements RBACAPI {
     _conditionId: number,
   ): Promise<RoleError | Response> {
     return { status: 204 } as Response;
+  }
+
+  // Rough approximation for the dev app only: the backend is the reference
+  // implementation (precedence, group ancestry and collisions differ here).
+  async checkAccess(userEntityRef: string): Promise<AccessCheckResponse> {
+    const roles = this.resources.filter(role =>
+      role.memberReferences.some(
+        ref => ref === userEntityRef || ref.startsWith('group:'),
+      ),
+    );
+    const roleNames = roles.map(role => role.name);
+    const decisions = mockPermissionPolicies.flatMap(plugin =>
+      plugin.policies.map(policy => {
+        const action = policy.policy as PermissionAction;
+        const rows = mockPolicies.filter(
+          (row): row is RoleBasedPolicy & { entityReference: string } =>
+            !!row.entityReference &&
+            roleNames.includes(row.entityReference) &&
+            row.policy === action &&
+            (row.permission === policy.name ||
+              (isResourcedPolicy(policy) &&
+                row.permission === policy.resourceType)),
+        );
+        const allowedBy = rows
+          .filter(row => row.effect !== 'deny')
+          .map(row => row.entityReference);
+        const deniedBy = rows
+          .filter(row => row.effect === 'deny')
+          .map(row => row.entityReference);
+        const conditionalBy = mockConditions.filter(
+          condition =>
+            roleNames.includes(condition.roleEntityRef) &&
+            isResourcedPolicy(policy) &&
+            condition.resourceType === policy.resourceType &&
+            condition.permissionMapping.some(
+              entry => permissionMappingAction(entry) === action,
+            ),
+        );
+        let result: AuthorizeResult = AuthorizeResult.DENY;
+        if (conditionalBy.length > 0) {
+          result = AuthorizeResult.CONDITIONAL;
+        } else if (allowedBy.length > 0 && deniedBy.length === 0) {
+          result = AuthorizeResult.ALLOW;
+        }
+        return {
+          pluginId: plugin.pluginId,
+          permission: policy.name,
+          ...(isResourcedPolicy(policy)
+            ? { resourceType: policy.resourceType }
+            : {}),
+          action,
+          result,
+          allowedBy,
+          deniedBy,
+          conditionalBy,
+        };
+      }),
+    );
+    return {
+      userEntityRef,
+      isSuperUser: false,
+      roles: roles.map(role => ({
+        roleEntityRef: role.name,
+        via: role.memberReferences.filter(
+          ref => ref === userEntityRef || ref.startsWith('group:'),
+        ),
+      })),
+      decisions,
+    };
   }
 }
 

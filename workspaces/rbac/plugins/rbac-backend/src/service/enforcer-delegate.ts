@@ -713,6 +713,20 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     return await tempEnforcer.enforce(entityRef, resourceType, action);
   }
 
+  /**
+   * Whether `memberEntityRef` connects `userEntityRef` to a role membership:
+   * true for the user's own entity reference and for groups the user belongs
+   * to, directly or through parent groups.
+   */
+  async isUserLinkedTo(
+    userEntityRef: string,
+    memberEntityRef: string,
+  ): Promise<boolean> {
+    return await this.enforcer
+      .getRoleManager()
+      .hasLink(userEntityRef, memberEntityRef);
+  }
+
   async getImplicitPermissionsForUser(user: string): Promise<string[][]> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;

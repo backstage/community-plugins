@@ -1,0 +1,75 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-4);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--bui-space-4);
+}
+
+.userPicker {
+  flex: 0 1 320px;
+  min-width: 240px;
+}
+
+.roleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roleItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--bui-space-2);
+}
+
+.scroll {
+  overflow: auto;
+  max-height: 60vh;
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  font-size: var(--bui-font-size-2);
+}
+
+.table th,
+.table td {
+  padding: var(--bui-space-2) var(--bui-space-3);
+  border-bottom: 1px solid var(--bui-border-1);
+  white-space: nowrap;
+  text-align: left;
+  background: var(--bui-bg-app);
+}
+
+.table thead th {
+  font-weight: var(--bui-font-weight-bold);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.decisionCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bui-space-1);
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  padding: var(--bui-space-4);
+}

@@ -291,6 +291,33 @@ const rbacTranslationJa = createTranslationMessages({
     'permissionsMatrix.decisions.none': '未設定',
     'permissionsMatrix.errors.fetchPermissions':
       'プラグインの権限の取得中に問題が発生しました',
+    'accessCheck.tab': 'アクセスチェック',
+    'accessCheck.description':
+      'ユーザーに付与されている権限と、各判定がどのロールまたはグループに由来するかを確認します。',
+    'accessCheck.selectUser': 'ユーザー',
+    'accessCheck.selectUserPrompt':
+      '権限を表示するユーザーを選択してください。',
+    'accessCheck.rolesTitle': 'ロール',
+    'accessCheck.noRoles': 'このユーザーにはロールがありません。',
+    'accessCheck.directAssignment': '直接割り当て',
+    'accessCheck.viaGroup': '{{ref}} 経由',
+    'accessCheck.appliesToEveryUser': 'すべてのユーザーに適用されます',
+    'accessCheck.superUser':
+      'このユーザーはスーパーユーザーとして設定されているため、すべての権限が許可されます。',
+    'accessCheck.permissionsTitle': '権限',
+    'accessCheck.conditionalNote':
+      '条件付きの結果は、リクエスト時に対象プラグインがリソースに対して評価します。最終的な回答ではありません。',
+    'accessCheck.plugin': 'プラグイン',
+    'accessCheck.permission': '権限',
+    'accessCheck.action': 'アクション',
+    'accessCheck.access': 'アクセス',
+    'accessCheck.source': '許可または拒否の由来',
+    'accessCheck.noMatchingPolicy': '一致するポリシーはありません',
+    'accessCheck.superUserSource': 'スーパーユーザー',
+    'accessCheck.filterPermissions': '権限をフィルター',
+    'accessCheck.allResults': 'すべての結果',
+    'accessCheck.noMatches': '現在のフィルターに一致する権限はありません',
+    'accessCheck.errors.checkAccess': 'アクセスの確認中に問題が発生しました',
   },
 });
 

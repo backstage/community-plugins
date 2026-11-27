@@ -333,6 +333,36 @@ export const rbacMessages = {
         'Something went wrong while fetching the plugin permissions',
     },
   },
+  accessCheck: {
+    tab: 'Access check',
+    description:
+      'Check which permissions a user is granted and which role or group each decision comes from.',
+    selectUser: 'User',
+    selectUserPrompt: 'Select a user to see their permissions.',
+    rolesTitle: 'Roles',
+    noRoles: 'The user has no roles.',
+    directAssignment: 'direct assignment',
+    viaGroup: 'via {{ref}}' as const,
+    appliesToEveryUser: 'applies to every user',
+    superUser:
+      'This user is configured as a super user: every permission is allowed.',
+    permissionsTitle: 'Permissions',
+    conditionalNote:
+      'Conditional results are evaluated against the resource by the owning plugin at request time; they are not a final answer.',
+    plugin: 'Plugin',
+    permission: 'Permission',
+    action: 'Action',
+    access: 'Access',
+    source: 'Granted or denied by',
+    noMatchingPolicy: 'No matching policy',
+    superUserSource: 'Super user',
+    filterPermissions: 'Filter permissions',
+    allResults: 'All results',
+    noMatches: 'No permissions match the current filters',
+    errors: {
+      checkAccess: 'Something went wrong while checking the access',
+    },
+  },
 };
 
 /**

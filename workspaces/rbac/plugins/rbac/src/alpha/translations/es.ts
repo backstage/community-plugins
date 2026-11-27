@@ -306,6 +306,34 @@ const rbacTranslationEs = createTranslationMessages({
     'permissionsMatrix.decisions.none': 'No definido',
     'permissionsMatrix.errors.fetchPermissions':
       'Se produjo un error al obtener los permisos de los plugins',
+    'accessCheck.tab': 'Comprobación de acceso',
+    'accessCheck.description':
+      'Compruebe qué permisos tiene un usuario y de qué rol o grupo proviene cada decisión.',
+    'accessCheck.selectUser': 'Usuario',
+    'accessCheck.selectUserPrompt':
+      'Seleccione un usuario para ver sus permisos.',
+    'accessCheck.rolesTitle': 'Roles',
+    'accessCheck.noRoles': 'El usuario no tiene roles.',
+    'accessCheck.directAssignment': 'asignación directa',
+    'accessCheck.viaGroup': 'a través de {{ref}}',
+    'accessCheck.appliesToEveryUser': 'se aplica a todos los usuarios',
+    'accessCheck.superUser':
+      'Este usuario está configurado como superusuario: todos los permisos están permitidos.',
+    'accessCheck.permissionsTitle': 'Permisos',
+    'accessCheck.conditionalNote':
+      'Los resultados condicionales los evalúa el plugin correspondiente contra el recurso en el momento de la solicitud; no son una respuesta definitiva.',
+    'accessCheck.plugin': 'Plugin',
+    'accessCheck.permission': 'Permiso',
+    'accessCheck.action': 'Acción',
+    'accessCheck.access': 'Acceso',
+    'accessCheck.source': 'Concedido o denegado por',
+    'accessCheck.noMatchingPolicy': 'Sin política coincidente',
+    'accessCheck.superUserSource': 'Superusuario',
+    'accessCheck.filterPermissions': 'Filtrar permisos',
+    'accessCheck.allResults': 'Todos los resultados',
+    'accessCheck.noMatches': 'Ningún permiso coincide con los filtros actuales',
+    'accessCheck.errors.checkAccess':
+      'Se produjo un error al comprobar el acceso',
   },
 });
 
