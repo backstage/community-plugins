@@ -39,6 +39,7 @@
   "dependencies": {
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@backstage/types": "backstage:^",
     "@material-ui/core": "^4.12.2",

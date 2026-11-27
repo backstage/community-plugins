@@ -18,8 +18,13 @@ import { screen, waitFor } from '@testing-library/react';
 import { ShortcutItem } from './ShortcutItem';
 import { Shortcut } from './types';
 import { DefaultShortcutsApi } from './api';
-import { MockStorageApi, renderInTestApp } from '@backstage/test-utils';
+import {
+  mockApis,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
 import { SidebarOpenStateProvider } from '@backstage/core-components';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('ShortcutItem', () => {
   const shortcut: Shortcut = {
@@ -27,13 +32,18 @@ describe('ShortcutItem', () => {
     url: '/some-url',
     title: 'some title',
   };
-  const api = new DefaultShortcutsApi(MockStorageApi.create());
+  const api = new DefaultShortcutsApi(mockApis.storage());
+  const toastApi = { post: jest.fn() };
 
   it('displays the shortcut', async () => {
     await renderInTestApp(
-      <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
-        <ShortcutItem api={api} shortcut={shortcut} />
-      </SidebarOpenStateProvider>,
+      <TestApiProvider apis={[[coreApis.toast, toastApi]]}>
+        <SidebarOpenStateProvider
+          value={{ isOpen: true, setOpen: _open => {} }}
+        >
+          <ShortcutItem api={api} shortcut={shortcut} />
+        </SidebarOpenStateProvider>
+      </TestApiProvider>,
     );
     expect(screen.getByText('ST')).toBeInTheDocument();
     expect(screen.getByText('some title')).toBeInTheDocument();
@@ -57,16 +67,26 @@ describe('ShortcutItem', () => {
     };
 
     const { rerender } = await renderInTestApp(
-      <ShortcutItem api={api} shortcut={shortcut1} />,
+      <TestApiProvider apis={[[coreApis.toast, toastApi]]}>
+        <ShortcutItem api={api} shortcut={shortcut1} />
+      </TestApiProvider>,
     );
     expect(screen.getByText('On')).toBeInTheDocument();
 
-    rerender(<ShortcutItem api={api} shortcut={shortcut2} />);
+    rerender(
+      <TestApiProvider apis={[[coreApis.toast, toastApi]]}>
+        <ShortcutItem api={api} shortcut={shortcut2} />
+      </TestApiProvider>,
+    );
     await waitFor(() => {
       expect(screen.getByText('TT')).toBeInTheDocument();
     });
 
-    rerender(<ShortcutItem api={api} shortcut={shortcut3} />);
+    rerender(
+      <TestApiProvider apis={[[coreApis.toast, toastApi]]}>
+        <ShortcutItem api={api} shortcut={shortcut3} />
+      </TestApiProvider>,
+    );
     await waitFor(() => {
       expect(screen.getByText('MT')).toBeInTheDocument();
     });

@@ -18,22 +18,23 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { AddShortcut } from './AddShortcut';
 import { DefaultShortcutsApi, shortcutsApiRef } from './api';
 import {
-  MockAnalyticsApi,
-  MockStorageApi,
+  mockApis,
   TestApiProvider,
   renderInTestApp,
 } from '@backstage/test-utils';
-import { AlertDisplay } from '@backstage/core-components';
 import { analyticsApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('AddShortcut', () => {
-  const api = new DefaultShortcutsApi(MockStorageApi.create());
+  const api = new DefaultShortcutsApi(mockApis.storage());
 
   const props = {
     onClose: jest.fn(),
     anchorEl: document.createElement('div'),
     api,
   };
+
+  const toastApi = { post: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -44,7 +45,8 @@ describe('AddShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <AddShortcut {...props} />
@@ -58,7 +60,8 @@ describe('AddShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <AddShortcut {...props} />
@@ -75,7 +78,8 @@ describe('AddShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <AddShortcut {...props} />
@@ -97,14 +101,15 @@ describe('AddShortcut', () => {
   });
 
   it('should capture analytics event', async () => {
-    const analyticsSpy = new MockAnalyticsApi();
+    const analyticsSpy = mockApis.analytics.mock();
     const spy = jest.spyOn(api, 'add');
 
     await renderInTestApp(
       <TestApiProvider
         apis={[
           [analyticsApiRef, analyticsSpy],
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <AddShortcut {...props} />
@@ -125,10 +130,12 @@ describe('AddShortcut', () => {
       });
     });
 
-    expect(analyticsSpy.getEvents()[0]).toMatchObject({
-      action: 'click',
-      subject: `Clicked 'Save' in AddShortcut`,
-    });
+    expect(analyticsSpy.captureEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'click',
+        subject: `Clicked 'Save' in AddShortcut`,
+      }),
+    );
   });
 
   it('pastes the values', async () => {
@@ -137,7 +144,8 @@ describe('AddShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <AddShortcut {...props} />,
@@ -161,24 +169,23 @@ describe('AddShortcut', () => {
     jest.spyOn(api, 'add').mockRejectedValueOnce(new Error('some title'));
 
     await renderInTestApp(
-      <>
-        <TestApiProvider
-          apis={[
-            [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-          ]}
-        >
-          <AlertDisplay />
-          <AddShortcut {...props} />
-        </TestApiProvider>
-      </>,
+      <TestApiProvider
+        apis={[
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
+        ]}
+      >
+        <AddShortcut {...props} />
+      </TestApiProvider>,
     );
 
     fireEvent.click(screen.getByText('Use current page'));
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
-      expect(
-        screen.getByText(`Added shortcut 'some title' to your sidebar`),
-      ).toBeInTheDocument();
+      expect(toastApi.post).toHaveBeenCalledWith({
+        title: 'Could not add shortcut: some title',
+        status: 'danger',
+      });
     });
   });
 });
