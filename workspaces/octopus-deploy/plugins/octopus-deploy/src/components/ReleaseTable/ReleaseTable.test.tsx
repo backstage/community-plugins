@@ -92,6 +92,34 @@ describe('ReleaseTable', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('sorts releases by version', async () => {
+    await renderInTestApp(
+      <ReleaseTable
+        loading={false}
+        environments={[]}
+        releases={[
+          release('Releases-1', '1.9.0', {}),
+          release('Releases-2', '1.10.0', {}),
+          release('Releases-3', '1.2.0', {}),
+        ]}
+      />,
+    );
+
+    const versions = () =>
+      screen.getAllByRole('rowheader').map(cell => cell.textContent);
+    const header = await screen.findByRole('columnheader', {
+      name: /Version/,
+    });
+
+    expect(versions()).toEqual(['1.9.0', '1.10.0', '1.2.0']);
+
+    fireEvent.click(header);
+    expect(versions()).toEqual(['1.2.0', '1.9.0', '1.10.0']);
+
+    fireEvent.click(header);
+    expect(versions()).toEqual(['1.10.0', '1.9.0', '1.2.0']);
+  });
+
   it('renders loading and error states', async () => {
     const { rerender } = await renderInTestApp(
       <ReleaseTable

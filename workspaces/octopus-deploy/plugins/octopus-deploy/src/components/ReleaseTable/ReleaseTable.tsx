@@ -93,6 +93,7 @@ const createColumns = (
     id: 'version',
     label: 'Version',
     isRowHeader: true,
+    isSortable: true,
     cell: (row): ReactElement => {
       const version = row.Release?.Version;
       const externalLink =
@@ -155,6 +156,21 @@ export const ReleaseTable = ({
     // Without data the table shows its loading skeleton instead of empty rows
     data: loading && rows.length === 0 ? undefined : rows,
     paginationOptions: { pageSize: 5 },
+    sortFn: (data, { column, direction }) => {
+      if (column !== 'version') {
+        return data;
+      }
+      const sign = direction === 'descending' ? -1 : 1;
+      return [...data].sort(
+        (a, b) =>
+          sign *
+          (a.Release?.Version ?? '').localeCompare(
+            b.Release?.Version ?? '',
+            'en-US',
+            { numeric: true },
+          ),
+      );
+    },
     searchFn: (data, query) => {
       const needle = query.trim().toLocaleLowerCase('en-US');
       if (!needle) {
