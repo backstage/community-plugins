@@ -1,5 +1,17 @@
 # @backstage-community/plugin-rbac
 
+## 2.6.0
+
+### Minor Changes
+
+- 640b33b: Added a read-only "Permissions by plugin" view to the RBAC page. It shows every role against the permissions of each plugin as Allow, Deny or Conditional, can be narrowed down by role, plugin and policy decision to compare a few roles side by side, and marks roles that are managed outside the UI (for example from app-config or a CSV file) as view-only.
+
+  The RBAC API gained a `getAllRoleConditions` method that lists the conditional policies of every role; `getRoleConditions` still takes the role reference it always did.
+
+### Patch Changes
+
+- f30348d: Fixed the permissions matrix showing "No roles found" when the role search hid a checked role. Checked roles outside the search results are now ignored, and the selection applies again once the search is cleared.
+
 ## 2.5.0
 
 ### Minor Changes
