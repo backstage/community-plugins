@@ -35,6 +35,10 @@ A subset of workspaces are maintained by the area maintainers team. Updates for 
 
 All `@backstage/*` packages are disabled in Renovate. These are managed through the Backstage version bump process, which has its own workflow and PR cadence.
 
+### Yarn Version
+
+Yarn version updates are disabled. Workspaces don't set their own `yarnPath`, so they all inherit the root Yarn release, and newer Yarn versions can change the lockfile format. Upgrading Yarn requires migrating every workspace `yarn.lock` at the same time, which should be done manually.
+
 ### Version Pins
 
 Several packages are pinned to specific version ranges because newer major versions are incompatible with the current Backstage build setup:
