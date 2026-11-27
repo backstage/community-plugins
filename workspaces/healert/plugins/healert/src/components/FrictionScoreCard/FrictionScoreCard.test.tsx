@@ -27,6 +27,7 @@ beforeAll(() => {
       msg.includes('Could not parse CSS stylesheet')
     )
       return;
+    // eslint-disable-next-line no-console
     console.warn(msg);
   });
 });

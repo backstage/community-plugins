@@ -19,7 +19,7 @@ import {
   FetchApi,
   ConfigApi,
 } from '@backstage/core-plugin-api';
-import type { FrictionData } from './types';
+import type { FrictionData, FrictionSeverity } from './types';
 
 /**
  * The Healert API ref — used for dependency injection via Backstage's
@@ -106,14 +106,10 @@ export class MockHealertClient implements HealertApi {
     await new Promise(resolve => setTimeout(resolve, 600));
 
     const score = Math.floor(Math.random() * 60) + 30;
-    const severity =
-      score >= 80
-        ? 'critical'
-        : score >= 60
-        ? 'high'
-        : score >= 40
-        ? 'medium'
-        : 'low';
+    let severity: FrictionSeverity = 'low';
+    if (score >= 80) severity = 'critical';
+    else if (score >= 60) severity = 'high';
+    else if (score >= 40) severity = 'medium';
 
     return {
       entityRef,

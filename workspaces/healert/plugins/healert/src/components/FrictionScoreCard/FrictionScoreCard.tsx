@@ -72,7 +72,7 @@
  *                               and fetches data from the Healert backend
  */
 
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { InfoCard, Progress } from '@backstage/core-components';
 import {
   Box,
@@ -583,6 +583,28 @@ function formatTime(iso: string): string {
 }
 
 /**
+ * Keyboard handler that runs `onActivate` on Enter or Space, so clickable
+ * non-button elements are usable from the keyboard.
+ */
+function onActivateKey(onActivate: () => void) {
+  return (e: KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onActivate();
+    }
+  };
+}
+
+/**
+ * Color for a High/Medium/Low level, where `worst` is the level shown in red.
+ */
+function levelColor(level: string, worst: 'High' | 'Low'): string {
+  if (level === worst) return '#EF4444';
+  if (level === 'Medium') return '#F59E0B';
+  return '#10B981';
+}
+
+/**
  * Converts a CSS hex color string (#DC2626) to an RGB tuple for jsPDF.
  * Falls back to mid-gray if the hex string cannot be parsed.
  */
@@ -637,8 +659,8 @@ async function generatePDF(
   byActor: Record<string, number>,
   entityRef: string,
 ): Promise<void> {
-  const jsPDF = await loadJsPDF();
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const JsPDF = await loadJsPDF();
+  const doc = new JsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
   // A4 dimensions and shared layout constants
   const PAGE_W = 210; // mm
@@ -663,18 +685,19 @@ async function generatePDF(
   const scoreColor = hexToRgb(severityHex);
 
   // Impact/effort badge colors
-  const impactColor = (level: string): RGB =>
-    level === 'High'
-      ? [239, 68, 68]
-      : level === 'Medium'
-      ? [245, 158, 11]
-      : [16, 185, 129];
-  const effortColor = (level: string): RGB =>
-    level === 'Low'
-      ? [16, 185, 129]
-      : level === 'Medium'
-      ? [245, 158, 11]
-      : [239, 68, 68];
+  const RED: RGB = [239, 68, 68];
+  const AMBER: RGB = [245, 158, 11];
+  const GREEN: RGB = [16, 185, 129];
+  const impactColor = (level: string): RGB => {
+    if (level === 'High') return RED;
+    if (level === 'Medium') return AMBER;
+    return GREEN;
+  };
+  const effortColor = (level: string): RGB => {
+    if (level === 'Low') return GREEN;
+    if (level === 'Medium') return AMBER;
+    return RED;
+  };
 
   let y = 0; // current vertical position — incremented as each section is drawn
 
@@ -698,10 +721,10 @@ async function generatePDF(
   doc.text(`Generated: ${new Date().toLocaleString()}`, MARGIN, 47);
 
   // Score badge — top-right of the cover
-  const BADGE_X = 154,
-    BADGE_Y = 10,
-    BADGE_W = 40,
-    BADGE_H = 38;
+  const BADGE_X = 154;
+  const BADGE_Y = 10;
+  const BADGE_W = 40;
+  const BADGE_H = 38;
   doc.setFillColor(...scoreColor);
   doc.roundedRect(BADGE_X, BADGE_Y, BADGE_W, BADGE_H, 4, 4, 'F');
   doc.setTextColor(...PDF_COLORS.white);
@@ -1480,18 +1503,8 @@ function ScoreDetailsModal({
             {topTypes.map(([type, count]) => {
               const fix = getTypeFix(type);
               const t = getTypeStyle(type);
-              const impactColor =
-                fix.impact === 'High'
-                  ? '#EF4444'
-                  : fix.impact === 'Medium'
-                  ? '#F59E0B'
-                  : '#10B981';
-              const effortColor =
-                fix.effort === 'Low'
-                  ? '#10B981'
-                  : fix.effort === 'Medium'
-                  ? '#F59E0B'
-                  : '#EF4444';
+              const impactColor = levelColor(fix.impact, 'High');
+              const effortColor = levelColor(fix.effort, 'Low');
               return (
                 <div
                   key={type}
@@ -1754,6 +1767,27 @@ export function FrictionScoreCard() {
   if (error) {
     const isUnreachable = error === 'backend-unreachable';
     const isAuthError = error === 'auth-error';
+    let errorCopy = {
+      title: 'Healert backend or agent is not running',
+      description:
+        'The backend or agent is not running. Start both to begin detecting friction events.',
+      command: './healert.sh start',
+    };
+    if (isUnreachable) {
+      errorCopy = {
+        title: 'Healert backend is not reachable',
+        description:
+          'The Healert backend process is not running or cannot be reached from Backstage.',
+        command: './healert.sh start backend',
+      };
+    } else if (isAuthError) {
+      errorCopy = {
+        title: 'API key authentication failed',
+        description:
+          'The API key configured in Backstage does not match the backend API key.',
+        command: './healert.sh setup rotate',
+      };
+    }
 
     return (
       <InfoCard title="Friction Analysis Board">
@@ -1779,18 +1813,10 @@ export function FrictionScoreCard() {
                   fontWeight: 700,
                   fontSize: '0.95rem',
                   marginBottom: 6,
-                  color: isUnreachable
-                    ? '#92400E'
-                    : isAuthError
-                    ? '#991B1B'
-                    : '#92400E',
+                  color: isAuthError ? '#991B1B' : '#92400E',
                 }}
               >
-                {isUnreachable
-                  ? 'Healert backend is not reachable'
-                  : isAuthError
-                  ? 'API key authentication failed'
-                  : 'Healert backend or agent is not running'}
+                {errorCopy.title}
               </Typography>
 
               {/* Description */}
@@ -1798,51 +1824,25 @@ export function FrictionScoreCard() {
                 style={{
                   fontSize: '0.85rem',
                   marginBottom: 12,
-                  color: isUnreachable
-                    ? '#78350F'
-                    : isAuthError
-                    ? '#7F1D1D'
-                    : '#78350F',
+                  color: isAuthError ? '#7F1D1D' : '#78350F',
                 }}
               >
-                {isUnreachable
-                  ? 'The Healert backend process is not running or cannot be reached from Backstage.'
-                  : isAuthError
-                  ? 'The API key configured in Backstage does not match the backend API key.'
-                  : 'The backend or agent is not running. Start both to begin detecting friction events.'}
+                {errorCopy.description}
               </Typography>
 
               {/* Fix instructions */}
               <Box
                 style={{
-                  background: isUnreachable
-                    ? '#FEF3C7'
-                    : isAuthError
-                    ? '#FEE2E2'
-                    : '#FEF3C7',
-                  border: `1px solid ${
-                    isUnreachable
-                      ? '#FCD34D'
-                      : isAuthError
-                      ? '#FCA5A5'
-                      : '#FCD34D'
-                  }`,
+                  background: isAuthError ? '#FEE2E2' : '#FEF3C7',
+                  border: `1px solid ${isAuthError ? '#FCA5A5' : '#FCD34D'}`,
                   borderRadius: 6,
                   padding: '8px 14px',
                   fontFamily: 'monospace',
                   fontSize: '0.8rem',
-                  color: isUnreachable
-                    ? '#78350F'
-                    : isAuthError
-                    ? '#7F1D1D'
-                    : '#78350F',
+                  color: isAuthError ? '#7F1D1D' : '#78350F',
                 }}
               >
-                {isUnreachable
-                  ? './healert.sh start backend'
-                  : isAuthError
-                  ? './healert.sh setup rotate'
-                  : './healert.sh start'}
+                {errorCopy.command}
               </Box>
             </Box>
           </Box>
@@ -2083,6 +2083,30 @@ export function FrictionScoreCard() {
     </Tooltip>
   );
 
+  let topActorTooltip = '';
+  if (topActor) {
+    topActorTooltip = actorFilter
+      ? 'Click to clear actor filter'
+      : `Click to filter by ${topActor[0].split('@')[0]}`;
+  }
+
+  let eventsTitle = `All Friction Events (${recentEvents.length})`;
+  if (overheadFilter) {
+    eventsTitle = `High Overhead Events (${filteredEvents.length})`;
+  } else if (sevFilter) {
+    eventsTitle = `Highest Friction Events (${filteredEvents.length})`;
+  } else if (workflowFilter) {
+    eventsTitle = `${workflowFilter} Workflow Events (${filteredEvents.length})`;
+  } else if (actorFilter) {
+    eventsTitle = `${actorFilter.split('@')[0]} Events (${
+      filteredEvents.length
+    })`;
+  } else if (activeFilter) {
+    eventsTitle = `${getTypeStyle(activeFilter).label} Events (${
+      filteredEvents.length
+    })`;
+  }
+
   // ── RENDER ─────────────────────────────────────────────────────────────────
   return (
     <>
@@ -2148,7 +2172,10 @@ export function FrictionScoreCard() {
                   >
                     <div
                       className={classes.metaCard}
+                      role="button"
+                      tabIndex={0}
                       onClick={handleOverheadFilter}
+                      onKeyDown={onActivateKey(handleOverheadFilter)}
                       style={{
                         cursor: 'pointer',
                         background: overheadFilter ? '#FFF7ED' : undefined,
@@ -2188,10 +2215,19 @@ export function FrictionScoreCard() {
                   >
                     <div
                       className={classes.metaCard}
+                      role="button"
+                      tabIndex={0}
                       onClick={() =>
                         frictionScore.topFrictionWorkflow &&
                         handleWorkflowClick(frictionScore.topFrictionWorkflow)
                       }
+                      onKeyDown={onActivateKey(
+                        () =>
+                          frictionScore.topFrictionWorkflow &&
+                          handleWorkflowClick(
+                            frictionScore.topFrictionWorkflow,
+                          ),
+                      )}
                       style={{
                         cursor: 'pointer',
                         background: workflowFilter ? '#F0FDFA' : undefined,
@@ -2217,19 +2253,15 @@ export function FrictionScoreCard() {
 
                 {/* Top Actor — clickable, filters table to this actor */}
                 <Grid item xs={6} sm={3}>
-                  <Tooltip
-                    title={
-                      topActor
-                        ? actorFilter
-                          ? 'Click to clear actor filter'
-                          : `Click to filter by ${topActor[0].split('@')[0]}`
-                        : ''
-                    }
-                    arrow
-                  >
+                  <Tooltip title={topActorTooltip} arrow>
                     <div
                       className={classes.metaCard}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => topActor && handleActorClick(topActor[0])}
+                      onKeyDown={onActivateKey(
+                        () => topActor && handleActorClick(topActor[0]),
+                      )}
                       style={{
                         cursor: topActor ? 'pointer' : 'default',
                         background:
@@ -2370,21 +2402,7 @@ export function FrictionScoreCard() {
           <div>
             {/* Table title updates dynamically to reflect the active filter */}
             <Typography className={classes.sectionTitle}>
-              {overheadFilter
-                ? `High Overhead Events (${filteredEvents.length})`
-                : sevFilter
-                ? `Highest Friction Events (${filteredEvents.length})`
-                : workflowFilter
-                ? `${workflowFilter} Workflow Events (${filteredEvents.length})`
-                : actorFilter
-                ? `${actorFilter.split('@')[0]} Events (${
-                    filteredEvents.length
-                  })`
-                : activeFilter
-                ? `${getTypeStyle(activeFilter).label} Events (${
-                    filteredEvents.length
-                  })`
-                : `All Friction Events (${recentEvents.length})`}
+              {eventsTitle}
             </Typography>
             <TableContainer component={Paper} variant="outlined">
               <Table size="small">
