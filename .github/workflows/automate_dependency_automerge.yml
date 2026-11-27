@@ -1,0 +1,43 @@
+name: Automate dependency automerge
+# Approves and enables auto-merge for Renovate and Dependabot PRs that only
+# change yarn.lock in workspaces with "autoMergeDependencies": true in bcp.json.
+# See scripts/ci/automerge-dependency-pr.js.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    paths:
+      - '**/yarn.lock'
+      - '**/package.json'
+
+permissions: {}
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: |
+      (
+        (github.event.pull_request.user.login == 'backstage-goalie[bot]' && startsWith(github.head_ref, 'renovate/'))
+        || (github.event.pull_request.user.login == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/'))
+      )
+      && github.repository == 'backstage/community-plugins'
+      && github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      # Checks out the base branch (the default for pull_request_target), so
+      # the script and bcp.json opt-in come from main, not from the PR
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Approve and enable auto-merge
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          script: |
+            const { run } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/automerge-dependency-pr.js`);
+            await run({ github, context, core, serviceAccount: 'backstage-service' });

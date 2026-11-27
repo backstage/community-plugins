@@ -1,5 +1,6 @@
 {
   "autoVersionBump": true,
   "listDeprecations": true,
-  "knipReports": true
+  "knipReports": true,
+  "autoMergeDependencies": true
 }
