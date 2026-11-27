@@ -1,0 +1,30 @@
+name: Verify CODEOWNERS dependency automerge entries
+on:
+  pull_request:
+    paths:
+      - 'workspaces/*/bcp.json'
+      - '.github/CODEOWNERS'
+      - 'scripts/sync-codeowners-automerge.js'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+
+      - name: Check CODEOWNERS is in sync with bcp.json
+        run: node scripts/sync-codeowners-automerge.js --check

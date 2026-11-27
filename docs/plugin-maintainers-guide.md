@@ -16,6 +16,7 @@
   - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
   - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
   - [Opt-in to Playwright UI Check](#opt-in-to-playwright-ui-check)
+  - [Opt-in to Dependency Automerge](#opt-in-to-dependency-automerge)
   - [Opt-in to Code Coverage](#opt-in-to-code-coverage)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
@@ -168,6 +169,20 @@ Test file selection is based solely on the config file. Launching the plugin can
 Note that since there is no per-plugin configuration for the workflow, there is no place to store secrets for the CI, in case any communication with external services is required. For the sake of consistency, we recommend testing using static data for the dev pages, or [mocking](https://playwright.dev/docs/mock#mock-api-requests) any external APIs during as part of the tests themselves.
 
 For a working example, check out the [quay](/workspaces/quay/) workspace. In particular, the [config](/workspaces/quay/playwright.config.ts) file, and the [tests](/workspaces/quay/plugins/quay/tests/) might be of interest.
+
+## Opt-in to Dependency Automerge
+
+Plugin owners can have Renovate and Dependabot PRs that only update their workspace's `yarn.lock` approved and merged automatically, by adding `"autoMergeDependencies": true` to their `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`).
+
+These PRs only update transitive dependencies within the version ranges your packages already allow, so nothing changes for people installing your plugin. Once enabled:
+
+- The `backstage-service` account approves the PR and turns on auto-merge, and GitHub merges it after CI passes
+- PRs that change anything other than `yarn.lock`, such as a `package.json`, still need a review from you as usual
+- PRs that touch several workspaces are only merged if every one of them has opted in
+- PRs that pull in a package version newer than the `minimumReleaseAge` in `.github/renovate.json` wait, and are rechecked daily until they're old enough to merge
+- PRs that someone other than the bots pushed to get the `automerge-blocked` label and need a review from you as usual. The label is removed if the bot rewrites the branch
+
+After changing the flag, run `node scripts/sync-codeowners-automerge.js` from the repository root and commit the updated `.github/CODEOWNERS`. This adds your workspace's `yarn.lock` to CODEOWNERS with your existing owners plus `@backstage-service`, which is what allows the approval. CI checks that the two stay in sync.
 
 ## Opt-in to Code Coverage
 
