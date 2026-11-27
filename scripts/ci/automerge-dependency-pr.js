@@ -201,7 +201,7 @@ export async function findTooNew(packages, minimumAge, now, getPublishTime) {
 
 async function npmPublishTime(name, version) {
   const res = await fetch(
-    `https://registry.npmjs.org/${name.replace('/', '%2F')}`,
+    `https://registry.npmjs.org/${encodeURIComponent(name)}`,
   );
   if (!res.ok) {
     throw new Error(`npm registry returned ${res.status} for ${name}`);
