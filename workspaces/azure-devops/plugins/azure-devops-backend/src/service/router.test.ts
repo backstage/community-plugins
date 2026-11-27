@@ -23,6 +23,7 @@ import {
   GitTag,
   PullRequest,
   PullRequestStatus,
+  azureDevOpsReadmeReadPermission,
 } from '@backstage-community/plugin-azure-devops-common';
 
 import { AzureDevOpsApi } from '../api';
@@ -34,6 +35,7 @@ import { UrlReaderService } from '@backstage/backend-plugin-api';
 import request from 'supertest';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockServices } from '@backstage/backend-test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 describe('createRouter', () => {
   let azureDevOpsApi: jest.Mocked<AzureDevOpsApi>;
@@ -69,13 +71,14 @@ describe('createRouter', () => {
       getTeamMembers: jest.fn(),
       getReadme: jest.fn(),
       getBuildRunLog: jest.fn(),
+      getBuild: jest.fn(),
+      getBuildDefinitionIds: jest.fn(),
       getProjects: jest.fn(),
       getDashboardPullRequests: jest.fn(),
     } as any;
 
     const config = new ConfigReader({
       azureDevOps: {
-        token: 'foo',
         host: 'host.com',
         organization: 'myOrg',
         top: 5,
@@ -110,6 +113,116 @@ describe('createRouter', () => {
       reader: mockUrlReader,
       permissions: mockPermissionEvaluator,
       httpAuth: mockServices.httpAuth(),
+      catalog: catalogServiceMock({
+        entities: [
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'mycomponent',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/build-definition': 'myDefinition',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'repoonly',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'crossproject',
+              annotations: {
+                'dev.azure.com/project-repo': 'repoProject/myRepo',
+                'dev.azure.com/project': 'pipelineProject',
+                'dev.azure.com/build-definition': 'myDefinition',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'malformed',
+              annotations: {
+                'dev.azure.com/project': 'myProject',
+                'dev.azure.com/build-definition': ' , ',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'malformedwithrepo',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/build-definition': ' , ',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmepath',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/readme-path':
+                  '/docs/README.md&version=GBfeature/foo',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmesource',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'backstage.io/source-location':
+                  'url:https://dev.azure.com/myOrg/myProject/_git/myRepo?path=%2Fservices%2Fsvc&version=GBmain',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmerelative',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/readme-path': './README.md',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmeenv',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/readme-path': '/config/prod.env',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: { name: 'unannotated' },
+          },
+        ],
+      }),
     });
 
     app = express().use(router);
@@ -117,6 +230,114 @@ describe('createRouter', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    mockedAuthorize.mockImplementation(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+  });
+
+  describe('entity binding', () => {
+    it('rejects requests for resources not annotated on the entity', async () => {
+      const entityRef = 'component:default/mycomponent';
+      const forbidden = [
+        request(app).get('/git-tags/otherProject/myRepo').query({ entityRef }),
+        request(app)
+          .get('/pull-requests/myProject/otherRepo')
+          .query({ entityRef }),
+        request(app)
+          .get('/pull-requests/myProject/myRepo')
+          .query({ entityRef, host: 'attacker.example', org: 'myOrg' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef, definitionName: 'otherDefinition' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef, repoName: 'otherRepo' }),
+        request(app).get('/builds/myProject').query({ entityRef }),
+        request(app).get('/builds/myProject').query({
+          entityRef: 'component:default/repoonly',
+          definitionName: 'anyDefinition',
+        }),
+        request(app)
+          .get('/pull-requests/pipelineProject/myRepo')
+          .query({ entityRef: 'component:default/crossproject' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef: 'component:default/malformed' }),
+        request(app)
+          .get('/builds/myProject')
+          .query({ entityRef: 'component:default/malformedwithrepo' }),
+        request(app).get('/readme/myProject/otherRepo').query({ entityRef }),
+        request(app)
+          .get('/builds/otherProject/build/8/log')
+          .query({ entityRef }),
+        request(app)
+          .get('/repository/myProject/otherRepo')
+          .query({ entityRef }),
+        request(app)
+          .get('/git-tags/myProject/myRepo')
+          .query({ entityRef: 'component:default/unannotated' }),
+      ];
+
+      for (const response of await Promise.all(forbidden)) {
+        expect(response.status).toEqual(403);
+      }
+
+      const missing = await request(app)
+        .get('/git-tags/myProject/myRepo')
+        .query({ entityRef: 'component:default/missing' });
+      expect(missing.status).toEqual(404);
+
+      const noEntityRef = await request(app).get(
+        '/builds/myProject/af4ae3af-e747-4129-9bbc-d1329f6b0998',
+      );
+      expect(noEntityRef.status).toEqual(400);
+
+      azureDevOpsApi.getGitRepository.mockResolvedValueOnce({
+        id: 'af4ae3af-e747-4129-9bbc-d1329f6b0998',
+      });
+      const otherRepoId = await request(app)
+        .get('/builds/myProject/00000000-0000-0000-0000-000000000000')
+        .query({ entityRef });
+      expect(otherRepoId.status).toEqual(403);
+
+      expect(azureDevOpsApi.getGitTags).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getPullRequests).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getBuildRuns).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
+      expect(azureDevOpsApi.getBuildList).not.toHaveBeenCalled();
+    });
+
+    it('checks repository and pipeline routes against their own project when they differ', async () => {
+      const entityRef = 'component:default/crossproject';
+      azureDevOpsApi.getPullRequests.mockResolvedValueOnce([]);
+      azureDevOpsApi.getBuildRuns.mockResolvedValueOnce([]);
+
+      const pullRequests = await request(app)
+        .get('/pull-requests/repoProject/myRepo')
+        .query({ entityRef });
+      const builds = await request(app)
+        .get('/builds/pipelineProject')
+        .query({ entityRef, definitionName: 'myDefinition' });
+
+      expect(pullRequests.status).toEqual(200);
+      expect(builds.status).toEqual(200);
+      expect(azureDevOpsApi.getPullRequests).toHaveBeenCalledWith(
+        'repoProject',
+        'myRepo',
+        expect.anything(),
+        undefined,
+        undefined,
+      );
+      expect(azureDevOpsApi.getBuildRuns).toHaveBeenCalledWith(
+        'pipelineProject',
+        10,
+        undefined,
+        'myDefinition',
+        undefined,
+        undefined,
+      );
+    });
   });
 
   describe('GET /health', () => {
@@ -232,11 +453,15 @@ describe('createRouter', () => {
 
       azureDevOpsApi.getGitRepository.mockResolvedValueOnce(gitRepository);
 
-      const response = await request(app).get('/repository/myProject/myRepo');
+      const response = await request(app)
+        .get('/repository/myProject/myRepo')
+        .query({ entityRef: 'component:default/mycomponent' });
 
       expect(azureDevOpsApi.getGitRepository).toHaveBeenCalledWith(
         'myProject',
         'myRepo',
+        undefined,
+        undefined,
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual(gitRepository);
@@ -277,11 +502,14 @@ describe('createRouter', () => {
 
       const builds: Build[] = [firstBuild, secondBuild, thirdBuild];
 
+      azureDevOpsApi.getGitRepository.mockResolvedValueOnce({
+        id: 'af4ae3af-e747-4129-9bbc-d1329f6b0998',
+      });
       azureDevOpsApi.getBuildList.mockResolvedValueOnce(builds);
 
       const response = await request(app)
         .get('/builds/myProject/af4ae3af-e747-4129-9bbc-d1329f6b0998')
-        .query({ top: '40' });
+        .query({ top: '40', entityRef: 'component:default/mycomponent' });
 
       expect(azureDevOpsApi.getBuildList).toHaveBeenCalledWith(
         'myProject',
@@ -289,6 +517,7 @@ describe('createRouter', () => {
         40,
         undefined,
         undefined,
+        ['myDefinition'],
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual(builds);
@@ -524,7 +753,7 @@ describe('createRouter', () => {
 
         const response = await request(app)
           .get('/builds/myProject')
-          .query({ entityRef: 'component:default/mycomponent' })
+          .query({ entityRef: 'component:default/repoonly' })
           .query({ top: '50', repoName: 'myRepo' });
 
         expect(azureDevOpsApi.getBuildRuns).toHaveBeenCalledWith(
@@ -592,7 +821,7 @@ describe('createRouter', () => {
         expect(azureDevOpsApi.getBuildRuns).toHaveBeenCalledWith(
           'myProject',
           50,
-          undefined,
+          'myRepo',
           'myDefinition',
           undefined,
           undefined,
@@ -695,155 +924,98 @@ describe('createRouter', () => {
   });
 
   describe('GET /readme/:projectName/:repoName', () => {
-    it('fetches default default readme file', async () => {
+    const fetchReadme = (entityRef: string, query: object = {}) =>
+      request(app)
+        .get('/readme/myProject/myRepo')
+        .query({ entityRef, ...query });
+
+    it('reads the README configured on the entity and ignores the request path and version', async () => {
       const content = getReadmeMock();
-      const url = `https://host.com/myOrg/myProject/_git/myRepo?path=README.md`;
+      const url = 'https://host.com/myOrg/myProject/_git/myRepo?path=README.md';
+      azureDevOpsApi.getReadme.mockResolvedValue({ content, url });
 
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
+      const defaultReadme = await fetchReadme('component:default/mycomponent', {
+        path: 'config/prod.env',
+        version: 'GBsecrets',
       });
-      mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
-      ]);
-
-      const response = await request(app)
-        .get('/readme/myProject/myRepo?path=README.md')
-        .query({ entityRef: 'component:default/mycomponent' });
-
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        'README.md',
-        undefined,
+      const annotatedPath = await fetchReadme('component:default/readmepath', {
+        path: 'config/prod.env',
+      });
+      const sourceLocation = await fetchReadme(
+        'component:default/readmesource',
+        { path: ['config/prod.env', 'other.env'] },
       );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
+
+      expect(defaultReadme.status).toEqual(200);
+      expect(defaultReadme.body).toEqual({ content, url });
+      expect(annotatedPath.status).toEqual(200);
+      expect(sourceLocation.status).toEqual(200);
+      expect(azureDevOpsApi.getReadme.mock.calls).toEqual([
+        ['host.com', 'myOrg', 'myProject', 'myRepo', 'README.md', undefined],
+        [
+          'host.com',
+          'myOrg',
+          'myProject',
+          'myRepo',
+          '/docs/README.md',
+          'GBfeature/foo',
+        ],
+        [
+          'host.com',
+          'myOrg',
+          'myProject',
+          'myRepo',
+          '/services/svc/README.md',
+          'GBmain',
+        ],
+      ]);
     });
 
-    it('passes version separately to the Azure DevOps API', async () => {
-      const content = getReadmeMock();
-      const url =
-        'https://host.com/myOrg/myProject/_git/myRepo?path=%2Fdocs%2FREADME.md&version=GBfeature%2Ffoo';
-
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
-      });
+    it('checks the readme permission', async () => {
       mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
+        { result: AuthorizeResult.DENY },
       ]);
 
-      const response = await request(app)
-        .get(
-          '/readme/myProject/myRepo?path=/docs/README.md&version=GBfeature%2Ffoo',
-        )
-        .query({ entityRef: 'component:default/mycomponent' });
+      const response = await fetchReadme('component:default/mycomponent');
 
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        '/docs/README.md',
-        'GBfeature/foo',
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
-    });
-  });
-
-  describe('GET /readme/:projectName/:repoName with readme filename', () => {
-    it('fetches specified readme file', async () => {
-      const content = getReadmeMock();
-      const url = `https://host.com/myOrg/myProject/_git/myRepo?path=README_NOT_DEFAULT.md`;
-
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
-      });
-      mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
-      ]);
-
-      const response = await request(app)
-        .get('/readme/myProject/myRepo?path=README_NOT_DEFAULT.md')
-        .query({ entityRef: 'component:default/mycomponent' });
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        'README_NOT_DEFAULT.md',
-        undefined,
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
-    });
-  });
-
-  describe('GET /readme/:projectName/:repoName with readme path', () => {
-    it('fetches specified readme file from subfolder', async () => {
-      const content = getReadmeMock();
-      const url = `https://host.com/myOrg/myProject/_git/myRepo?path=/my-path/README.md`;
-
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
-      });
-      mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
-      ]);
-
-      const response = await request(app)
-        .get('/readme/myProject/myRepo?path=/my-path/README.md')
-        .query({ entityRef: 'component:default/mycomponent' });
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        '/my-path/README.md',
-        undefined,
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
-    });
-  });
-
-  describe('GET /readme/:projectName/:repoName with a bad readme path (multiple values)', () => {
-    it('throws InputError', async () => {
-      const response = await request(app).get(
-        '/readme/myProject/myRepo?path=1&path=2',
+      expect(response.status).toEqual(403);
+      expect(mockedAuthorize).toHaveBeenCalledWith(
+        [
+          {
+            permission: azureDevOpsReadmeReadPermission,
+            resourceRef: 'component:default/mycomponent',
+          },
+        ],
+        expect.anything(),
       );
       expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
-      expect(response.status).toEqual(400);
     });
-  });
 
-  describe('GET /readme/:projectName/:repoName with a bad readme path (empty string)', () => {
-    it('throws InputError', async () => {
-      const response = await request(app).get('/readme/myProject/myRepo?path=');
+    it('rejects relative and non-Markdown readme path annotations', async () => {
+      const relative = await fetchReadme('component:default/readmerelative');
+      const notMarkdown = await fetchReadme('component:default/readmeenv');
+
+      expect(relative.status).toEqual(400);
+      expect(notMarkdown.status).toEqual(400);
       expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
-      expect(response.status).toEqual(400);
     });
   });
 
   describe('GET /builds/:projectName/build/:buildId/log', () => {
+    const MY_REPO_ID = 'af4ae3af-e747-4129-9bbc-d1329f6b0998';
+    const MY_DEFINITION_ID = 42;
+    const build = (definitionId: number, repoId: string) => ({
+      definition: { id: definitionId },
+      repository: { id: repoId, type: 'TfsGit' },
+    });
+
+    beforeEach(() => {
+      azureDevOpsApi.getGitRepository.mockResolvedValue({ id: MY_REPO_ID });
+      azureDevOpsApi.getBuildDefinitionIds.mockResolvedValue([
+        MY_DEFINITION_ID,
+      ]);
+    });
+
     it('fetches the logs for a build run', async () => {
       const buildLog: string[] = [
         'Starting pipeline',
@@ -853,6 +1025,9 @@ describe('createRouter', () => {
         'Section 4 - Step 4',
       ];
 
+      azureDevOpsApi.getBuild.mockResolvedValueOnce(
+        build(MY_DEFINITION_ID, MY_REPO_ID),
+      );
       azureDevOpsApi.getBuildRunLog.mockResolvedValueOnce(buildLog);
 
       mockedAuthorize.mockImplementationOnce(async () => [
@@ -874,7 +1049,7 @@ describe('createRouter', () => {
     });
 
     it('returns empty log array if build id does not exist', async () => {
-      azureDevOpsApi.getBuildRunLog.mockResolvedValueOnce([]);
+      azureDevOpsApi.getBuild.mockResolvedValueOnce(undefined);
 
       mockedAuthorize.mockImplementationOnce(async () => [
         { result: AuthorizeResult.ALLOW },
@@ -884,14 +1059,70 @@ describe('createRouter', () => {
         .get('/builds/myProject/build/22/log')
         .query({ entityRef: 'component:default/mycomponent' });
 
-      expect(azureDevOpsApi.getBuildRunLog).toHaveBeenCalledWith(
-        'myProject',
-        22,
+      expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({ log: [] });
+    });
+
+    it('rejects builds from pipelines or repositories not annotated on the entity', async () => {
+      const entityRef = 'component:default/mycomponent';
+      azureDevOpsApi.getBuild
+        .mockResolvedValueOnce(build(99, MY_REPO_ID))
+        .mockResolvedValueOnce(build(MY_DEFINITION_ID, 'other-repo-id'))
+        // Same name and ID shape, but not an Azure Repos repository
+        .mockResolvedValueOnce({
+          ...build(MY_DEFINITION_ID, MY_REPO_ID),
+          repository: { id: MY_REPO_ID, name: 'myRepo', type: 'GitHub' },
+        })
+        .mockResolvedValueOnce(build(1, 'other-repo-id'));
+
+      const responses = [
+        await request(app)
+          .get('/builds/myProject/build/9/log')
+          .query({ entityRef }),
+        await request(app)
+          .get('/builds/myProject/build/10/log')
+          .query({ entityRef }),
+        await request(app)
+          .get('/builds/myProject/build/11/log')
+          .query({ entityRef }),
+        await request(app)
+          .get('/builds/myProject/build/12/log')
+          .query({ entityRef: 'component:default/repoonly' }),
+      ];
+
+      for (const response of responses) {
+        expect(response.status).toEqual(403);
+      }
+      expect(azureDevOpsApi.getBuildRunLog).not.toHaveBeenCalled();
+    });
+
+    it('fetches logs for repository-only, cross-project and pattern-matched entities', async () => {
+      azureDevOpsApi.getBuild
+        .mockResolvedValueOnce(build(1, MY_REPO_ID))
+        .mockResolvedValueOnce(
+          build(MY_DEFINITION_ID, 'repo-in-pipeline-project'),
+        );
+      azureDevOpsApi.getBuildRunLog.mockResolvedValue(['log']);
+
+      const repoOnly = await request(app)
+        .get('/builds/myProject/build/13/log')
+        .query({ entityRef: 'component:default/repoonly' });
+      const crossProject = await request(app)
+        .get('/builds/pipelineProject/build/14/log')
+        .query({ entityRef: 'component:default/crossproject' });
+
+      expect(repoOnly.status).toEqual(200);
+      expect(crossProject.status).toEqual(200);
+      expect(azureDevOpsApi.getBuildRunLog).toHaveBeenCalledTimes(2);
+      // Annotated names are resolved to IDs, so patterns such as `service-*`
+      // match builds of any definition the pattern resolves to
+      expect(azureDevOpsApi.getBuildDefinitionIds).toHaveBeenCalledWith(
+        'pipelineProject',
+        ['myDefinition'],
         undefined,
         undefined,
       );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({ log: [] });
     });
 
     it('throws InputError when invalid buildId passed', async () => {

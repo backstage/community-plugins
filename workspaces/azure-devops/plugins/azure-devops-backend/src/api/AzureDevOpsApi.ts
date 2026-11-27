@@ -46,11 +46,7 @@ import {
 
 import { TeamMember as AdoTeamMember } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 import { PolicyEvaluationRecord } from 'azure-devops-node-api/interfaces/PolicyInterfaces';
-import {
-  getHandlerFromToken,
-  getPersonalAccessTokenHandler,
-  WebApi,
-} from 'azure-devops-node-api';
+import { getHandlerFromToken, WebApi } from 'azure-devops-node-api';
 import {
   TeamProjectReference,
   WebApiTeam,
@@ -65,7 +61,7 @@ import {
 import { mappedBuildRun, mappedGitTag, mappedPullRequest } from './mappers';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-/** @public */
+/** @internal */
 export class AzureDevOpsApi {
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -118,24 +114,13 @@ export class AzureDevOpsApi {
       url,
     });
 
-    let authHandler;
     if (!credentials) {
-      // No credentials found for the provided host and org in the `integrations.azure` config section
-      // use the fall back personal access token from `azureDevOps.token`
-      const token = this.config.getOptionalString('azureDevOps.token');
-      if (!token) {
-        throw new Error(
-          "No 'azureDevOps.token' provided in configuration and credentials were not found in 'integrations.azure', unable to proceed",
-        );
-      }
-      this.logger.warn(
-        "Using the token from 'azureDevOps.token' has been deprecated, use 'integrations.azure' instead, for more details see: https://backstage.io/docs/integrations/azure/locations",
+      throw new Error(
+        `No credentials found in 'integrations.azure' for host '${validHost}', unable to proceed`,
       );
-      authHandler = getPersonalAccessTokenHandler(token);
-    } else {
-      authHandler = getHandlerFromToken(credentials.token);
     }
 
+    const authHandler = getHandlerFromToken(credentials.token);
     const webApi = new WebApi(url, authHandler);
     return webApi;
   }
@@ -171,22 +156,58 @@ export class AzureDevOpsApi {
     return client.getRepository(repoName, projectName);
   }
 
+  /**
+   * Resolves build definition names, which Azure DevOps treats as patterns
+   * (e.g. `service-*`), to the IDs of the matching definitions.
+   */
+  public async getBuildDefinitionIds(
+    projectName: string,
+    definitionNames: string[],
+    host?: string,
+    org?: string,
+  ): Promise<number[]> {
+    const buildDefinitions = (
+      await Promise.all(
+        definitionNames.map(name =>
+          this.getBuildDefinitions(projectName, name, host, org),
+        ),
+      )
+    ).flat();
+    return buildDefinitions
+      .map(bd => bd.id)
+      .filter((id): id is number => Boolean(id));
+  }
+
   public async getBuildList(
     projectName: string,
     repoId: string,
     top: number,
     host?: string,
     org?: string,
+    definitionNames?: string[],
   ): Promise<Build[]> {
     this.logger?.debug(
       `Calling Azure DevOps REST API, getting up to ${top} Builds for Repository Id ${repoId} for Project ${projectName}`,
     );
 
+    let definitions: number[] | undefined;
+    if (definitionNames && definitionNames.length > 0) {
+      definitions = await this.getBuildDefinitionIds(
+        projectName,
+        definitionNames,
+        host,
+        org,
+      );
+      if (definitions.length === 0) {
+        return [];
+      }
+    }
+
     const webApi = await this.getWebApi(host, org);
     const client = await webApi.getBuildApi();
     return client.getBuilds(
       projectName,
-      undefined,
+      definitions,
       undefined,
       undefined,
       undefined,
@@ -568,6 +589,17 @@ export class AzureDevOpsApi {
       buffer.toString(),
     );
     return { url, content };
+  }
+
+  public async getBuild(
+    projectName: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<Build | undefined> {
+    const webApi = await this.getWebApi(host, org);
+    const client = await webApi.getBuildApi();
+    return (await client.getBuild(projectName, buildId)) ?? undefined;
   }
 
   public async getBuildRunLog(

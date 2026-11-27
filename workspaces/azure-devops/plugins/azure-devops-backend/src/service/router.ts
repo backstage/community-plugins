@@ -22,6 +22,10 @@ import {
   DashboardPullRequest,
   PullRequestOptions,
   PullRequestStatus,
+  azureDevOpsReadmeReadPermission,
+  getAnnotationValuesFromEntity,
+  getReadmeLocation,
+  AZURE_DEVOPS_REPO_ANNOTATION,
 } from '@backstage-community/plugin-azure-devops-common';
 
 import { AzureDevOpsApi } from '../api';
@@ -33,8 +37,13 @@ import {
 import Router from 'express-promise-router';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import express from 'express';
-import { InputError, NotAllowedError } from '@backstage/errors';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { InputError, NotAllowedError, NotFoundError } from '@backstage/errors';
+import {
+  AuthorizeResult,
+  ResourcePermission,
+} from '@backstage/plugin-permission-common';
+import { CatalogService } from '@backstage/plugin-catalog-node';
+import { Entity } from '@backstage/catalog-model';
 import {
   HttpAuthService,
   LoggerService,
@@ -55,6 +64,20 @@ export interface RouterOptions {
   reader: UrlReaderService;
   permissions: PermissionsService;
   httpAuth: HttpAuthService;
+  catalog: CatalogService;
+}
+
+/**
+ * The Azure DevOps coordinates a request is allowed to access, taken from the
+ * annotations of the catalog entity it was authorized against.
+ */
+interface EntityAzureDevOpsTarget {
+  entity: Entity;
+  project: string;
+  repo?: string;
+  definitions: string[];
+  host?: string;
+  org?: string;
 }
 
 /**
@@ -63,7 +86,7 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, reader, config, permissions, httpAuth } = options;
+  const { logger, reader, config, permissions, httpAuth, catalog } = options;
 
   // Get configured organizations from pull request dashboard config and legacy config
   const organizations = getConfiguredAzureDevOpsOrganizations(config);
@@ -74,6 +97,119 @@ export async function createRouter(
 
   const pullRequestsDashboardProvider =
     await PullRequestsDashboardProvider.create(logger, azureDevOpsApi);
+
+  /**
+   * Authorizes the request against the entity given in the `entityRef` query
+   * parameter and checks that the requested Azure DevOps project, host and
+   * organization are the ones annotated on that entity. Without this check an
+   * authorized entity could be used to read data from any other repository.
+   */
+  const authorizeEntityRequest = async (
+    req: express.Request,
+    permission: ResourcePermission<'catalog-entity'>,
+    // 'repo' routes are checked against the source repository annotation,
+    // 'pipeline' routes against the project the build definitions live in.
+    // The two can differ when the pipeline is in another project.
+    scope: 'repo' | 'pipeline',
+  ): Promise<EntityAzureDevOpsTarget> => {
+    const entityRef = req.query.entityRef;
+    if (typeof entityRef !== 'string') {
+      throw new InputError('Invalid entityRef, not a string');
+    }
+
+    const credentials = await httpAuth.credentials(req);
+    const decision = (
+      await permissions.authorize([{ permission, resourceRef: entityRef }], {
+        credentials,
+      })
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    const entity = await catalog.getEntityByRef(entityRef, { credentials });
+    if (!entity) {
+      throw new NotFoundError(`Entity ${entityRef} not found`);
+    }
+
+    let annotations: ReturnType<typeof getAnnotationValuesFromEntity>;
+    try {
+      annotations = getAnnotationValuesFromEntity(entity);
+    } catch (e) {
+      throw new NotAllowedError(
+        'Entity is not annotated for Azure DevOps access',
+      );
+    }
+
+    let project = annotations.project;
+    let repo = annotations.repo;
+    if (scope === 'repo') {
+      const [repoProject, repoName, ...rest] = (
+        entity.metadata.annotations?.[AZURE_DEVOPS_REPO_ANNOTATION] ?? ''
+      ).split('/');
+      if (!repoProject || !repoName || rest.length > 0) {
+        throw new NotAllowedError(
+          'Entity is not annotated with an Azure DevOps repository',
+        );
+      }
+      project = repoProject;
+      repo = repoName;
+    }
+
+    const definitions =
+      annotations.definition
+        ?.split(',')
+        .map(d => d.trim())
+        .filter(Boolean) ?? [];
+    // Fail closed when a malformed annotation leaves nothing to filter on,
+    // or when a build definition annotation is set but contains no names,
+    // otherwise pipeline routes would drop that restriction
+    if (scope === 'pipeline' && definitions.length === 0) {
+      if (annotations.definition !== undefined) {
+        throw new NotAllowedError(
+          'The dev.azure.com/build-definition annotation does not contain any build definition names',
+        );
+      }
+      if (!repo) {
+        throw new NotAllowedError(
+          'Entity is not annotated with an Azure DevOps repository or build definition',
+        );
+      }
+    }
+
+    const host = req.query.host?.toString();
+    const org = req.query.org?.toString();
+    if (
+      req.params.projectName !== project ||
+      host !== annotations.host ||
+      org !== annotations.org
+    ) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
+    }
+
+    return {
+      entity,
+      project,
+      repo,
+      definitions,
+      host: annotations.host,
+      org: annotations.org,
+    };
+  };
+
+  const assertRepoMatches = (
+    target: EntityAzureDevOpsTarget,
+    repoName: string | undefined,
+  ) => {
+    if (repoName !== undefined && repoName !== target.repo) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
+    }
+  };
 
   const router = Router();
   router.use(express.json());
@@ -123,25 +259,55 @@ export async function createRouter(
   });
 
   router.get('/repository/:projectName/:repoName', async (req, res) => {
-    const { projectName, repoName } = req.params;
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsPullRequestReadPermission,
+      'repo',
+    );
+    assertRepoMatches(target, req.params.repoName);
+
     const gitRepository = await azureDevOpsApi.getGitRepository(
-      projectName,
-      repoName,
+      target.project,
+      req.params.repoName,
+      target.host,
+      target.org,
     );
     res.status(200).json(gitRepository);
   });
 
   router.get('/builds/:projectName/:repoId', async (req, res) => {
-    const { projectName, repoId } = req.params;
+    const { repoId } = req.params;
     const top = req.query.top ? Number(req.query.top) : DEFAULT_TOP;
-    const host = req.query.host?.toString();
-    const org = req.query.org?.toString();
+
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsPipelineReadPermission,
+      'pipeline',
+    );
+    if (!target.repo) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
+    }
+    const repository = await azureDevOpsApi.getGitRepository(
+      target.project,
+      target.repo,
+      target.host,
+      target.org,
+    );
+    if (repository.id?.toLowerCase() !== repoId.toLowerCase()) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
+    }
+
     const buildList = await azureDevOpsApi.getBuildList(
-      projectName,
+      target.project,
       repoId,
       top,
-      host,
-      org,
+      target.host,
+      target.org,
+      target.definitions,
     );
     res.status(200).json(buildList);
   });
@@ -151,26 +317,12 @@ export async function createRouter(
     const host = req.query.host?.toString();
     const org = req.query.org?.toString();
 
-    const entityRef = req.query.entityRef;
-    if (typeof entityRef !== 'string') {
-      throw new InputError('Invalid entityRef, not a string');
-    }
-
-    const decision = (
-      await permissions.authorize(
-        [
-          {
-            permission: azureDevOpsGitTagReadPermission,
-            resourceRef: entityRef,
-          },
-        ],
-        { credentials: await httpAuth.credentials(req) },
-      )
-    )[0];
-
-    if (decision.result === AuthorizeResult.DENY) {
-      throw new NotAllowedError('Unauthorized');
-    }
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsGitTagReadPermission,
+      'repo',
+    );
+    assertRepoMatches(target, repoName);
 
     const gitTags = await azureDevOpsApi.getGitTags(
       projectName,
@@ -200,26 +352,12 @@ export async function createRouter(
       teamsLimit: teamsLimit,
     };
 
-    const entityRef = req.query.entityRef;
-    if (typeof entityRef !== 'string') {
-      throw new InputError('Invalid entityRef, not a string');
-    }
-
-    const decision = (
-      await permissions.authorize(
-        [
-          {
-            permission: azureDevOpsPullRequestReadPermission,
-            resourceRef: entityRef,
-          },
-        ],
-        { credentials: await httpAuth.credentials(req) },
-      )
-    )[0];
-
-    if (decision.result === AuthorizeResult.DENY) {
-      throw new NotAllowedError('Unauthorized');
-    }
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsPullRequestReadPermission,
+      'repo',
+    );
+    assertRepoMatches(target, repoName);
 
     const gitPullRequest = await azureDevOpsApi.getPullRequests(
       projectName,
@@ -351,31 +489,30 @@ export async function createRouter(
     const host = req.query.host?.toString();
     const org = req.query.org?.toString();
 
-    const entityRef = req.query.entityRef;
-    if (typeof entityRef !== 'string') {
-      throw new InputError('Invalid entityRef, not a string');
-    }
-
-    const decision = (
-      await permissions.authorize(
-        [
-          {
-            permission: azureDevOpsPipelineReadPermission,
-            resourceRef: entityRef,
-          },
-        ],
-        { credentials: await httpAuth.credentials(req) },
-      )
-    )[0];
-
-    if (decision.result === AuthorizeResult.DENY) {
-      throw new NotAllowedError('Unauthorized');
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsPipelineReadPermission,
+      'pipeline',
+    );
+    assertRepoMatches(target, repoName);
+    // Annotated build definitions always apply: a request without a
+    // definition name would otherwise list every build in the project
+    // or repository.
+    const definitionAllowed =
+      target.definitions.length === 0
+        ? definitionName === undefined
+        : definitionName !== undefined &&
+          target.definitions.includes(definitionName.trim());
+    if (!definitionAllowed) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
     }
 
     const builds = await azureDevOpsApi.getBuildRuns(
       projectName,
       top,
-      repoName,
+      target.repo,
       definitionName,
       host,
       org,
@@ -433,43 +570,22 @@ export async function createRouter(
       req.query.host?.toString() ?? config.getString('azureDevOps.host');
     const org =
       req.query.org?.toString() ?? config.getString('azureDevOps.organization');
-    let path = req.query.path;
-    const version = req.query.version?.toString();
-
-    if (path === undefined) {
-      // if the annotation is missing, default to the previous behaviour (look for README.md in the root of the repo)
-      path = 'README.md';
-    }
-
-    if (typeof path !== 'string') {
-      throw new InputError('Invalid path param');
-    }
-
-    if (path === '') {
-      throw new InputError('If present, the path param should not be empty');
-    }
-
     const { projectName, repoName } = req.params;
 
-    const entityRef = req.query.entityRef;
-    if (typeof entityRef !== 'string') {
-      throw new InputError('Invalid entityRef, not a string');
-    }
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsReadmeReadPermission,
+      'repo',
+    );
+    assertRepoMatches(target, repoName);
 
-    const decision = (
-      await permissions.authorize(
-        [
-          {
-            permission: azureDevOpsPullRequestReadPermission,
-            resourceRef: entityRef,
-          },
-        ],
-        { credentials: await httpAuth.credentials(req) },
-      )
-    )[0];
-
-    if (decision.result === AuthorizeResult.DENY) {
-      throw new NotAllowedError('Unauthorized');
+    // The file path and version come from the entity annotations rather than
+    // the request, so only the README configured for the entity can be read
+    let readmeLocation: ReturnType<typeof getReadmeLocation>;
+    try {
+      readmeLocation = getReadmeLocation(target.entity);
+    } catch (e) {
+      throw new InputError(e instanceof Error ? e.message : String(e));
     }
 
     const readme = await azureDevOpsApi.getReadme(
@@ -477,8 +593,8 @@ export async function createRouter(
       org,
       projectName,
       repoName,
-      path,
-      version,
+      readmeLocation.path,
+      readmeLocation.version,
     );
 
     res.status(200).json(readme);
@@ -494,25 +610,56 @@ export async function createRouter(
       throw new InputError('Invalid buildId parameter');
     }
 
-    const entityRef = req.query.entityRef;
-    if (typeof entityRef !== 'string') {
-      throw new InputError('Invalid entityRef, not a string');
+    const target = await authorizeEntityRequest(
+      req,
+      azureDevOpsPipelineReadPermission,
+      'pipeline',
+    );
+
+    // The build must belong to the entity's annotated repository and to one
+    // of its annotated build definitions, whichever of the two are set
+    const build = await azureDevOpsApi.getBuild(
+      projectName,
+      buildId,
+      host,
+      org,
+    );
+    if (!build) {
+      res.status(200).json({ log: [] });
+      return;
     }
-
-    const decision = (
-      await permissions.authorize(
-        [
-          {
-            permission: azureDevOpsPipelineReadPermission,
-            resourceRef: entityRef,
-          },
-        ],
-        { credentials: await httpAuth.credentials(req) },
-      )
-    )[0];
-
-    if (decision.result === AuthorizeResult.DENY) {
-      throw new NotAllowedError('Unauthorized');
+    // Compare by ID: repository names are only unique within a project and
+    // repository type, and definition annotations can be name patterns
+    let matchesRepo = true;
+    if (target.repo !== undefined) {
+      const repository = await azureDevOpsApi.getGitRepository(
+        target.project,
+        target.repo,
+        target.host,
+        target.org,
+      );
+      matchesRepo =
+        repository?.id !== undefined &&
+        build.repository?.type === 'TfsGit' &&
+        build.repository?.id?.toLowerCase() === repository.id.toLowerCase();
+    }
+    let matchesDefinition = true;
+    if (target.definitions.length > 0) {
+      const definitionIds = await azureDevOpsApi.getBuildDefinitionIds(
+        target.project,
+        target.definitions,
+        target.host,
+        target.org,
+      );
+      matchesDefinition =
+        build.definition?.id !== undefined &&
+        definitionIds.includes(build.definition.id);
+    }
+    const belongsToEntity = matchesRepo && matchesDefinition;
+    if (!belongsToEntity) {
+      throw new NotAllowedError(
+        'Requested Azure DevOps resource does not match the entity annotations',
+      );
     }
 
     const logForBuild = await azureDevOpsApi.getBuildRunLog(

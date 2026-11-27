@@ -46,7 +46,6 @@ describe('AzureDevOpsApi', () => {
   const mockConfig = new ConfigReader({
     azureDevOps: {
       host: 'dev.azure.com',
-      token: 'token',
       organization: 'org',
     },
     integrations: {
@@ -129,6 +128,24 @@ describe('AzureDevOpsApi', () => {
         description: 'two',
       },
     ]);
+  });
+
+  it('should not fall back to the removed azureDevOps.token setting', async () => {
+    const api = AzureDevOpsApi.fromConfig(
+      new ConfigReader({
+        azureDevOps: {
+          host: 'dev.azure.com',
+          token: 'token',
+          organization: 'org',
+        },
+      }),
+      { logger: mockLogger, urlReader: mockUrlReader },
+    );
+
+    await expect(api.getProjects('attacker.example', 'org')).rejects.toThrow(
+      "No credentials found in 'integrations.azure' for host 'attacker.example'",
+    );
+    expect(WebApi).not.toHaveBeenCalled();
   });
 
   it('should get git repository', async () => {

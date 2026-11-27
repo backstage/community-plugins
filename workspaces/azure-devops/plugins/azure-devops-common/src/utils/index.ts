@@ -15,3 +15,4 @@
  */
 
 export { getAnnotationValuesFromEntity } from './getAnnotationValuesFromEntity';
+export { getReadmeLocation } from './getReadmeLocation';
