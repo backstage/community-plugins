@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,6 @@ import badgesPlugin from './alpha';
 describe('badges NFS', () => {
   it('should export a frontend plugin with the badges plugin id', () => {
     expect(badgesPlugin).toBeDefined();
-    expect(badgesPlugin.id).toBe('badges');
+    expect(badgesPlugin.pluginId).toBe('badges');
   });
 });
