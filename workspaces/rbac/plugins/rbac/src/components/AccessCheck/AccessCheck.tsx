@@ -59,13 +59,12 @@ const toDecision = (result: AuthorizeResult): MatrixDecision => {
 };
 
 const toCell = (decision: AccessCheckDecision): MatrixCell => {
-  if (decision.result !== AuthorizeResult.CONDITIONAL) {
-    return {
-      decision: decision.result === AuthorizeResult.ALLOW ? 'allow' : 'deny',
-    };
+  const result = toDecision(decision.result);
+  if (result !== 'conditional') {
+    return { decision: result };
   }
   return {
-    decision: 'conditional',
+    decision: result,
     rules: [
       ...new Set(
         decision.conditionalBy.flatMap(condition =>
