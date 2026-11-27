@@ -1,50 +1,51 @@
-# Setting up the development environment for Topology plugin
+# Contributing — Topology frontend plugin
 
-In [Backstage plugin terminology](https://backstage.io/docs/local-dev/cli-build-system#package-roles), the Topology plugin is a front-end plugin.
+Developer guide for `@backstage-community/plugin-topology`. For operator install and end-user configuration, see [README.md](./README.md).
 
-Testing of the New Frontend System (NFS) and the legacy frontend system (OFS) is done in plugin **dev mode**. There is no `packages/app` or `packages/backend` in this workspace.
+## Prerequisites
 
-To start a live development session, first follow the Prerequisites steps in the [README](./README.md#Prerequisites) file. Specifically, you will need to update the `kubernetes` section in your [`app-config.yaml`](../../app-config.yaml) file to point to an actual Kubernetes cluster.
+- Node.js **22 or 24** (see workspace `engines` in the workspace root `package.json`)
+- Yarn (this workspace has its own `yarn.lock` under `workspaces/topology`)
 
-If you are using an OpenShift cluster, you can use an OpenShift API token instead of a `serviceAccountToken` for development purposes. The API token can be found in the OpenShift console under the user profile dropdown menu:
+## Development harness
 
-![The OpenShift console user profile dropdown menu](https://i.imgur.com/LpJl7ZD.png)
+### Full-stack (recommended for integration)
 
-You will find the API token and API url needed to connect to the OpenShift cluster by clicking on the `Copy Login Command` button.
+From the workspace root (`workspaces/topology`):
 
-Then, from the workspace root:
-
-```console
-cd workspaces/topology
-yarn install
+```bash
+yarn start          # NFS FE + topology-dev-backend (foreach, same pattern as RBAC)
+yarn start:legacy   # legacy FE + topology-dev-backend
 ```
 
-### New frontend system (default)
+Frontend talks to kubernetes-backend on `:7007`. Cluster data is **fixture-backed** in `topology-dev-backend` (no live cluster). Ensure `:3000` / `:7007` are free before `yarn test:nfs` / `--ui`.
 
-```console
-yarn start
-```
+### Frontend-only mocks (UI work)
 
-This starts the NFS plugin (`dev/index.tsx`) together with the lightweight Topology backend.
-
-Mock data (no cluster required):
-
-```console
+```bash
 yarn workspace @backstage-community/plugin-topology start:mock
-```
-
-### Legacy frontend system
-
-```console
-yarn start:legacy
-```
-
-This starts the OFS plugin (`dev/legacy.tsx`) together with the same backend.
-
-Mock data:
-
-```console
 yarn workspace @backstage-community/plugin-topology start:legacy:mock
 ```
 
-The mock entrypoints provide mock Kubernetes data so you can see the Topology graph without a real cluster. To view live data from an actual Kubernetes cluster, you will need to [add annotations to your Kubernetes resources](./README.md#Entity%20annotation%2Flabel).
+These use `dev/index.mock.tsx` / `dev/legacy.mock.tsx` with in-browser `MockKubernetes*`. Prefer them for fast UI iteration; Playwright CI does **not** use them. Workload payloads come from `src/__fixtures__/1-deployments` — the same module the backend fixture provider re-exports — so mock and fullstack e2e stay aligned without duplicating data.
+
+Only one frontend `dev/` harness should run at a time on the default plugin port.
+
+Do not commit real cluster credentials.
+
+## Validation commands
+
+From the workspace root (`workspaces/topology`):
+
+```bash
+yarn workspace @backstage-community/plugin-topology test
+yarn workspace @backstage-community/plugin-topology lint
+yarn tsc
+yarn test:nfs --project=en    # full-stack Playwright, one locale
+```
+
+## What automated tests cover
+
+CI exercises unit tests for plugin APIs, hooks, utils, and UI components, plus Playwright e2e against NFS (`dev/index.tsx`) and legacy (`dev/legacy.tsx`) with **topology-dev-backend** (fixture kubernetes data).
+
+CI does **not** replace reading [Backstage release notes](https://github.com/backstage/backstage/releases) for the `@backstage/*` packages this plugin depends on. After a dependency bump, review those notes and decide whether additional validation is warranted.

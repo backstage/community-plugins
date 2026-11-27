@@ -16,25 +16,46 @@
 
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/legacy.mock.tsx) or 'nfs' (dev/index.mock.tsx)
-const appMode = process.env.APP_MODE || 'legacy';
-const startCommand =
-  appMode === 'legacy' ? 'yarn start:legacy:mock' : 'yarn start:mock';
+// APP_MODE: 'nfs' (dev/index.tsx) or 'legacy' (dev/legacy.tsx)
+const appMode = process.env.APP_MODE || 'nfs';
+const frontendStartCommand =
+  appMode === 'legacy' ? 'yarn start:legacy' : 'yarn start';
 
+/**
+ * Full-stack Playwright config: frontend + backend as separate webServers
+ * so Playwright waits for both before tests run (same pattern as RBAC).
+ * @see https://playwright.dev/docs/test-webserver
+ *
+ * Locale projects share one fixture-backed backend. Prefer `en` locally:
+ * yarn playwright test --project=en
+ *
+ * Free :3000 / :7007 before `yarn test:nfs --ui` — reuseExistingServer is
+ * false (RBAC-equivalent); a stuck webServer makes the UI show "No tests".
+ */
 export default defineConfig({
-  // First webpack compile of the mock app can exceed the 30s default.
+  testDir: './plugins/topology/tests/',
+  testMatch: '**/topology.spec.ts',
   timeout: 120_000,
+  fullyParallel: false,
+  workers: 1,
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: startCommand,
+          name: 'Frontend',
+          command: frontendStartCommand,
           cwd: 'plugins/topology',
-          // Wait for an HTTP response rather than only the TCP port. The
-          // dev-server can bind the port before the first compile finishes.
           url: 'http://localhost:3000',
-          reuseExistingServer: !process.env.CI,
-          timeout: 120_000,
+          reuseExistingServer: false,
+          timeout: 180_000,
+        },
+        {
+          name: 'Backend',
+          command: 'yarn start',
+          cwd: 'plugins/topology-dev-backend',
+          wait: { stdout: /Plugin initialization complete/ },
+          reuseExistingServer: false,
+          timeout: 180_000,
         },
       ],
 
@@ -47,7 +68,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
     screenshot: 'only-on-failure',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },
 
@@ -56,7 +77,6 @@ export default defineConfig({
   projects: [
     {
       name: 'en',
-      testDir: './plugins/topology/tests',
       use: {
         channel: 'chrome',
         locale: 'en',
@@ -64,7 +84,6 @@ export default defineConfig({
     },
     {
       name: 'fr',
-      testDir: './plugins/topology/tests',
       use: {
         channel: 'chrome',
         locale: 'fr',
@@ -72,7 +91,6 @@ export default defineConfig({
     },
     {
       name: 'it',
-      testDir: './plugins/topology/tests',
       use: {
         channel: 'chrome',
         locale: 'it',
@@ -80,7 +98,6 @@ export default defineConfig({
     },
     {
       name: 'ja',
-      testDir: './plugins/topology/tests',
       use: {
         channel: 'chrome',
         locale: 'ja',
@@ -88,7 +105,6 @@ export default defineConfig({
     },
     {
       name: 'de',
-      testDir: './plugins/topology/tests',
       use: {
         channel: 'chrome',
         locale: 'de',
@@ -96,7 +112,6 @@ export default defineConfig({
     },
     {
       name: 'es',
-      testDir: './plugins/topology/tests',
       use: {
         channel: 'chrome',
         locale: 'es',
