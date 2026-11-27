@@ -1,5 +1,12 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.16.0
+
+### Minor Changes
+
+- cbd0db3: Migrated the plugin from Material UI to Backstage UI. The release table on the entity page and the project group field in the scaffolder now use Backstage UI components. If your app does not already load the Backstage UI stylesheet, add `import '@backstage/ui/css/styles.css';` to your app.
+- bd5f4e4: Backstage version bump to v1.57.1
+
 ## 0.15.0
 
 ### Minor Changes
