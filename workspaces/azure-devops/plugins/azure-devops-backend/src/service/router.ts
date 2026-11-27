@@ -22,7 +22,9 @@ import {
   DashboardPullRequest,
   PullRequestOptions,
   PullRequestStatus,
+  azureDevOpsReadmeReadPermission,
   getAnnotationValuesFromEntity,
+  getReadmeLocation,
   AZURE_DEVOPS_REPO_ANNOTATION,
 } from '@backstage-community/plugin-azure-devops-common';
 
@@ -41,6 +43,7 @@ import {
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
 import { CatalogService } from '@backstage/plugin-catalog-node';
+import { Entity } from '@backstage/catalog-model';
 import {
   HttpAuthService,
   LoggerService,
@@ -69,6 +72,7 @@ export interface RouterOptions {
  * annotations of the catalog entity it was authorized against.
  */
 interface EntityAzureDevOpsTarget {
+  entity: Entity;
   project: string;
   repo?: string;
   definitions: string[];
@@ -187,6 +191,7 @@ export async function createRouter(
     }
 
     return {
+      entity,
       project,
       repo,
       definitions,
@@ -565,38 +570,31 @@ export async function createRouter(
       req.query.host?.toString() ?? config.getString('azureDevOps.host');
     const org =
       req.query.org?.toString() ?? config.getString('azureDevOps.organization');
-    let path = req.query.path;
-    const version = req.query.version?.toString();
-
-    if (path === undefined) {
-      // if the annotation is missing, default to the previous behaviour (look for README.md in the root of the repo)
-      path = 'README.md';
-    }
-
-    if (typeof path !== 'string') {
-      throw new InputError('Invalid path param');
-    }
-
-    if (path === '') {
-      throw new InputError('If present, the path param should not be empty');
-    }
-
     const { projectName, repoName } = req.params;
 
     const target = await authorizeEntityRequest(
       req,
-      azureDevOpsPullRequestReadPermission,
+      azureDevOpsReadmeReadPermission,
       'repo',
     );
     assertRepoMatches(target, repoName);
+
+    // The file path and version come from the entity annotations rather than
+    // the request, so only the README configured for the entity can be read
+    let readmeLocation: ReturnType<typeof getReadmeLocation>;
+    try {
+      readmeLocation = getReadmeLocation(target.entity);
+    } catch (e) {
+      throw new InputError(e instanceof Error ? e.message : String(e));
+    }
 
     const readme = await azureDevOpsApi.getReadme(
       host,
       org,
       projectName,
       repoName,
-      path,
-      version,
+      readmeLocation.path,
+      readmeLocation.version,
     );
 
     res.status(200).json(readme);

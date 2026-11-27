@@ -146,6 +146,12 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
   readmePath?: string;
 };
 
+// @public
+export function getReadmeLocation(entity: Entity): {
+  path: string;
+  version?: string;
+};
+
 // @public (undocumented)
 export type GitTag = {
   objectId?: string;

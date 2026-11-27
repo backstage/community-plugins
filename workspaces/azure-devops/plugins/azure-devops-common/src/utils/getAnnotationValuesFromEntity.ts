@@ -99,6 +99,28 @@ function getReadmePath(
   const sourceLocation = annotations?.[ANNOTATION_SOURCE_LOCATION];
   if (!sourceLocation) return undefined;
 
+  const parsed = parseAzureDevOpsSourceLocation(sourceLocation);
+  if (!parsed) return undefined;
+
+  // "path" query param already points at the folder containing the
+  // source code — no filename to strip, unlike managed-by-location
+  const pathParam = parsed.searchParams.get('path');
+  if (!pathParam) return undefined;
+
+  const dir = pathParam.replace(/\/$/, '');
+
+  return `${dir}/README.md`;
+}
+
+/**
+ * Parses a `backstage.io/source-location` value, returning the URL only when
+ * it points at an Azure DevOps repository (Cloud or Server).
+ *
+ * @internal
+ */
+export function parseAzureDevOpsSourceLocation(
+  sourceLocation: string,
+): URL | undefined {
   try {
     // source-location values are prefixed with "url:" per Backstage convention
     const rawUrl = sourceLocation.startsWith('url:')
@@ -107,17 +129,10 @@ function getReadmePath(
 
     const parsed = new URL(rawUrl);
 
-    // Only attempt auto-detection for Azure DevOps repo URLs (Cloud or Server)
+    // Only Azure DevOps repo URLs (Cloud or Server)
     if (!parsed.pathname.includes('/_git/')) return undefined;
 
-    // "path" query param already points at the folder containing the
-    // source code — no filename to strip, unlike managed-by-location
-    const pathParam = parsed.searchParams.get('path');
-    if (!pathParam) return undefined;
-
-    const dir = pathParam.replace(/\/$/, '');
-
-    return `${dir}/README.md`;
+    return parsed;
   } catch {
     // Malformed URL — fail gracefully
     return undefined;

@@ -20,7 +20,10 @@ import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { azureDevOpsApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
+import {
+  getAnnotationValuesFromEntity,
+  getReadmeLocation,
+} from '@backstage-community/plugin-azure-devops-common';
 
 export function useReadme(entity: Entity): {
   item?: Readme;
@@ -30,36 +33,8 @@ export function useReadme(entity: Entity): {
   const api = useApi(azureDevOpsApiRef);
 
   const { value, loading, error } = useAsync(() => {
-    const { project, repo, host, org, readmePath } =
-      getAnnotationValuesFromEntity(entity);
-
-    if (readmePath?.startsWith('.')) {
-      throw new Error(
-        `The "dev.azure.com/readme-path" annotation does not support relative paths, please correct this annotation. The value provided was: "${readmePath}"`,
-      );
-    }
-
-    let path = readmePath;
-    let version: string | undefined;
-
-    if (path?.includes('&version=')) {
-      const versionSeparator = '&version=';
-      const versionIndex = path.indexOf(versionSeparator);
-
-      version = path.slice(versionIndex + versionSeparator.length);
-      path = path.slice(0, versionIndex);
-    }
-
-    const sourceLocation =
-      entity.metadata.annotations?.['backstage.io/source-location'];
-
-    if (sourceLocation && !version) {
-      const versionMatch = sourceLocation.match(/[?&]version=([^&]+)/);
-
-      if (versionMatch) {
-        version = decodeURIComponent(versionMatch[1]);
-      }
-    }
+    const { project, repo, host, org } = getAnnotationValuesFromEntity(entity);
+    const { path, version } = getReadmeLocation(entity);
 
     const entityRef = stringifyEntityRef(entity);
 

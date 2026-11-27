@@ -23,6 +23,7 @@ import {
   GitTag,
   PullRequest,
   PullRequestStatus,
+  azureDevOpsReadmeReadPermission,
 } from '@backstage-community/plugin-azure-devops-common';
 
 import { AzureDevOpsApi } from '../api';
@@ -166,6 +167,52 @@ describe('createRouter', () => {
               annotations: {
                 'dev.azure.com/project-repo': 'myProject/myRepo',
                 'dev.azure.com/build-definition': ' , ',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmepath',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/readme-path':
+                  '/docs/README.md&version=GBfeature/foo',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmesource',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'backstage.io/source-location':
+                  'url:https://dev.azure.com/myOrg/myProject/_git/myRepo?path=%2Fservices%2Fsvc&version=GBmain',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmerelative',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/readme-path': './README.md',
+              },
+            },
+          },
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'readmeenv',
+              annotations: {
+                'dev.azure.com/project-repo': 'myProject/myRepo',
+                'dev.azure.com/readme-path': '/config/prod.env',
               },
             },
           },
@@ -877,151 +924,80 @@ describe('createRouter', () => {
   });
 
   describe('GET /readme/:projectName/:repoName', () => {
-    it('fetches default default readme file', async () => {
+    const fetchReadme = (entityRef: string, query: object = {}) =>
+      request(app)
+        .get('/readme/myProject/myRepo')
+        .query({ entityRef, ...query });
+
+    it('reads the README configured on the entity and ignores the request path and version', async () => {
       const content = getReadmeMock();
-      const url = `https://host.com/myOrg/myProject/_git/myRepo?path=README.md`;
+      const url = 'https://host.com/myOrg/myProject/_git/myRepo?path=README.md';
+      azureDevOpsApi.getReadme.mockResolvedValue({ content, url });
 
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
+      const defaultReadme = await fetchReadme('component:default/mycomponent', {
+        path: 'config/prod.env',
+        version: 'GBsecrets',
       });
-      mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
-      ]);
-
-      const response = await request(app)
-        .get('/readme/myProject/myRepo?path=README.md')
-        .query({ entityRef: 'component:default/mycomponent' });
-
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        'README.md',
-        undefined,
+      const annotatedPath = await fetchReadme('component:default/readmepath', {
+        path: 'config/prod.env',
+      });
+      const sourceLocation = await fetchReadme(
+        'component:default/readmesource',
+        { path: ['config/prod.env', 'other.env'] },
       );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
+
+      expect(defaultReadme.status).toEqual(200);
+      expect(defaultReadme.body).toEqual({ content, url });
+      expect(annotatedPath.status).toEqual(200);
+      expect(sourceLocation.status).toEqual(200);
+      expect(azureDevOpsApi.getReadme.mock.calls).toEqual([
+        ['host.com', 'myOrg', 'myProject', 'myRepo', 'README.md', undefined],
+        [
+          'host.com',
+          'myOrg',
+          'myProject',
+          'myRepo',
+          '/docs/README.md',
+          'GBfeature/foo',
+        ],
+        [
+          'host.com',
+          'myOrg',
+          'myProject',
+          'myRepo',
+          '/services/svc/README.md',
+          'GBmain',
+        ],
+      ]);
     });
 
-    it('passes version separately to the Azure DevOps API', async () => {
-      const content = getReadmeMock();
-      const url =
-        'https://host.com/myOrg/myProject/_git/myRepo?path=%2Fdocs%2FREADME.md&version=GBfeature%2Ffoo';
-
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
-      });
+    it('checks the readme permission', async () => {
       mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
+        { result: AuthorizeResult.DENY },
       ]);
 
-      const response = await request(app)
-        .get(
-          '/readme/myProject/myRepo?path=/docs/README.md&version=GBfeature%2Ffoo',
-        )
-        .query({ entityRef: 'component:default/mycomponent' });
+      const response = await fetchReadme('component:default/mycomponent');
 
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        '/docs/README.md',
-        'GBfeature/foo',
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
-    });
-  });
-
-  describe('GET /readme/:projectName/:repoName with readme filename', () => {
-    it('fetches specified readme file', async () => {
-      const content = getReadmeMock();
-      const url = `https://host.com/myOrg/myProject/_git/myRepo?path=README_NOT_DEFAULT.md`;
-
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
-      });
-      mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
-      ]);
-
-      const response = await request(app)
-        .get('/readme/myProject/myRepo?path=README_NOT_DEFAULT.md')
-        .query({ entityRef: 'component:default/mycomponent' });
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        'README_NOT_DEFAULT.md',
-        undefined,
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
-    });
-  });
-
-  describe('GET /readme/:projectName/:repoName with readme path', () => {
-    it('fetches specified readme file from subfolder', async () => {
-      const content = getReadmeMock();
-      const url = `https://host.com/myOrg/myProject/_git/myRepo?path=/my-path/README.md`;
-
-      azureDevOpsApi.getReadme.mockResolvedValueOnce({
-        content,
-        url,
-      });
-      mockedAuthorize.mockImplementationOnce(async () => [
-        { result: AuthorizeResult.ALLOW },
-      ]);
-
-      const response = await request(app)
-        .get('/readme/myProject/myRepo?path=/my-path/README.md')
-        .query({ entityRef: 'component:default/mycomponent' });
-      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
-        'host.com',
-        'myOrg',
-        'myProject',
-        'myRepo',
-        '/my-path/README.md',
-        undefined,
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        content,
-        url,
-      });
-    });
-  });
-
-  describe('GET /readme/:projectName/:repoName with a bad readme path (multiple values)', () => {
-    it('throws InputError', async () => {
-      const response = await request(app).get(
-        '/readme/myProject/myRepo?path=1&path=2',
+      expect(response.status).toEqual(403);
+      expect(mockedAuthorize).toHaveBeenCalledWith(
+        [
+          {
+            permission: azureDevOpsReadmeReadPermission,
+            resourceRef: 'component:default/mycomponent',
+          },
+        ],
+        expect.anything(),
       );
       expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
-      expect(response.status).toEqual(400);
     });
-  });
 
-  describe('GET /readme/:projectName/:repoName with a bad readme path (empty string)', () => {
-    it('throws InputError', async () => {
-      const response = await request(app).get('/readme/myProject/myRepo?path=');
+    it('rejects relative and non-Markdown readme path annotations', async () => {
+      const relative = await fetchReadme('component:default/readmerelative');
+      const notMarkdown = await fetchReadme('component:default/readmeenv');
+
+      expect(relative.status).toEqual(400);
+      expect(notMarkdown.status).toEqual(400);
       expect(azureDevOpsApi.getReadme).not.toHaveBeenCalled();
-      expect(response.status).toEqual(400);
     });
   });
 
