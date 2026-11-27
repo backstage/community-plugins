@@ -16,11 +16,8 @@
 
 import {
   ApiBlueprint,
-  configApiRef,
+  coreApis,
   createFrontendPlugin,
-  dialogApiRef,
-  discoveryApiRef,
-  fetchApiRef,
   useApi,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -38,9 +35,9 @@ export const badgesApiExtension = ApiBlueprint.make({
     defineParams({
       api: badgesApiRef,
       deps: {
-        fetchApi: fetchApiRef,
-        discoveryApi: discoveryApiRef,
-        configApi: configApiRef,
+        fetchApi: coreApis.fetch,
+        discoveryApi: coreApis.discovery,
+        configApi: coreApis.config,
       },
       factory: ({ fetchApi, discoveryApi, configApi }) =>
         new BadgesClient({ fetchApi, discoveryApi, configApi }),
@@ -53,7 +50,7 @@ export const badgesEntityContextMenuItem = EntityContextMenuItemBlueprint.make({
   params: {
     icon: <RiShieldCheckLine />,
     useProps: () => {
-      const dialogApi = useApi(dialogApiRef);
+      const dialogApi = useApi(coreApis.dialog);
       const { entity } = useAsyncEntity();
       return {
         title: 'Badges',
