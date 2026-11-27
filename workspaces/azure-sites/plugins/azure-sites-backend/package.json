@@ -38,8 +38,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@azure/arm-appservice": "^18.0.0",
-    "@azure/arm-resourcegraph": "^4.2.1",
+    "@azure/arm-appservice": "^19.0.0",
+    "@azure/arm-resourcegraph": "^5.0.0",
     "@azure/identity": "^4.0.0",
     "@backstage-community/plugin-azure-sites-common": "workspace:^",
     "@backstage/backend-defaults": "^0.15.1",
@@ -50,8 +50,8 @@
     "@backstage/plugin-catalog-node": "^1.20.1",
     "@backstage/plugin-permission-common": "^0.9.5",
     "@backstage/plugin-permission-node": "^0.10.9",
-    "@types/express": "^4.17.6",
-    "express": "^4.17.1",
+    "@types/express": "^5.0.0",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
     "yn": "^4.0.0"
   },
