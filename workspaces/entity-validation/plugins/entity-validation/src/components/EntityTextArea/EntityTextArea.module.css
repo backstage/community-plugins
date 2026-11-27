@@ -30,7 +30,7 @@
 }
 
 .infoPanel {
-  color: var(--bui-fg-link);
+  color: var(--bui-fg-info);
   line-height: 2;
   margin: 0 var(--bui-space-2);
 }

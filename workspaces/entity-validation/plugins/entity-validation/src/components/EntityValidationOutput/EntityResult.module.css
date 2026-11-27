@@ -24,7 +24,9 @@
 
 .errorContainer {
   color: var(--bui-fg-danger);
-  background-color: var(--bui-bg-surface-1);
+  background-color: var(--bui-bg-neutral-2);
+  white-space: normal;
+  overflow-wrap: anywhere;
   padding: var(--bui-space-4);
   border-radius: var(--bui-radius-2);
 }

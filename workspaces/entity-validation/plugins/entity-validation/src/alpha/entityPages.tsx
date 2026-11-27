@@ -31,6 +31,9 @@ export const entityValidationPage = PageBlueprint.make({
     routeRef: convertLegacyRouteRef(rootRouteRef),
     title: 'Entity Validation',
     icon: <RiWrenchLine />,
+    // The page renders its own BUI Header, so opt out of the default page
+    // header to avoid showing two headers.
+    noHeader: true,
     loader: async () =>
       import('../components/EntityValidationPage').then(m =>
         compatWrapper(<m.EntityValidationPage />),

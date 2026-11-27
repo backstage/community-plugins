@@ -49,8 +49,8 @@ export const EntityResult = ({
   };
 
   const entityId = `${item.entity.kind}:${
-    item.entity.metadata.namespace ?? 'default'
-  }/${item.entity.metadata.name}`;
+    item.entity.metadata?.namespace ?? 'default'
+  }/${item.entity.metadata?.name}`;
 
   return (
     <ListRow
