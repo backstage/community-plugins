@@ -2075,6 +2075,7 @@ __metadata:
     "@backstage/filter-predicates": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
+    "@backstage/test-utils": "backstage:^"
     "@backstage/types": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@material-table/exporters": "npm:^1.2.19"
