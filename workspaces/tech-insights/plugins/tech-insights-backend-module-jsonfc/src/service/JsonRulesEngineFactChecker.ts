@@ -16,7 +16,10 @@
 
 import { Config } from '@backstage/config';
 import { isError } from '@backstage/errors';
-import { FactResponse } from '@backstage-community/plugin-tech-insights-common';
+import {
+  FactResponse,
+  FactSchema,
+} from '@backstage-community/plugin-tech-insights-common';
 import {
   CheckValidationResponse,
   FactChecker,
@@ -45,6 +48,8 @@ import { CatalogService } from '@backstage/plugin-catalog-node';
 const noopEvent = {
   type: 'noop',
 };
+
+const SCHEMA_CACHE_TTL_MS = 60_000;
 
 /**
  * @public
@@ -78,6 +83,10 @@ export class JsonRulesEngineFactChecker
   private readonly operators: Operator[];
   private readonly catalog?: CatalogService;
   private readonly auth?: AuthService;
+  private readonly schemaCache = new Map<
+    string,
+    { at: number; value: Promise<FactSchema[]> }
+  >();
 
   constructor(options: JsonRulesEngineFactCheckerOptions) {
     const {
@@ -199,6 +208,30 @@ export class JsonRulesEngineFactChecker
   }
 
   /**
+   * Fact schemas only change when fact retrievers are registered, so running
+   * checks reuses each lookup for a minute instead of reading the same rows
+   * for every entity and every check result. A failed lookup is not kept.
+   */
+  private getLatestSchemasCached(ids: string[]): Promise<FactSchema[]> {
+    const key = JSON.stringify([...new Set(ids)].sort());
+    const now = Date.now();
+    const cached = this.schemaCache.get(key);
+    if (cached && now - cached.at < SCHEMA_CACHE_TTL_MS) {
+      return cached.value;
+    }
+    const value = Promise.resolve().then(() =>
+      this.repository.getLatestSchemas(ids),
+    );
+    this.schemaCache.set(key, { at: now, value });
+    value.catch(() => {
+      if (this.schemaCache.get(key)?.value === value) {
+        this.schemaCache.delete(key);
+      }
+    });
+    return value;
+  }
+
+  /**
    * Fetches an entity from the catalog to enable filter evaluation.
    * This is required to access entity metadata (kind, type, lifecycle, etc.) for filtering.
    *
@@ -305,7 +338,7 @@ export class JsonRulesEngineFactChecker
       entity,
     );
 
-    const schemas = await this.repository.getLatestSchemas(factRetrieversIds);
+    const schemas = await this.getLatestSchemasCached(factRetrieversIds);
 
     // get list of available fact names
     const factNames = flatten(schemas.map(schema => Object.keys(schema)));
@@ -649,7 +682,7 @@ export class JsonRulesEngineFactChecker
     facts: FlatTechInsightFact[],
     techInsightCheck: TechInsightJsonRuleCheck,
   ): Promise<FactResponse> {
-    const factSchemas = await this.repository.getLatestSchemas(
+    const factSchemas = await this.getLatestSchemasCached(
       techInsightCheck.factIds,
     );
     const schemas = factSchemas.reduce(
