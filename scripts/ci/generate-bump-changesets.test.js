@@ -19,6 +19,7 @@ import assert from 'node:assert/strict';
 import {
   getDependencyBumps,
   getWorkspaceName,
+  isSafeBump,
   renderChangeset,
   resolveChangesetMode,
 } from './generate-bump-changesets.js';
@@ -122,5 +123,39 @@ describe('renderChangeset', () => {
         '',
       ].join('\n'),
     );
+  });
+});
+
+describe('isSafeBump', () => {
+  it('accepts real package names and version ranges', () => {
+    for (const [name, version] of [
+      ['lodash', '^4.17.21'],
+      ['@backstage/core-plugin-api', '^1.12.9'],
+      ['react', '^17.0.2 || ^18.0.0'],
+      ['typescript', '>=5.0.0 <6'],
+      ['alias', 'npm:other-pkg@^1.0.0'],
+      ['@internal/thing', 'workspace:^'],
+      ['x', '1.0.0-beta.1+build.5'],
+    ]) {
+      assert.equal(isSafeBump(name, version), true, `${name}@${version}`);
+    }
+  });
+
+  it('rejects values that could inject changeset content', () => {
+    for (const [name, version] of [
+      ['lodash', "^1.0.0\n---\n'@backstage-community/plugin-x': major"],
+      ['lodash', '^1.0.0`'],
+      ["lodash'", '^1.0.0'],
+      ['Lodash', '^1.0.0'],
+      ['lodash\n', '^1.0.0'],
+      ['lodash', ''],
+      ['lodash', undefined],
+    ]) {
+      assert.equal(
+        isSafeBump(name, version),
+        false,
+        JSON.stringify([name, version]),
+      );
+    }
   });
 });

@@ -32,6 +32,25 @@ export const ALL_SECTIONS = [...PRODUCTION_SECTIONS, 'devDependencies'];
 
 const VALID_MODES = ['all', 'production', false];
 
+// npm package names, optionally scoped
+const PACKAGE_NAME = /^(?:@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
+// Version ranges and protocols like ^1.2.3, >=1 <2, npm:pkg@^1, workspace:^
+const VERSION_RANGE = /^[\w.+~^<>=*|:@/ -]{1,200}$/;
+
+/**
+ * Whether a package name and version range are safe to write into a
+ * changeset. Anything else, like a value with a line break that could add
+ * frontmatter entries, is rejected.
+ */
+export function isSafeBump(name, version) {
+  return (
+    typeof name === 'string' &&
+    typeof version === 'string' &&
+    PACKAGE_NAME.test(name) &&
+    VERSION_RANGE.test(version)
+  );
+}
+
 /**
  * Resolves the `dependencyChangesets` mode from a parsed bcp.json (or
  * undefined when the workspace has none). An omitted flag keeps the
@@ -146,7 +165,16 @@ async function main() {
   const created = [];
 
   for (const [workspace, files] of filesByWorkspace) {
-    const bcpConfig = await readJson(`workspaces/${workspace}/bcp.json`);
+    // Read the opt-in from the base branch when available, so a PR can't
+    // change it for itself
+    const bcpConfig = await readJson(
+      path.join(
+        process.env.BCP_ROOT ?? '.',
+        'workspaces',
+        workspace,
+        'bcp.json',
+      ),
+    );
     const mode = resolveChangesetMode(bcpConfig);
     if (mode === false) {
       console.log(`[${workspace}] dependencyChangesets disabled, skipping`);
@@ -178,6 +206,21 @@ async function main() {
         `[${workspace}] No ${
           mode === 'production' ? 'production ' : ''
         }dependency bumps in published packages, skipping`,
+      );
+      continue;
+    }
+
+    const unsafe = [
+      ...packageNames.filter(name => !isSafeBump(name, '0.0.0')),
+      ...[...bumps]
+        .filter(([name, version]) => !isSafeBump(name, version))
+        .map(([name]) => name),
+    ];
+    if (unsafe.length) {
+      console.warn(
+        `[${workspace}] Skipping changeset, unexpected package name or version for: ${unsafe
+          .map(n => JSON.stringify(n))
+          .join(', ')}`,
       );
       continue;
     }
