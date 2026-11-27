@@ -98,4 +98,25 @@ describe('<MaturityPage />', () => {
     expect((await findAllByText(/catalog is down/)).length).toBeGreaterThan(0);
     expect(getBulkMaturityCheckResults).not.toHaveBeenCalled();
   });
+
+  it('shows an empty state instead of requesting check results when there are no Components', async () => {
+    const getBulkMaturityCheckResults = jest.fn().mockResolvedValue([]);
+
+    const { findByText } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            catalogApiRef,
+            { getEntities: jest.fn().mockResolvedValue({ items: [] }) },
+          ],
+          [maturityApiRef, { getBulkMaturityCheckResults }],
+        ]}
+      >
+        <MaturityPage />
+      </TestApiProvider>,
+    );
+
+    expect(await findByText('No Components to rank')).toBeInTheDocument();
+    expect(getBulkMaturityCheckResults).not.toHaveBeenCalled();
+  });
 });

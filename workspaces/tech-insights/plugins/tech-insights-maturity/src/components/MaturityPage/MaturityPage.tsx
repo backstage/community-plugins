@@ -15,6 +15,7 @@
  */
 import {
   Content,
+  EmptyState,
   ErrorPanel,
   Header,
   Page,
@@ -37,26 +38,33 @@ export const MaturityPage = () => {
   }, [catalogApi]);
 
   // MaturityChartCard requests check results once, on mount. Mounting it
-  // before the Components arrive would request them for an empty list, which
-  // the backend reads as every entity with facts.
+  // before the Components arrive, or when there are none, would request them
+  // for an empty list, which the backend reads as every entity with facts.
+  let content;
+  if (error) {
+    content = <ErrorPanel error={error} />;
+  } else if (entities?.length === 0) {
+    content = (
+      <EmptyState
+        missing="data"
+        title="No Components to rank"
+        description="The maturity chart ranks Components, and the catalog has none."
+      />
+    );
+  } else {
+    content = (
+      <Grid container>
+        <Grid item md={4}>
+          {entities ? <MaturityChartCard entities={entities} /> : <Progress />}
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <Page themeId="home">
       <Header title="Maturity" />
-      <Content>
-        {error ? (
-          <ErrorPanel error={error} />
-        ) : (
-          <Grid container>
-            <Grid item md={4}>
-              {entities ? (
-                <MaturityChartCard entities={entities} />
-              ) : (
-                <Progress />
-              )}
-            </Grid>
-          </Grid>
-        )}
-      </Content>
+      <Content>{content}</Content>
     </Page>
   );
 };
