@@ -18,7 +18,7 @@ import { EscalationPolicy } from '../../types';
 import { ilertApiRef } from '../../api';
 
 import { useApi } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 const useStyles = makeStyles({
   link: {
@@ -40,8 +40,10 @@ export const EscalationPolicyLink = ({
 
   return (
     <Link
+      target="_blank"
+      rel="noopener noreferrer"
       className={classes.link}
-      to={ilertApi.getEscalationPolicyDetailsURL(escalationPolicy)}
+      href={ilertApi.getEscalationPolicyDetailsURL(escalationPolicy)}
     >
       {escalationPolicy.name}
     </Link>

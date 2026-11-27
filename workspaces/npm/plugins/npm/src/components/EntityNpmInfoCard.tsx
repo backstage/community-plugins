@@ -13,66 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ErrorPanel, InfoCard, Link } from '@backstage/core-components';
+import { ErrorPanel } from '@backstage/core-components';
 import {
+  EntityInfoCard,
   MissingAnnotationEmptyState,
   useEntity,
 } from '@backstage/plugin-catalog-react';
+import { Flex, Grid, Link, Text } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 
 import { NpmAnnotation } from '@backstage-community/plugin-npm-common';
-
-import Box from '@material-ui/core/Box';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid, { GridSize } from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 
 import { usePackageInfo } from '../hooks/usePackageInfo';
 import { useTranslation } from '../hooks/useTranslation';
 import { RelativePublishedAt } from './RelativePublishedAt';
 
-// From https://github.com/backstage/backstage/blob/master/plugins/catalog/src/components/AboutCard/AboutField.tsx
-const useStyles = makeStyles(theme => ({
-  label: {
-    color: theme.palette.text.secondary,
-    textTransform: 'uppercase',
-    fontSize: '10px',
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-  },
-  value: {
-    fontWeight: 'bold',
-    overflow: 'hidden',
-    lineHeight: '24px',
-    wordBreak: 'break-word',
-  },
-}));
+function LabeledValueGrid({ children }: { children: React.ReactNode }) {
+  return <Grid.Root columns="3">{children}</Grid.Root>;
+}
 
-function GridItem({
+function LabeledValue({
   label,
   value,
-  md = 12,
+  fullWidth,
 }: {
   label: string;
   value: React.ReactNode;
-  md?: boolean | GridSize;
+  fullWidth?: boolean;
 }) {
-  const classes = useStyles();
+  if (!value) {
+    return null;
+  }
   return (
-    <Grid item md={md}>
-      <Typography variant="h2" className={classes.label}>
+    <Grid.Item colSpan={fullWidth ? '3' : '1'}>
+      <Text
+        as="h2"
+        variant="body-x-small"
+        weight="bold"
+        color="secondary"
+        style={{ textTransform: 'uppercase' }}
+      >
         {label}
-      </Typography>
-      <Typography variant="body2" className={classes.value}>
+      </Text>
+      <Text as="p" variant="body-medium" weight="bold">
         {value}
-      </Typography>
-    </Grid>
+      </Text>
+    </Grid.Item>
   );
 }
 
-/**
+function LabeledExternalLink({
+  label,
+  href,
+}: {
+  label: string;
+  href: string | null | undefined;
+}) {
+  if (!href) {
+    return null;
+  }
+  const value = (
+    <Text as="p" variant="body-medium" weight="bold">
+      <Link href={href} target="_blank">
+        {href}
+        <RiExternalLinkLine
+          aria-hidden="true"
+          style={{ width: '1em', height: '1em', marginInlineStart: '0.25em' }}
+        />
+      </Link>
+    </Text>
+  );
+  return <LabeledValue label={label} value={value} fullWidth />;
+}
+
+/** }
+          fullWidth
  * Card for the catalog (entity page) that shows the npm
  * name, description, keywords, license, some links and
  * the latest version if available.
@@ -136,116 +151,86 @@ export const EntityNpmInfoCard = () => {
   const homepageLink = packageInfo?.homepage;
 
   return (
-    <InfoCard title={t('infoCard.title', { packageName })}>
-      <Grid container>
-        {error ? (
-          <Box sx={{ width: '100%' }}>
-            <ErrorPanel error={error} />
-          </Box>
-        ) : null}
+    <EntityInfoCard title={t('infoCard.title', { packageName })}>
+      {error ? (
+        <Flex style={{ width: '100%' }}>
+          <ErrorPanel error={error} />
+        </Flex>
+      ) : null}
 
-        {loading && !packageInfo ? (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              minHeight: '15rem',
-            }}
-          >
-            <CircularProgress size="5rem" />
-          </Box>
-        ) : null}
+      {loading && !packageInfo ? (
+        <Flex
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            minHeight: '15rem',
+          }}
+        >
+          {/* <CircularProgress size="5rem" /> */}
+          LOADING
+        </Flex>
+      ) : null}
 
-        {latestVersion ? (
-          <GridItem
-            label={t('infoCard.latestVersion')}
-            value={latestVersion}
-            md={4}
-          />
-        ) : null}
+      <LabeledValueGrid>
+        <LabeledValue
+          label={t('infoCard.latestVersion')}
+          value={latestVersion}
+        />
 
-        {latestPublishedAt ? (
-          <GridItem
-            label={t('infoCard.publishedAt')}
-            value={<RelativePublishedAt dateTime={latestPublishedAt} />}
-            md={4}
-          />
-        ) : null}
+        <LabeledValue
+          label={t('infoCard.publishedAt')}
+          value={
+            latestPublishedAt ? (
+              <RelativePublishedAt dateTime={latestPublishedAt} />
+            ) : null
+          }
+        />
 
-        {packageInfo?.license ? (
-          <GridItem
-            label={t('infoCard.license')}
-            value={packageInfo.license}
-            md={4}
-          />
-        ) : null}
+        <LabeledValue
+          label={t('infoCard.license')}
+          value={packageInfo?.license}
+        />
 
         {/* Markdown? */}
-        {packageInfo?.description ? (
-          <GridItem
-            label={t('infoCard.description')}
-            value={packageInfo.description}
-          />
-        ) : null}
+        <LabeledValue
+          label={t('infoCard.description')}
+          value={packageInfo?.description}
+          fullWidth
+        />
 
-        {/* Markdown? */}
-        {packageInfo?.keywords?.length ? (
-          <GridItem
-            label={t('infoCard.keywords')}
-            value={packageInfo.keywords.join(', ')}
-          />
-        ) : null}
+        <LabeledValue
+          label={t('infoCard.keywords')}
+          value={
+            packageInfo?.keywords?.length
+              ? packageInfo.keywords.join(', ')
+              : null
+          }
+        />
 
-        {registryName ? (
-          <GridItem label={t('infoCard.registryName')} value={registryName} />
-        ) : null}
+        <LabeledValue label={t('infoCard.registryName')} value={registryName} />
 
-        {npmLink ? (
-          <GridItem
-            label={t('infoCard.npmRepository')}
-            value={
-              <Link to={npmLink} externalLinkIcon>
-                {npmLink}
-              </Link>
-            }
-          />
-        ) : null}
+        <LabeledExternalLink
+          label={t('infoCard.npmRepository')}
+          href={npmLink}
+        />
 
-        {repositoryLink ? (
-          <GridItem
-            label={t('infoCard.codeRepository')}
-            value={
-              <Link to={repositoryLink} externalLinkIcon>
-                {repositoryLink}
-              </Link>
-            }
-          />
-        ) : null}
+        <LabeledExternalLink
+          label={t('infoCard.codeRepository')}
+          href={repositoryLink}
+        />
 
-        {bugsLink ? (
-          <GridItem
-            label={t('infoCard.issueTracker')}
-            value={
-              <Link to={bugsLink} externalLinkIcon>
-                {bugsLink}
-              </Link>
-            }
-          />
-        ) : null}
+        <LabeledExternalLink
+          label={t('infoCard.issueTracker')}
+          href={bugsLink}
+        />
 
-        {homepageLink ? (
-          <GridItem
-            label={t('infoCard.homepage')}
-            value={
-              <Link to={homepageLink} externalLinkIcon>
-                {homepageLink}
-              </Link>
-            }
-          />
-        ) : null}
-      </Grid>
-    </InfoCard>
+        <LabeledExternalLink
+          label={t('infoCard.homepage')}
+          href={homepageLink}
+        />
+      </LabeledValueGrid>
+    </EntityInfoCard>
   );
 };

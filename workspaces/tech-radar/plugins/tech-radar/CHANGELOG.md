@@ -1,5 +1,33 @@
 # @backstage-community/plugin-tech-radar
 
+## 2.0.0
+
+### Major Changes
+
+- 0401e2a: **BREAKING** Redesigned the Tech Radar. It now uses Backstage UI (BUI) instead of Material UI, and adds filtering by quadrant and ring. The same radar data can be used without changes.
+
+  To migrate:
+
+  - The `Router` and `RadarPage` exports have been removed. Use `TechRadarPage` instead.
+  - The `width`, `height`, `svgProps` and `searchText` props have been removed from `TechRadarPage` and `TechRadarComponent`. The radar now sizes itself and has built-in search. The `width`, `height` and `subtitle` config options on the new frontend system page extension have also been removed, so remove them from your `app-config.yaml`. The page header is now provided by the app.
+  - Your app must import the Backstage UI styles, or the radar won't be styled. Apps created from a recent Backstage template already do this, but older apps on either frontend system may not. If yours doesn't, add it to `packages/app/src/index.tsx`:
+
+    ```ts
+    import '@backstage/ui/css/styles.css';
+    ```
+
+## 1.25.0
+
+### Minor Changes
+
+- 3b4cb4d: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- 3b4cb4d: The Tech Radar page header, heading and links now use Backstage UI components. Links in the entry dialog open in a new tab.
+- Updated dependencies [3b4cb4d]
+  - @backstage-community/plugin-tech-radar-common@1.24.0
+
 ## 1.24.0
 
 ### Minor Changes

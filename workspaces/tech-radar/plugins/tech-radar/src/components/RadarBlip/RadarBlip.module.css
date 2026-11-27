@@ -1,0 +1,38 @@
+.shared {
+  cursor: pointer;
+  transition-property: opacity, stroke;
+  transition-duration: 0.2s;
+}
+
+.invisible {
+  opacity: 0.1;
+}
+
+.muted {
+  opacity: 0.3;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.duration100 {
+  transition-duration: 0.1s;
+}
+
+.opacity0 {
+  opacity: 0;
+}
+
+.opacity100 {
+  opacity: 1;
+}
+
+.blipText {
+  pointer-events: none;
+  user-select: none;
+  fill: #fff;
+  font-size: 5px;
+  font-weight: 600; /* font-semibold */
+  letter-spacing: -0.05em; /* tracking-tighter */
+}

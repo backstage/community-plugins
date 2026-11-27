@@ -21,6 +21,7 @@ import { getPermissionsNumber } from '../../utils/create-role-utils';
 import { getMembers } from '../../utils/rbac-utils';
 import { reviewStepMemebersTableColumns } from './AddedMembersTableColumn';
 import { ReviewStepTable } from './ReviewStepTable';
+import { RoleChangesSummary } from './RoleChangesSummary';
 import { selectedPermissionPoliciesColumn } from './SelectedPermissionPoliciesColumn';
 import { RoleFormValues } from './types';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -70,9 +71,11 @@ const tableMetadata = (
 
 export const ReviewStep = ({
   values,
+  initialValues,
   isEditing,
 }: {
   values: RoleFormValues;
+  initialValues: RoleFormValues;
   isEditing: boolean;
 }) => {
   const { t } = useTranslation();
@@ -84,6 +87,9 @@ export const ReviewStep = ({
           ? t('roleForm.review.reviewAndSave')
           : t('roleForm.review.reviewAndCreate')}
       </Typography>
+      {isEditing && (
+        <RoleChangesSummary initialValues={initialValues} values={values} />
+      )}
       <StructuredMetadataTable
         dense
         metadata={tableMetadata(values, t)}

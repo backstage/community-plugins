@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Page, Header, Content } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { createDevApp } from '@backstage/dev-utils';
 import {
   entityValidationPlugin,
@@ -26,14 +26,14 @@ import { Text } from '@backstage/ui';
 
 const EmbedExamplePage = () => {
   return (
-    <Page themeId="tool">
+    <>
       <Header title="Embed Example" />
-      <Content>
+      <Container>
         <EntityValidationContent
           contentHead={<Text variant="title-small">Entity Validation</Text>}
         />
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

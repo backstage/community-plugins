@@ -27,16 +27,9 @@ import LighthouseIntro, { LIGHTHOUSE_INTRO_LOCAL_STORAGE } from '../Intro';
 import LighthouseSupportButton from '../SupportButton';
 import AuditListTable from './AuditListTable';
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
-  InfoCard,
-  Page,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
+import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 
 import { useApi } from '@backstage/core-plugin-api';
 
@@ -100,17 +93,18 @@ const AuditList = () => {
   }
 
   return (
-    <Page themeId="tool">
+    <>
       <Header
         title="Lighthouse"
-        subtitle="Website audits powered by Lighthouse"
-      >
-        <HeaderLabel label="Owner" value="Spotify" />
-        <HeaderLabel label="Lifecycle" value="Alpha" />
-      </Header>
-      <Content>
+        description="Website audits powered by Lighthouse"
+        metadata={[
+          { label: 'Owner', value: 'Spotify' },
+          { label: 'Lifecycle', value: 'Alpha' },
+        ]}
+      />
+      <Container>
         <LighthouseIntro onDismiss={() => setDismissed(true)} />
-        <ContentHeader
+        <SectionHeader
           title="Audits"
           description="View all audits run for your website through Backstage here. Track the trend of your most recent audits."
         >
@@ -122,14 +116,14 @@ const AuditList = () => {
             Create Audit
           </Button>
           {dismissed && <LighthouseSupportButton />}
-        </ContentHeader>
+        </SectionHeader>
         <Grid container spacing={3} direction="column">
           <Grid item>
             <InfoCard noPadding>{content}</InfoCard>
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };
 

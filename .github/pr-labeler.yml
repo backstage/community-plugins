@@ -354,25 +354,9 @@ workspace/rollbar:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/rollbar/**']
 
-workspace/scaffolder-backend-module-annotator:
+workspace/scaffolder:
 - changed-files:
-  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-annotator/**']
-
-workspace/scaffolder-backend-module-kubernetes:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-kubernetes/**']
-
-workspace/scaffolder-backend-module-regex:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-regex/**']
-
-workspace/scaffolder-backend-module-servicenow:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-servicenow/**']
-
-workspace/scaffolder-backend-module-sonarqube:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-sonarqube/**']
+  - any-glob-to-any-file: ['workspaces/scaffolder/**']
 
 workspace/scaffolder-relation-processor:
 - changed-files:

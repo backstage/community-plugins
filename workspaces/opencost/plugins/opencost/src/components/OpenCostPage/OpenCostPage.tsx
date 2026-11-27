@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 import Grid from '@material-ui/core/Grid';
-import { Header, Page, Content } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { OpenCostReport } from '../OpenCostReport';
 import logo from '../../images/pig.png';
 
 export const OpenCostPage = () => (
-  <Page themeId="tool">
+  <>
     <Header
       title="OpenCost"
-      subtitle="Open source Kubernetes cloud cost monitoring"
-    >
-      <a href="https://opencost.io">
-        <img width={68} height={64} src={logo} alt="OpenCost" />
-      </a>
-    </Header>
-    <Content>
+      description="Open source Kubernetes cloud cost monitoring"
+      customActions={
+        <a href="https://opencost.io">
+          <img width={68} height={64} src={logo} alt="OpenCost" />
+        </a>
+      }
+    />
+    <Container>
       <Grid container spacing={3} direction="column">
         <Grid item>
           <OpenCostReport />
         </Grid>
       </Grid>
-    </Content>
-  </Page>
+    </Container>
+  </>
 );

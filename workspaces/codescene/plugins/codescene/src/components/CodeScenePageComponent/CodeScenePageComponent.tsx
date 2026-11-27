@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 import Grid from '@material-ui/core/Grid';
-import {
-  Header,
-  Page,
-  Content,
-  SupportButton,
-} from '@backstage/core-components';
+import { SupportButton } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
 import { ProjectsComponent } from '../ProjectsComponent';
 
 export const CodeScenePageComponent = () => (
-  <Page themeId="tool">
+  <>
     <Header
       title="CodeScene"
-      subtitle="See hidden risks and social patterns in your code. Prioritize and reduce
+      description="See hidden risks and social patterns in your code. Prioritize and reduce
         technical debt."
-    >
-      <SupportButton />
-    </Header>
-    <Content>
+      customActions={<SupportButton />}
+    />
+    <Container>
       <Grid container spacing={3} direction="column">
         <Grid item>
           <ProjectsComponent />
         </Grid>
       </Grid>
-    </Content>
-  </Page>
+    </Container>
+  </>
 );

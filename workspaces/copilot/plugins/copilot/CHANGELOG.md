@@ -1,5 +1,31 @@
 # @backstage-community/plugin-copilot
 
+## 1.10.0
+
+### Minor Changes
+
+- 964f3c3: Add opt-in multi-organization Copilot reporting through
+  `copilot.ingestOrganizationTeamReports`. In enterprise dashboards, organization
+  teams can be filtered by organization and team; options use the selected date
+  range and remain available with partial report coverage. Organization-team
+  metrics preserve the five-user privacy threshold and leave unreported days
+  blank. Enterprise totals continue to fill missing days when all organizations
+  are selected. Selecting a team scopes results to its owning organization,
+  keeping same-slug teams distinct.
+  Failed team-option and dashboard requests can be retried.
+  Successful manual backfills no longer postpone the next scheduled organization
+  refresh.
+  Monthly active-user metrics remain unavailable when GitHub does not report
+  them, and selected organizations can still be cleared when team options fail
+  or become empty. Team weekly active-user charts leave unreported values blank.
+  Older organization discovery results can no longer overwrite a newer refresh,
+  and configured-organization dashboards can filter teams when
+  `copilot.ingestOrganizationTeamReports` is enabled without `copilot.ingestTeams`.
+
+### Patch Changes
+
+- f745727: Added a "How do I interpret these metrics?" documentation link to the Copilot plugin header, providing users with easy access to the official GitHub Copilot usage metrics documentation.This helps users better understand the metrics displayed in the plugin, including Agent Adoption, VS Code Agent Users, and Model Usage per Chat Mode.
+
 ## 1.9.0
 
 ### Minor Changes

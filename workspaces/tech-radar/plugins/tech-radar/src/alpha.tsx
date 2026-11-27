@@ -32,18 +32,16 @@ import {
   convertLegacyRouteRef,
   convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
-import MapIcon from '@material-ui/icons/MyLocation';
+import { RiRadarLine } from '@remixicon/react';
+
+const MapIcon = () => <RiRadarLine />;
 import { rootRouteRef } from './plugin';
 
 /** @alpha */
 export const techRadarPage = PageBlueprint.makeWithOverrides({
   configSchema: {
-    subtitle: z
-      .string()
-      .default('Pick the recommended technologies for your projects'),
     pageTitle: z.string().default('Company Radar'),
-    width: z.number().optional(),
-    height: z.number().optional(),
+    id: z.string().optional(),
   },
   factory(originalFactory, { config }) {
     return originalFactory({
@@ -52,8 +50,13 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
       icon: <MapIcon />,
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
-        import('./components').then(m =>
-          compatWrapper(<m.RadarPage {...config} />),
+        import('./components/TechRadarPage').then(m =>
+          compatWrapper(
+            <m.TechRadarPageContent
+              pageTitle={config.pageTitle}
+              id={config.id}
+            />,
+          ),
         ),
     });
   },

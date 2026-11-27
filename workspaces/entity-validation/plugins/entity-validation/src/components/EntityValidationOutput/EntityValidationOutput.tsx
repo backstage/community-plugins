@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { safeEntityDisplayName } from './safeEntityDisplayName';
 import { Alert, Box, Card, CardBody, Flex, List, Text } from '@backstage/ui';
@@ -45,7 +46,7 @@ export const EntityValidationOutput = ({
   locationUrl,
 }: EntityValidationOutputProps) => {
   const catalogApi = useApi(catalogApiRef);
-  const identityApi = useApi(identityApiRef);
+  const identityApi = useApi(coreApis.identity);
 
   const { value = [], loading } = useAsync(async (): Promise<
     ValidationOutput[] | undefined

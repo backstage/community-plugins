@@ -247,7 +247,7 @@ async function waitForCatalogEntities(
   request: APIRequestContext,
   entityRefs: string[],
   token: string,
-  timeout = 90_000,
+  timeout = 180_000,
 ) {
   const deadline = Date.now() + timeout;
   for (const entityRef of entityRefs) {

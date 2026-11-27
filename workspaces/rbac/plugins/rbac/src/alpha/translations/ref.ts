@@ -114,6 +114,19 @@ export const rbacMessages = {
       reviewAndSave: 'Review and save',
       nameDescriptionOwner: 'Name, description, and owner of role',
       permissionPoliciesWithCount: 'Permission policies ({{count}})',
+      changes: {
+        title: 'Changes to this role',
+        noChanges: 'No changes have been made to this role.',
+        added: 'Added',
+        removed: 'Removed',
+        changed: 'Changed',
+        // `as const` keeps the literal type so `t()` can type the
+        // {{placeholder}} params without a cast at the call site.
+        valueChanged:
+          '{{field}}: from "{{previous}}" to "{{current}}"' as const,
+        permissionPolicies: 'Permission policies',
+        conditionalPolicies: 'Conditional access policies',
+      },
     },
     steps: {
       next: 'Next',
@@ -286,6 +299,39 @@ export const rbacMessages = {
     defaultResourceTypeVisible:
       'By default, the selected resource type is visible to all added users. If you want to restrict or grant permission to specific plugin rules, select them and add the parameters.',
     tableAction: 'Table action',
+  },
+  permissionsMatrix: {
+    tabs: {
+      label: 'RBAC views',
+      roles: 'Roles',
+      permissionsByPlugin: 'Permissions by plugin',
+    },
+    title: 'Permissions by plugin',
+    description:
+      'Read-only overview of the permissions granted to each role, grouped by plugin.',
+    roleColumn: 'Role',
+    filterRoles: 'Filter roles',
+    roles: 'Roles',
+    plugin: 'Plugin',
+    allPlugins: 'All plugins',
+    policy: 'Policy',
+    allPolicies: 'All policies',
+    legend: 'Legend',
+    viewOnlyRole: 'View-only role',
+    conditionalRules: 'Conditional access rules',
+    emptyRoles: 'No roles found',
+    emptyPermissions: 'No plugin permissions found',
+    noMatches: 'No permissions match the current filters',
+    decisions: {
+      allow: 'Allow',
+      deny: 'Deny',
+      conditional: 'Conditional',
+      none: 'Not set',
+    },
+    errors: {
+      fetchPermissions:
+        'Something went wrong while fetching the plugin permissions',
+    },
   },
 };
 

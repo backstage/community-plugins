@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-npm",
   "description": "A Backstage plugin that shows meta info and latest versions from a npm registry",
-  "version": "1.29.0",
+  "version": "1.30.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -55,7 +55,8 @@
     "@backstage/plugin-app-react": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
-    "@material-ui/core": "^4.9.13",
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "luxon": "^3.5.0",
     "react-use": "^17.2.4"
   },

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-npm-common
 
+## 1.30.0
+
+### Minor Changes
+
+- aa1848f: Backstage version bump to v1.57.1
+
 ## 1.29.0
 
 ## 1.28.0

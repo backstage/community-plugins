@@ -15,7 +15,8 @@
  */
 import { ClusterStatus } from '../../api';
 import { transformStatus } from '../ProfileCatalog/ProfileCatalog';
-import { Link, Table, TableColumn } from '@backstage/core-components';
+import { Table, TableColumn } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 const columns: TableColumn[] = [
   {
@@ -23,7 +24,7 @@ const columns: TableColumn[] = [
     field: 'name',
     highlight: true,
     render: (componentData: any) => (
-      <Link to={`/gitops-cluster/${encodeURIComponent(componentData.name)}`}>
+      <Link href={`/gitops-cluster/${encodeURIComponent(componentData.name)}`}>
         {componentData.name}
       </Link>
     ),

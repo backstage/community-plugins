@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import Grid from '@material-ui/core/Grid';
-import { Page, Content } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import {
   useEntity,
   MissingAnnotationEmptyState,
@@ -41,28 +41,26 @@ export const DynatraceTab = () => {
     entity?.metadata.annotations?.[DYNATRACE_SYNTHETICS_ANNOTATION]!;
 
   return (
-    <Page themeId="tool">
-      <Content>
-        <Grid container spacing={2}>
-          {dynatraceEntityId ? (
-            <Grid item xs={12} lg={12}>
-              <ProblemsList dynatraceEntityId={dynatraceEntityId} />
-            </Grid>
-          ) : (
-            ''
-          )}
-          {syntheticsIds
-            ?.split(/[ ,]/)
-            .filter(Boolean)
-            .map(id => {
-              return (
-                <Grid key={id} item xs={12} lg={12}>
-                  <SyntheticsCard syntheticsId={id} />
-                </Grid>
-              );
-            })}
-        </Grid>
-      </Content>
-    </Page>
+    <Box p="6">
+      <Grid container spacing={2}>
+        {dynatraceEntityId ? (
+          <Grid item xs={12} lg={12}>
+            <ProblemsList dynatraceEntityId={dynatraceEntityId} />
+          </Grid>
+        ) : (
+          ''
+        )}
+        {syntheticsIds
+          ?.split(/[ ,]/)
+          .filter(Boolean)
+          .map(id => {
+            return (
+              <Grid key={id} item xs={12} lg={12}>
+                <SyntheticsCard syntheticsId={id} />
+              </Grid>
+            );
+          })}
+      </Grid>
+    </Box>
   );
 };

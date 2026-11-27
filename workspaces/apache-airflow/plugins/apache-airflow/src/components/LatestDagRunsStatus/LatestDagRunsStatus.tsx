@@ -27,8 +27,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from '@backstage/ui';
 import {
-  Link,
   StatusError,
   StatusOK,
   StatusPending,
@@ -87,7 +87,7 @@ const DagRunTooltip = ({
           color="primary"
           variant="outlined"
         >
-          <Link to={graphUrl} color="inherit">
+          <Link href={graphUrl} target="_blank" rel="noopener noreferrer">
             Graph
           </Link>
         </Button>

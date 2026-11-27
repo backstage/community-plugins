@@ -16,9 +16,16 @@
 
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Content, Header, Page } from '@backstage/core-components';
 import { EntityTextArea } from '../EntityTextArea';
-import { Box, Button, Flex, Grid, TextField } from '@backstage/ui';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Grid,
+  Header,
+  TextField,
+} from '@backstage/ui';
 import { CatalogProcessorResult } from '../../types';
 import { parseEntityYaml } from '../../utils';
 import { EntityValidationOutput } from '../EntityValidationOutput';
@@ -127,19 +134,19 @@ export const EntityValidationPage = (props: {
   } = props;
 
   return (
-    <Page themeId="tool">
+    <>
       <Header
         title="Entity Validator"
-        subtitle="Validate Backstage catalog entity descriptor YAML files"
+        description="Validate Backstage catalog entity descriptor YAML files"
       />
-      <Content>
+      <Container>
         <EntityValidationContent
           defaultYaml={defaultYaml}
           defaultLocation={defaultLocation}
           hideFileLocationField={hideFileLocationField}
           contentHead={contentHead}
         />
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };

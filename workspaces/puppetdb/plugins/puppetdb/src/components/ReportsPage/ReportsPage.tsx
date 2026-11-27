@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ReportsTable } from './ReportsTable';
-import { Page, Content } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { ANNOTATION_PUPPET_CERTNAME } from '../../constants';
 
@@ -29,10 +29,8 @@ export const ReportsPage = () => {
     entity?.metadata?.annotations?.[ANNOTATION_PUPPET_CERTNAME] ?? '';
 
   return (
-    <Page themeId="tool">
-      <Content>
-        <ReportsTable certName={certName} />
-      </Content>
-    </Page>
+    <Box p="6">
+      <ReportsTable certName={certName} />
+    </Box>
   );
 };

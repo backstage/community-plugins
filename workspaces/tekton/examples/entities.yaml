@@ -22,6 +22,37 @@ spec:
   owner: guests
   system: examples
 ---
+# Full-stack e2e / NFS catalog entity (matches Playwright path
+# /catalog/default/component/backstage/tekton and fixture kubernetes-id).
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage
+  description: backstage.io
+  annotations:
+    backstage.io/kubernetes-id: backstage
+    tekton.dev/cicd: 'true'
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+# NFS e2e entity for the missing-permissions navigation target.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: permission-denied
+  description: Entity for testing Tekton permissions navigation
+  annotations:
+    backstage.io/kubernetes-id: backstage
+    tekton.dev/cicd: 'true'
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+  system: examples
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component

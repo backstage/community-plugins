@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-  ContentHeader,
   SupportButton,
   Progress,
   Table,
@@ -22,6 +21,7 @@ import {
   InfoCard,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import { Flex, Text } from '@backstage/ui';
 import { xcmetricsApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import Alert from '@material-ui/lab/Alert';
@@ -56,9 +56,12 @@ export const Overview = () => {
 
   return (
     <>
-      <ContentHeader title="XCMetrics Dashboard">
+      <Flex justify="between" align="center" mb="4">
+        <Text as="h2" variant="title-medium">
+          XCMetrics Dashboard
+        </Text>
         <SupportButton>Dashboard for XCMetrics</SupportButton>
-      </ContentHeader>
+      </Flex>
       <Grid container spacing={3} direction="row">
         <Grid item xs={12} md={8} lg={8} xl={9}>
           <Table

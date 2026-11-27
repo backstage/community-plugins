@@ -20,7 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useApi } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 
 const useStyles = makeStyles({
   root: {
@@ -60,8 +60,10 @@ export const AlertSourceLink = ({
       </Grid>
       <Grid item xs={10}>
         <Link
+          target="_blank"
+          rel="noopener noreferrer"
           className={classes.link}
-          to={ilertApi.getAlertSourceDetailsURL(alertSource)}
+          href={ilertApi.getAlertSourceDetailsURL(alertSource)}
         >
           {alertSource.name}
         </Link>

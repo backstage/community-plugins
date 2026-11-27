@@ -23,12 +23,9 @@ import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import { Navigate } from 'react-router';
-import {
-  TechRadarApi,
-  techRadarApiRef,
-} from '@backstage-community/plugin-tech-radar';
-import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
+import { techRadarApiRef } from '@backstage-community/plugin-tech-radar';
 import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
+import { SampleTechRadarApi } from './sampleTechRadarApi';
 
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
@@ -38,30 +35,22 @@ const homePageExtension = PageBlueprint.make({
   },
 });
 
-class SampleTechRadarApi implements TechRadarApi {
-  async load(): Promise<TechRadarLoaderResponse> {
-    return {
-      entries: [],
-      quadrants: [
-        { id: 'infrastructure', name: 'Infrastructure' },
-        { id: 'frameworks', name: 'Frameworks' },
-        { id: 'languages', name: 'Languages' },
-        { id: 'process', name: 'Process' },
-      ],
-      rings: [],
-    };
-  }
-}
-
-// overriding the api is one way to change the radar content
-// @ts-ignore
-const techRadarApi = ApiBlueprint.make({
-  params: defineParams =>
-    defineParams({
-      api: techRadarApiRef,
-      deps: {},
-      factory: () => new SampleTechRadarApi(),
+// Overrides the Tech Radar plugin's API with local mock data. A module for the
+// plugin replaces the plugin's own 'api:tech-radar' extension. Remove
+// techRadarModuleSampleData from the features below to load the data
+// configured in app-config.yaml instead.
+const techRadarModuleSampleData = createFrontendModule({
+  pluginId: 'tech-radar',
+  extensions: [
+    ApiBlueprint.make({
+      params: defineParams =>
+        defineParams({
+          api: techRadarApiRef,
+          deps: {},
+          factory: () => new SampleTechRadarApi(),
+        }),
     }),
+  ],
 });
 
 export const app = createApp({
@@ -70,12 +59,10 @@ export const app = createApp({
     catalogImportPlugin,
     userSettingsPlugin,
     techRadarPlugin,
+    techRadarModuleSampleData,
     createFrontendModule({
       pluginId: 'app',
-      extensions: [
-        homePageExtension,
-        // techRadarApi, // comment out to use a custom api
-      ],
+      extensions: [homePageExtension],
     }),
   ],
 });

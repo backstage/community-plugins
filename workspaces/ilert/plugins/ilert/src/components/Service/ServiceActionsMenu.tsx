@@ -23,7 +23,7 @@ import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { Service } from '../../types';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 export const ServiceActionsMenu = ({ service }: { service: Service }) => {
@@ -61,7 +61,11 @@ export const ServiceActionsMenu = ({ service }: { service: Service }) => {
       >
         <MenuItem key="details" onClick={handleCloseMenu}>
           <Typography variant="inherit" noWrap>
-            <Link to={ilertApi.getServiceDetailsURL(service)}>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={ilertApi.getServiceDetailsURL(service)}
+            >
               View in ilert
             </Link>
           </Typography>

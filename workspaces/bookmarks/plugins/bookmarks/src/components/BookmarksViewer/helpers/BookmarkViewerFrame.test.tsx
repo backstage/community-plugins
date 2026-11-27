@@ -31,13 +31,15 @@ describe('BookmarkViewerFrame', () => {
     jest.clearAllMocks();
   });
 
-  it('shows loading spinner when iframe is loading', async () => {
+  it('shows loading skeleton while the iframe is loading', async () => {
     process.env.NODE_ENV = 'production';
     mockUseIsIframeLoading.mockReturnValue(true);
     await renderInTestApp(
       <BookmarkViewerFrame title="hello" src="https://example.com" />,
     );
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(TEST_IDS.BookmarkViewerFrame.loading),
+    ).toBeInTheDocument();
     const iframe = screen.getByTestId(TEST_IDS.BookmarkViewerFrame.iframe);
     expect(iframe).toHaveStyle('visibility: hidden');
     expect(iframe).toHaveAttribute('src', 'https://example.com');
@@ -51,7 +53,9 @@ describe('BookmarkViewerFrame', () => {
   it('shows iframe when not loading', async () => {
     mockUseIsIframeLoading.mockReturnValue(false);
     await renderInTestApp(<BookmarkViewerFrame src="https://example.com" />);
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(TEST_IDS.BookmarkViewerFrame.loading),
+    ).not.toBeInTheDocument();
     const iframe = screen.getByTestId(TEST_IDS.BookmarkViewerFrame.iframe);
     expect(iframe).toHaveStyle('visibility: visible');
     expect(iframe).toHaveAttribute('src', 'https://example.com');

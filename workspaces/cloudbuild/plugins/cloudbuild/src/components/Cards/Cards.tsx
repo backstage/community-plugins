@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-import {
-  Link,
-  Progress,
-  StructuredMetadataTable,
-} from '@backstage/core-components';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { Progress, StructuredMetadataTable } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { Alert, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
+import {
+  Alert,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  Link,
+  Text,
+} from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import { useEffect } from 'react';
 import { getCloudbuildFilter } from '../useCloudBuildFilter';
@@ -59,7 +64,11 @@ const WidgetContent = ({
         ),
         message: lastRun.message,
         url: (
-          <Link to={lastRun.googleUrl ?? ''}>
+          <Link
+            href={lastRun.googleUrl ?? ''}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             See more on Google{' '}
             <RiExternalLinkLine size={14} className={styles.externalLinkIcon} />
           </Link>
@@ -73,7 +82,7 @@ const WidgetContent = ({
 export const LatestWorkflowRunCard = (props: { branch: string }) => {
   const { branch = 'master' } = props;
   const { entity } = useEntity();
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const projectId = entity.metadata.annotations?.[CLOUDBUILD_ANNOTATION] || '';
   const location = getLocation(entity);
   const cloudBuildFilter = getCloudbuildFilter(entity);

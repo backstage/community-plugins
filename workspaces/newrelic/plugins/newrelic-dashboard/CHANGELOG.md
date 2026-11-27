@@ -1,5 +1,15 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.30.0
+
+### Minor Changes
+
+- ecafca1: Backstage version bump to v1.57.1
+
+### Patch Changes
+
+- ecafca1: The dashboard links now use the Backstage UI `Link` component and open in a new tab, and the dashboard tab uses the Backstage UI layout.
+
 ## 0.29.0
 
 ### Minor Changes

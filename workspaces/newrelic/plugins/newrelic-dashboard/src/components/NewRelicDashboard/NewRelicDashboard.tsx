@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import Grid from '@material-ui/core/Grid';
-import { Page, Content } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import { DashboardEntityList } from './DashboardEntityList';
 import { DashboardSnapshotList } from './DashboardSnapshotList';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -23,21 +23,19 @@ import { NEWRELIC_GUID_ANNOTATION } from '../../constants';
 export const NewRelicDashboard = () => {
   const { entity } = useEntity();
   return (
-    <Page themeId="home">
-      <Content>
-        <Grid container spacing={6} direction="row" alignItems="stretch">
-          <Grid item xs={12}>
-            <DashboardEntityList />
-          </Grid>
-          <Grid item xs={12}>
-            <DashboardSnapshotList
-              guid={String(
-                entity.metadata.annotations?.[NEWRELIC_GUID_ANNOTATION],
-              )}
-            />
-          </Grid>
+    <Box p="6">
+      <Grid container spacing={6} direction="row" alignItems="stretch">
+        <Grid item xs={12}>
+          <DashboardEntityList />
         </Grid>
-      </Content>
-    </Page>
+        <Grid item xs={12}>
+          <DashboardSnapshotList
+            guid={String(
+              entity.metadata.annotations?.[NEWRELIC_GUID_ANNOTATION],
+            )}
+          />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };

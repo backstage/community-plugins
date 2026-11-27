@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 import {
-  Content,
   EmptyState,
   GaugeCard,
-  Header,
   InfoCard,
-  Page,
   SupportButton,
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import { configApiRef, useApi, useApp } from '@backstage/core-plugin-api';
+import { useApi, useApp } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
+import { Container, Header } from '@backstage/ui';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
@@ -70,7 +69,7 @@ export const CodeSceneFileSummary = (props: Analysis) => {
 export const CodeSceneProjectDetailsPage = () => {
   const params = useParams();
   const projectId = Number(params.projectId);
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
   const { analysis, loading, error } = useAnalyses(projectId);
   const { Progress } = useApp().getComponents();
 
@@ -107,17 +106,18 @@ export const CodeSceneProjectDetailsPage = () => {
   );
 
   return (
-    <Page themeId="tool">
+    <>
       <Header
         title={`CodeScene: ${analysis.name}`}
-        subtitle={`Last analysis: ${analysis.readable_analysis_time}`}
-      >
-        <SupportButton>
-          See hidden risks and social patterns in your code. Prioritize and
-          reduce technical debt.
-        </SupportButton>
-      </Header>
-      <Content>
+        description={`Last analysis: ${analysis.readable_analysis_time}`}
+        customActions={
+          <SupportButton>
+            See hidden risks and social patterns in your code. Prioritize and
+            reduce technical debt.
+          </SupportButton>
+        }
+      />
+      <Container>
         <Grid container spacing={2}>
           <Grid item xs sm md>
             <CodeHealthKpisCard
@@ -148,7 +148,7 @@ export const CodeSceneProjectDetailsPage = () => {
             <CodeSceneFileSummary {...analysis} />
           </Grid>
         </Grid>
-      </Content>
-    </Page>
+      </Container>
+    </>
   );
 };

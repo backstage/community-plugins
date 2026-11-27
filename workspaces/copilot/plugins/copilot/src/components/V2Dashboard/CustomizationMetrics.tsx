@@ -30,6 +30,7 @@ type Props = {
   summaries: V2CustomizationSummaryRow[];
   from: string;
   to: string;
+  fillMissingDays?: boolean;
 };
 
 function displayCategory(category: string): string {
@@ -57,6 +58,7 @@ export function CustomizationMetrics({
   summaries,
   from,
   to,
+  fillMissingDays = true,
 }: Readonly<Props>) {
   const categories = new Map<string, V2CustomizationMetricRow[]>();
   for (const metric of metrics) {
@@ -114,6 +116,7 @@ export function CustomizationMetrics({
                         data={categoryMetrics}
                         from={from}
                         to={to}
+                        fillMissingDays={fillMissingDays}
                       />
                     </Grid.Item>
                   </Grid.Root>

@@ -16,6 +16,20 @@
 
 import '@testing-library/jest-dom';
 
+// jsdom's CSS parser (css-tree) cannot parse the modern CSS (e.g. @layer,
+// nesting) that the test app's theme injects at runtime, which floods the
+// output with "Could not parse CSS stylesheet" errors. The stylesheets are
+// injected as <style> tags, so no jest-level CSS mock can prevent this.
+/* eslint-disable no-console */
+const originalConsoleError = console.error;
+console.error = (...args: Parameters<typeof console.error>) => {
+  if (String(args[0]).includes('Could not parse CSS stylesheet')) {
+    return;
+  }
+  originalConsoleError(...args);
+};
+/* eslint-enable no-console */
+
 // directly return the translation key for easier unit tests
 jest.mock('./hooks/useTranslation', () => ({
   useTranslation: () => ({

@@ -97,13 +97,17 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
  * a user (or org) had no Copilot activity on certain days — the GitHub API
  * only returns rows for active days, so without this fill step those days
  * would be silently skipped on the chart.
+ *
+ * Set `fillMissingDays` to false for scopes where a missing row may indicate
+ * incomplete report coverage rather than zero activity.
  */
 export function fillDailyTotalsGaps(
   data: V2DailyTotal[],
   from: string,
   to: string,
+  fillMissingDays = true,
 ): V2DailyTotal[] {
-  if (data.length === 0) return [];
+  if (!fillMissingDays || data.length === 0) return data;
   const byDay = new Map(data.map(row => [row.day, row]));
   const first = data[0];
   return fillDateRange(from, to).map(

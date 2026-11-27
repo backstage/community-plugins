@@ -19,7 +19,8 @@ import {
   ValidationMessage,
   ValidationTypes,
 } from '@backstage-community/plugin-kiali-common/types';
-import { List, ListItem, Tooltip, Typography } from '@material-ui/core';
+import { Chip, List, ListItem, Tooltip, Typography } from '@material-ui/core';
+import { useMemo } from 'react';
 import { Validation } from '../../components/Validations/Validation';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
@@ -29,12 +30,50 @@ interface Props {
   checks?: ObjectCheck[];
 }
 
+interface GroupedCheck {
+  code?: string;
+  count: number;
+  message: string;
+  severity: string;
+}
+
 const infoStyle = kialiStyle({
   marginLeft: '0.5rem',
   verticalAlign: '-0.06em !important',
 });
 
+const countBadgeStyle = kialiStyle({
+  marginLeft: '0.5rem',
+  height: '1.25rem',
+});
+
+const groupChecks = (checks: ObjectCheck[]): GroupedCheck[] => {
+  const grouped = new Map<string, GroupedCheck>();
+
+  for (const check of checks) {
+    const key = `${check.code ?? ''}_${check.severity}`;
+
+    if (grouped.has(key)) {
+      grouped.get(key)!.count += 1;
+    } else {
+      grouped.set(key, {
+        code: check.code,
+        count: 1,
+        message: check.message,
+        severity: check.severity,
+      });
+    }
+  }
+
+  return Array.from(grouped.values());
+};
+
 export const IstioStatusMessageList = (props: Props) => {
+  const groupedChecks = useMemo(
+    () => groupChecks(props.checks ?? []),
+    [props.checks],
+  );
+
   return (
     <>
       <Typography variant="h6" gutterBottom style={{ marginTop: 10 }}>
@@ -47,7 +86,7 @@ export const IstioStatusMessageList = (props: Props) => {
               (msg.level as keyof typeof IstioLevelToSeverity) || 'UNKNOWN'
             ];
           return (
-            <ListItem style={{ padding: 0 }} key={i}>
+            <ListItem style={{ padding: 0 }} key={`msg-${i}`}>
               <Validation severity={severity} />
               <a
                 href={msg.documentationUrl}
@@ -62,22 +101,30 @@ export const IstioStatusMessageList = (props: Props) => {
         })}
       </List>
       <List style={{ padding: 0 }}>
-        {(props.checks || []).map((check: ObjectCheck, i: number) => {
+        {groupedChecks.map((group: GroupedCheck, i: number) => {
           const severity: ValidationTypes =
             IstioLevelToSeverity[
-              (check.severity.toLocaleUpperCase(
+              (group.severity.toLocaleUpperCase(
                 'en-US',
               ) as keyof typeof IstioLevelToSeverity) || 'UNKNOWN'
             ];
           return (
-            <ListItem style={{ padding: 0 }} key={i}>
+            <ListItem style={{ padding: 0 }} key={`check-${i}`}>
               <Validation severity={severity} />
-              {check.code}
-              <Tooltip title={check.message}>
+              {group.code}
+              <Tooltip title={group.message}>
                 <span className="iconInfo">
                   <KialiIcon.Info className={infoStyle} />
                 </span>
               </Tooltip>
+              {group.count > 1 && (
+                <Chip
+                  className={countBadgeStyle}
+                  color="primary"
+                  label={group.count}
+                  size="small"
+                />
+              )}
             </ListItem>
           );
         })}

@@ -16,7 +16,7 @@
 import { ilertApiRef } from '../../api';
 import { Alert } from '../../types';
 
-import { Link } from '@backstage/core-components';
+import { Link } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 export const AlertLink = ({ alert }: { alert: Alert | null }) => {
@@ -26,5 +26,13 @@ export const AlertLink = ({ alert }: { alert: Alert | null }) => {
     return null;
   }
 
-  return <Link to={ilertApi.getAlertDetailsURL(alert)}>#{alert.id}</Link>;
+  return (
+    <Link
+      target="_blank"
+      rel="noopener noreferrer"
+      href={ilertApi.getAlertDetailsURL(alert)}
+    >
+      #{alert.id}
+    </Link>
+  );
 };

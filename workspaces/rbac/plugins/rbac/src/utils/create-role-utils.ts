@@ -280,39 +280,69 @@ export const getUpdatedConditionalPolicies = (
   values: RoleFormValues,
   initialValues: RoleFormValues,
 ): UpdatedConditionsData => {
-  const initialConditionsWithId = initialValues.permissionPoliciesRows.filter(
-    ppr => ppr.id,
+  const initialIds = new Set(
+    initialValues.permissionPoliciesRows.flatMap(ppr =>
+      ppr.id ? [ppr.id] : [],
+    ),
   );
 
-  const conditionsWithId = values.permissionPoliciesRows.filter(ppr => ppr.id);
+  // One stored conditional policy can span several form rows (one per matched
+  // permission), every row carrying the policy's id. Group the rows so each
+  // policy becomes a single update whose permission mapping covers all of its
+  // rows, instead of one partial update per row.
+  const rowsById = new Map<number, PermissionsData[]>();
+  for (const row of values.permissionPoliciesRows) {
+    if (row.id && initialIds.has(row.id)) {
+      rowsById.set(row.id, [...(rowsById.get(row.id) ?? []), row]);
+    }
+  }
 
-  return conditionsWithId.length > 0
-    ? conditionsWithId.reduce(
-        (
-          acc: { id: number; updateCondition: RoleBasedConditions }[],
-          condition: PermissionsData,
-        ) => {
-          const conditionExists = initialConditionsWithId.find(
-            c => c.id === condition.id,
-          );
-
-          if (conditionExists && condition.id)
-            return [
-              ...acc,
-              {
-                id: condition.id,
-                updateCondition: getConditionalPermissionPoliciesData({
-                  ...values,
-                  permissionPoliciesRows: [condition],
-                })[0],
-              },
-            ];
-          return acc;
+  return [...rowsById].flatMap(([id, rows]) => {
+    const conditions = getConditionalPermissionPoliciesData({
+      ...values,
+      permissionPoliciesRows: rows,
+    });
+    if (conditions.length === 0) {
+      return [];
+    }
+    return [
+      {
+        id,
+        updateCondition: {
+          ...conditions[0],
+          // getConditionalPermissionPoliciesData always builds {name, action}
+          // entries, never bare action strings.
+          permissionMapping: conditions.flatMap(
+            c => c.permissionMapping as PermissionInfo[],
+          ),
         },
-        [],
-      )
-    : [];
+      },
+    ];
+  });
 };
+
+/**
+ * Returns a copy of `rows` with the effect of one policy replaced. The row
+ * and policy objects are copied rather than mutated, because the rows may be
+ * shared with the form's initial values, which must keep describing the role
+ * as it was loaded.
+ */
+export const updatePolicyEffect = (
+  rows: PermissionsData[],
+  index: number,
+  policyIndex: number,
+  effect: string,
+): PermissionsData[] =>
+  rows.map((row, rIndex) =>
+    rIndex === index
+      ? {
+          ...row,
+          policies: row.policies.map((policy, pIndex) =>
+            pIndex === policyIndex ? { ...policy, effect } : policy,
+          ),
+        }
+      : row,
+  );
 
 export const getNewConditionalPolicies = (values: RoleFormValues) => {
   const newValues = { ...values };

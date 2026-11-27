@@ -13,46 +13,89 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Legacy frontend system — full-stack (real catalog/kubernetes APIs → backend).
+ * For UI-only mocks use `yarn start:legacy:mock`.
+ */
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
+
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
-  kubernetesApiRef,
-  kubernetesProxyApiRef,
-  kubernetesAuthProvidersApiRef,
-} from '@backstage/plugin-kubernetes-react';
+  CatalogEntityPage,
+  CatalogIndexPage,
+  catalogPlugin,
+  EntityLayout,
+} from '@backstage/plugin-catalog';
+import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { tektonTranslations } from '../src/translations';
 import { TektonCI, tektonPlugin } from '../src/legacy';
-import {
-  mockEntity,
-  mockKubernetesAuthProviderApi,
-  mockKubernetesClient,
-  mockKubernetesProxyApi,
-} from './mocks';
-
-const mockPermissionApi = mockApis.permission({});
+import { mockEntity, permissionDeniedMockEntity } from './mocks';
 
 createDevApp()
+  .registerPlugin(kubernetesPlugin)
+  .registerPlugin(catalogPlugin)
+  .registerPlugin(tektonPlugin)
   .addTranslationResource(tektonTranslations)
   .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja'])
+  .setDefaultLanguage('en')
   .addPage({
+    path: '/catalog',
+    title: 'Catalog',
+    element: <CatalogIndexPage />,
+  })
+  .addPage({
+    path: '/catalog/:namespace/:kind/:name',
+    element: <CatalogEntityPage />,
+    children: (
+      <EntityLayout>
+        <EntityLayout.Route path="/tekton" title="CI/CD">
+          <TektonCI />
+        </EntityLayout.Route>
+      </EntityLayout>
+    ),
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={mockEntity}>
+        <Page themeId="service">
+          <Header type="component — service" title="demo-service" />
+          <TabbedLayout>
+            <TabbedLayout.Route path="/" title="CI/CD">
+              <TektonCI />
+            </TabbedLayout.Route>
+          </TabbedLayout>
+        </Page>
+      </EntityProvider>
+    ),
+    title: 'Tekton CI',
+    path: '/tekton',
+  })
+  .addPage({
+    // Justified remaining mock: allow-all backend cannot deny kubernetes
+    // permissions; this page only covers the permission alert UI.
     element: (
       <TestApiProvider
         apis={[
-          [kubernetesApiRef, mockKubernetesClient],
-          [kubernetesProxyApiRef, mockKubernetesProxyApi],
-          [permissionApiRef, mockPermissionApi],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
+          [
+            permissionApiRef,
+            mockApis.permission({ authorize: AuthorizeResult.DENY }),
+          ],
         ]}
       >
-        <EntityProvider entity={mockEntity}>
+        <EntityProvider entity={permissionDeniedMockEntity}>
           <Page themeId="service">
-            <Header type="component — service" title="demo-sevice" />
+            <Header
+              type="component — service"
+              title={permissionDeniedMockEntity.metadata.name}
+            />
             <TabbedLayout>
               <TabbedLayout.Route path="/" title="CI/CD">
                 <TektonCI />
@@ -62,8 +105,7 @@ createDevApp()
         </EntityProvider>
       </TestApiProvider>
     ),
-    title: 'Tekton CI',
-    path: '/tekton',
+    title: 'Missing permissions',
+    path: '/missing-permissions',
   })
-  .registerPlugin(tektonPlugin)
   .render();

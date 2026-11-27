@@ -56,17 +56,25 @@ export function CopilotUsageSummary({
 }: Readonly<Props>) {
   const latest = dailyTotals.at(-1) ?? null;
 
-  const ideActiveUsers = latest?.monthly_active_users ?? 0;
-  const agentAdoption =
-    latest &&
-    latest.monthly_active_users !== undefined &&
-    latest.monthly_active_users > 0
-      ? Math.round(
-          ((latest.monthly_active_agent_users ?? 0) /
-            latest.monthly_active_users) *
-            100,
-        )
-      : 0;
+  const monthlyActiveUsers = latest?.monthly_active_users;
+  const monthlyActiveAgentUsers = latest?.monthly_active_agent_users;
+  const ideActiveUsers =
+    monthlyActiveUsers === undefined || monthlyActiveUsers === null
+      ? 'N/A'
+      : monthlyActiveUsers.toLocaleString();
+  let agentAdoption = 'N/A';
+  if (
+    monthlyActiveUsers !== undefined &&
+    monthlyActiveUsers !== null &&
+    monthlyActiveAgentUsers !== undefined &&
+    monthlyActiveAgentUsers !== null
+  ) {
+    const adoptionPercent =
+      monthlyActiveUsers === 0
+        ? 0
+        : (monthlyActiveAgentUsers / monthlyActiveUsers) * 100;
+    agentAdoption = `${Math.round(adoptionPercent)}%`;
+  }
 
   const vscodeAgentActiveUsers = latest?.daily_active_vscode_agent_users ?? 0;
 
@@ -77,14 +85,14 @@ export function CopilotUsageSummary({
       <Grid.Item colSpan={{ initial: '12', md: '3' }}>
         <StatCard
           title="IDE Active Users"
-          value={ideActiveUsers.toLocaleString()}
+          value={ideActiveUsers}
           subtitle="Monthly active"
         />
       </Grid.Item>
       <Grid.Item colSpan={{ initial: '12', md: '3' }}>
         <StatCard
           title="Agent Adoption"
-          value={`${agentAdoption}%`}
+          value={agentAdoption}
           subtitle="of active users"
         />
       </Grid.Item>

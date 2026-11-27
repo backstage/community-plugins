@@ -37,15 +37,9 @@ import { formatTime } from '../../utils';
 import AuditStatusIcon from '../AuditStatusIcon';
 import LighthouseSupportButton from '../SupportButton';
 
-import {
-  Content,
-  ContentHeader,
-  Header,
-  HeaderLabel,
-  InfoCard,
-  Page,
-  Progress,
-} from '@backstage/core-components';
+import { InfoCard, Progress } from '@backstage/core-components';
+import { Container, Header } from '@backstage/ui';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { rootRouteRef } from '../../plugin';
 
@@ -178,7 +172,7 @@ export const AuditViewContent = () => {
 
   return (
     <>
-      <ContentHeader
+      <SectionHeader
         title={value?.url || 'Audit'}
         description="See a history of all Lighthouse audits for your website run through Backstage."
       >
@@ -190,22 +184,26 @@ export const AuditViewContent = () => {
           Create New Audit
         </Button>
         <LighthouseSupportButton />
-      </ContentHeader>
+      </SectionHeader>
       {content}
     </>
   );
 };
 
 const ConnectedAuditView = () => (
-  <Page themeId="tool">
-    <Header title="Lighthouse" subtitle="Website audits powered by Lighthouse">
-      <HeaderLabel label="Owner" value="Spotify" />
-      <HeaderLabel label="Lifecycle" value="Alpha" />
-    </Header>
-    <Content stretch>
+  <>
+    <Header
+      title="Lighthouse"
+      description="Website audits powered by Lighthouse"
+      metadata={[
+        { label: 'Owner', value: 'Spotify' },
+        { label: 'Lifecycle', value: 'Alpha' },
+      ]}
+    />
+    <Container>
       <AuditViewContent />
-    </Content>
-  </Page>
+    </Container>
+  </>
 );
 
 export default ConnectedAuditView;

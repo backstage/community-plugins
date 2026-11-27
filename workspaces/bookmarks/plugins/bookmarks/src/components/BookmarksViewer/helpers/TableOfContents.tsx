@@ -14,52 +14,105 @@
  * limitations under the License.
  */
 
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import { useEffect, useState } from 'react';
+import { RiArrowRightSLine } from '@remixicon/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Button,
+  Collection,
+  Tree,
+  TreeItem,
+  TreeItemContent,
+} from 'react-aria-components';
 import { UrlTree } from '../../../types';
 import { PATH_SEPARATOR } from '../../../consts/consts';
-import {
-  FlattenedNode,
-  useUnorderedFlattenedTree,
-} from '../../../hooks/useFlattenTree';
+import { FlattenedNode } from '../../../hooks/useFlattenTree';
 import { TEST_IDS } from '../../../consts/testids';
+import { useTranslation } from '../../../hooks/useTranslation';
 
-/** Recursively render a portion of a UrlTree */
-const RecursiveTreeItem = ({
-  treeKey,
-  subTree,
-  path = [],
-}: {
-  treeKey: string;
-  subTree: UrlTree;
-  path?: string[];
-}) => {
-  const value = subTree[treeKey];
-  const currentPath = [...path, treeKey];
-  const itemId = currentPath.join(PATH_SEPARATOR);
+import styles from './TableOfContents.module.css';
 
-  if (typeof value === 'string') {
+/** A row in the table of contents, derived from a UrlTree */
+interface TocItem {
+  /** stable id: the keys leading to this item, joined by PATH_SEPARATOR */
+  id: string;
+  /** label shown to the user */
+  title: string;
+  /** link target of leaves, absent on folders */
+  url?: string;
+  /** child rows, absent on leaves */
+  children?: TocItem[];
+}
+
+/** Convert a UrlTree into the item shape used by the Tree dynamic collection API */
+const toTocItems = (subTree: UrlTree, path: string[] = []): TocItem[] =>
+  Object.entries(subTree).map(([treeKey, value]) => {
+    const id = [...path, treeKey].join(PATH_SEPARATOR);
+    return typeof value === 'string'
+      ? { id, title: treeKey, url: value }
+      : { id, title: treeKey, children: toTocItems(value, [...path, treeKey]) };
+  });
+
+/** Recursively render a TocItem as a TreeItem */
+const renderItem = (
+  item: TocItem,
+  currentKey: string,
+  onNavigate: (itemId: string, value: string) => void,
+  onToggle: (itemId: string) => void,
+) => {
+  const { id, title, url } = item;
+
+  if (url !== undefined) {
     return (
       <TreeItem
-        itemId={itemId}
-        label={treeKey}
+        textValue={title}
+        onAction={() => onNavigate(id, url)}
         data-testid={TEST_IDS.TableOfContents.leaf}
-      />
+        data-current={id === currentKey || undefined}
+        className={`${styles.item} ${styles.leaf} ${id === currentKey ? styles.selected : ''}`}
+        style={({ level }) => ({
+          marginInlineStart: `calc((${level} - 1) * var(--bui-space-4))`,
+        })}
+      >
+        <TreeItemContent>
+          <span
+            className={styles.treeLabel}
+            aria-current={id === currentKey ? 'true' : undefined}
+          >
+            {title}
+          </span>
+        </TreeItemContent>
+      </TreeItem>
     );
   }
 
-  // if the value is not a string this must be a subtree
+  // items without a url are folders
   return (
-    <TreeItem itemId={itemId} label={treeKey}>
-      {Object.keys(value).map(subKey => (
-        <RecursiveTreeItem
-          key={subKey}
-          treeKey={subKey}
-          subTree={value}
-          path={currentPath}
-        />
-      ))}
+    <TreeItem
+      textValue={title}
+      onAction={() => onToggle(id)}
+      data-current={id === currentKey || undefined}
+      className={styles.item}
+      style={({ level }) => ({
+        marginInlineStart: `calc((${level} - 1) * var(--bui-space-4))`,
+      })}
+    >
+      <TreeItemContent>
+        <Button slot="chevron" className={styles.chevron}>
+          <RiArrowRightSLine
+            className={styles.chevronIcon}
+            aria-hidden="true"
+          />
+        </Button>
+        <span
+          className={styles.treeLabel}
+          aria-current={id === currentKey ? 'true' : undefined}
+        >
+          {title}
+        </span>
+      </TreeItemContent>
+      <Collection items={item.children}>
+        {childItem => renderItem(childItem, currentKey, onNavigate, onToggle)}
+      </Collection>
     </TreeItem>
   );
 };
@@ -74,9 +127,21 @@ export const TableOfContents = ({
   currentNode: FlattenedNode;
   setCurrentNode: (url: FlattenedNode) => void;
 }) => {
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const { t } = useTranslation();
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const items = useMemo(() => toTocItems(tree), [tree]);
 
-  const urlLookup = useUnorderedFlattenedTree(tree);
+  const toggleItem = useCallback((itemId: string) => {
+    setExpandedItems(prev => {
+      const next = new Set(prev);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
+  }, []);
 
   // auto expand items when the current path changes
   useEffect(() => {
@@ -84,33 +149,30 @@ export const TableOfContents = ({
     const parents = parts.map((_, i) =>
       parts.slice(0, i + 1).join(PATH_SEPARATOR),
     );
-    setExpandedItems(prev => Array.from(new Set([...prev, ...parents])));
+    setExpandedItems(prev => new Set([...prev, ...parents]));
   }, [pathKey]);
 
   return (
-    <SimpleTreeView
-      selectedItems={pathKey}
-      onSelectedItemsChange={(_, itemId: string | null) => {
-        if (!itemId || !urlLookup[itemId]) return;
-        setCurrentNode({ value: urlLookup[itemId], key: itemId });
-      }}
-      expandedItems={expandedItems}
-      onItemExpansionToggle={(_, itemId: string) => {
-        setExpandedItems(prev =>
-          prev.includes(itemId)
-            ? prev.filter(id => id !== itemId)
-            : [...prev, itemId],
-        );
-      }}
-      sx={{
-        color: theme => theme.palette.text.primary,
-        flexGrow: 1,
-      }}
+    <Tree
+      aria-label={t('bookmarkViewer.tableOfContents')}
+      className={styles.tree}
+      items={items}
+      dependencies={[pathKey]}
+      selectionMode="none"
+      expandedKeys={expandedItems}
+      onExpandedChange={keys =>
+        setExpandedItems(new Set([...keys].map(String)))
+      }
       data-testid={TEST_IDS.TableOfContents.wrapper}
     >
-      {Object.keys(tree).map(key => (
-        <RecursiveTreeItem key={key} treeKey={key} subTree={tree} />
-      ))}
-    </SimpleTreeView>
+      {item =>
+        renderItem(
+          item,
+          pathKey,
+          (itemId, value) => setCurrentNode({ value, key: itemId }),
+          toggleItem,
+        )
+      }
+    </Tree>
   );
 };
