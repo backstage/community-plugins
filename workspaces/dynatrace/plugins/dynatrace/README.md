@@ -31,6 +31,12 @@ The Dynatrace plugin will require the following information, to be used in the c
 yarn --cwd packages/app add @backstage-community/plugin-dynatrace
 ```
 
+This plugin uses [Backstage UI](https://ui.backstage.io/get-started/installation), so your app must load its stylesheet. Add the following import to your app entry point (for example `packages/app/src/index.tsx`) if it is not already included:
+
+```ts
+import '@backstage/ui/css/styles.css';
+```
+
 2. We created in our catalog the interface for using the integration with Dynatrace.
 
 ```diff
