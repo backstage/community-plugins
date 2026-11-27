@@ -41,6 +41,10 @@ export const ProjectGroupDropdown = ({
     onChange(pg);
   };
 
+  // BUI fields don't read ScaffolderField's form control context, so pass
+  // the field state explicitly.
+  const isInvalid = !!rawErrors?.length;
+
   return (
     <ScaffolderField
       rawErrors={rawErrors}
@@ -57,7 +61,9 @@ export const ProjectGroupDropdown = ({
           options={projectGroupOptions}
           value={selectedProjectGroup || null}
           onChange={key => updateProjectGroup(key ? String(key) : '')}
-          isDisabled={projectGroups.length === 1}
+          isDisabled={disabled || projectGroups.length === 1}
+          isRequired={required}
+          isInvalid={isInvalid}
         />
       ) : (
         <TextField
@@ -65,6 +71,9 @@ export const ProjectGroupDropdown = ({
           label="Project Group"
           value={selectedProjectGroup}
           onChange={updateProjectGroup}
+          isDisabled={disabled}
+          isRequired={required}
+          isInvalid={isInvalid}
         />
       )}
     </ScaffolderField>

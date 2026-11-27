@@ -92,10 +92,18 @@ describe('ReleaseTable', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders an error panel when loading fails', async () => {
-    await renderInTestApp(
-      <ReleaseTable loading={false} error={new Error('Boom')} />,
+  it('renders loading and error states', async () => {
+    const { rerender } = await renderInTestApp(
+      <ReleaseTable
+        loading
+        environments={[{ Id: 'Environments-1', Name: 'Development' }]}
+      />,
     );
+
+    expect(await screen.findByText('Loading table data.')).toBeInTheDocument();
+    expect(screen.queryByText('No releases found.')).not.toBeInTheDocument();
+
+    rerender(<ReleaseTable loading={false} error={new Error('Boom')} />);
 
     expect(await screen.findAllByText('Error: Boom')).not.toHaveLength(0);
   });

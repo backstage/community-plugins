@@ -152,7 +152,8 @@ export const ReleaseTable = ({
 
   const { tableProps, search } = useTable({
     mode: 'complete',
-    data: rows,
+    // Without data the table shows its loading skeleton instead of empty rows
+    data: loading && rows.length === 0 ? undefined : rows,
     paginationOptions: { pageSize: 5 },
     searchFn: (data, query) => {
       const needle = query.trim().toLocaleLowerCase('en-US');
