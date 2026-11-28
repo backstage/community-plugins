@@ -104,7 +104,9 @@ describe('CreateAudit', () => {
       fireEvent.click(screen.getByText(/Create Audit/));
 
       expect(screen.getByLabelText(/URL/)).toBeDisabled();
-      expect(screen.getByText(/Create Audit/).parentElement).toBeDisabled();
+      expect(
+        screen.getByRole('button', { name: /Create Audit/ }),
+      ).toBeDisabled();
     });
   });
 
@@ -159,8 +161,10 @@ describe('CreateAudit', () => {
       fireEvent.change(screen.getByLabelText(/URL/), {
         target: { value: 'https://spotify.com' },
       });
-      fireEvent.mouseDown(screen.getByText(/Mobile/));
-      fireEvent.click(screen.getByText(/Desktop/));
+      fireEvent.click(
+        screen.getByRole('button', { name: /Emulated Form Factor/i }),
+      );
+      fireEvent.click(await screen.findByRole('option', { name: 'Desktop' }));
       fireEvent.click(screen.getByText(/Create Audit/));
 
       await waitFor(() =>

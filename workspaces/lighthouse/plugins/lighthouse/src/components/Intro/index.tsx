@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import { makeStyles } from '@material-ui/core/styles';
-import CloseIcon from '@material-ui/icons/Close';
-import { useState } from 'react';
+import {
+  Button,
+  Flex,
+  Grid,
+  Link,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+} from '@backstage/ui';
+import { RiCloseLine } from '@remixicon/react';
 import useLocalStorage from 'react-use/esm/useLocalStorage';
 import LighthouseSupportButton from '../SupportButton';
 import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
+import styles from './Intro.module.css';
 
 // TODO(freben): move all of this out of index
 
@@ -76,53 +81,35 @@ lighthouse:
 \`\`\`
 `;
 
-const useStyles = makeStyles(theme => ({
-  tabs: { marginBottom: -18 },
-  tab: { minWidth: 72, paddingLeft: 1, paddingRight: 1 },
-  content: { marginBottom: theme.spacing(2) },
-  closeButtonContainer: { height: '100%' },
-  closeButtonItem: { paddingBottom: 0 },
-}));
-
 function GettingStartedCard() {
-  const classes = useStyles();
-  const [value, setValue] = useState(0);
   return (
     <InfoCard
       title="Get started"
-      subheader={
-        <Tabs
-          value={value}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={(_ev, newValue: number) => setValue(newValue)}
-          aria-label="get started tabs"
-          className={classes.tabs}
-        >
-          <Tab className={classes.tab} label="Use cases" />
-          <Tab className={classes.tab} label="Setup" />
-        </Tabs>
-      }
       divider
       actions={
-        <>
-          <Grid container direction="row" justifyContent="flex-end">
-            <Grid item>
-              <Button
-                href="https://github.com/spotify/lighthouse-audit-service"
-                target="_blank"
-                rel="noopener noreferrer"
-                size="small"
-              >
-                Check out the README
-              </Button>
-            </Grid>
-          </Grid>
-        </>
+        <Flex justify="end">
+          <Link
+            href="https://github.com/spotify/lighthouse-audit-service"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Check out the README
+          </Link>
+        </Flex>
       }
     >
-      {value === 0 && <MarkdownContent content={USE_CASES} />}
-      {value === 1 && <MarkdownContent content={SETUP} />}
+      <Tabs defaultSelectedKey="use-cases">
+        <TabList>
+          <Tab id="use-cases">Use cases</Tab>
+          <Tab id="setup">Setup</Tab>
+        </TabList>
+        <TabPanel id="use-cases">
+          <MarkdownContent content={USE_CASES} />
+        </TabPanel>
+        <TabPanel id="setup">
+          <MarkdownContent content={SETUP} />
+        </TabPanel>
+      </Tabs>
     </InfoCard>
   );
 }
@@ -132,7 +119,6 @@ export interface Props {
 }
 
 export default function LighthouseIntro({ onDismiss = () => {} }: Props) {
-  const classes = useStyles();
   const [dismissed, setDismissed] = useLocalStorage(
     LIGHTHOUSE_INTRO_LOCAL_STORAGE,
     false,
@@ -145,35 +131,25 @@ export default function LighthouseIntro({ onDismiss = () => {} }: Props) {
       <SectionHeader title="Welcome to Lighthouse in Backstage!">
         <LighthouseSupportButton />
       </SectionHeader>
-      <Grid className={classes.content} container spacing={3} direction="row">
-        <Grid item xs={12} sm={6} md={4}>
+      <Grid.Root columns="12" gap="6" mb="4">
+        <Grid.Item colSpan={{ initial: '12', sm: '6', md: '4' }}>
           <GettingStartedCard />
-        </Grid>
-        {/* TODO add link and image for blog post here */}
-        {/* <Grid item xs={12} sm={6} md={4}>
-          <InfoCard>Blog</InfoCard>
-        </Grid> */}
-        <Grid item xs={12} sm={6} md={8}>
-          <Grid
-            container
-            justifyContent="flex-end"
-            alignItems="flex-end"
-            className={classes.closeButtonContainer}
-          >
-            <Grid item className={classes.closeButtonItem}>
-              <Button
-                variant="text"
-                onClick={() => {
-                  onDismiss();
-                  setDismissed(true);
-                }}
-              >
-                <CloseIcon /> Hide intro
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+        </Grid.Item>
+        <Grid.Item colSpan={{ initial: '12', sm: '6', md: '8' }}>
+          <Flex justify="end" align="end" className={styles.fullHeight}>
+            <Button
+              variant="secondary"
+              iconStart={<RiCloseLine />}
+              onPress={() => {
+                onDismiss();
+                setDismissed(true);
+              }}
+            >
+              Hide intro
+            </Button>
+          </Flex>
+        </Grid.Item>
+      </Grid.Root>
     </>
   );
 }

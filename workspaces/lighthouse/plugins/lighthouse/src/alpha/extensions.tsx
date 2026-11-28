@@ -30,14 +30,17 @@ import {
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 import { isLighthouseAvailable } from '../Router';
-import Highlight from '@material-ui/icons/Highlight';
+import { RiFlashlightLine } from '@remixicon/react';
 
 export const lighthousePage = PageBlueprint.make({
   params: {
     path: '/lighthouse',
     title: 'Lighthouse',
-    icon: <Highlight />,
+    icon: <RiFlashlightLine />,
     routeRef: convertLegacyRouteRef(rootRouteRef),
+    // The plugin pages render their own BUI Header, so opt out of the
+    // default page header to avoid showing two headers.
+    noHeader: true,
     loader: async () =>
       import('../Router').then(m => compatWrapper(<m.Router />)),
   },

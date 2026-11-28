@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Pagination from '@material-ui/lab/Pagination';
-import { ChangeEvent, ReactNode, useMemo, useState } from 'react';
+import { Button, Container, Header, TablePagination } from '@backstage/ui';
+import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAsync from 'react-use/esm/useAsync';
 import useLocalStorage from 'react-use/esm/useLocalStorage';
@@ -28,7 +26,6 @@ import LighthouseSupportButton from '../SupportButton';
 import AuditListTable from './AuditListTable';
 
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
-import { Container, Header } from '@backstage/ui';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -58,11 +55,9 @@ const AuditList = () => {
     [page],
   );
 
-  const pageCount: number = useMemo(() => {
-    if (value?.total && value?.limit)
-      return Math.ceil(value?.total / value?.limit);
-    return 0;
-  }, [value?.total, value?.limit]);
+  const pageSize = value?.limit || LIMIT;
+  const totalCount = value?.total ?? 0;
+  const offset = value?.offset ?? (page - 1) * LIMIT;
 
   const navigate = useNavigate();
 
@@ -71,13 +66,17 @@ const AuditList = () => {
     content = (
       <>
         <AuditListTable items={value?.items || []} />
-        {pageCount > 1 && (
-          <Pagination
-            page={page}
-            count={pageCount}
-            onChange={(_event: ChangeEvent<unknown>, newPage: number) => {
-              navigate(`?page=${newPage}`);
-            }}
+        {totalCount > pageSize && (
+          <TablePagination
+            pageSize={pageSize}
+            pageSizeOptions={[pageSize]}
+            offset={offset}
+            totalCount={totalCount}
+            hasPreviousPage={!loading && offset > 0}
+            hasNextPage={!loading && offset + pageSize < totalCount}
+            onPreviousPage={() => navigate(`?page=${page - 1}`)}
+            onNextPage={() => navigate(`?page=${page + 1}`)}
+            showPageSizeOptions={false}
           />
         )}
       </>
@@ -108,20 +107,12 @@ const AuditList = () => {
           title="Audits"
           description="View all audits run for your website through Backstage here. Track the trend of your most recent audits."
         >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate('create-audit')}
-          >
+          <Button variant="primary" onPress={() => navigate('create-audit')}>
             Create Audit
           </Button>
           {dismissed && <LighthouseSupportButton />}
         </SectionHeader>
-        <Grid container spacing={3} direction="column">
-          <Grid item>
-            <InfoCard noPadding>{content}</InfoCard>
-          </Grid>
-        </Grid>
+        <InfoCard noPadding>{content}</InfoCard>
       </Container>
     </>
   );

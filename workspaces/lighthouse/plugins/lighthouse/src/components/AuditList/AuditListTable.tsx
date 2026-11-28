@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useState, useEffect } from 'react';
-import Typography from '@material-ui/core/Typography';
 import { Website } from '@backstage-community/plugin-lighthouse-common';
 import { lighthouseApiRef } from '../../api';
 import useInterval from 'react-use/esm/useInterval';
@@ -29,7 +28,7 @@ import AuditStatusIcon from '../AuditStatusIcon';
 
 import { Table, TableColumn, TrendLine } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/ui';
+import { Flex, Link, Text } from '@backstage/ui';
 
 const columns: TableColumn[] = [
   {
@@ -116,12 +115,12 @@ export const AuditListTable = ({ items }: { items: Website[] }) => {
       ),
       ...trendlines,
       lastReport: (
-        <>
-          <AuditStatusIcon audit={website.lastAudit} />{' '}
-          <Typography component="span">
+        <Flex align="center" gap="1">
+          <AuditStatusIcon audit={website.lastAudit} />
+          <Text as="span">
             {website.lastAudit.status.toLocaleUpperCase('en-US')}
-          </Typography>
-        </>
+          </Text>
+        </Flex>
       ),
       lastAuditTriggered: formatTime(website.lastAudit.timeCreated),
     };

@@ -15,6 +15,8 @@
  */
 
 import ReactDOM from 'react-dom/client';
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 import { createApp } from '@backstage/frontend-defaults';
 import lighthousePlugin from '../src/alpha';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
