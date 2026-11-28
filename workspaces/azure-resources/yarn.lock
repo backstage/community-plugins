@@ -3633,7 +3633,7 @@ __metadata:
     "@microsoft/api-extractor-model": "npm:^7.31.2"
     "@microsoft/tsdoc": "npm:^0.17.0"
     "@microsoft/tsdoc-config": "npm:^0.18.0"
-    "@types/node": "npm:24.19.2"
+    "@types/node": "npm:24.19.4"
     "@useoptic/optic": "npm:^1.0.9"
     knip: "npm:^6.0.0"
     node-gyp: "npm:^13.0.0"
@@ -7534,12 +7534,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:24.19.2, @types/node@npm:>=13.7.0":
-  version: 24.19.2
-  resolution: "@types/node@npm:24.19.2"
+"@types/node@npm:*, @types/node@npm:24.19.4, @types/node@npm:>=13.7.0":
+  version: 24.19.4
+  resolution: "@types/node@npm:24.19.4"
   dependencies:
     undici-types: "npm:>=7.24.0 <7.24.7"
-  checksum: 10/5bc31df093f2866db0a2f9df0a1e99c2a46c3154ca2dc62ee14bde7af216d6361e4737e1023880921007ccb326b8559980e239e18a6fa927cda507da9383225c
+  checksum: 10/90981db59db96ea77cddcbd044de244e17f5c063e32ee303d396ae0af48c8e69a4004711b337f611ad9f47937b59fa5efe3130c94a7d9d3f58b5193f4889b66f
   languageName: node
   linkType: hard
 
