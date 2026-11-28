@@ -15,6 +15,7 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { InputError } from '@backstage/errors';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import {
@@ -306,6 +307,177 @@ describe('DefaultPermissionsReader', () => {
       );
     });
   });
+
+  describe('readConditionalPolicies', () => {
+    const hasSpecCondition = {
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: ['read'],
+      conditions: {
+        rule: 'HAS_SPEC',
+        resourceType: 'catalog-entity',
+        params: { key: 'lifecycle', value: 'production' },
+      },
+    };
+
+    function createConfig(
+      conditionalPermissions: object[],
+      validation?: object,
+    ) {
+      return mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/default-permissions',
+                basicPermissions: [{ permission: 'catalog.entity.read' }],
+                conditionalPermissions,
+              },
+              ...(validation ? { validation } : {}),
+            },
+          },
+        },
+      });
+    }
+
+    it('returns an empty array when conditional permissions are not configured', () => {
+      const noDefaultPermissions = mockServices.rootConfig({ data: {} });
+      expect(
+        new DefaultPermissionsReader(
+          noDefaultPermissions,
+        ).readConditionalPolicies(),
+      ).toEqual([]);
+
+      const noConditionalPermissions = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/default-permissions',
+                basicPermissions: [{ permission: 'catalog.entity.read' }],
+              },
+            },
+          },
+        },
+      });
+      expect(
+        new DefaultPermissionsReader(
+          noConditionalPermissions,
+        ).readConditionalPolicies(),
+      ).toEqual([]);
+    });
+
+    it('returns conditional policies for the default role', () => {
+      const nestedCondition = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        permissionMapping: [
+          { name: 'catalog.entity.delete', action: 'delete' },
+        ],
+        conditions: {
+          anyOf: [
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['$currentUser'] },
+            },
+            {
+              not: {
+                rule: 'IS_ENTITY_KIND',
+                resourceType: 'catalog-entity',
+                params: { kinds: ['Group'] },
+              },
+            },
+          ],
+        },
+      };
+      const reader = new DefaultPermissionsReader(
+        createConfig([
+          {
+            ...hasSpecCondition,
+            // The role and result always come from the reader, not from config.
+            roleEntityRef: 'role:default/admin',
+            result: 'ALLOW',
+          },
+          nestedCondition,
+        ]),
+      );
+
+      expect(reader.readConditionalPolicies()).toEqual([
+        {
+          ...hasSpecCondition,
+          result: AuthorizeResult.CONDITIONAL,
+          roleEntityRef: 'role:default/default-permissions',
+        },
+        {
+          ...nestedCondition,
+          result: AuthorizeResult.CONDITIONAL,
+          roleEntityRef: 'role:default/default-permissions',
+        },
+      ]);
+    });
+
+    it.each([
+      {
+        name: 'pluginId is missing',
+        entry: { ...hasSpecCondition, pluginId: undefined },
+        message: `'pluginId' must be specified in the role condition`,
+      },
+      {
+        name: 'resourceType is missing',
+        entry: { ...hasSpecCondition, resourceType: undefined },
+        message: `'resourceType' must be specified in the role condition`,
+      },
+      {
+        name: 'permissionMapping is empty',
+        entry: { ...hasSpecCondition, permissionMapping: [] },
+        message: `'permissionMapping' must be non empty array in the role condition`,
+      },
+      {
+        name: 'permissionMapping mixes actions and named permissions',
+        entry: {
+          ...hasSpecCondition,
+          permissionMapping: [
+            'read',
+            { name: 'catalog.entity.read', action: 'read' },
+          ],
+        },
+        message: `'permissionMapping' must be either all action strings or all {name, action} objects, not a mix`,
+      },
+      {
+        name: 'conditions are missing',
+        entry: { ...hasSpecCondition, conditions: undefined },
+        message: `'conditions' must be specified in the role condition`,
+      },
+    ])('throws when $name', ({ entry, message }) => {
+      const reader = new DefaultPermissionsReader(
+        createConfig([hasSpecCondition, entry]),
+      );
+
+      expect(() => reader.readConditionalPolicies()).toThrow(InputError);
+      expect(() => reader.readConditionalPolicies()).toThrow(
+        `Invalid default conditional permission at index 1 for role 'role:default/default-permissions': ${message}`,
+      );
+    });
+
+    it('applies condition validation limits from config', () => {
+      const reader = new DefaultPermissionsReader(
+        createConfig(
+          [
+            {
+              ...hasSpecCondition,
+              conditions: { not: hasSpecCondition.conditions },
+            },
+          ],
+          { conditionalPolicies: { maxConditionDepth: 1 } },
+        ),
+      );
+
+      expect(() => reader.readConditionalPolicies()).toThrow(
+        `Invalid default conditional permission at index 0 for role 'role:default/default-permissions': Conditional criteria depth exceeds maximum of 1`,
+      );
+    });
+  });
 });
 
 describe('DefaultPermissionsSyncher', () => {
@@ -432,6 +604,48 @@ describe('DefaultPermissionsSyncher', () => {
     await expect(syncher.sync()).rejects.toThrow(
       'Detected previous default role with incompatible source:',
     );
+  });
+
+  it('throws before syncing when conditional permissions are invalid', async () => {
+    const config = mockServices.rootConfig({
+      data: {
+        permission: {
+          rbac: {
+            defaultPermissions: {
+              defaultRole: 'role:default/catalog-reader',
+              basicPermissions: [
+                { permission: 'catalog.entity.read', action: 'read' },
+              ],
+              conditionalPermissions: [
+                {
+                  resourceType: 'catalog-entity',
+                  permissionMapping: ['read'],
+                  conditions: {
+                    rule: 'HAS_SPEC',
+                    resourceType: 'catalog-entity',
+                    params: { key: 'lifecycle' },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    });
+    const reader = new DefaultPermissionsReader(config);
+    const storage = createRoleMetadataStorageMock();
+    const enforcer = createEnforcerMock();
+
+    const syncher = new DefaultPermissionsSyncher(
+      storage,
+      enforcer as unknown as EnforcerDelegate,
+      reader,
+    );
+    await expect(syncher.sync()).rejects.toThrow(
+      `Invalid default conditional permission at index 0 for role 'role:default/catalog-reader': 'pluginId' must be specified in the role condition`,
+    );
+    expect(storage.syncDefaultRoleMetadata).not.toHaveBeenCalled();
+    expect(enforcer.addPolicies).not.toHaveBeenCalled();
   });
 
   describe('sync - role name changes', () => {

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { JsonObject } from '@backstage/types';
+
 export interface Config {
   permission: {
     rbac: {
@@ -98,6 +100,42 @@ export interface Config {
            * Action for the permission. Defaults to `use` when omitted.
            */
           action: 'create' | 'read' | 'update' | 'delete' | 'use';
+        }>;
+        /**
+         * Conditional permission policies assigned to the default role.
+         * Each entry is validated at startup.
+         */
+        conditionalPermissions?: Array<{
+          /**
+           * ID of the plugin that provides the conditional rules, for example `catalog`.
+           */
+          pluginId: string;
+          /**
+           * Resource type the conditions apply to, for example `catalog-entity`.
+           */
+          resourceType: string;
+          /**
+           * Permission actions the conditions apply to. Use either a list of actions,
+           * for example `[read]`, or a list of named permissions with their action,
+           * for example `[{ name: catalog.entity.read, action: read }]`. The two forms cannot be mixed.
+           */
+          permissionMapping:
+            | Array<'create' | 'read' | 'update' | 'delete' | 'use'>
+            | Array<{
+                /**
+                 * Permission name, for example `catalog.entity.read`.
+                 */
+                name: string;
+                /**
+                 * Action of the named permission.
+                 */
+                action: 'create' | 'read' | 'update' | 'delete' | 'use';
+              }>;
+          /**
+           * Condition to apply: a single rule with `rule`, `resourceType` and `params`,
+           * or rules combined with the `allOf`, `anyOf` and `not` criteria.
+           */
+          conditions: JsonObject;
         }>;
       };
       /**
