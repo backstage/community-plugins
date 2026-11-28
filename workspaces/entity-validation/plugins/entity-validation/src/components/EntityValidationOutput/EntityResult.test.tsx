@@ -30,6 +30,7 @@ describe('EntityResult', () => {
     await renderInTestApp(
       <List aria-label="validation results">
         <EntityResult
+          id="result-0"
           isFirstError
           item={{
             type: 'valid',

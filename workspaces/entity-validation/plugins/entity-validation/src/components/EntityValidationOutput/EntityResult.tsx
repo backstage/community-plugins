@@ -19,18 +19,21 @@ import { ValidateEntityResponse } from '@backstage/catalog-client';
 import { useApp } from '@backstage/core-plugin-api';
 import { Box, ButtonIcon, Flex, ListRow } from '@backstage/ui';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
-import { safeEntityKind } from './safeEntityDisplayName';
+import { safeEntityDisplayName, safeEntityKind } from './safeEntityDisplayName';
 import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
 import { MarkdownContent } from '@backstage/core-components';
 import { ValidationOutputOk } from '../../types';
 import styles from './EntityResult.module.css';
 
 type EntityResultProps = {
+  /** Unique id for this result row within the list. */
+  id: string;
   isFirstError?: boolean;
   item: ValidationOutputOk;
 };
 
 export const EntityResult = ({
+  id,
   isFirstError = false,
   item,
 }: EntityResultProps) => {
@@ -48,13 +51,10 @@ export const EntityResult = ({
     return '';
   };
 
-  const entityId = `${item.entity.kind}:${
-    item.entity.metadata?.namespace ?? 'default'
-  }/${item.entity.metadata?.name}`;
-
   return (
     <ListRow
-      id={entityId}
+      id={id}
+      textValue={safeEntityDisplayName(item.entity)}
       icon={
         Icon ? (
           <Icon

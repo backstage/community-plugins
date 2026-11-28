@@ -129,6 +129,7 @@ export const EntityValidationOutput = ({
               {results.map((item, key) => (
                 <EntityResult
                   key={key}
+                  id={`result-${key}`}
                   item={item}
                   isFirstError={key === firstErrorIndex}
                 />
