@@ -20,7 +20,7 @@ import {
 } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
-import BuildIcon from '@material-ui/icons/Build';
+import { RiWrenchLine } from '@remixicon/react';
 
 /**
  * @alpha
@@ -30,7 +30,10 @@ export const entityValidationPage = PageBlueprint.make({
     path: '/entity-validation',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     title: 'Entity Validation',
-    icon: <BuildIcon />,
+    icon: <RiWrenchLine />,
+    // The page renders its own BUI Header, so opt out of the default page
+    // header to avoid showing two headers.
+    noHeader: true,
     loader: async () =>
       import('../components/EntityValidationPage').then(m =>
         compatWrapper(<m.EntityValidationPage />),
