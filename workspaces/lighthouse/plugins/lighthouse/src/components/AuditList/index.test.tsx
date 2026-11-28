@@ -28,7 +28,7 @@ import {
   TestApiRegistry,
   renderInTestApp,
 } from '@backstage/test-utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import {
@@ -107,6 +107,56 @@ describe('AuditList', () => {
           </ApiProvider>,
         );
         expect(await screen.findByText('1 - 7 of 14')).toBeInTheDocument();
+      });
+    });
+
+    describe('while the next page is loading', () => {
+      it('disables the pagination controls', async () => {
+        const { useNavigate: realUseNavigate } =
+          jest.requireActual('react-router-dom');
+        const mockedUseNavigate = useNavigate.getMockImplementation();
+        useNavigate.mockImplementation(realUseNavigate);
+        let releasePage2: () => void = () => {};
+        const page2 = new Promise<void>(resolve => {
+          releasePage2 = resolve;
+        });
+        server.use(
+          rest.get('*', async (req, res, ctx) => {
+            const offset = Number(req.url.searchParams.get('offset') ?? 0);
+            if (offset > 0) await page2;
+            return res(
+              ctx.json({
+                ...websiteListResponse,
+                limit: 10,
+                offset,
+                total: 30,
+              }),
+            );
+          }),
+        );
+
+        try {
+          await renderInTestApp(
+            <ApiProvider apis={apis}>
+              <AuditList />
+            </ApiProvider>,
+          );
+          fireEvent.click(await screen.findByLabelText('Next table page'));
+
+          await waitFor(() =>
+            expect(screen.getByLabelText('Next table page')).toBeDisabled(),
+          );
+          expect(screen.getByLabelText('Previous table page')).toBeDisabled();
+
+          releasePage2();
+          await waitFor(() =>
+            expect(screen.getByLabelText('Next table page')).toBeEnabled(),
+          );
+          expect(screen.getByText('11 - 20 of 30')).toBeInTheDocument();
+        } finally {
+          releasePage2();
+          useNavigate.mockImplementation(mockedUseNavigate);
+        }
       });
     });
 

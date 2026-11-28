@@ -72,8 +72,8 @@ const AuditList = () => {
             pageSizeOptions={[pageSize]}
             offset={offset}
             totalCount={totalCount}
-            hasPreviousPage={offset > 0}
-            hasNextPage={offset + pageSize < totalCount}
+            hasPreviousPage={!loading && offset > 0}
+            hasNextPage={!loading && offset + pageSize < totalCount}
             onPreviousPage={() => navigate(`?page=${page - 1}`)}
             onNextPage={() => navigate(`?page=${page + 1}`)}
             showPageSizeOptions={false}
