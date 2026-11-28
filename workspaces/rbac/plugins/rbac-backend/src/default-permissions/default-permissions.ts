@@ -15,9 +15,11 @@
  */
 import { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import {
   RoleBasedPolicy,
+  type RoleConditionalPolicyDecision,
   isValidPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
 
@@ -33,6 +35,10 @@ import {
   validateEntityReference,
   validatePolicy,
 } from '../validation/policies-validation';
+import {
+  readConditionValidationLimitsFromConfig,
+  validateRoleCondition,
+} from '../validation/condition-validation';
 
 const DEFAULT_ROLE_DESCRIPTION =
   'Role with default permissions for all users and groups.';
@@ -114,6 +120,44 @@ export class DefaultPermissionsReader {
 
     return policies;
   }
+
+  readConditionalPolicies(): RoleConditionalPolicyDecision[] {
+    const defPermissionsConfig = this.config.getOptionalConfig(
+      DEFAULT_PERMISSIONS_CONF,
+    );
+    const role = this.readRole();
+
+    const conditionalPermissions = defPermissionsConfig?.getOptionalConfigArray(
+      'conditionalPermissions',
+    );
+    if (!role || !conditionalPermissions) {
+      return [];
+    }
+
+    const limits = readConditionValidationLimitsFromConfig(this.config);
+
+    return conditionalPermissions.map((entry, index) => {
+      // Only known fields are read, so the role and result can't be overridden from config.
+      const condition = {
+        result: AuthorizeResult.CONDITIONAL,
+        roleEntityRef: role,
+        pluginId: entry.getOptionalString('pluginId'),
+        resourceType: entry.getOptionalString('resourceType'),
+        permissionMapping: entry.getOptional('permissionMapping'),
+        conditions: entry.getOptional('conditions'),
+      } as RoleConditionalPolicyDecision;
+
+      try {
+        validateRoleCondition(condition, limits);
+      } catch (err) {
+        throw new InputError(
+          `Invalid default conditional permission at index ${index} for role '${role}': ${err.message}`,
+        );
+      }
+
+      return condition;
+    });
+  }
 }
 
 export class DefaultPermissionsSyncher {
@@ -126,6 +170,8 @@ export class DefaultPermissionsSyncher {
   public async sync() {
     const policies = this.defaultPermissionsReader.readPolicies();
     const roleEntityRef = this.defaultPermissionsReader.readRole();
+    // Validate conditional permissions at startup so invalid config fails early.
+    this.defaultPermissionsReader.readConditionalPolicies();
 
     const prevDefRole = await this.roleMetadataStorage.getDefaultRole();
 

@@ -143,6 +143,36 @@ permission:
 If configured, the RBAC backend will automatically include the default role in each authenticated user's roles and evaluate the configured `basicPermissions` for that role.
 When `defaultPermissions.defaultRole` is set, `defaultPermissions.basicPermissions` must contain at least one permission entry.
 
+#### Configure conditional permissions for the default role
+
+You can also define [conditional permission policies](./docs/conditions.md) for the default role using `defaultPermissions.conditionalPermissions`.
+Each entry uses the same fields as a conditional policy object, except `result` and `roleEntityRef`, which are always set to `CONDITIONAL` and the configured `defaultRole`.
+
+```YAML
+permission:
+  rbac:
+    defaultPermissions:
+      defaultRole: role:default/my-default-role
+      basicPermissions:
+        - permission: catalog-entity
+          action: read
+      conditionalPermissions:
+        - pluginId: catalog
+          resourceType: catalog-entity
+          permissionMapping:
+            - read
+          conditions:
+            rule: HAS_SPEC
+            resourceType: catalog-entity
+            params:
+              key: lifecycle
+              value: production
+```
+
+Conditional permissions are validated when the backend starts, using the same rules and limits as other conditional policies, and the backend fails to start if an entry is invalid.
+
+> **Note:** Conditional permissions for the default role are validated but not yet applied when evaluating permissions. Applying them is planned for an upcoming release.
+
 ### Configure plugins with permission
 
 In order for the RBAC UI to display the available permissions provided by installed plugins, you must supply the corresponding list of plugin IDs. There are two ways to achieve this:
